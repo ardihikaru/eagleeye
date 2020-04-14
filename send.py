@@ -51,7 +51,8 @@ while is_ready:  # press Ctrl-C to stop image sending program
     frame = cv2.imread(img_path)
 
     sender.send_image(str(time.time()), frame)
-    # time.sleep(1)
+    time.sleep(1)
+    # time.sleep(0.003)
 
 print("selesai")
 
