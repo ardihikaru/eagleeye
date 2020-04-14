@@ -1,4 +1,4 @@
-# Build : docker build -t spectre/redis:1.0 .
+# Build : docker build -t 5g-dive/redis:1.0 .
 # Run   : . run.sh
 # Test  : . test.sh
 
