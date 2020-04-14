@@ -1,0 +1,1 @@
+# Output MB-Box image will be saved here
