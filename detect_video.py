@@ -5,10 +5,13 @@ if __name__ == "__main__":
     # Ardi: Use video instead
     print("\nReading video:")
     # cap = cv.VideoCapture("data/5g-dive/customTest_MIRC-Roadside-5s.mp4")
-    cap = cv.VideoCapture("http://140.113.86.92:10000/drone-3.flv")
+    cap = cv.VideoCapture("http://www.opticodec.com/test/tropic.mp4")
+    # cap = cv.VideoCapture("http://140.113.86.92:10000/drone-3.flv")
     cv.namedWindow("Image", cv.WND_PROP_FULLSCREEN)
     cv.resizeWindow("Image", 1366, 768) # Enter your size
+    print("ok sampe sini")
     while (cap.isOpened()):
+        print("masuk while")
         # ret = a boolean return value from getting the frame, frame = the current frame being projected in the video
         try:
             ret, frame = cap.read()
@@ -20,6 +23,8 @@ if __name__ == "__main__":
 
         if cv.waitKey(10) & 0xFF == ord('q'):
             break
+
+    print("selesai")
     # The following frees up resources and closes all windows
     cap.release()
     cv.destroyAllWindows()
