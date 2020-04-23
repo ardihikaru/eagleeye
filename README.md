@@ -53,7 +53,7 @@ The https://github.com/ultralytics/yolov3 repo contains inference and training c
 - Enable virtual env:
 `$ . venv/bin/activate.fish`
 - Install additional library:
-`$ pip install Cython numpy scipy`
+`$ pip install Cython numpy scipy imagezmq`
 - Install requirement file:
 `$ pip install -r requirements.txt`
 
