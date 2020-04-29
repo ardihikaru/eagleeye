@@ -58,8 +58,13 @@ while is_ready:  # press Ctrl-C to stop image sending program
         img_name = "out" + str(i+1) + ".png"
         img_path = "data/5g-dive/57-frames/" + img_name
         frame = cv2.imread(img_path)
+
+        print(" >>>>>>> this frame:", frame.shape)
+
         ts = time.time()
+        # sender.send_image(str(ts), frame)
         sender.send_image(str(ts), frame)
+        # sender.send_image(str(ts), frame)
         t_recv = time.time() - ts
         # pub(rc_data, channel, json.dumps({"data": {
         #     "ts": ts
@@ -74,6 +79,9 @@ while is_ready:  # press Ctrl-C to stop image sending program
         if i == 56:
             print("i balik ke 0")
             i = 0
+
+        # break
+    # break
 
     # ts = time.time()
     # sender.send_image(str(ts), frame)

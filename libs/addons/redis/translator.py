@@ -1,6 +1,8 @@
 import simplejson as json
 import time
 import cv2
+import imagezmq
+
 
 # default = dumped kabeh.
 def redis_set(redis_client, key, value, expired=None):
@@ -12,6 +14,7 @@ def redis_set(redis_client, key, value, expired=None):
     else:
         redis_client.set(key, value)
 
+
 def redis_get(redis_client, key):
     data = None
     try:
@@ -20,6 +23,7 @@ def redis_get(redis_client, key):
         pass
     finally:
         return data
+
 
 def redis_get_all_keys(redis_client):
     data = None
@@ -30,8 +34,10 @@ def redis_get_all_keys(redis_client):
     finally:
         return data
 
+
 def pub(my_redis, channel, message):
     my_redis.publish(channel, message)
+
 
 def sub(my_redis, channel, func, consumer_name=None):
     pubsub = my_redis.pubsub()
@@ -39,8 +45,21 @@ def sub(my_redis, channel, func, consumer_name=None):
     for item in pubsub.listen():
         func(consumer_name, item['data'])
 
-def frame_producer(my_redis, frame_id, ret, frame, save_path, channel, rc_latency=None, drone_id=None):
+
+def frame_producer(my_redis, frame_id, ret, frame, save_path, channel, rc_latency=None, drone_id=None, worker_id=None):
     if ret:
+        # Configure ZMQ & Redis Pub/Sub parameters
+        sender = imagezmq.ImageSender(connect_to='tcp://127.0.0.1:5555', REQ_REP=False)
+        channel_zmq = "pub-image"
+        # image_window_name = 'From Sender'
+
+        # Send frame into ZMQ channel
+        ts = time.time()
+        sender.send_image(str(ts), frame)
+        t_recv = time.time() - ts
+        pub(my_redis, channel_zmq, ts)
+        print(".. [Worker-%d][time=%s] Sending image (1920 x 1080) in (%.5fs)." % (worker_id, str(ts), t_recv))
+
         # Save image
         # print("###### save_path = ", save_path)
         t0_save2disk = time.time()
@@ -57,6 +76,7 @@ def frame_producer(my_redis, frame_id, ret, frame, save_path, channel, rc_latenc
         t0_pub2frame = time.time()
         data = {
             "frame_id": frame_id,
+            "worker_id": worker_id,
             "img_path": save_path
         }
         p_mdata = json.dumps(data)

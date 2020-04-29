@@ -24,8 +24,8 @@ if __name__ == "__main__":
     # parser.add_argument("--total_workers", type=int, default=3, help="path to dataset")
     parser.add_argument("--total_workers", type=int, default=1, help="path to dataset")
 
-    # parser.add_argument("--enable_cv_out", type=bool, default=False, help="Enable/disable Output video streaming")
-    parser.add_argument("--enable_cv_out", type=bool, default=True, help="Enable/disable Output video streaming")
+    parser.add_argument("--enable_cv_out", type=bool, default=False, help="Enable/disable Output video streaming")
+    # parser.add_argument("--enable_cv_out", type=bool, default=True, help="Enable/disable Output video streaming")
 
     parser.add_argument("--enable_mbbox", type=bool, default=True, help="Enable/disable Output MB-Box-based video streaming")
 
