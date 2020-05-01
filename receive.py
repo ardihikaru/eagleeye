@@ -43,7 +43,7 @@ img_name = "view"
 image_hub = imagezmq.ImageHub(open_port='tcp://127.0.0.1:5555', REQ_REP=False)
 # image_hub = imagezmq.ImageHub(open_port='tcp://127.0.0.1:5553', REQ_REP=False)
 channel = "pub-image"
-ch_recv_sign = "pub-image-verify"
+# ch_recv_sign = "pub-image-verify"
 
 pub_sub = rc_data.pubsub()
 pub_sub.subscribe([channel])

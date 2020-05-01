@@ -12,6 +12,7 @@ from utils.datasets import *
 
 class VideoStreamer:
     def __init__(self, opt):
+        print(" -------- @ VideoStreamer")
         self.opt = opt
         self.save_path = opt.output_folder
         self.__set_redis()
@@ -36,7 +37,9 @@ class VideoStreamer:
             shutil.rmtree(out_folder)  # delete output folder
         os.makedirs(out_folder)  # make new output folder
 
-        self.sender_w1 = imagezmq.ImageSender(connect_to='tcp://127.0.0.1:5553', REQ_REP=False)
+        # self.sender_w1 = imagezmq.ImageSender(connect_to='tcp://127.0.0.1:5553', REQ_REP=False)
+        self.sender_w1 = imagezmq.ImageSender(connect_to='tcp://127.0.0.1:5555', REQ_REP=False)
+        self.channel_zmq = "pub-image"
 
     def __set_redis(self):
         self.rc = StrictRedis(
@@ -263,21 +266,15 @@ class VideoStreamer:
             Process(target=frame_producer, args=(self.rc, frame_id, ret, frame, save_path, stream_channel,
                                                  self.rc_latency, self.opt.drone_id, self.worker_id)).start()
 
-            # # Configure ZMQ & Redis Pub/Sub parameters
+            # Configure ZMQ & Redis Pub/Sub parameters
             print(" @ Configure ZMQ & Redis Pub/Sub parameters")
-            # sender = imagezmq.ImageSender(connect_to='tcp://127.0.0.1:5555', REQ_REP=False)
-            # sender = imagezmq.ImageSender(connect_to='tcp://127.0.0.1:5559', REQ_REP=False)
-            channel_zmq = "pub-image"
-            # image_window_name = 'From Sender'
-
             # Send frame into ZMQ channel
             ts = time.time()
-            self.sender_w1.send_image(str(ts), frame)
-            # self.sender_w1.send_image(str(ts), frame)
-            # sender.send_image(str(ts), frame)
-            # sender.send_image(str(ts), frame)
+            self.sender_w1.send_image(str(frame_id), frame)
             t_recv = time.time() - ts
-            pub(self.rc_data, channel_zmq, ts)
+            print(" ###### PUBLISHING ...")
+            pub(self.rc_data, self.channel_zmq, ts)
+            print(" ### FINISHED ### PUBLISHING ...")
             print(".. [Worker-%d][time=%s] Sending image (1920 x 1080) in (%.5fs)." % (self.worker_id, str(ts), t_recv))
             # ENDED
 

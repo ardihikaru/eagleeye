@@ -69,6 +69,9 @@ print("transformed shape:", X_pca.shape)
 t_recv = time.time() - t0
 print(".. Compression done in (%.5fs) " % t_recv)
 
+import pickle
+
+
 t0 = time.time()
 # pca_baru = PCA(n_components=1)
 # X_new = pca_baru.inverse_transform(X_pca)

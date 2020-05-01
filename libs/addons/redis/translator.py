@@ -49,16 +49,16 @@ def sub(my_redis, channel, func, consumer_name=None):
 def frame_producer(my_redis, frame_id, ret, frame, save_path, channel, rc_latency=None, drone_id=None, worker_id=None):
     if ret:
         # Configure ZMQ & Redis Pub/Sub parameters
-        sender = imagezmq.ImageSender(connect_to='tcp://127.0.0.1:5555', REQ_REP=False)
-        channel_zmq = "pub-image"
+        # sender = imagezmq.ImageSender(connect_to='tcp://127.0.0.1:5555', REQ_REP=False)
+        # channel_zmq = "pub-image"
         # image_window_name = 'From Sender'
 
-        # Send frame into ZMQ channel
-        ts = time.time()
-        sender.send_image(str(ts), frame)
-        t_recv = time.time() - ts
-        pub(my_redis, channel_zmq, ts)
-        print(".. [Worker-%d][time=%s] Sending image (1920 x 1080) in (%.5fs)." % (worker_id, str(ts), t_recv))
+        # # Send frame into ZMQ channel
+        # ts = time.time()
+        # sender.send_image(str(ts), frame)
+        # t_recv = time.time() - ts
+        # pub(my_redis, channel_zmq, ts)
+        # print(".. [Worker-%d][time=%s] Sending image (1920 x 1080) in (%.5fs)." % (worker_id, str(ts), t_recv))
 
         # Save image
         # print("###### save_path = ", save_path)
