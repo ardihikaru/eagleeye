@@ -28,6 +28,7 @@ rc_data = StrictRedis(
 # sender = imagezmq.ImageSender(connect_to='tcp://*:5555', REQ_REP=False)
 sender = imagezmq.ImageSender(connect_to='tcp://127.0.0.1:5555', REQ_REP=False)
 channel = "pub-image"
+ch_recv_sign = "pub-image-verify"
 
 image_window_name = 'From Sender'
 i = 0
@@ -54,12 +55,18 @@ while is_ready:  # press Ctrl-C to stop image sending program
 
     max_frames = 57
     # for i in range(max_frames):
+    redis_set(rc_data, ch_recv_sign, True)
     while i < 57:
+        # while not redis_get(rc_data, ch_recv_sign):
+        #     print(" --- waiting ...")
+        print("signal received: continue reading frames")
+        redis_set(rc_data, ch_recv_sign, False)
+
         img_name = "out" + str(i+1) + ".png"
         img_path = "data/5g-dive/57-frames/" + img_name
         frame = cv2.imread(img_path)
 
-        print(" >>>>>>> this frame:", frame.shape)
+        # print(" >>>>>>> this frame:", frame.shape)
 
         ts = time.time()
         # sender.send_image(str(ts), frame)
