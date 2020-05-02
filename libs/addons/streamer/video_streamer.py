@@ -8,6 +8,7 @@ from libs.settings import common_settings
 from utils.utils import *
 from models import *  # set ONNX_EXPORT in models.py
 from utils.datasets import *
+import simplejson as json
 
 
 class VideoStreamer:
@@ -38,8 +39,18 @@ class VideoStreamer:
         os.makedirs(out_folder)  # make new output folder
 
         # self.sender_w1 = imagezmq.ImageSender(connect_to='tcp://127.0.0.1:5553', REQ_REP=False)
-        self.sender_w1 = imagezmq.ImageSender(connect_to='tcp://127.0.0.1:5555', REQ_REP=False)
-        self.channel_zmq = "pub-image"
+        # self.sender_w1 = imagezmq.ImageSender(connect_to='tcp://127.0.0.1:5555', REQ_REP=False)
+        # self.channel_zmq = "pub-image"
+        self.zmq_sender = []
+
+        self.__set_zmq_senders()
+
+    def __set_zmq_senders(self):
+        for i in range(int(self.opt.total_workers)):
+            url = 'tcp://127.0.0.1:555' + str((i+1))
+            # print(" URL for worder=%s is %s" % (str(i+1), url))
+            sender = imagezmq.ImageSender(connect_to=url, REQ_REP=False)
+            self.zmq_sender.append(sender)
 
     def __set_redis(self):
         self.rc = StrictRedis(
@@ -266,16 +277,35 @@ class VideoStreamer:
             Process(target=frame_producer, args=(self.rc, frame_id, ret, frame, save_path, stream_channel,
                                                  self.rc_latency, self.opt.drone_id, self.worker_id)).start()
 
+            data = {
+                "frame_id": frame_id,
+                "worker_id": self.worker_id
+                # "img_path": save_path
+            }
+            p_mdata = json.dumps(data)
+
             # Configure ZMQ & Redis Pub/Sub parameters
             print(" @ Configure ZMQ & Redis Pub/Sub parameters")
             # Send frame into ZMQ channel
             ts = time.time()
-            self.sender_w1.send_image(str(frame_id), frame)
+            # self.sender_w1.send_image(str(frame_id), frame)
+            zid = self.worker_id - 1
+
+            self.zmq_sender[zid].send_image(str(frame_id), frame)
             t_recv = time.time() - ts
-            print(" ###### PUBLISHING ...")
-            pub(self.rc_data, self.channel_zmq, ts)
-            print(" ### FINISHED ### PUBLISHING ...")
-            print(".. [Worker-%d][time=%s] Sending image (1920 x 1080) in (%.5fs)." % (self.worker_id, str(ts), t_recv))
+            print('\nLatency [Send imagezmq] of frame-%s: (%.5fs)' % (str(frame_id), t_recv))
+            # pub(self.rc_data, self.channel_zmq, ts)
+
+            # Latency: capture publish frame information
+            t0_pub2frame = time.time()
+            pub(self.rc_data, stream_channel, p_mdata)
+            t_pub2frame = time.time() - t0_pub2frame
+            print('\nLatency [Publish frame info] of frame-%s: (%.5fs)' % (str(frame_id), t_pub2frame))
+            t_pub2frame_key = "pub2frame-" + str(self.opt.drone_id) + "-" + str(frame_id)
+            redis_set(self.rc_data, t_pub2frame_key, t_pub2frame)
+
+            # print(" ### FINISHED ### PUBLISHING ...")
+            # print(".. [Worker-%d][time=%s] Sending image (1920 x 1080) in (%.5fs)." % (self.worker_id, str(ts), t_recv))
             # ENDED
 
             redis_set(self.rc_data, self.worker_id, 0)

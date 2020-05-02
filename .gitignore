@@ -3,6 +3,7 @@
 data/5g-dive/
 data/coco/
 output/*
+hasil
 
  Repo-specific GitIgnore ----------------------------------------------------------------------------------------------
 *.jpg

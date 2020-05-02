@@ -40,9 +40,11 @@ rc_data = StrictRedis(
 id = 1
 img_name = "view"
 # print("is_ready: ", redis_get(rc_data, "is_ready"))
-image_hub = imagezmq.ImageHub(open_port='tcp://127.0.0.1:5555', REQ_REP=False)
+# image_hub = imagezmq.ImageHub(open_port='tcp://127.0.0.1:5555', REQ_REP=False)
+image_hub = imagezmq.ImageHub(open_port='tcp://127.0.0.1:5551', REQ_REP=False)
 # image_hub = imagezmq.ImageHub(open_port='tcp://127.0.0.1:5553', REQ_REP=False)
-channel = "pub-image"
+# channel = "pub-image"
+channel = "stream_1"
 # ch_recv_sign = "pub-image-verify"
 
 pub_sub = rc_data.pubsub()

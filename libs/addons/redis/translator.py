@@ -86,6 +86,7 @@ def frame_producer(my_redis, frame_id, ret, frame, save_path, channel, rc_latenc
         t_pub2frame = time.time() - t0_pub2frame
         # print(".. frame is published in (%.3fs)" % (time.time() - t0))
 
+
         # Latency: capture publish frame information
         print('\nLatency [Publish frame info] of frame-%s: (%.5fs)' % (str(frame_id), t_pub2frame))
         t_pub2frame_key = "pub2frame-" + str(drone_id) + "-" + str(frame_id)

@@ -27,8 +27,6 @@ class MODv2(RegionCluster):
         self.paired_flags = {}
         self.saved_dist = {} # of (FlagID, PersonID), e.g. ["0-0"] = 80
 
-        # self.person_xyxys = []
-        # self.flag_xyxys = []
         self.person_xyxys = {}
         self.flag_xyxys = {}
         self.flag_pair_candidates = {}
