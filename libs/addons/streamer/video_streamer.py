@@ -272,10 +272,10 @@ class VideoStreamer:
                     time.sleep(self.wait_time)
                 w += self.wait_time
 
-            # Send multi-process and set the worker as busy (value=False)
-            print("### Sending the work into [worker-#%d] @ `%s`" % (self.worker_id, stream_channel))
-            Process(target=frame_producer, args=(self.rc, frame_id, ret, frame, save_path, stream_channel,
-                                                 self.rc_latency, self.opt.drone_id, self.worker_id)).start()
+            # # Send multi-process and set the worker as busy (value=False)
+            # print("### Sending the work into [worker-#%d] @ `%s`" % (self.worker_id, stream_channel))
+            # Process(target=frame_producer, args=(self.rc, frame_id, ret, frame, save_path, stream_channel,
+            #                                      self.rc_latency, self.opt.drone_id, self.worker_id)).start()
 
             data = {
                 "frame_id": frame_id,
@@ -285,7 +285,7 @@ class VideoStreamer:
             p_mdata = json.dumps(data)
 
             # Configure ZMQ & Redis Pub/Sub parameters
-            print(" @ Configure ZMQ & Redis Pub/Sub parameters")
+            # print(" @ Configure ZMQ & Redis Pub/Sub parameters")
             # Send frame into ZMQ channel
             ts = time.time()
             # self.sender_w1.send_image(str(frame_id), frame)

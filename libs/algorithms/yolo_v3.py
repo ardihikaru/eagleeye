@@ -37,16 +37,18 @@ class YOLOv3:
         if os.path.exists(self.out):
             shutil.rmtree(self.out)  # delete output folder
         os.makedirs(self.out)  # make new output folder
+        os.makedirs(self.out+"/original")  # make enlarge folder
         os.makedirs(self.out+"/enlarge")  # make enlarge folder
-        # os.makedirs(self.out+"/mbbox")  # not used
+        os.makedirs(self.out+"/mbbox")  # make bbox folder
         os.makedirs(self.out+"/bbox")  # make bbox folder
-        os.makedirs(self.out+"/crop")  # make bbox folder
+        os.makedirs(self.out+"/crop")  # make crop folder
+        os.makedirs(self.out+"/txt")  # make txt folder
 
-        # Empty folders
-        mbbox_folder = opt.mbbox_output + str(opt.drone_id)
-        if os.path.exists(mbbox_folder):
-            shutil.rmtree(mbbox_folder)  # delete output folder
-        os.makedirs(mbbox_folder)  # make new output folder
+        # # Empty folders
+        # mbbox_folder = opt.mbbox_output + str(opt.drone_id)
+        # if os.path.exists(mbbox_folder):
+        #     shutil.rmtree(mbbox_folder)  # delete output folder
+        # os.makedirs(mbbox_folder)  # make new output folder
 
         # Initialize model
         self.model = Darknet(opt.cfg, self.img_size)
@@ -211,6 +213,9 @@ class YOLOv3:
                 image_name, im0s = self.image_hub.recv_image()
                 # print("recv img shape: ", im0s.shape)
 
+                if self.opt.save_original_img:
+                    self.__save_results(im0s, None, (self.frame_id+1), tcp_img=True, is_raw=True)
+
                 # Padded resize
                 image = letterbox(im0s, new_shape=self.img_size)[0]
                 # print("recv img shape PADDED: ", image.shape)
@@ -242,7 +247,8 @@ class YOLOv3:
                 # Preparing to send the frames.
                 if self.mbbox_img is not None:
                     # output_path = self.opt.mbbox_output + "frame-%s.jpg" % frame_id
-                    output_path = self.opt.mbbox_output + str(self.opt.drone_id) + "/frame-%s.jpg" % frame_id
+                    # output_path = self.opt.mbbox_output + str(self.opt.drone_id) + "/frame-%s.jpg" % frame_id
+                    output_path = self.opt.mbbox_output + "/frame-%s.jpg" % frame_id
 
                     # Try writing synchronously: store ONLY when (frame-1) has been stored
                     # print(" ######## PREV_ID = ", redis_get(self.rc, prev_fid))
@@ -251,14 +257,15 @@ class YOLOv3:
                         # time.sleep(1)
                         pass
 
-                    t0_save_mbbox_img = time.time()
-                    cv2.imwrite(output_path, self.mbbox_img)
-                    # print("Saving image in: ", output_path)
-                    # print(".. MB-Box image is saved in (%.3fs)" % (time.time() - t0))
-                    t_save_mbbox_img = time.time() - t0_save_mbbox_img
-                    t_save_mbbox_img_key = "save2mmboxIMG-" + str(self.opt.drone_id) + "-" + str(frame_id)
-                    redis_set(self.rc_latency, t_save_mbbox_img_key, t_save_mbbox_img)
-                    print('\nLatency [Save MB-Box Image] of frame-%s: (%.5fs)' % (str(frame_id), t_save_mbbox_img))
+                    # Save MBBox image
+                    if self.opt.save_mbbox_img:
+                        t0_save_mbbox_img = time.time()
+                        cv2.imwrite(output_path, self.mbbox_img)
+                        # print(".. MB-Box image is saved in (%.3fs)" % (time.time() - t0))
+                        t_save_mbbox_img = time.time() - t0_save_mbbox_img
+                        t_save_mbbox_img_key = "save2mmboxIMG-" + str(self.opt.drone_id) + "-" + str(frame_id)
+                        redis_set(self.rc_latency, t_save_mbbox_img_key, t_save_mbbox_img)
+                        print('\nLatency [Save MB-Box Image] of frame-%s: (%.5fs)' % (str(frame_id), t_save_mbbox_img))
 
                     # Set that this frame has been successfully added
                     expired_at = 20  # in seconds
@@ -358,7 +365,7 @@ class YOLOv3:
     #             os.system('open ' + self.out + ' ' + self.save_path)
 
     def __save_cropped_img(self, xyxy, im0, idx):
-        if self.opt.crop_img:
+        if self.opt.save_crop_img:
             # Try saving cropped image
             # original_img = im0.copy()
             numpy_xyxy = torch2numpy(xyxy, int)
@@ -366,18 +373,22 @@ class YOLOv3:
             # crop_image(self.save_path, original_img, xywh, idx)
             crop_image(self.save_path, im0, xywh, idx)
 
-    def __save_results(self, im0, vid_cap, frame_id, tcp_img=False):
+    def __save_results(self, im0, vid_cap, frame_id, tcp_img=False, is_raw=False):
         # Save results (image with detections)
         if self.save_img:
             if tcp_img:
-                frame_save_path = self.opt.frames_dir + "/frame-%s.jpg" % str(frame_id)
+                if is_raw:
+                    frame_save_path = self.opt.frames_dir + "/frame-%s.jpg" % str(frame_id)
+                else:
+                    frame_save_path = self.opt.bbox_dir + "/frame-%s.jpg" % str(frame_id)
                 cv2.imwrite(frame_save_path, im0)
             elif self.dataset.mode == 'images':
                 # print("\n #### mode IMAGES: ", self.save_path)
                 # print("\n #### im0: ", im0)
 
                 if self.webcam:
-                    frame_save_path = self.opt.frames_dir + "/frame-%d.jpg" % frame_id
+                    frame_save_path = self.opt.bbox_dir + "/frame-%d.jpg" % frame_id
+                    # frame_save_path = self.opt.frames_dir + "/frame-%d.jpg" % frame_id
                     # frame_save_path = self.opt.frames_dir + "/frame-%d.png" % frame_id
                     if self.mbbox_img is not None:
                         cv2.imwrite(frame_save_path, self.mbbox_img)
@@ -403,20 +414,21 @@ class YOLOv3:
                                                       cv2.VideoWriter_fourcc(*self.opt.fourcc), fps, (w, h))
                 self.vid_writer.write(im0)
 
-    def __feed_video_frames(self):
-        self.t0 = time.time()
-        # frame_id = 0
-        for path, img, im0s, vid_cap in self.dataset:
-            self.frame_id += 1
-
-            if self.webcam:
-                frame_save_path = self.opt.frames_dir + "/frame-%d.jpg" % self.frame_id
-                cv2.imwrite(frame_save_path, img)
-
-            if self.frame_id > 10:
-                self.manual_stop = True
-                print("\n\n #### FORCED TO BREAK HERE !!!")
-                break
+    # def __feed_video_frames(self):
+    #     self.t0 = time.time()
+    #     # frame_id = 0
+    #     for path, img, im0s, vid_cap in self.dataset:
+    #         self.frame_id += 1
+    #
+    #         if self.webcam:
+    #             frame_save_path = self.opt.bbox_dir + "/frame-%d.jpg" % self.frame_id
+    #             # frame_save_path = self.opt.frames_dir + "/frame-%d.jpg" % self.frame_id
+    #             cv2.imwrite(frame_save_path, img)
+    #
+    #         if self.frame_id > 10:
+    #             self.manual_stop = True
+    #             print("\n\n #### FORCED TO BREAK HERE !!!")
+    #             break
 
     def __process_detection(self, img, im0s, this_frame_id):
         # print(' ---- @ __process_detection')
@@ -507,9 +519,9 @@ class YOLOv3:
                     self.time_mbbox_list.append(t_mbbox)
 
                     # Latency: MB-Box
-                    print('\nLatency [MB-Box Algorithm] of frame-%s: (%.5fs)' % (str(this_frame_id), t_mbbox))
-                    t_mbbox_key = "mbbox-" + str(self.opt.drone_id) + "-" + str(this_frame_id)
-                    redis_set(self.rc_latency, t_mbbox_key, t_mbbox)
+                    # print('\nLatency [MB-Box Algorithm] of frame-%s: (%.5fs)' % (str(this_frame_id), t_mbbox))
+                    # t_mbbox_key = "mbbox-" + str(self.opt.drone_id) + "-" + str(this_frame_id)
+                    # redis_set(self.rc_latency, t_mbbox_key, t_mbbox)
 
                     ts_default = time.time()
                     if not self.opt.maximize_latency:
@@ -562,6 +574,7 @@ class YOLOv3:
                     #         raise StopIteration
 
                     # self.__save_results(img, None, self.frame_id, tcp_img=True)
+                    # Save BBox image
                     self.__save_results(im0s, None, self.frame_id, tcp_img=True)
                     # self.__save_results(img, vid_cap, self.frame_id)
             # print('\n # Total MB-Box time: (%.3fs)' % (time.time() - ts_mbbox))
@@ -646,9 +659,9 @@ class YOLOv3:
                     self.time_mbbox_list.append(t_mbbox)
 
                     # Latency: MB-Box
-                    print('\nLatency [MB-Box Algorithm] of frame-%s: (%.5fs)' % (str(this_frame_id), t_mbbox))
-                    t_mbbox_key = "mbbox-" + str(self.opt.drone_id) + "-" + str(this_frame_id)
-                    redis_set(self.rc_latency, t_mbbox_key, t_mbbox)
+                    # print('\nLatency [MB-Box Algorithm] of frame-%s: (%.5fs)' % (str(this_frame_id), t_mbbox))
+                    # t_mbbox_key = "mbbox-" + str(self.opt.drone_id) + "-" + str(this_frame_id)
+                    # redis_set(self.rc_latency, t_mbbox_key, t_mbbox)
 
                     ts_default = time.time()
                     if not self.opt.maximize_latency:
