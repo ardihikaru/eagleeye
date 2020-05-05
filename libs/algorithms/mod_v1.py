@@ -1,7 +1,7 @@
-import numpy as np
 from libs.algorithms.intersection_finder import IntersectionFinder
 from libs.commons.opencv_helpers import save_txt
-import time
+from libs.settings import common_settings
+
 
 class MODv1:
     def __init__(self, cam, source_img, opt, save_path, det, img, names, w_ratio, h_ratio):
@@ -18,7 +18,7 @@ class MODv1:
         self.h_ratio = h_ratio
         self.detected_mbbox = []
         self.mbbox_img = None
-        self.rgb_mbbox = [198, 50, 13]
+        self.pih_label = common_settings["bbox_config"]["pih_label"]
 
     def run(self):
         # ts_extract = time.time()
@@ -35,8 +35,8 @@ class MODv1:
             self.mbbox_img = self.intersection.get_img_with_mbbox()
             self.rgb_mbbox = self.intersection.get_rgb_mbbox()
             # print("Person-W-Flag object: %d founds." % len(detected_mbbox))
-            print("Person=%d; Flag=%d; Person-W-Flag=%d;" % (len(self.class_det["Person"]), len(self.class_det["Flag"]),
-                                                             len(self.detected_mbbox)))
+            print("Person=%d; Flag=%d; %s=%d;" % (len(self.class_det["Person"]), len(self.class_det["Flag"]),
+                                                  self.pih_label, len(self.detected_mbbox)))
         else:
             self.mbbox_img = self.img
             if self.opt.output_txt:

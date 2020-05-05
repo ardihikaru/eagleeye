@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 from math import sqrt
 from scipy.spatial import distance
+from libs.settings import common_settings
 
 def crop_image(save_path, img, xywh, idx):
     x = xywh[0]
@@ -95,7 +96,8 @@ def save_txt(save_path, txt_format, mbbox_xyxy=None, w_type='a'):
         if mbbox_xyxy is None:
             file.write("")
         else:
-            cls = "Person-W-Flag"
+            # cls = "Person-W-Flag"
+            cls = common_settings["bbox_config"]["pih_label"]
             conf = 1.0
             if txt_format == "default":
                 file.write(('%g ' * 6 + '\n') % (mbbox_xyxy, cls, conf))

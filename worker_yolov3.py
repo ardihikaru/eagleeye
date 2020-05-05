@@ -27,8 +27,10 @@ if __name__ == '__main__':
     parser.add_argument('--h_ratio', type=float, default=0.1, help='Height Ratio (for MB-Box Algorithm)')
 
     parser.add_argument('--modv1', type=bool, default=False,
+    # parser.add_argument('--modv1', type=bool, default=True,
                         help='Enabling/Disabling MOD Algorithm v1')
     parser.add_argument('--modv2', type=bool, default=True,
+    # parser.add_argument('--modv2', type=bool, default=False,
                         help='Enabling/Disabling MOD Algorithm v2')
 
     parser.add_argument('--default_detection', type=bool, default=True,
@@ -40,10 +42,10 @@ if __name__ == '__main__':
 
     # Storing results
     parser.add_argument('--output_txt', type=str, default=True, help='output txt information')  # output folder
-    parser.add_argument('--save_original_img', type=str, default=True, help='Enabling/Disabling Crop detected image')
-    parser.add_argument('--save_crop_img', type=str, default=True, help='Enabling/Disabling Crop detected image')
-    parser.add_argument('--save_bbox_img', type=str, default=True, help='Enabling/Disabling Store BBox image')
-    parser.add_argument('--save_mbbox_img', type=str, default=True, help='Enabling/Disabling Store MBBox image')
+    parser.add_argument('--save_original_img', type=str, default=False, help='Enabling/Disabling Crop detected image')
+    parser.add_argument('--save_crop_img', type=str, default=False, help='Enabling/Disabling Crop detected image')
+    parser.add_argument('--save_bbox_img', type=str, default=False, help='Enabling/Disabling Store BBox image')
+    parser.add_argument('--save_mbbox_img', type=str, default=False, help='Enabling/Disabling Store MBBox image')
 
     # Storage result directory
     parser.add_argument('--bbox_dir', type=str, default="hasil/media/ramdisk/output/bbox",
