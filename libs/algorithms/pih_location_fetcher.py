@@ -49,7 +49,13 @@ class PIHLocationFetcher(MyRedis):
         return bbox_data
 
     def run(self):
-        if self.opt.enable_mbbox:
+        if self.opt.viewer_all_bbox:
+            self.mbbox_coord = self.__get_mbbox_coord()
+            self.__plot_mbbox()
+
+            self.bbox_coord = self.__get_bbox_coord()
+            self.__plot_bbox()
+        elif self.opt.enable_mbbox:
             self.mbbox_coord = self.__get_mbbox_coord()
             self.__plot_mbbox()
         elif self.opt.default_detection:
