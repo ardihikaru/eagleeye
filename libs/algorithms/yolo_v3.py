@@ -529,7 +529,6 @@ class YOLOv3:
             print("ERRRROOORR Pred: ", e)
 
     def __default_detection(self, det, im0, this_frame_id):
-        print(" ### @ __default_detection")
         if self.opt.default_detection:
             original_img = im0.copy()
 
@@ -539,14 +538,12 @@ class YOLOv3:
                 self.str_output += '%g %ss, ' % (n, self.names[int(c)])  # add to string
 
             # Write results
-            print(" --- @ write results")
             idx_detected = 0
             bbox_data = []
             for *xyxy, conf, cls in det:
                 numpy_xyxy = get_det_xyxy(xyxy)
                 this_label = '%s %.2f' % (self.names[int(cls)], conf)
                 this_color = self.colors[int(cls)]
-                print(" =-- this_color:", this_color)
                 idx_detected += 1
                 self.save_txt = True  # Ardi: manually added
 
@@ -559,17 +556,12 @@ class YOLOv3:
                     "label": this_label,
                     "color": [str(color) for color in this_color]
                 }
-                print(" ~~ this_bbox:", this_bbox)
                 bbox_data.append(this_bbox)
-
-                # store bbox information
-                # self.__store_mbbox_coord(this_frame_id, self.detected_mbbox, is_reg_bbox=True, sub_idx=idx_detected)
 
                 if self.save_img or self.view_img:  # Add bbox to image
                     plot_one_box(xyxy, im0, label=this_label, color=this_color)
 
             # store bbox information
-            print("@@@ @ # store bbox information")
             self.__store_mbbox_coord(this_frame_id, bbox_data, is_reg_bbox=True)
 
     '''
@@ -590,7 +582,6 @@ class YOLOv3:
 
             # Sementara masih error; abaikan
             if self.opt.modv1:
-                print("## @ if self.opt.modv1:")
                 ts_mod_v1 = time.time()
                 self.mbbox = MODv1(self.webcam, im0, self.opt, self.save_path, det, original_img, self.names,
                                    self.w_ratio, self.h_ratio)
@@ -635,14 +626,13 @@ class YOLOv3:
                         save_txt(self.save_path, self.opt.txt_format, mbbox_xyxy)
 
     # Key = `<drone_id>-<frame_id>-mbbox`
-    def __store_mbbox_coord(self, frame_id, this_mbbox, is_reg_bbox=False, sub_idx=None):
+    def __store_mbbox_coord(self, frame_id, this_mbbox, is_reg_bbox=False):
         this_mbbox = this_mbbox if this_mbbox is not None else {}
         if not is_reg_bbox:
             mbbox_dict = mbboxlist2dict(this_mbbox)
         else:
             mbbox_dict = this_mbbox
         if is_reg_bbox:
-            # suffix = "-bbox-" + str(sub_idx)
             suffix = "-bbox"
         else:
             suffix = "-mbbox"
