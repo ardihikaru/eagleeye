@@ -5,6 +5,7 @@ import imagezmq
 from multiprocessing import Process
 from libs.addons.redis.translator import frame_producer, redis_get, redis_set, pub
 from libs.settings import common_settings
+from libs.addons.streamer.realtime_viewer import RealtimeViewer
 from utils.utils import *
 from models import *  # set ONNX_EXPORT in models.py
 from utils.datasets import *
@@ -93,8 +94,8 @@ class VideoStreamer:
                     self.cap = cv.VideoCapture(self.opt.source)
                     # t_stream_setup = time.time() - t0_stream_setup
                     # t_stream_setup_key = "stream-setup-" + str(self.opt.drone_id)
-                    t_stream_setup_key = "stream-start-" + str(self.opt.drone_id)
-                    redis_set(self.rc_latency, t_stream_setup_key, time.time())
+                    # t_stream_setup_key = "stream-start-" + str(self.opt.drone_id)
+                    # redis_set(self.rc_latency, t_stream_setup_key, time.time())
 
                     # Latency:
                     # t_stream_setup_key = "stream-setup-" + str(self.opt.drone_id)
@@ -125,8 +126,8 @@ class VideoStreamer:
         received_frame_id = 0
 
         # Set Dataloader
-        vid_path, vid_writer = None, None
-        save_img = True
+        # vid_path, vid_writer = None, None
+        # save_img = True
         dataset = LoadImages(self.opt.source, img_size=self.opt.img_size, half=self.opt.half)
 
         # Save timestamp to start extracting video streaming.
@@ -192,7 +193,8 @@ class VideoStreamer:
                             mbbox_path = self.opt.mbbox_output + str(self.opt.drone_id) + "/frame-%d.jpg" % frame_id
                             bbox_path = self.opt.normal_output + "/frame-%d.jpg" % frame_id
 
-                            self.__load_balancing(frame_id, ret, frame, save_path)
+                            # self.__load_balancing(frame_id, ret, frame, save_path)
+                            self.__load_balancing(frame_id, frame)
 
                             if self.opt.enable_cv_out:
                                 if self.opt.enable_mbbox:
@@ -249,7 +251,8 @@ class VideoStreamer:
         # finally, set avalaible worker_id into `self.worker_id`
         # when all N workers are OFF, force stop this System!
 
-    def __load_balancing(self, frame_id, ret, frame, save_path):
+    # def __load_balancing(self, frame_id, ret, frame, save_path):
+    def __load_balancing(self, frame_id, frame):
         # Initially, send process into first worker
         self.worker_id += 1
         stream_channel = common_settings["redis_config"]["channel_prefix"] + str(self.worker_id)
@@ -329,15 +332,12 @@ class VideoStreamer:
 
             t_sframe_key = "start-fi-" + str(self.opt.drone_id) # to calculate end2end latency each frame.
             redis_set(self.rc_latency, t_sframe_key, time.time())
-
             n += 1
-
             t0_frame = time.time()
+
             # ret = a boolean return value from getting the frame, frame = the current frame being projected in the video
             try:
                 ret, frame = self.cap.read()
-
-                # print(" >>>>>>> this frame:", frame.shape)
 
                 # Latency: capture each frame
                 t_frame = time.time() - t0_frame
@@ -353,36 +353,15 @@ class VideoStreamer:
                             frame_id += 1
 
                             # Force stop after n frames; disabled when self.max_frames == 0
-                            # if frame_id > int(self.max_frames):
                             if frame_id == (self.max_frames + 1) and self.max_frames > 0:
                                 self.is_running = False
                                 break
 
-                            save_path = self.opt.output_folder + str(self.opt.drone_id) + "/frame-%d.jpg" % frame_id
-                            mbbox_path = self.opt.mbbox_output + str(self.opt.drone_id) + "/frame-%d.jpg" % frame_id
-                            bbox_path = self.opt.normal_output + "frame-%d.jpg" % frame_id
-
-                            self.__load_balancing(frame_id, ret, frame, save_path)
+                            self.__load_balancing(frame_id, frame)
 
                             if self.opt.enable_cv_out:
-                                if self.opt.enable_mbbox:
-                                    # time.sleep(0.2)
-                                    # if os.path.isfile(mbbox_path):
-                                    #     print("--------File exist")
-                                    # else:
-                                    #     print("--------File not exist")
-
-                                    # while not os.path.isfile(mbbox_path):
-                                    while not os.path.isfile(bbox_path):
-                                        time.sleep(0.01)
-                                        # time.sleep(0.5)
-                                        continue
-                                    time.sleep(0.05)
-                                    # img = np.asarray(cv2.imread(mbbox_path))
-                                    img = np.asarray(cv2.imread(bbox_path))
-                                    cv.imshow("Image", img)
-                                else:
-                                    cv.imshow("Image", frame)
+                                processed_img = self.__get_img_data(frame, frame_id)
+                                cv.imshow("Image", processed_img)
 
                     else:
                         print("IMAGE is INVALID.")
@@ -393,7 +372,7 @@ class VideoStreamer:
                 # time.sleep(0.01)  # wait time
 
             except Exception as e:
-                print(" ---- e:", e)
+                # print(" ---- e:", e)
                 if not self.opt.auto_restart:
                     print("\nStopping the system. . .")
                     time.sleep(7)
@@ -404,3 +383,29 @@ class VideoStreamer:
 
             if cv.waitKey(10) & 0xFF == ord('q'):
                 break
+
+    def __get_img_data(self, raw_frame, frame_id):
+        if self.opt.viewer_version == 1:
+            return self.__viewer_v1(raw_frame, frame_id)
+        elif self.opt.viewer_version == 2:
+            return self.__viewer_v2(raw_frame, frame_id)
+        else:
+            return raw_frame
+
+    # Show real-time image result (EagleEYE v1: EuCNC Conference 2019)
+    def __viewer_v1(self, raw_frame, frame_id):
+        bbox_path = self.opt.normal_output + "frame-%d.jpg" % frame_id
+        if self.opt.enable_mbbox:  # Image with MBBox
+            while not os.path.isfile(bbox_path):
+                time.sleep(0.01)
+                # time.sleep(0.5)
+                continue
+            time.sleep(0.05)
+            img = np.asarray(cv2.imread(bbox_path))
+            return img
+        else:  # Image with BBox (from YOLOv3 only)
+            return raw_frame
+
+    # Show real-time image result (EagleEYE v2: GLOBECOM Conference 2020)
+    def __viewer_v2(self, raw_frame, frame_id):
+        pass

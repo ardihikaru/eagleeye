@@ -64,7 +64,7 @@ if __name__ == '__main__':
     parser.add_argument('--img_width', type=int, default=1920, help='Image Width')
     parser.add_argument('--img_height', type=int, default=1080, help='Image Height')
 
-    # YOLO configuration
+    # YOLO configuration; We trained the training data with 832 pixels (Tim's said)
     # parser.add_argument('--img-size', type=int, default=416, help='inference size (pixels)')
     parser.add_argument('--img-size', type=int, default=832, help='inference size (pixels)')  ## (3, 480, 832)
     # parser.add_argument('--img-size', type=int, default=1080, help='inference size (pixels)')  ## (3, 632, 1080)
