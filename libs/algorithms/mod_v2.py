@@ -6,6 +6,8 @@ from libs.algorithms.region_cluster import RegionCluster
 from libs.commons.util import find_point
 from libs.commons.opencv_helpers import get_det_xyxy, np_xyxy2xywh, get_mbbox, np_xyxy2centroid, get_xyxy_distance_manhattan, get_xyxy_distance, save_txt
 from utils.utils import plot_one_box
+from libs.settings import common_settings
+
 
 class MODv2(RegionCluster):
     def __init__(self, cam, source_img, opt, save_path, det, img, names):
@@ -21,9 +23,10 @@ class MODv2(RegionCluster):
         self.class_det = {"Person": [], "Flag": []}
         self.names = names
         self.detected_mbbox = []
-        self.rgb_mbbox = [198, 50, 13]
+        self.pih_label = common_settings["bbox_config"]["pih_label"]
+        self.rgb_mbbox = common_settings["bbox_config"]["pih_color"]
         self.paired_flags = {}
-        self.saved_dist = {} # of (FlagID, PersonID), e.g. ["0-0"] = 80
+        self.saved_dist = {}  # of (FlagID, PersonID), e.g. ["0-0"] = 80
 
         self.person_xyxys = {}
         self.flag_xyxys = {}
@@ -58,7 +61,7 @@ class MODv2(RegionCluster):
                 mbbox_xyxy = get_mbbox(person_xyxy, flag_xyxy)
 
                 self.detected_mbbox.append(mbbox_xyxy)
-                plot_one_box(mbbox_xyxy, self.mbbox_img, label="Person-W-Flag", color=self.rgb_mbbox)
+                plot_one_box(mbbox_xyxy, self.mbbox_img, label=self.pih_label, color=self.rgb_mbbox)
 
     def __is_eligible(self):
         if "Person" not in self.class_det or "Flag" not in self.class_det:

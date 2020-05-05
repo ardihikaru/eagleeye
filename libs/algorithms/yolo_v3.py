@@ -11,7 +11,6 @@ from redis import StrictRedis
 import json
 from libs.settings import common_settings
 from libs.addons.redis.translator import redis_set, redis_get
-from libs.algorithms.behavior_detection import BehaviorDetection
 import imagezmq
 
 
@@ -169,88 +168,43 @@ class YOLOv3:
         for item in pubsub.listen():
             # noinspection PyPackageRequirements
             try:
-                # t0_sub2frame = time.time()
-                # Start fetching information
                 fetch_data = json.loads(item['data'])
                 frame_id = fetch_data['frame_id']
-                # print('Streamer collects : ', fetch_data)
-
-                # # Latency: subscribing frame
-                # t_sub2frame = time.time() - t0_sub2frame
-                # t_sub2frame_key = "sub2frame-" + str(self.opt.drone_id) + "-" + str(frame_id)
-                # redis_set(self.rc_latency, t_sub2frame_key, t_sub2frame)
-                # print('\nLatency [Subscriber extracting information] of frame-%s: (%.5fs)' % (str(frame_id), t_sub2frame))
-
-                # self.source = fetch_data["img_path"]
-                # # Load image from pub: get `img_path`
-                # t0_load_img = time.time()
-                # self.__set_data_loader()
-                # t_load_img = time.time() - t0_load_img
-                # t_load_img_key = "loadIMG-" + str(self.opt.drone_id) + "-" + str(frame_id)
-                # redis_set(self.rc_latency, t_load_img_key, t_load_img)
-                # print('\nLatency [Loads image into YOLOv3 Worker] of frame-%s: (%.5fs)' % (str(frame_id), t_load_img))
-
-                # # Check worker status first, please wait while still working
-                # is_worker_ready = redis_get(self.rc_data, self.opt.sub_channel)
-                # print(">>>>>> is_worker_ready = ", is_worker_ready)
-                # if is_worker_ready:
-                #     print("\nWorker-%d is still running, waiting to finish ..." % self.opt.sub_channel)
-                #     time.sleep(0.1)
 
                 # imagezmq: receive image
-                # print(" #### @ imagezmq: receive image ...")
                 image_name, im0s = self.image_hub.recv_image()
-                # print("recv img shape: ", im0s.shape)
 
                 if self.opt.save_original_img:
                     self.__save_results(im0s, None, (self.frame_id+1), tcp_img=True, is_raw=True)
 
                 # Padded resize
                 image = letterbox(im0s, new_shape=self.img_size)[0]
-                # print("recv img shape PADDED: ", image.shape)
 
                 # Convert
                 image = image[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
                 image = np.ascontiguousarray(image, dtype=np.float16 if self.half else np.float32)  # uint8 to fp16/fp32
                 image /= 255.0  # 0 - 255 to 0.0 - 1.0
-                # print("recv img shape NEW: ", image.shape)
 
                 # Start processing image
                 print("\nStart processing to get MB-Box.")
                 redis_set(self.rc_data, self.opt.sub_channel, 0) # set as `Busy`
-                # print("Set as busy Done.")
-                # self.__iterate_frames(frame_id)  # Perform detection in each frame here
-                # self.__iterate_frames(frame_id)  # Perform detection in each frame here
                 self.__process_detection(image, im0s, frame_id)
-                # print(" >>> Hasil MB-Box Img = ", self.mbbox_img)
-                # print("Process finished.")
 
                 frame_id = str(fetch_data["frame_id"])
                 prev_fid = str(self.opt.drone_id) + "-" + str((int(frame_id)-1))
 
-                # # TBD: Start behavior detection in background process, in every 30 frames (FPS=30)
-                # behave_det = BehaviorDetection(self.opt, int(frame_id), self.detected_mbbox)
-                # if int(frame_id) % self.fps and self.detected_mbbox > 0:
-                #     behave_det.run()
-
                 # Preparing to send the frames.
                 if self.mbbox_img is not None:
-                    # output_path = self.opt.mbbox_output + "frame-%s.jpg" % frame_id
-                    # output_path = self.opt.mbbox_output + str(self.opt.drone_id) + "/frame-%s.jpg" % frame_id
                     output_path = self.opt.mbbox_output + "/frame-%s.jpg" % frame_id
 
                     # Try writing synchronously: store ONLY when (frame-1) has been stored
-                    # print(" ######## PREV_ID = ", redis_get(self.rc, prev_fid))
                     while redis_get(self.rc, prev_fid) is None and int(frame_id) > 1:
-                        # print(" ######## Waiting previous frame to be stored. PREV_ID = ", redis_get(self.rc, prev_fid))
-                        # time.sleep(1)
                         pass
 
                     # Save MBBox image
                     if self.opt.save_mbbox_img:
                         t0_save_mbbox_img = time.time()
                         cv2.imwrite(output_path, self.mbbox_img)
-                        # print(".. MB-Box image is saved in (%.3fs)" % (time.time() - t0))
                         t_save_mbbox_img = time.time() - t0_save_mbbox_img
                         t_save_mbbox_img_key = "save2mmboxIMG-" + str(self.opt.drone_id) + "-" + str(frame_id)
                         redis_set(self.rc_latency, t_save_mbbox_img_key, t_save_mbbox_img)
@@ -263,18 +217,12 @@ class YOLOv3:
                 else:
                     print("This MB-Box is NONE. nothing to be saved yet.")
 
-                # self.__save_latency_to_csv()
-
                 # Restore availibility
                 redis_set(self.rc_data, self.opt.sub_channel, 1) # set as `Ready`
                 print("\n### This Worker-%s is ready to serve again. \n\n" % self.opt.sub_channel)
 
                 # Set prev_fid as DONE
                 redis_set(self.rc_data, prev_fid, None) # set as `Ready`
-
-                # if this is latest frame: Set this frame as latest
-                # key = "drone_id-latest", value: "drone_id-frame_id"
-                # redis_set(self.rc_data, prev_fid, None) # set as `Ready`
             except:
                 pass
 
@@ -345,21 +293,10 @@ class YOLOv3:
         self.names = load_classes(self.opt.names)
         self.colors = [[random.randint(0, 255) for _ in range(3)] for _ in range(len(self.names))]
 
-    # Executed after detect()
-    # def __print_save_txt_img(self):
-    #     if self.save_txt or self.save_img:
-    #     # if self.save_txt:
-    #         print('Results saved to %s' % os.getcwd() + os.sep + self.out)
-    #         if platform == 'darwin':  # MacOS
-    #             os.system('open ' + self.out + ' ' + self.save_path)
-
     def __save_cropped_img(self, xyxy, im0, idx):
         if self.opt.save_crop_img:
-            # Try saving cropped image
-            # original_img = im0.copy()
             numpy_xyxy = torch2numpy(xyxy, int)
             xywh = np_xyxy2xywh(numpy_xyxy)
-            # crop_image(self.save_path, original_img, xywh, idx)
             crop_image(self.save_path, im0, xywh, idx)
 
     def __save_results(self, im0, vid_cap, frame_id, tcp_img=False, is_raw=False):
@@ -368,29 +305,23 @@ class YOLOv3:
             if tcp_img:
                 if is_raw:
                     frame_save_path = self.opt.frames_dir + "/frame-%s.jpg" % str(frame_id)
+                    if self.opt.save_original_img:
+                        cv2.imwrite(frame_save_path, im0)
                 else:
                     frame_save_path = self.opt.bbox_dir + "/frame-%s.jpg" % str(frame_id)
-                cv2.imwrite(frame_save_path, im0)
-            elif self.dataset.mode == 'images':
-                # print("\n #### mode IMAGES: ", self.save_path)
-                # print("\n #### im0: ", im0)
+                    if self.opt.save_bbox_img:
+                        cv2.imwrite(frame_save_path, im0)
 
+            elif self.dataset.mode == 'images':
                 if self.webcam:
                     frame_save_path = self.opt.bbox_dir + "/frame-%d.jpg" % frame_id
-                    # frame_save_path = self.opt.frames_dir + "/frame-%d.jpg" % frame_id
-                    # frame_save_path = self.opt.frames_dir + "/frame-%d.png" % frame_id
                     if self.mbbox_img is not None:
                         cv2.imwrite(frame_save_path, self.mbbox_img)
                     else:
                         cv2.imwrite(frame_save_path, im0)
                 else:
                         cv2.imwrite(self.save_path, im0)
-                # save_path = self.save_path
-                # crop_save_path = save_path.replace('.png', '') + "-%d.png" % frame_id
-                # cv2.imwrite(crop_save_path, im0)
-                # print("#### Image @ frame-%d saved." % frame_id)
             else:
-                # print("\n #### mode Bukan IMAGES")
                 if self.vid_path != self.save_path:  # new video
                     self.vid_path = self.save_path
                     if isinstance(self.vid_writer, cv2.VideoWriter):
@@ -446,9 +377,7 @@ class YOLOv3:
         redis_set(self.rc_latency, t_nms_key, t_nms)
 
         # Apply Classifier: Default DISABLED
-        # print(" --- @ # Apply Classifier: Default DISABLED")
         if self.classify:
-            # print(" --- OK @ classify")
             self.pred = apply_classifier(self.pred, self.modelc, img, im0s)
 
         # Process detections

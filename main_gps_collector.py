@@ -16,3 +16,4 @@ if __name__ == "__main__":
         gps_agent.store_gps_data(dummy_data)
         print(" . . . Sleep for 1 second . . . ")
         time.sleep(1)  # interval 1 second
+        print()

@@ -2,6 +2,7 @@ from libs.addons.redis.translator import redis_get
 from libs.addons.redis.my_redis import MyRedis
 from utils.utils import *
 import simplejson as json
+from libs.settings import common_settings
 
 
 class PIHLocationFetcher(MyRedis):
@@ -11,8 +12,8 @@ class PIHLocationFetcher(MyRedis):
         self.img = img
         self.frame_id = frame_id
         self.gps_data = self.__get_gps_data()
-        self.rgb_mbbox = [198, 50, 13]
-        self.label_mbbox = "PiH"
+        self.pih_label = common_settings["bbox_config"]["pih_label"]
+        self.rgb_mbbox = common_settings["bbox_config"]["pih_color"]
 
     def __get_gps_data(self):
         gps_data = None
@@ -69,7 +70,7 @@ class PIHLocationFetcher(MyRedis):
             for data in self.mbbox_coord:
                 # obj_idx = data["obj_idx"]
                 fl_mbbox = [float(xyxy) for xyxy in data["xyxy"]]
-                plot_one_box(fl_mbbox, self.img, label=self.label_mbbox, color=self.rgb_mbbox)  # plot bbox
+                plot_one_box(fl_mbbox, self.img, label=self.pih_label, color=self.rgb_mbbox)  # plot bbox
 
     def get_mbbox(self):
         return self.mbbox_coord

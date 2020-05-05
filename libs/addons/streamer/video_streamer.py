@@ -31,7 +31,8 @@ class VideoStreamer(MyRedis):
         self.worker_id = 0 # reset, when total workers = `self.opt.total_workers`
 
         # Empty folders
-        out_folder = opt.output_folder + str(opt.drone_id)
+        # out_folder = opt.output_folder + str(opt.drone_id)
+        out_folder = opt.output_folder
         if os.path.exists(out_folder):
             shutil.rmtree(out_folder)  # delete output folder
         os.makedirs(out_folder)  # make new output folder

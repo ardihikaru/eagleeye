@@ -1,5 +1,9 @@
 class CommonSettings:
     __shared_state = {
+            "bbox_config": {
+                "pih_label": "PiH",
+                "pih_color": [198, 50, 13]  # PiH bbox color: Blue
+            },
             "redis_config": {
                 "hostname": "localhost",
                 "port": 6379,
