@@ -1063,3 +1063,12 @@ def read_data(csv_path, fname):
     with open(fpath, 'r') as f:
         reader = csv.reader(f)
         return [float(line[0]) for line in list(reader)]
+
+def mbboxlist2dict(mbbox_data):
+    key = 1
+    dict_mbbox = {}
+    for mbbox in mbbox_data:
+        str_mbbox = [str(xy) for xy in mbbox]
+        dict_mbbox[str(key)] = str_mbbox
+        key += 1
+    return dict_mbbox

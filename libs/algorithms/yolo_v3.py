@@ -57,7 +57,7 @@ class YOLOv3:
 
         # Sef Default Detection Algorithms
         # self.default_algorithm = opt.default_detection
-        self.mbbox_algorithm = opt.mbbox_detection
+        # self.mbbox_algorithm = opt.mbbox_detection
 
         # Set W and H enlarging ratio
         self.w_ratio = opt.w_ratio
@@ -113,6 +113,14 @@ class YOLOv3:
             port=common_settings["redis_config"]["port"],
             password=common_settings["redis_config"]["password"],
             db=common_settings["redis_config"]["db_latency"],
+            decode_responses=True
+        )
+
+        self.rc_bbox = StrictRedis(
+            host=common_settings["redis_config"]["hostname"],
+            port=common_settings["redis_config"]["port"],
+            password=common_settings["redis_config"]["password"],
+            db=common_settings["redis_config"]["db_bbox"],
             decode_responses=True
         )
 
@@ -511,7 +519,8 @@ class YOLOv3:
                     det[:, :4] = scale_coords(img.shape[2:], det[:, :4], im0s.shape).round()
 
                     ts_mbbox = time.time()
-                    if self.mbbox_algorithm:
+                    # if self.mbbox_algorithm:
+                    if self.opt.mbbox_detection:
                         # self.__mbbox_detection(det, img, this_frame_id)  # modifying Mb-box
                         self.__mbbox_detection(det, im0s, this_frame_id)  # modifying Mb-box
                     t_mbbox = time.time() - ts_mbbox
@@ -652,7 +661,8 @@ class YOLOv3:
                     det[:, :4] = scale_coords(img.shape[2:], det[:, :4], im0.shape).round()
 
                     ts_mbbox = time.time()
-                    if self.mbbox_algorithm:
+                    # if self.mbbox_algorithm:
+                    if self.opt.mbbox_detection:
                         self.__mbbox_detection(det, im0, this_frame_id) # modifying Mb-box
                     t_mbbox = time.time() - ts_mbbox
                     self.time_mbbox += t_mbbox
@@ -747,7 +757,8 @@ class YOLOv3:
     '''
     def __mbbox_detection(self, det, im0, this_frame_id):
         # print(" ### @ __mbbox_detection")
-        if self.mbbox_algorithm:
+        # if self.mbbox_algorithm:
+        if self.opt.mbbox_detection:
             # ts_copy_img = time.time()
             original_img = im0.copy()
             # t_copy_img = time.time() - ts_copy_img
@@ -782,12 +793,14 @@ class YOLOv3:
                 self.mbbox.run()
                 self.detected_mbbox = self.mbbox.get_detected_mbbox()  # xyxy(s)
                 self.mbbox_img = self.mbbox.get_mbbox_img()  # image
+                self.__store_mbbox_coord(this_frame_id, self.detected_mbbox)  # store mbbox information
 
                 if len(self.detected_mbbox) == 0:
                     if self.opt.output_txt:
                         save_txt(self.save_path, self.opt.txt_format)
                 else:
                     if self.detected_mbbox is not None:
+                        # self.__store_mbbox_coord(this_frame_id, self.detected_mbbox)
                         for i in range(len(self.detected_mbbox)):
                             mbbox_xyxy = self.detected_mbbox[i]
                             if self.opt.output_txt:
@@ -804,5 +817,19 @@ class YOLOv3:
                 print('\nLatency [MODv2] of frame-%d: (%.5fs)' % (this_frame_id, t_mod_v2))
                 redis_set(self.rc_latency, t_modv2_key, t_mod_v2)
 
-    def get_mbbox_img(self):
-        return self.mbbox_img
+    # def get_mbbox_img(self):
+    #     return self.mbbox_img
+
+    # Key = `<drone_id>-<frame_id>`
+    def __store_mbbox_coord(self, frame_id, this_mbbox):
+        # print(" ### @ __store_mbbox_coord")
+        this_mbbox = this_mbbox if this_mbbox is not None else {}
+        mbbox_dict = mbboxlist2dict(this_mbbox)
+        key = str(self.opt.drone_id) + "-" + str(frame_id)
+        # print(" #### key store MBBox = ", key)
+        # print(" ####  MBBox = ", mbbox_dict)
+        p_mbbox_coord = json.dumps(mbbox_dict)
+        redis_set(self.rc_bbox, key, p_mbbox_coord)
+
+        # test = redis_get(self.rc_bbox, key)
+        # print(" #### SHOW stored MBBox = ", test)

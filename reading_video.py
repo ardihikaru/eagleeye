@@ -9,9 +9,9 @@ if __name__ == "__main__":
     parser.add_argument('--start_frame_id', type=int, default=1, help='Start frame ID')
     parser.add_argument('--max_frames', type=int, default=57, help='Max Frames; Set value=999999 to have unlimited loop')
 
-    parser.add_argument("--enable_cv_out", type=bool, default=False, help="Enable/disable Output video streaming")
-    # parser.add_argument("--enable_cv_out", type=bool, default=True, help="Enable/disable Output video streaming")
-    parser.add_argument('--viewer_version', type=int, default=1, help='Viewer version to show real-time image processing')
+    # parser.add_argument("--enable_cv_out", type=bool, default=False, help="Enable/disable Output video streaming")
+    parser.add_argument("--enable_cv_out", type=bool, default=True, help="Enable/disable Output video streaming")
+    parser.add_argument('--viewer_version', type=int, default=2, help='Viewer version to show real-time image processing')
 
     # parser.add_argument('--drone_id', type=int, default=3, help='Drone ID')
     parser.add_argument('--drone_id', type=int, default=1, help='Drone ID')

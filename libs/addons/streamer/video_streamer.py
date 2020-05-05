@@ -5,7 +5,8 @@ import imagezmq
 from multiprocessing import Process
 from libs.addons.redis.translator import frame_producer, redis_get, redis_set, pub
 from libs.settings import common_settings
-from libs.addons.streamer.realtime_viewer import RealtimeViewer
+# from libs.addons.streamer.realtime_viewer import RealtimeViewer
+from libs.algorithms.pih_location_fetcher import PIHLocationFetcher
 from utils.utils import *
 from models import *  # set ONNX_EXPORT in models.py
 from utils.datasets import *
@@ -14,7 +15,7 @@ import simplejson as json
 
 class VideoStreamer:
     def __init__(self, opt):
-        print(" -------- @ VideoStreamer")
+        # print(" -------- @ VideoStreamer")
         self.opt = opt
         self.save_path = opt.output_folder
         self.__set_redis()
@@ -49,7 +50,6 @@ class VideoStreamer:
     def __set_zmq_senders(self):
         for i in range(int(self.opt.total_workers)):
             url = 'tcp://127.0.0.1:555' + str((i+1))
-            # print(" URL for worder=%s is %s" % (str(i+1), url))
             sender = imagezmq.ImageSender(connect_to=url, REQ_REP=False)
             self.zmq_sender.append(sender)
 
@@ -381,7 +381,7 @@ class VideoStreamer:
                     print("No more frame to show.")
                 break
 
-            if cv.waitKey(10) & 0xFF == ord('q'):
+            if cv.waitKey(100) & 0xFF == ord('q'):
                 break
 
     def __get_img_data(self, raw_frame, frame_id):
@@ -408,4 +408,6 @@ class VideoStreamer:
 
     # Show real-time image result (EagleEYE v2: GLOBECOM Conference 2020)
     def __viewer_v2(self, raw_frame, frame_id):
-        pass
+        pih_gen = PIHLocationFetcher(self.opt, raw_frame, frame_id)
+        pih_gen.run()
+        return pih_gen.get_mbbox_img()

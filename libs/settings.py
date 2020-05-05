@@ -8,6 +8,7 @@ class CommonSettings:
                 "db_data": 1,
                 "db_gps": 2,
                 "db_latency": 3,
+                "db_bbox": 4,
                 "channel_prefix": "stream_",
                 "heartbeat": {
                     "cpu": 1,

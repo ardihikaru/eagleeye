@@ -27,6 +27,14 @@ class MyRedis:
             decode_responses=True
         )
 
+        self.rc_bbox = StrictRedis(
+            host=common_settings["redis_config"]["hostname"],
+            port=common_settings["redis_config"]["port"],
+            password=common_settings["redis_config"]["password"],
+            db=common_settings["redis_config"]["db_bbox"],
+            decode_responses=True
+        )
+
     def get_rc(self):
         return self.rc
 
