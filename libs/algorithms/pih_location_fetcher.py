@@ -6,17 +6,13 @@ import simplejson as json
 
 class PIHLocationFetcher(MyRedis):
     def __init__(self, opt, img, frame_id):
-        print(" @ INIT PIHLocationFetcher")
         super().__init__()
         self.opt = opt
         self.img = img
         self.frame_id = frame_id
         self.gps_data = self.__get_gps_data()
-        # self.mbbox_coord = self.__get_mbbox_coord()
-        # self.bbox_coord = self.__get_bbox_coord()
         self.rgb_mbbox = [198, 50, 13]
         self.label_mbbox = "PiH"
-        print(" ## END INIT")
 
     def __get_gps_data(self):
         gps_data = None
@@ -52,11 +48,9 @@ class PIHLocationFetcher(MyRedis):
         return bbox_data
 
     def run(self):
-        print("### @ RUN --- enable_mbbox: ", self.opt.enable_mbbox)
         if self.opt.enable_mbbox:
             self.mbbox_coord = self.__get_mbbox_coord()
             self.__plot_mbbox()
-        # elif self.opt.default_detection:
         elif self.opt.default_detection:
             self.bbox_coord = self.__get_bbox_coord()
             self.__plot_bbox()
@@ -72,8 +66,9 @@ class PIHLocationFetcher(MyRedis):
 
     def __plot_mbbox(self):
         if len(self.mbbox_coord) > 0:  # MBBox exist!
-            for frame_id, mbbox in self.mbbox_coord.items():
-                fl_mbbox = [float(xy) for xy in mbbox]
+            for data in self.mbbox_coord:
+                # obj_idx = data["obj_idx"]
+                fl_mbbox = [float(xyxy) for xyxy in data["xyxy"]]
                 plot_one_box(fl_mbbox, self.img, label=self.label_mbbox, color=self.rgb_mbbox)  # plot bbox
 
     def get_mbbox(self):

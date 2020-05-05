@@ -627,7 +627,7 @@ class YOLOv3:
 
     # Key = `<drone_id>-<frame_id>-mbbox`
     def __store_mbbox_coord(self, frame_id, this_mbbox, is_reg_bbox=False):
-        this_mbbox = this_mbbox if this_mbbox is not None else {}
+        this_mbbox = this_mbbox if this_mbbox is not None else []
         if not is_reg_bbox:
             mbbox_dict = mbboxlist2dict(this_mbbox)
         else:
