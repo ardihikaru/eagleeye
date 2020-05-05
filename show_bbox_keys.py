@@ -1,4 +1,4 @@
 from libs.addons.redis.my_redis import MyRedis
 
 redis = MyRedis()
-redis.delete_all_keys()
+print(" Current Keys = ", redis.rc_bbox.keys())

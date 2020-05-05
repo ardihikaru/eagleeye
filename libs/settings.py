@@ -1,5 +1,9 @@
 class CommonSettings:
     __shared_state = {
+            "bbox_config": {
+                "pih_label": "PiH",
+                "pih_color": [198, 50, 13]  # PiH bbox color: Blue
+            },
             "redis_config": {
                 "hostname": "localhost",
                 "port": 6379,
@@ -8,6 +12,7 @@ class CommonSettings:
                 "db_data": 1,
                 "db_gps": 2,
                 "db_latency": 3,
+                "db_bbox": 4,
                 "channel_prefix": "stream_",
                 "heartbeat": {
                     "cpu": 1,

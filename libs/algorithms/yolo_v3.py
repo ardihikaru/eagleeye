@@ -11,7 +11,8 @@ from redis import StrictRedis
 import json
 from libs.settings import common_settings
 from libs.addons.redis.translator import redis_set, redis_get
-from libs.algorithms.behavior_detection import BehaviorDetection
+import imagezmq
+
 
 class YOLOv3:
     def __init__(self, opt, frame_id=0):
@@ -35,23 +36,28 @@ class YOLOv3:
         if os.path.exists(self.out):
             shutil.rmtree(self.out)  # delete output folder
         os.makedirs(self.out)  # make new output folder
+        os.makedirs(self.out+"/original")  # make enlarge folder
         os.makedirs(self.out+"/enlarge")  # make enlarge folder
-        os.makedirs(self.out+"/mbbox")  # make mbbox folder
+        os.makedirs(self.out+"/mbbox")  # make bbox folder
+        os.makedirs(self.out+"/bbox")  # make bbox folder
+        os.makedirs(self.out+"/crop")  # make crop folder
+        os.makedirs(self.out+"/txt")  # make txt folder
 
-        # Empty folders
-        mbbox_folder = opt.mbbox_output + str(opt.drone_id)
-        if os.path.exists(mbbox_folder):
-            shutil.rmtree(mbbox_folder)  # delete output folder
-        os.makedirs(mbbox_folder)  # make new output folder
+        # # Empty folders
+        # mbbox_folder = opt.mbbox_output + str(opt.drone_id)
+        # if os.path.exists(mbbox_folder):
+        #     shutil.rmtree(mbbox_folder)  # delete output folder
+        # os.makedirs(mbbox_folder)  # make new output folder
 
         # Initialize model
         self.model = Darknet(opt.cfg, self.img_size)
         self.mbbox = None # Merge Bounding Box
-        self.detected_mbbox = 0
+        # self.detected_mbbox = 0
+        self.detected_mbbox = []
 
         # Sef Default Detection Algorithms
         # self.default_algorithm = opt.default_detection
-        self.mbbox_algorithm = opt.mbbox_detection
+        # self.mbbox_algorithm = opt.mbbox_detection
 
         # Set W and H enlarging ratio
         self.w_ratio = opt.w_ratio
@@ -76,6 +82,14 @@ class YOLOv3:
         self.manual_stop = False
 
         self.__set_redis()
+        self.save_img = True
+
+        open_port = self.__get_open_port(int(opt.sub_channel))
+        self.image_hub = imagezmq.ImageHub(open_port=open_port, REQ_REP=False)
+        # self.image_hub = imagezmq.ImageHub(open_port='tcp://127.0.0.1:5555', REQ_REP=False)
+
+    def __get_open_port(self, channel):
+        return 'tcp://127.0.0.1:555' + str(channel)
 
     def __set_redis(self):
         self.rc = StrictRedis(
@@ -102,25 +116,13 @@ class YOLOv3:
             decode_responses=True
         )
 
-    def run(self):
-        print("Starting YOLO-v3 Detection Network")
-        self.__load_weight()
-        self.__second_stage_classifier()
-        self.__eval_model()
-        # self.__export_mode() # TBD
-        self.__half_precision()
-        self.__set_data_loader()
-        self.__get_names_colors()
-
-        # if self.opt.output_txt:
-        #     self.__print_save_txt_img()
-
-        self.__iterate_frames() # Perform detection in each frame here
-        self.__save_latency_to_csv()
-
-        print('\nFinished. Total elapsed time: (%.3fs) --> '
-              'Inference(%.3fs); NMS(%.3fs); MB-Box(%.3fs)' %
-              ((time.time() - self.t0), self.time_inference, self.time_nms, self.time_mbbox))
+        self.rc_bbox = StrictRedis(
+            host=common_settings["redis_config"]["hostname"],
+            port=common_settings["redis_config"]["port"],
+            password=common_settings["redis_config"]["password"],
+            db=common_settings["redis_config"]["db_bbox"],
+            decode_responses=True
+        )
 
     def __setup_subscriber(self):
         self.rc_data.delete(self.opt.sub_channel)
@@ -166,72 +168,47 @@ class YOLOv3:
         for item in pubsub.listen():
             # noinspection PyPackageRequirements
             try:
-                t0_sub2frame = time.time()
-                # Start fetching information
                 fetch_data = json.loads(item['data'])
                 frame_id = fetch_data['frame_id']
-                # print('Streamer collects : ', fetch_data)
 
-                # Latency: subscribing frame
-                t_sub2frame = time.time() - t0_sub2frame
-                t_sub2frame_key = "sub2frame-" + str(self.opt.drone_id) + "-" + str(frame_id)
-                redis_set(self.rc_latency, t_sub2frame_key, t_sub2frame)
-                print('\nLatency [Subscriber extracting information] of frame-%s: (%.5fs)' % (str(frame_id), t_sub2frame))
+                # imagezmq: receive image
+                image_name, im0s = self.image_hub.recv_image()
 
-                self.source = fetch_data["img_path"]
-                # print('img_path : ', self.source)
-                # Load image from pub: get `img_path`
-                t0_load_img = time.time()
-                self.__set_data_loader()
-                t_load_img = time.time() - t0_load_img
-                # print(".. load image into variable in (%.3fs)" % (time.time() - t0))
-                t_load_img_key = "loadIMG-" + str(self.opt.drone_id) + "-" + str(frame_id)
-                redis_set(self.rc_latency, t_load_img_key, t_load_img)
-                print('\nLatency [Loads image into YOLOv3 Worker] of frame-%s: (%.5fs)' % (str(frame_id), t_load_img))
+                if self.opt.save_original_img:
+                    self.__save_results(im0s, None, (self.frame_id+1), tcp_img=True, is_raw=True)
 
-                # # Check worker status first, please wait while still working
-                # is_worker_ready = redis_get(self.rc_data, self.opt.sub_channel)
-                # print(">>>>>> is_worker_ready = ", is_worker_ready)
-                # if is_worker_ready:
-                #     print("\nWorker-%d is still running, waiting to finish ..." % self.opt.sub_channel)
-                #     time.sleep(0.1)
+                # Padded resize
+                image = letterbox(im0s, new_shape=self.img_size)[0]
+
+                # Convert
+                image = image[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
+                image = np.ascontiguousarray(image, dtype=np.float16 if self.half else np.float32)  # uint8 to fp16/fp32
+                image /= 255.0  # 0 - 255 to 0.0 - 1.0
 
                 # Start processing image
                 print("\nStart processing to get MB-Box.")
                 redis_set(self.rc_data, self.opt.sub_channel, 0) # set as `Busy`
-                # print("Set as busy Done.")
-                self.__iterate_frames(frame_id)  # Perform detection in each frame here
-                # print(" >>> Hasil MB-Box Img = ", self.mbbox_img)
-                # print("Process finished.")
+                self.__process_detection(image, im0s, frame_id)
 
                 frame_id = str(fetch_data["frame_id"])
                 prev_fid = str(self.opt.drone_id) + "-" + str((int(frame_id)-1))
 
-                # # TBD: Start behavior detection in background process, in every 30 frames (FPS=30)
-                # behave_det = BehaviorDetection(self.opt, int(frame_id), self.detected_mbbox)
-                # if int(frame_id) % self.fps and self.detected_mbbox > 0:
-                #     behave_det.run()
-
                 # Preparing to send the frames.
                 if self.mbbox_img is not None:
-                    # output_path = self.opt.mbbox_output + "frame-%s.jpg" % frame_id
-                    output_path = self.opt.mbbox_output + str(self.opt.drone_id) + "/frame-%s.jpg" % frame_id
+                    output_path = self.opt.mbbox_output + "/frame-%s.jpg" % frame_id
 
                     # Try writing synchronously: store ONLY when (frame-1) has been stored
-                    # print(" ######## PREV_ID = ", redis_get(self.rc, prev_fid))
                     while redis_get(self.rc, prev_fid) is None and int(frame_id) > 1:
-                        # print(" ######## Waiting previous frame to be stored. PREV_ID = ", redis_get(self.rc, prev_fid))
-                        # time.sleep(1)
                         pass
 
-                    t0_save_mbbox_img = time.time()
-                    cv2.imwrite(output_path, self.mbbox_img)
-                    # print("Saving image in: ", output_path)
-                    # print(".. MB-Box image is saved in (%.3fs)" % (time.time() - t0))
-                    t_save_mbbox_img = time.time() - t0_save_mbbox_img
-                    t_save_mbbox_img_key = "save2mmboxIMG-" + str(self.opt.drone_id) + "-" + str(frame_id)
-                    redis_set(self.rc_latency, t_save_mbbox_img_key, t_save_mbbox_img)
-                    print('\nLatency [Save MB-Box Image] of frame-%s: (%.5fs)' % (str(frame_id), t_save_mbbox_img))
+                    # Save MBBox image
+                    if self.opt.save_mbbox_img:
+                        t0_save_mbbox_img = time.time()
+                        cv2.imwrite(output_path, self.mbbox_img)
+                        t_save_mbbox_img = time.time() - t0_save_mbbox_img
+                        t_save_mbbox_img_key = "save2mmboxIMG-" + str(self.opt.drone_id) + "-" + str(frame_id)
+                        redis_set(self.rc_latency, t_save_mbbox_img_key, t_save_mbbox_img)
+                        print('\nLatency [Save MB-Box Image] of frame-%s: (%.5fs)' % (str(frame_id), t_save_mbbox_img))
 
                     # Set that this frame has been successfully added
                     expired_at = 20  # in seconds
@@ -240,18 +217,12 @@ class YOLOv3:
                 else:
                     print("This MB-Box is NONE. nothing to be saved yet.")
 
-                # self.__save_latency_to_csv()
-
                 # Restore availibility
                 redis_set(self.rc_data, self.opt.sub_channel, 1) # set as `Ready`
                 print("\n### This Worker-%s is ready to serve again. \n\n" % self.opt.sub_channel)
 
                 # Set prev_fid as DONE
                 redis_set(self.rc_data, prev_fid, None) # set as `Ready`
-
-                # if this is latest frame: Set this frame as latest
-                # key = "drone_id-latest", value: "drone_id-frame_id"
-                # redis_set(self.rc_data, prev_fid, None) # set as `Ready`
             except:
                 pass
 
@@ -322,44 +293,35 @@ class YOLOv3:
         self.names = load_classes(self.opt.names)
         self.colors = [[random.randint(0, 255) for _ in range(3)] for _ in range(len(self.names))]
 
-    # Executed after detect()
-    # def __print_save_txt_img(self):
-    #     if self.save_txt or self.save_img:
-    #     # if self.save_txt:
-    #         print('Results saved to %s' % os.getcwd() + os.sep + self.out)
-    #         if platform == 'darwin':  # MacOS
-    #             os.system('open ' + self.out + ' ' + self.save_path)
-
     def __save_cropped_img(self, xyxy, im0, idx):
-        if self.opt.crop_img:
-            # Try saving cropped image
-            original_img = im0.copy()
+        if self.opt.save_crop_img:
             numpy_xyxy = torch2numpy(xyxy, int)
             xywh = np_xyxy2xywh(numpy_xyxy)
-            crop_image(self.save_path, original_img, xywh, idx)
+            crop_image(self.save_path, im0, xywh, idx)
 
-    def __save_results(self, im0, vid_cap, frame_id):
+    def __save_results(self, im0, vid_cap, frame_id, tcp_img=False, is_raw=False):
         # Save results (image with detections)
         if self.save_img:
-            if self.dataset.mode == 'images':
-                # print("\n #### mode IMAGES: ", self.save_path)
-                # print("\n #### im0: ", im0)
+            if tcp_img:
+                if is_raw:
+                    frame_save_path = self.opt.frames_dir + "/frame-%s.jpg" % str(frame_id)
+                    if self.opt.save_original_img:
+                        cv2.imwrite(frame_save_path, im0)
+                else:
+                    frame_save_path = self.opt.bbox_dir + "/frame-%s.jpg" % str(frame_id)
+                    if self.opt.save_bbox_img:
+                        cv2.imwrite(frame_save_path, im0)
 
+            elif self.dataset.mode == 'images':
                 if self.webcam:
-                    frame_save_path = self.opt.frames_dir + "/frame-%d.jpg" % frame_id
-                    # frame_save_path = self.opt.frames_dir + "/frame-%d.png" % frame_id
+                    frame_save_path = self.opt.bbox_dir + "/frame-%d.jpg" % frame_id
                     if self.mbbox_img is not None:
                         cv2.imwrite(frame_save_path, self.mbbox_img)
                     else:
                         cv2.imwrite(frame_save_path, im0)
                 else:
                         cv2.imwrite(self.save_path, im0)
-                # save_path = self.save_path
-                # crop_save_path = save_path.replace('.png', '') + "-%d.png" % frame_id
-                # cv2.imwrite(crop_save_path, im0)
-                # print("#### Image @ frame-%d saved." % frame_id)
             else:
-                # print("\n #### mode Bukan IMAGES")
                 if self.vid_path != self.save_path:  # new video
                     self.vid_path = self.save_path
                     if isinstance(self.vid_writer, cv2.VideoWriter):
@@ -372,104 +334,84 @@ class YOLOv3:
                                                       cv2.VideoWriter_fourcc(*self.opt.fourcc), fps, (w, h))
                 self.vid_writer.write(im0)
 
-    def __feed_video_frames(self):
-        self.t0 = time.time()
-        # frame_id = 0
-        for path, img, im0s, vid_cap in self.dataset:
-            self.frame_id += 1
-
-            if self.webcam:
-                frame_save_path = self.opt.frames_dir + "/frame-%d.jpg" % self.frame_id
-                cv2.imwrite(frame_save_path, img)
-
-            if self.frame_id > 10:
-                self.manual_stop = True
-                print("\n\n #### FORCED TO BREAK HERE !!!")
-                break
-
-    def __iterate_frames(self, this_frame_id=None):
-        # Run inference
-        self.t0 = time.time()
-        # frame_id = 0
-        for path, img, im0s, vid_cap in self.dataset:
-            self.frame_id += 1
-            t = time.time()
-
-            # Get detections
-            ts_det = time.time()
-            img = torch.from_numpy(img).to(self.device)
-            if img.ndimension() == 3:
-                img = img.unsqueeze(0)
+    def __process_detection(self, img, im0s, this_frame_id):
+        self.frame_id += 1
+        t = time.time()
+        # Get detections
+        ts_det = time.time()
+        img_torch = torch.from_numpy(img) #.to(self.device)
+        img = img_torch.to(self.device)
+        if img.ndimension() == 3:
+            img = img.unsqueeze(0)
+        try:
             self.pred = self.model(img)[0]
-            # print('\n # Total Inference time: (%.3fs)' % (time.time() - ts_det))
-            t_inference = time.time() - ts_det
-            self.time_inference += t_inference
-            self.time_inference_list.append(t_inference)
+        except Exception as e:
+            print("EEEROR: ", e)
+        t_inference = time.time() - ts_det
+        self.time_inference += t_inference
+        self.time_inference_list.append(t_inference)
 
-            # Latency: Inference
-            print('\nLatency [Inference] of frame-%s: (%.5fs)' % (str(this_frame_id), t_inference))
-            t_inference_key = "inference-" + str(self.opt.drone_id) + "-" + str(this_frame_id)
-            redis_set(self.rc_latency, t_inference_key, t_inference)
+        # Latency: Inference
+        print('\nLatency [Inference] of frame-%s: (%.5fs)' % (str(this_frame_id), t_inference))
+        t_inference_key = "inference-" + str(self.opt.drone_id) + "-" + str(this_frame_id)
+        redis_set(self.rc_latency, t_inference_key, t_inference)
 
-            # Default: Disabled
-            if self.opt.half:
-                self.pred = self.pred.float()
+        # Default: Disabled
+        if self.opt.half:
+            self.pred = self.pred.float()
 
-            # Apply NMS: Non-Maximum Suppression
-            ts_nms = time.time()
-            # to Removes detections with lower object confidence score than 'conf_thres'
-            self.pred = non_max_suppression(self.pred, self.opt.conf_thres, self.opt.iou_thres,
-                                            classes=self.opt.classes,
-                                            agnostic=self.opt.agnostic_nms)
-            # print('\n # Total Non-Maximum Suppression (NMS) time: (%.3fs)' % (time.time() - ts_nms))
-            t_nms = time.time() - ts_nms
-            self.time_nms += t_nms
-            self.time_nms_list.append(t_nms)
+        # Apply NMS: Non-Maximum Suppression
+        ts_nms = time.time()
+        # to Removes detections with lower object confidence score than 'conf_thres'
+        self.pred = non_max_suppression(self.pred, self.opt.conf_thres, self.opt.iou_thres,
+                                        classes=self.opt.classes,
+                                        agnostic=self.opt.agnostic_nms)
+        # print('\n # Total Non-Maximum Suppression (NMS) time: (%.3fs)' % (time.time() - ts_nms))
+        t_nms = time.time() - ts_nms
+        self.time_nms += t_nms
+        self.time_nms_list.append(t_nms)
 
-            # Latency: NMS
-            print('\nLatency [NMS] of frame-%s: (%.5fs)' % (str(this_frame_id), t_nms))
-            t_nms_key = "nms-" + str(self.opt.drone_id) + "-" + str(this_frame_id)
-            redis_set(self.rc_latency, t_nms_key, t_nms)
+        # Latency: NMS
+        print('\nLatency [NMS] of frame-%s: (%.5fs)' % (str(this_frame_id), t_nms))
+        t_nms_key = "nms-" + str(self.opt.drone_id) + "-" + str(this_frame_id)
+        redis_set(self.rc_latency, t_nms_key, t_nms)
 
-            # Apply Classifier: Default DISABLED
-            if self.classify:
-                self.pred = apply_classifier(self.pred, self.modelc, img, im0s)
+        # Apply Classifier: Default DISABLED
+        if self.classify:
+            self.pred = apply_classifier(self.pred, self.modelc, img, im0s)
 
-            # Process detections
-            '''
-            p = path
-            s = string for printing
-            im0 = image (matrix)
-            '''
+        # Process detections
+        '''
+        p = path
+        s = string for printing
+        im0 = image (matrix)
+        '''
 
+        try:
+            # print(" @@@@ self.pred: ", self.pred)
             for i, det in enumerate(self.pred):  # detections per image
-                if self.webcam:  # batch_size >= 1
-                    p, self.str_output, im0 = path[i], '%g: ' % i, im0s[i]
-                else:
-                    p, self.str_output, im0 = path, '', im0s
-
-                self.save_path = str(Path(self.out) / Path(p).name)
+                self.save_path = self.opt.output + "/" + str(this_frame_id) + ".png" #+ "data/5g-dive/tmp/hasil.png"
+                # self.save_path = "data/5g-dive/tmp/hasil.png"
                 self.str_output += '%gx%g ' % img.shape[2:]  # print string
+                # print(" ### self.str_output:", self.str_output)
                 if det is not None and len(det):
                     # Rescale boxes from img_size to im0 size
-                    det[:, :4] = scale_coords(img.shape[2:], det[:, :4], im0.shape).round()
+                    det[:, :4] = scale_coords(img.shape[2:], det[:, :4], im0s.shape).round()
 
                     ts_mbbox = time.time()
-                    if self.mbbox_algorithm:
-                        self.__mbbox_detection(det, im0, this_frame_id) # modifying Mb-box
+                    # if self.mbbox_algorithm:
+                    if self.opt.mbbox_detection:
+                        # self.__mbbox_detection(det, img, this_frame_id)  # modifying Mb-box
+                        self.__mbbox_detection(det, im0s, this_frame_id)  # modifying Mb-box
                     t_mbbox = time.time() - ts_mbbox
                     self.time_mbbox += t_mbbox
                     self.time_mbbox_list.append(t_mbbox)
 
-                    # Latency: MB-Box
-                    print('\nLatency [MB-Box Algorithm] of frame-%s: (%.5fs)' % (str(this_frame_id), t_mbbox))
-                    t_mbbox_key = "mbbox-" + str(self.opt.drone_id) + "-" + str(this_frame_id)
-                    redis_set(self.rc_latency, t_mbbox_key, t_mbbox)
-
                     ts_default = time.time()
                     if not self.opt.maximize_latency:
                         if self.opt.default_detection:
-                            self.__default_detection(det, im0)
+                            self.__default_detection(det, im0s, this_frame_id)
+                            # self.__default_detection(det, img)
                     t_default = time.time() - ts_default
                     self.time_default += t_default
                     self.time_default_list.append(t_default)
@@ -509,17 +451,13 @@ class YOLOv3:
                     redis_set(self.rc_latency, t_e2e_key, t_end2end)
                     print('\nLatency [This End2end] of frame-%s: (%.5fs)' % (str(this_frame_id), t_end2end))
 
-                    # Stream results
-                    # if self.view_img:
-                    #     cv2.imshow(p, im0)
-                    #     if cv2.waitKey(1) == ord('q'):  # q to quit
-                    #         raise StopIteration
+                    # Save BBox image
+                    self.__save_results(im0s, None, self.frame_id, tcp_img=True)
 
-                    self.__save_results(im0, vid_cap, self.frame_id)
-            # print('\n # Total MB-Box time: (%.3fs)' % (time.time() - ts_mbbox))
+        except Exception as e:
+            print("ERRRROOORR Pred: ", e)
 
-
-    def __default_detection(self, det, im0):
+    def __default_detection(self, det, im0, this_frame_id):
         if self.opt.default_detection:
             original_img = im0.copy()
 
@@ -530,17 +468,30 @@ class YOLOv3:
 
             # Write results
             idx_detected = 0
+            bbox_data = []
             for *xyxy, conf, cls in det:
+                numpy_xyxy = get_det_xyxy(xyxy)
+                this_label = '%s %.2f' % (self.names[int(cls)], conf)
+                this_color = self.colors[int(cls)]
                 idx_detected += 1
                 self.save_txt = True  # Ardi: manually added
 
                 # Save cropped files
                 self.__save_cropped_img(xyxy, original_img, idx_detected)
 
-                # print(">>>>>>>>>>>>> PLOT BBOX aja self.save_img = ", self.save_img)
+                this_bbox = {
+                    "obj_idx": idx_detected,
+                    "xyxy": [str(val) for val in numpy_xyxy],
+                    "label": this_label,
+                    "color": [str(color) for color in this_color]
+                }
+                bbox_data.append(this_bbox)
+
                 if self.save_img or self.view_img:  # Add bbox to image
-                    label = '%s %.2f' % (self.names[int(cls)], conf)
-                    plot_one_box(xyxy, im0, label=label+"-IDX="+str(idx_detected-1), color=self.colors[int(cls)])
+                    plot_one_box(xyxy, im0, label=this_label, color=this_color)
+
+            # store bbox information
+            self.__store_mbbox_coord(this_frame_id, bbox_data, is_reg_bbox=True)
 
     '''
     FYI:
@@ -550,28 +501,28 @@ class YOLOv3:
         3. cls   : Class (`Person` and `Flag`)
     '''
     def __mbbox_detection(self, det, im0, this_frame_id):
-        if self.mbbox_algorithm:
-            ts_copy_img = time.time()
+        # print(" ### @ __mbbox_detection")
+        # if self.mbbox_algorithm:
+        if self.opt.mbbox_detection:
+            # ts_copy_img = time.time()
             original_img = im0.copy()
-            t_copy_img = time.time() - ts_copy_img
+            # t_copy_img = time.time() - ts_copy_img
             # print('\n**** Proc. Latency [Copy IMG] of frame-%s: (%.5fs)' % (str(this_frame_id), t_copy_img))
 
+            # Sementara masih error; abaikan
             if self.opt.modv1:
                 ts_mod_v1 = time.time()
                 self.mbbox = MODv1(self.webcam, im0, self.opt, self.save_path, det, original_img, self.names,
                                    self.w_ratio, self.h_ratio)
                 self.mbbox.run()
+
                 if not self.opt.modv2:
                     self.detected_mbbox = self.mbbox.get_detected_mbbox()
                     self.mbbox_img = self.mbbox.get_mbbox_img()
+                    self.__store_mbbox_coord(this_frame_id, self.detected_mbbox)  # store mbbox information
+                    self.__safety_store_txt()
 
-                    for i in range(len(self.detected_mbbox)):
-                        mbbox_xyxy = self.detected_mbbox[i]
-                        if self.opt.output_txt:
-                            save_txt(self.save_path, self.opt.txt_format, mbbox_xyxy, 'w+')
                 t_mod_v1 = time.time() - ts_mod_v1
-                # print('\n~Proc. Latency [MODv1] of frame-%s: (%.5fs)' % (str(this_frame_id), t_mod_v1))
-
                 # Latency: save Proc. Latency MODv1
                 t_modv1_key = "modv1-" + str(self.opt.drone_id) + "-" + str(this_frame_id)
                 print('\nLatency [MODv1] of frame-%d: (%.5fs)' % (this_frame_id, t_mod_v1))
@@ -583,26 +534,37 @@ class YOLOv3:
                 self.mbbox.run()
                 self.detected_mbbox = self.mbbox.get_detected_mbbox()  # xyxy(s)
                 self.mbbox_img = self.mbbox.get_mbbox_img()  # image
+                self.__store_mbbox_coord(this_frame_id, self.detected_mbbox)  # store mbbox information
+                self.__safety_store_txt()
 
-                if len(self.detected_mbbox) == 0:
-                    if self.opt.output_txt:
-                        save_txt(self.save_path, self.opt.txt_format)
-                else:
-                    for i in range(len(self.detected_mbbox)):
-                        mbbox_xyxy = self.detected_mbbox[i]
-                        if self.opt.output_txt:
-                            save_txt(self.save_path, self.opt.txt_format, mbbox_xyxy)
-                            # save_txt(self.save_path, self.opt.txt_format, mbbox_xyxy, 'w+')
-
-                # print(" #### List of self.detected_mbbox:", self.detected_mbbox)
-                # print(" #### self.mbbox_img:", self.mbbox_img)
                 t_mod_v2 = time.time() - ts_mod_v2
-                # print('~Proc. Latency [MODv2] of frame-%s: (%.5fs)' % (str(this_frame_id), t_mod_v2))
-
                 # Latency: save Proc. Latency MODv2
                 t_modv2_key = "modv2-" + str(self.opt.drone_id) + "-" + str(this_frame_id)
                 print('\nLatency [MODv2] of frame-%d: (%.5fs)' % (this_frame_id, t_mod_v2))
                 redis_set(self.rc_latency, t_modv2_key, t_mod_v2)
 
-    def get_mbbox_img(self):
-        return self.mbbox_img
+    def __safety_store_txt(self):
+        if len(self.detected_mbbox) == 0:
+            if self.opt.output_txt:
+                save_txt(self.save_path, self.opt.txt_format)
+        else:
+            if self.detected_mbbox is not None:
+                for i in range(len(self.detected_mbbox)):
+                    mbbox_xyxy = self.detected_mbbox[i]
+                    if self.opt.output_txt:
+                        save_txt(self.save_path, self.opt.txt_format, mbbox_xyxy)
+
+    # Key = `<drone_id>-<frame_id>-mbbox`
+    def __store_mbbox_coord(self, frame_id, this_mbbox, is_reg_bbox=False):
+        this_mbbox = this_mbbox if this_mbbox is not None else []
+        if not is_reg_bbox:
+            mbbox_dict = mbboxlist2dict(this_mbbox)
+        else:
+            mbbox_dict = this_mbbox
+        if is_reg_bbox:
+            suffix = "-bbox"
+        else:
+            suffix = "-mbbox"
+        key = "d" + str(self.opt.drone_id) + "-f" + str(frame_id) + suffix
+        p_mbbox_coord = json.dumps(mbbox_dict)
+        redis_set(self.rc_bbox, key, p_mbbox_coord)

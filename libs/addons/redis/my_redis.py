@@ -11,6 +11,14 @@ class MyRedis:
             decode_responses=True
         )
 
+        self.rc_data = StrictRedis(
+            host=common_settings["redis_config"]["hostname"],
+            port=common_settings["redis_config"]["port"],
+            password=common_settings["redis_config"]["password"],
+            db=common_settings["redis_config"]["db_data"],
+            decode_responses=True
+        )
+
         self.rc_gps = StrictRedis(
             host=common_settings["redis_config"]["hostname"],
             port=common_settings["redis_config"]["port"],
@@ -24,6 +32,22 @@ class MyRedis:
             port=common_settings["redis_config"]["port"],
             password=common_settings["redis_config"]["password"],
             db=common_settings["redis_config"]["db_latency"],
+            decode_responses=True
+        )
+
+        self.rc_bbox = StrictRedis(
+            host=common_settings["redis_config"]["hostname"],
+            port=common_settings["redis_config"]["port"],
+            password=common_settings["redis_config"]["password"],
+            db=common_settings["redis_config"]["db_bbox"],
+            decode_responses=True
+        )
+
+        self.rc_gps = StrictRedis(
+            host=common_settings["redis_config"]["hostname"],
+            port=common_settings["redis_config"]["port"],
+            password=common_settings["redis_config"]["password"],
+            db=common_settings["redis_config"]["db_gps"],
             decode_responses=True
         )
 
@@ -50,4 +74,9 @@ class MyRedis:
         print(" Current Keys = ", self.rc_latency.keys())
         for key in self.rc_latency.keys():
             self.rc_latency.delete(key)
+        print(" New Keys = ", self.rc_latency.keys())
+
+        print(" Current Keys = ", self.rc_bbox.keys())
+        for key in self.rc_bbox.keys():
+            self.rc_bbox.delete(key)
         print(" New Keys = ", self.rc_latency.keys())
