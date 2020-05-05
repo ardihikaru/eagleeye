@@ -18,7 +18,9 @@ if __name__ == "__main__":
     parser.add_argument('--drone_id', type=int, default=1, help='Drone ID')
     parser.add_argument("--total_workers", type=int, default=1, help="path to dataset")
 
-    parser.add_argument("--enable_mbbox", type=bool, default=True, help="Enable/disable Output MB-Box-based video streaming")
+    # parser.add_argument("--enable_mbbox", type=bool, default=True, help="Enable/disable Output MB-Box-based video streaming")
+    parser.add_argument("--enable_mbbox", type=bool, default=False, help="Enable/disable Output MB-Box-based video streaming")
+    parser.add_argument("--default_detection", type=bool, default=True, help="Enable/disable Output YOLOv3-based video streaming")
 
     parser.add_argument("--delay", type=int, default=4, help="path to dataset")
     # parser.add_argument("--delay", type=int, default=1, help="path to dataset")  # use this for GPU data

@@ -6,14 +6,17 @@ import simplejson as json
 
 class PIHLocationFetcher(MyRedis):
     def __init__(self, opt, img, frame_id):
+        print(" @ INIT PIHLocationFetcher")
         super().__init__()
         self.opt = opt
         self.img = img
         self.frame_id = frame_id
         self.gps_data = self.__get_gps_data()
-        self.mbbox_coord = self.__get_mbbox_coord()
+        # self.mbbox_coord = self.__get_mbbox_coord()
+        # self.bbox_coord = self.__get_bbox_coord()
         self.rgb_mbbox = [198, 50, 13]
         self.label_mbbox = "PiH"
+        print(" ## END INIT")
 
     def __get_gps_data(self):
         gps_data = None
@@ -37,7 +40,37 @@ class PIHLocationFetcher(MyRedis):
                 mbbox_data = json.loads(mbbox_data)
         return mbbox_data
 
+    def __get_bbox_coord(self):
+        bbox_data = None
+        while bbox_data is None:
+            key = "d" + str(self.opt.drone_id) + "-f" + str(self.frame_id) + "-bbox"
+            bbox_data = redis_get(self.rc_bbox, key)
+            if bbox_data is None:
+                continue
+            else:
+                bbox_data = json.loads(bbox_data)
+        return bbox_data
+
     def run(self):
+        print("### @ RUN --- enable_mbbox: ", self.opt.enable_mbbox)
+        if self.opt.enable_mbbox:
+            self.mbbox_coord = self.__get_mbbox_coord()
+            self.__plot_mbbox()
+        # elif self.opt.default_detection:
+        elif self.opt.default_detection:
+            self.bbox_coord = self.__get_bbox_coord()
+            self.__plot_bbox()
+
+    def __plot_bbox(self):
+        if len(self.bbox_coord) > 0:  # MBBox exist!
+            for data in self.bbox_coord:
+                # obj_idx = data["obj_idx"]
+                fl_bbox = [float(xyxy) for xyxy in data["xyxy"]]
+                label = data["label"]
+                color = [float(col) for col in data["color"]]
+                plot_one_box(fl_bbox, self.img, label=label, color=color)  # plot bbox
+
+    def __plot_mbbox(self):
         if len(self.mbbox_coord) > 0:  # MBBox exist!
             for frame_id, mbbox in self.mbbox_coord.items():
                 fl_mbbox = [float(xy) for xy in mbbox]
