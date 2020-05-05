@@ -9,6 +9,7 @@ def crop_image(save_path, img, xywh, idx):
     w = xywh[2]
     h = xywh[3]
     crop_img = img[y:y + h, x:x + w]
+    save_path = save_path.replace("output", "output/crop")
     crop_save_path = save_path.replace('.png', '')+"-%s-crop.png" % str(idx)
     cv2.imwrite(crop_save_path, crop_img)
 
@@ -87,6 +88,7 @@ def get_xyxy_distance_manhattan(xyxy_1, xyxy_2):
 
 def save_txt(save_path, txt_format, mbbox_xyxy=None, w_type='a'):
     # save into .txt file of MB-Box
+    save_path = save_path.replace("output", "output/txt")
     txt_path = save_path.replace(".png", '')
     # with open(txt_path + '.txt', 'a') as file:
     with open(txt_path + '.txt', w_type) as file:
