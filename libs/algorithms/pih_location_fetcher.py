@@ -15,9 +15,16 @@ class PIHLocationFetcher(MyRedis):
         self.rgb_mbbox = [198, 50, 13]
         self.label_mbbox = "PiH"
 
-    # TBD
     def __get_gps_data(self):
-        return False
+        gps_data = None
+        while gps_data is None:
+            key = "gps-data-" + str(self.opt.drone_id)
+            gps_data = redis_get(self.rc_gps, key)
+            if gps_data is None:
+                continue
+            else:
+                gps_data = json.loads(gps_data)
+        return gps_data
 
     def __get_mbbox_coord(self):
         mbbox_data = None
