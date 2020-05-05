@@ -1,24 +1,20 @@
 import cv2 as cv
-from redis import StrictRedis
-import time
 import imagezmq
-from multiprocessing import Process
-from libs.addons.redis.translator import frame_producer, redis_get, redis_set, pub
+from libs.addons.redis.translator import redis_get, redis_set, pub
 from libs.settings import common_settings
-# from libs.addons.streamer.realtime_viewer import RealtimeViewer
+from libs.addons.redis.my_redis import MyRedis
 from libs.algorithms.pih_location_fetcher import PIHLocationFetcher
-from utils.utils import *
 from models import *  # set ONNX_EXPORT in models.py
 from utils.datasets import *
 import simplejson as json
 
 
-class VideoStreamer:
+class VideoStreamer(MyRedis):
     def __init__(self, opt):
-        # print(" -------- @ VideoStreamer")
+        super().__init__()
         self.opt = opt
         self.save_path = opt.output_folder
-        self.__set_redis()
+        # self.__set_redis()
 
         self.is_running = True
         self.max_frames = opt.max_frames
@@ -40,9 +36,6 @@ class VideoStreamer:
             shutil.rmtree(out_folder)  # delete output folder
         os.makedirs(out_folder)  # make new output folder
 
-        # self.sender_w1 = imagezmq.ImageSender(connect_to='tcp://127.0.0.1:5553', REQ_REP=False)
-        # self.sender_w1 = imagezmq.ImageSender(connect_to='tcp://127.0.0.1:5555', REQ_REP=False)
-        # self.channel_zmq = "pub-image"
         self.zmq_sender = []
 
         self.__set_zmq_senders()
@@ -53,35 +46,10 @@ class VideoStreamer:
             sender = imagezmq.ImageSender(connect_to=url, REQ_REP=False)
             self.zmq_sender.append(sender)
 
-    def __set_redis(self):
-        self.rc = StrictRedis(
-            host=common_settings["redis_config"]["hostname"],
-            port=common_settings["redis_config"]["port"],
-            password=common_settings["redis_config"]["password"],
-            db=common_settings["redis_config"]["db"],
-            decode_responses=True
-        )
-
-        self.rc_data = StrictRedis(
-            host=common_settings["redis_config"]["hostname"],
-            port=common_settings["redis_config"]["port"],
-            password=common_settings["redis_config"]["password"],
-            db=common_settings["redis_config"]["db_data"],
-            decode_responses=True
-        )
-
-        self.rc_latency = StrictRedis(
-            host=common_settings["redis_config"]["hostname"],
-            port=common_settings["redis_config"]["port"],
-            password=common_settings["redis_config"]["password"],
-            db=common_settings["redis_config"]["db_latency"],
-            decode_responses=True
-        )
-
     def __set_cv_window(self):
         if self.opt.enable_cv_out:
             cv.namedWindow("Image", cv.WND_PROP_FULLSCREEN)
-            cv.moveWindow("Image", self.opt.viewer_to_left, 0)
+            cv.moveWindow("Image", 0, 0)
             cv.resizeWindow("Image", self.opt.viewer_width, self.opt.viewer_height)  # Enter your size
 
     def run(self):
@@ -212,11 +180,6 @@ class VideoStreamer:
                     time.sleep(self.wait_time)
                 w += self.wait_time
 
-            # # Send multi-process and set the worker as busy (value=False)
-            # print("### Sending the work into [worker-#%d] @ `%s`" % (self.worker_id, stream_channel))
-            # Process(target=frame_producer, args=(self.rc, frame_id, ret, frame, save_path, stream_channel,
-            #                                      self.rc_latency, self.opt.drone_id, self.worker_id)).start()
-
             data = {
                 "frame_id": frame_id,
                 "worker_id": self.worker_id
@@ -225,7 +188,6 @@ class VideoStreamer:
             p_mdata = json.dumps(data)
 
             # Configure ZMQ & Redis Pub/Sub parameters
-            # print(" @ Configure ZMQ & Redis Pub/Sub parameters")
             # Send frame into ZMQ channel
             ts = time.time()
             # self.sender_w1.send_image(str(frame_id), frame)
@@ -234,7 +196,6 @@ class VideoStreamer:
             self.zmq_sender[zid].send_image(str(frame_id), frame)
             t_recv = time.time() - ts
             print('\nLatency [Send imagezmq] of frame-%s: (%.5fs)' % (str(frame_id), t_recv))
-            # pub(self.rc_data, self.channel_zmq, ts)
 
             # Latency: capture publish frame information
             t0_pub2frame = time.time()
@@ -243,10 +204,6 @@ class VideoStreamer:
             print('\nLatency [Publish frame info] of frame-%s: (%.5fs)' % (str(frame_id), t_pub2frame))
             t_pub2frame_key = "pub2frame-" + str(self.opt.drone_id) + "-" + str(frame_id)
             redis_set(self.rc_data, t_pub2frame_key, t_pub2frame)
-
-            # print(" ### FINISHED ### PUBLISHING ...")
-            # print(".. [Worker-%d][time=%s] Sending image (1920 x 1080) in (%.5fs)." % (self.worker_id, str(ts), t_recv))
-            # ENDED
 
             redis_set(self.rc_data, self.worker_id, 0)
 
@@ -283,7 +240,7 @@ class VideoStreamer:
                     cv.imshow("Image", processed_img)
 
             except Exception as e:
-                # print(" ---- e:", e)
+                print(" ---- e:", e)
                 if not self.opt.auto_restart:
                     print("\nStopping the system. . .")
                     time.sleep(7)

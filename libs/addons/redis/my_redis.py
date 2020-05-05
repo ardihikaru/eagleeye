@@ -11,6 +11,14 @@ class MyRedis:
             decode_responses=True
         )
 
+        self.rc_data = StrictRedis(
+            host=common_settings["redis_config"]["hostname"],
+            port=common_settings["redis_config"]["port"],
+            password=common_settings["redis_config"]["password"],
+            db=common_settings["redis_config"]["db_data"],
+            decode_responses=True
+        )
+
         self.rc_gps = StrictRedis(
             host=common_settings["redis_config"]["hostname"],
             port=common_settings["redis_config"]["port"],

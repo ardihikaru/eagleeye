@@ -14,12 +14,8 @@ if __name__ == "__main__":
     parser.add_argument('--viewer_version', type=int, default=2, help='Viewer version to show real-time image processing')
     parser.add_argument('--viewer_width', type=int, default=1366, help='Viewer width size')
     parser.add_argument('--viewer_height', type=int, default=768, help='Viewer height size')
-    parser.add_argument('--viewer_to_left', type=int, default=0, help='Move viewer to the left (in pixels)')
 
-    # parser.add_argument('--drone_id', type=int, default=3, help='Drone ID')
     parser.add_argument('--drone_id', type=int, default=1, help='Drone ID')
-    # parser.add_argument("--total_workers", type=int, default=6, help="path to dataset")
-    # parser.add_argument("--total_workers", type=int, default=3, help="path to dataset")
     parser.add_argument("--total_workers", type=int, default=1, help="path to dataset")
 
     parser.add_argument("--enable_mbbox", type=bool, default=True, help="Enable/disable Output MB-Box-based video streaming")
@@ -27,13 +23,11 @@ if __name__ == "__main__":
     parser.add_argument("--delay", type=int, default=4, help="path to dataset")
     # parser.add_argument("--delay", type=int, default=1, help="path to dataset")  # use this for GPU data
 
-    # parser.add_argument("--output_folder", type=str, default="hasil/media/ramdisk/output_frames/", help="path to save raw images")
     parser.add_argument("--output_folder", type=str, default="hasil/media/ramdisk/output/original/", help="path to save raw images")
 
     # To show the result in GUI (Copied from worker_yolov3.py configuration)
     parser.add_argument('--mbbox_output', type=str, default="hasil/media/ramdisk/output/mbbox",
                         help='MMBox image output')
-    # parser.add_argument('--normal_output', type=str, default="hasil/media/ramdisk/output/",
     parser.add_argument('--normal_output', type=str, default="hasil/media/ramdisk/output/bbox/",
                         help='Folder location to store bbox image')
 
@@ -51,9 +45,6 @@ if __name__ == "__main__":
 
     # parser.add_argument("--source", type=str, default="data/5g-dive/57-frames/", help="source")
     parser.add_argument("--source", type=str, default="data/5g-dive/videos/customTest_MIRC-Roadside-5s.mp4", help="source")
-    # parser.add_argument("--source", type=str, default="http://140.113.86.92:10000/drone-3.flv", help="source")
-    # parser.add_argument("--source", type=str, default="http://140.113.86.92:10000/drone-2.flv", help="source")
-    # parser.add_argument("--source", type=str, default="http://140.113.86.92:10000/drone-1.flv", help="source")
     # parser.add_argument("--source", type=str, default="http://192.168.0.50:10000/drone-1.flv", help="source")
     # parser.add_argument("--source", type=str, default="http://192.168.42.1/live", help="source")
     opt = parser.parse_args()
