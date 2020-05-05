@@ -306,7 +306,6 @@ class VideoStreamer(MyRedis):
         if self.opt.enable_mbbox:  # Image with MBBox
             while not os.path.isfile(bbox_path):
                 time.sleep(0.01)
-                # time.sleep(0.5)
                 continue
             time.sleep(0.05)
             img = np.asarray(cv2.imread(bbox_path))
@@ -316,12 +315,9 @@ class VideoStreamer(MyRedis):
 
     # Show real-time image result (EagleEYE v2: GLOBECOM Conference 2020)
     def __viewer_v2(self, raw_frame, frame_id):
-        print(" --- @ __viewer_v2")
         try:
             pih_gen = PIHLocationFetcher(self.opt, raw_frame, frame_id)
             pih_gen.run()
-            test = pih_gen.get_mbbox_img()
         except Exception as e:
             print("ERRRPR: ", e)
         return raw_frame
-        # return pih_gen.get_mbbox_img()
