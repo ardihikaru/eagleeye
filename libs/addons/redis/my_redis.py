@@ -59,3 +59,8 @@ class MyRedis:
         for key in self.rc_latency.keys():
             self.rc_latency.delete(key)
         print(" New Keys = ", self.rc_latency.keys())
+
+        print(" Current Keys = ", self.rc_bbox.keys())
+        for key in self.rc_bbox.keys():
+            self.rc_bbox.delete(key)
+        print(" New Keys = ", self.rc_latency.keys())

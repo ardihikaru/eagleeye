@@ -12,6 +12,9 @@ if __name__ == "__main__":
     # parser.add_argument("--enable_cv_out", type=bool, default=False, help="Enable/disable Output video streaming")
     parser.add_argument("--enable_cv_out", type=bool, default=True, help="Enable/disable Output video streaming")
     parser.add_argument('--viewer_version', type=int, default=2, help='Viewer version to show real-time image processing')
+    parser.add_argument('--viewer_width', type=int, default=1366, help='Viewer width size')
+    parser.add_argument('--viewer_height', type=int, default=768, help='Viewer height size')
+    parser.add_argument('--viewer_to_left', type=int, default=0, help='Move viewer to the left (in pixels)')
 
     # parser.add_argument('--drone_id', type=int, default=3, help='Drone ID')
     parser.add_argument('--drone_id', type=int, default=1, help='Drone ID')
@@ -39,6 +42,9 @@ if __name__ == "__main__":
     parser.add_argument('--half', action='store_true', help='half precision FP16 inference')
     # parser.add_argument("--img_size", type=int, default=416, help="size of each image dimension")
     parser.add_argument("--img_size", type=int, default=832, help="size of each image dimension")
+
+    # Used only when source_type = "folder", otherwise it's not used
+    parser.add_argument("--source_folder_prefix", type=str, default="out", help="source folder prefix")
 
     # parser.add_argument("--source_type", type=str, default="folder", help="source type")
     parser.add_argument("--source_type", type=str, default="streaming", help="source type")
