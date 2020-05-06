@@ -38,8 +38,10 @@ class VideoStreamer(MyRedis):
         os.makedirs(out_folder)  # make new output folder
 
         self.zmq_sender = []
-
         self.__set_zmq_senders()
+
+        self.total_pih_candidates = 0
+        self.period_pih_candidates = []
 
     def __set_zmq_senders(self):
         for i in range(int(self.opt.total_workers)):
@@ -317,8 +319,10 @@ class VideoStreamer(MyRedis):
     # Show real-time image result (EagleEYE v2: GLOBECOM Conference 2020)
     def __viewer_v2(self, raw_frame, frame_id):
         try:
-            pih_gen = PIHLocationFetcher(self.opt, raw_frame, frame_id)
+            pih_gen = PIHLocationFetcher(self.opt, raw_frame, frame_id, self.total_pih_candidates, self.period_pih_candidates)
             pih_gen.run()
+            self.total_pih_candidates = pih_gen.get_total_pih_candidates()
+            self.period_pih_candidates = pih_gen.get_period_pih_candidates()
         except Exception as e:
             print("ERRRPR: ", e)
         return raw_frame

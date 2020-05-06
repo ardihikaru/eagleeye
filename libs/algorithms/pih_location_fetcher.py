@@ -3,16 +3,18 @@ from libs.addons.redis.my_redis import MyRedis
 from utils.utils import *
 import simplejson as json
 from libs.settings import common_settings
+from libs.algorithms.persistence_detection import PersistenceDetection
 
 
 class PIHLocationFetcher(MyRedis):
-    def __init__(self, opt, img, frame_id):
+    def __init__(self, opt, img, frame_id, total_pih_candidates, period_pih_candidates):
         super().__init__()
         self.opt = opt
         self.img = img
         self.frame_id = frame_id
+        self.total_pih_candidates = total_pih_candidates
+        self.period_pih_candidates = period_pih_candidates
         self.gps_data = self.__get_gps_data()
-        self.pih_label = common_settings["bbox_config"]["pih_label"]
         self.rgb_mbbox = common_settings["bbox_config"]["pih_color"]
 
     def __get_gps_data(self):
@@ -73,13 +75,32 @@ class PIHLocationFetcher(MyRedis):
 
     def __plot_mbbox(self):
         if len(self.mbbox_coord) > 0:  # MBBox exist!
+            self.total_pih_candidates += 1
+            self.period_pih_candidates.append(int(self.frame_id))
+            pers_det = PersistenceDetection(self.opt, self.frame_id, self.total_pih_candidates,
+                                            self.period_pih_candidates)
+            self.__maintaince_period_pih_cand(pers_det.get_persistence_window())
+
+            pers_det.run()
+            selected_label = pers_det.get_label()
+
             for data in self.mbbox_coord:
                 # obj_idx = data["obj_idx"]
                 fl_mbbox = [float(xyxy) for xyxy in data["xyxy"]]
-                plot_one_box(fl_mbbox, self.img, label=self.pih_label, color=self.rgb_mbbox)  # plot bbox
+                plot_one_box(fl_mbbox, self.img, label=selected_label, color=self.rgb_mbbox)  # plot bbox
+
+    def __maintaince_period_pih_cand(self, persistence_window):
+        if len(self.period_pih_candidates) > persistence_window:
+            self.period_pih_candidates.pop(0)
 
     def get_mbbox(self):
         return self.mbbox_coord
 
     def get_mbbox_img(self):
         return self.img
+
+    def get_total_pih_candidates(self):
+        return self.total_pih_candidates
+
+    def get_period_pih_candidates(self):
+        return self.period_pih_candidates

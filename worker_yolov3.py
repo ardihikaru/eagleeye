@@ -41,7 +41,7 @@ if __name__ == '__main__':
                         help='Enabling/Disabling Save enlarged img')
 
     # Storing results
-    parser.add_argument('--output_txt', type=str, default=True, help='output txt information')  # output folder
+    parser.add_argument('--output_txt', type=str, default=False, help='output txt information')  # output folder
     parser.add_argument('--save_original_img', type=str, default=False, help='Enabling/Disabling Crop detected image')
     parser.add_argument('--save_crop_img', type=str, default=False, help='Enabling/Disabling Crop detected image')
     parser.add_argument('--save_bbox_img', type=str, default=False, help='Enabling/Disabling Store BBox image')
