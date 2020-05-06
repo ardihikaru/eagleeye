@@ -7,7 +7,7 @@ from libs.algorithms.pih_location_fetcher import PIHLocationFetcher
 from models import *  # set ONNX_EXPORT in models.py
 from utils.datasets import *
 import simplejson as json
-
+# from datetime import datetime
 
 class VideoStreamer(MyRedis):
     def __init__(self, opt):
@@ -28,7 +28,7 @@ class VideoStreamer(MyRedis):
         else:
             self.wait_time = common_settings["redis_config"]["heartbeat"]["cpu"]
 
-        self.worker_id = 0 # reset, when total workers = `self.opt.total_workers`
+        self.worker_id = 0  # reset, when total workers = `self.opt.total_workers`
 
         # Empty folders
         # out_folder = opt.output_folder + str(opt.drone_id)
@@ -45,7 +45,7 @@ class VideoStreamer(MyRedis):
 
     def __set_zmq_senders(self):
         for i in range(int(self.opt.total_workers)):
-            url = 'tcp://127.0.0.1:555' + str((i+1))
+            url = 'tcp://127.0.0.1:555' + str((i + 1))
             sender = imagezmq.ImageSender(connect_to=url, REQ_REP=False)
             self.zmq_sender.append(sender)
 
@@ -111,20 +111,25 @@ class VideoStreamer(MyRedis):
         ordered_dataset = self.__get_ordered_img(dataset)
 
         for i in range(len(ordered_dataset)):
-            received_frame_id, path, img, im0s, vid_cap = (i+1), ordered_dataset[i][0], ordered_dataset[i][1], \
+            received_frame_id, path, img, im0s, vid_cap = (i + 1), ordered_dataset[i][0], ordered_dataset[i][1], \
                                                           ordered_dataset[i][2], ordered_dataset[i][3]
+
+            # Store total captured frames
+            t_total_frames_key = "total-frames-" + str(self.opt.drone_id)
+            redis_set(self.rc_latency, t_total_frames_key, received_frame_id)
 
             t_sframe_key = "start-fi-" + str(self.opt.drone_id)  # to calculate end2end latency each frame.
             redis_set(self.rc_latency, t_sframe_key, time.time())
             n += 1
-            t0_frame = time.time()
 
             # ret = a boolean return value from getting the frame, frame = the current frame being projected in the video
             try:
+                t0_frame = time.time()
                 ret, frame = True, im0s
 
-                n, frame_id, processed_img, is_show_result, is_break = self.__process_image(ret, frame, frame_id,
-                                                                        t0_frame, received_frame_id, n)
+                n, frame_id, processed_img, \
+                    is_show_result, is_break = self.__process_image(ret, frame, frame_id,
+                                                                    t0_frame, received_frame_id, n)
 
                 if is_break:
                     break
@@ -159,7 +164,6 @@ class VideoStreamer(MyRedis):
         # finally, set avalaible worker_id into `self.worker_id`
         # when all N workers are OFF, force stop this System!
 
-    # def __load_balancing(self, frame_id, ret, frame, save_path):
     def __load_balancing(self, frame_id, frame):
         # Initially, send process into first worker
         self.worker_id += 1
@@ -224,17 +228,23 @@ class VideoStreamer(MyRedis):
         while (self.cap.isOpened()) and self.is_running:
             received_frame_id += 1
 
-            t_sframe_key = "start-fi-" + str(self.opt.drone_id) # to calculate end2end latency each frame.
+            # Store total captured frames
+            t_total_frames_key = "total-frames-" + str(self.opt.drone_id)
+            redis_set(self.rc_latency, t_total_frames_key, received_frame_id)
+
+            t_sframe_key = "start-fi-" + str(self.opt.drone_id)  # to calculate end2end latency each frame.
             redis_set(self.rc_latency, t_sframe_key, time.time())
             n += 1
-            t0_frame = time.time()
 
-            # ret = a boolean return value from getting the frame, frame = the current frame being projected in the video
+            # ret = a boolean return value from getting the frame,
+            # frame = the current frame being projected in the video
             try:
+                t0_frame = time.time()
                 ret, frame = self.cap.read()
 
-                n, frame_id, processed_img, is_show_result, is_break = self.__process_image(ret, frame, frame_id,
-                                                                        t0_frame, received_frame_id, n)
+                n, frame_id, processed_img, \
+                    is_show_result, is_break = self.__process_image(ret, frame, frame_id,
+                                                                    t0_frame, received_frame_id, n)
 
                 if is_break:
                     break
@@ -273,12 +283,16 @@ class VideoStreamer(MyRedis):
                     frame_id += 1
 
                     # Force stop after n frames; disabled when self.max_frames == 0
-                    if frame_id == (self.max_frames + 1) and self.max_frames > 0:
-                        self.is_running = False
-                        is_break = True
-                        # break
+                    if not self.opt.is_unlimited:
+                        if frame_id == (self.max_frames + 1) and self.max_frames > 0:
+                            self.is_running = False
+                            is_break = True
+                            # break
 
+                    t0_load_balancer = time.time()
                     self.__load_balancing(frame_id, frame)
+                    t_load_bal = time.time() - t0_load_balancer
+                    print("\nLatency [Load Balancer] of frame-%d: (%.5fs)" % (frame_id, t_load_bal))
 
                     if self.opt.enable_cv_out:
                         is_show_result = True
@@ -292,6 +306,13 @@ class VideoStreamer(MyRedis):
                 # break
 
             n = 0
+
+        # date_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+        # print("[FRAME-%d PROCESSING] date and time AFTER:" % frame_id, date_time)
+        t_e2e_frame = time.time() - t0_frame
+        print("\nLatency [frame-%d processing]: (%.5fs)" % (frame_id, t_e2e_frame))
+
+        print(" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ")
 
         return n, frame_id, processed_img, is_show_result, is_break
 
@@ -319,10 +340,14 @@ class VideoStreamer(MyRedis):
     # Show real-time image result (EagleEYE v2: GLOBECOM Conference 2020)
     def __viewer_v2(self, raw_frame, frame_id):
         try:
-            pih_gen = PIHLocationFetcher(self.opt, raw_frame, frame_id, self.total_pih_candidates, self.period_pih_candidates)
+            t0_pihlocfet = time.time()
+            pih_gen = PIHLocationFetcher(self.opt, raw_frame, frame_id, self.total_pih_candidates,
+                                         self.period_pih_candidates)
             pih_gen.run()
             self.total_pih_candidates = pih_gen.get_total_pih_candidates()
             self.period_pih_candidates = pih_gen.get_period_pih_candidates()
+            t_pihlocfet = time.time() - t0_pihlocfet
+            print("\nLatency [PiH Location Fetcher] of frame-%d: (%.5fs)" % (frame_id, t_pihlocfet))
         except Exception as e:
             print("ERRRPR: ", e)
         return raw_frame

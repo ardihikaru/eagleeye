@@ -135,9 +135,9 @@ class YOLOv3:
 
     def waiting_frames(self):
         print("Starting YOLOv3 image detector")
-        t0 = time.time()
+        t0_load_weight = time.time()
         self.__load_weight()
-        t_load_weight = time.time() - t0
+        t_load_weight = time.time() - t0_load_weight
         # print(".. Load `weight` in (%.3fs)" % t_load_weight)
 
         # Latency: Load YOLOv3 Weight
@@ -145,9 +145,9 @@ class YOLOv3:
         redis_set(self.rc_latency, t_weight_key, t_load_weight)
         print('\nLatency [Load `weight`]: (%.5fs)' % (t_load_weight))
 
-        t0 = time.time()
+        t0_load_eval = time.time()
         self.__eval_model()
-        t_load_eval_model = time.time() - t0
+        t_load_eval_model = time.time() - t0_load_eval
         # print(".. Load function `eval_model` in (%.3fs)" % t_load_eval_model)
 
         # Latency: Execute Evaluation Model
@@ -407,12 +407,13 @@ class YOLOv3:
                     self.time_mbbox += t_mbbox
                     self.time_mbbox_list.append(t_mbbox)
 
-                    ts_default = time.time()
+                    # ts_default = time.time()
                     if not self.opt.maximize_latency:
                         if self.opt.default_detection:
                             self.__default_detection(det, im0s, this_frame_id)
                             # self.__default_detection(det, img)
-                    t_default = time.time() - ts_default
+                    # t_default = time.time() - ts_default
+                    t_default = time.time() - ts_det - t_mbbox
                     self.time_default += t_default
                     self.time_default_list.append(t_default)
 
@@ -424,10 +425,10 @@ class YOLOv3:
                     # Print time (inference + NMS)
                     # print('%sDone. (%.3fs)' % (self.str_output, time.time() - t))
 
-                    print('Done. (%.3fs) --> '
-                          'Inference(%.3fs); NMS(%.3fs); MB-Box(%.3fs); Default-Bbox(%.3fs)' %
-                          ((time.time() - t),
-                           t_inference, t_nms, t_mbbox, t_default))
+                    # print('Done. (%.3fs) --> '
+                    #       'Inference(%.3fs); NMS(%.3fs); MB-Box(%.3fs); Default-Bbox(%.3fs)' %
+                    #       ((time.time() - t),
+                    #        t_inference, t_nms, t_mbbox, t_default))
 
                     # Save end latency calculation
                     t_end_key = "end-" + str(self.opt.drone_id)
@@ -437,22 +438,32 @@ class YOLOv3:
                     t_last_frame_key = "last-" + str(self.opt.drone_id)
                     redis_set(self.rc_latency, t_last_frame_key, int(this_frame_id))
 
-                    # latency: End-to-end Latency, each frame
-                    t_sframe_key = "start-fi-" + str(self.opt.drone_id)  # to calculate end2end latency each frame.
-                    t_end2end_frame = redis_get(self.rc_latency, t_end_key) - redis_get(self.rc_latency, t_sframe_key)
-                    t_e2e_frame_key = "end2end-frame-" + str(self.opt.drone_id) + "-" + str(this_frame_id)
-                    redis_set(self.rc_latency, t_e2e_frame_key, t_end2end_frame)
-                    print('\nLatency [End2end this frame] of frame-%s: (%.5fs)' % (str(this_frame_id), t_end2end_frame))
+                    # # latency: End-to-end Latency, each frame
+                    # t_sframe_key = "start-fi-" + str(self.opt.drone_id)  # to calculate end2end latency each frame.
+                    # t_end2end_frame = redis_get(self.rc_latency, t_end_key) - redis_get(self.rc_latency, t_sframe_key)
+                    # t_e2e_frame_key = "end2end-frame-" + str(self.opt.drone_id) + "-" + str(this_frame_id)
+                    # redis_set(self.rc_latency, t_e2e_frame_key, t_end2end_frame)
+                    # print('\nLatency [End2end this frame] of frame-%s: (%.5fs)' % (str(this_frame_id), t_end2end_frame))
+
+                    # Save BBox image
+                    self.__save_results(im0s, None, self.frame_id, tcp_img=True)
+
+                    # Get total captured frames
+                    t_total_frames_key = "total-frames-" + str(self.opt.drone_id)
+                    total_frames = redis_get(self.rc_latency, t_total_frames_key)
 
                     # latency: End-to-end Latency TOTAL
                     t_start_key = "start-" + str(self.opt.drone_id)
                     t_end2end = redis_get(self.rc_latency, t_end_key) - redis_get(self.rc_latency, t_start_key)
                     t_e2e_key = "end2end-" + str(self.opt.drone_id)
                     redis_set(self.rc_latency, t_e2e_key, t_end2end)
-                    print('\nLatency [This End2end] of frame-%s: (%.5fs)' % (str(this_frame_id), t_end2end))
+                    # print('\nLatency [E2E] of frame-%s: (%.5fs)' % (str(this_frame_id), t_end2end))
+                    print('\nLatency [E2E] with total %d frames: (%.5fs); Now in frame=%d' %
+                          (total_frames, t_end2end, this_frame_id))
 
-                    # Save BBox image
-                    self.__save_results(im0s, None, self.frame_id, tcp_img=True)
+                    # Calculate current FPS
+                    current_fps = round((t_end2end / total_frames), 2)
+                    print('\nCurrent [FPS] with total %d frames: (%.2f fps)' % (total_frames, current_fps))
 
         except Exception as e:
             print("ERRRROOORR Pred: ", e)

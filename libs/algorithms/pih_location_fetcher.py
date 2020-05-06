@@ -4,6 +4,8 @@ from utils.utils import *
 import simplejson as json
 from libs.settings import common_settings
 from libs.algorithms.persistence_detection import PersistenceDetection
+import time
+# from datetime import datetime
 
 
 class PIHLocationFetcher(MyRedis):
@@ -65,6 +67,7 @@ class PIHLocationFetcher(MyRedis):
             self.__plot_bbox()
 
     def __plot_bbox(self):
+        t0_plot_bbox = time.time()
         if len(self.bbox_coord) > 0:  # MBBox exist!
             for data in self.bbox_coord:
                 # obj_idx = data["obj_idx"]
@@ -73,13 +76,22 @@ class PIHLocationFetcher(MyRedis):
                 color = [float(col) for col in data["color"]]
                 plot_one_box(fl_bbox, self.img, label=label, color=color)  # plot bbox
 
+        t_plot_bbox = time.time() - t0_plot_bbox
+        print("\nLatency [Plot YOLOv3 BBox] of frame-%d: (%.5fs)" % (self.frame_id, t_plot_bbox))
+
     def __plot_mbbox(self):
+        t0_plot_mbbox = time.time()
         if len(self.mbbox_coord) > 0:  # MBBox exist!
+            t0_pers_det = time.time()
             self.total_pih_candidates += 1
             self.period_pih_candidates.append(int(self.frame_id))
             pers_det = PersistenceDetection(self.opt, self.frame_id, self.total_pih_candidates,
                                             self.period_pih_candidates)
             self.__maintaince_period_pih_cand(pers_det.get_persistence_window())
+
+            # Get Latency of [Persistance Detection]
+            t_pers_det = time.time() - t0_pers_det
+            print("\nLatency [Persistance Detection] of frame-%d: (%.5fs)" % (self.frame_id, t_pers_det))
 
             pers_det.run()
             selected_label = pers_det.get_label()
@@ -88,6 +100,9 @@ class PIHLocationFetcher(MyRedis):
                 # obj_idx = data["obj_idx"]
                 fl_mbbox = [float(xyxy) for xyxy in data["xyxy"]]
                 plot_one_box(fl_mbbox, self.img, label=selected_label, color=self.rgb_mbbox)  # plot bbox
+
+        t_plot_mbbox = time.time() - t0_plot_mbbox
+        print("\nLatency [Plot MBBox] of frame-%d: (%.5fs)" % (self.frame_id, t_plot_mbbox))
 
     def __maintaince_period_pih_cand(self, persistence_window):
         if len(self.period_pih_candidates) > persistence_window:
