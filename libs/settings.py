@@ -1,11 +1,13 @@
 class CommonSettings:
     __shared_state = {
             "persistence_detection": {
-                "persistence_window": 3,
-                "tolerance_limit": 1
+                # "persistence_window": 3,
+                "persistence_window": 10,
+                "tolerance_limit_percentage": 0.3  # percentage; e.g. 0.3 = 30%
             },
             "bbox_config": {
-                "pih_label_cand": "PiH Candidate",
+                # "pih_label_cand": "PiH Candidate",
+                "pih_label_cand": "FALSE PiH",
                 "pih_label": "PiH",
                 "pih_color": [198, 50, 13]  # PiH bbox color: Blue
             },

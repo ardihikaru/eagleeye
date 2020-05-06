@@ -143,7 +143,7 @@ class YOLOv3:
         # Latency: Load YOLOv3 Weight
         t_weight_key = "weight-" + str(self.opt.drone_id)
         redis_set(self.rc_latency, t_weight_key, t_load_weight)
-        print('\nLatency [Load `weight`]: (%.5fs)' % (t_load_weight))
+        print('Latency [Load `weight`]: (%.5fs)' % (t_load_weight))
 
         t0_load_eval = time.time()
         self.__eval_model()
@@ -153,7 +153,7 @@ class YOLOv3:
         # Latency: Execute Evaluation Model
         t_eval_model_key = "evalModel-" + str(self.opt.drone_id)
         redis_set(self.rc_latency, t_eval_model_key, t_load_eval_model)
-        print('\nLatency [Load `Eval Model`]: (%.5fs)' % (t_load_eval_model))
+        print('Latency [Load `Eval Model`]: (%.5fs)' % (t_load_eval_model))
 
         self.__get_names_colors()
 
@@ -208,7 +208,7 @@ class YOLOv3:
                         t_save_mbbox_img = time.time() - t0_save_mbbox_img
                         t_save_mbbox_img_key = "save2mmboxIMG-" + str(self.opt.drone_id) + "-" + str(frame_id)
                         redis_set(self.rc_latency, t_save_mbbox_img_key, t_save_mbbox_img)
-                        print('\nLatency [Save MB-Box Image] of frame-%s: (%.5fs)' % (str(frame_id), t_save_mbbox_img))
+                        print('Latency [Save MB-Box Image] of frame-%s: (%.5fs)' % (str(frame_id), t_save_mbbox_img))
 
                     # Set that this frame has been successfully added
                     expired_at = 20  # in seconds
@@ -352,7 +352,7 @@ class YOLOv3:
         self.time_inference_list.append(t_inference)
 
         # Latency: Inference
-        print('\nLatency [Inference] of frame-%s: (%.5fs)' % (str(this_frame_id), t_inference))
+        print('Latency [Inference] of frame-%s: (%.5fs)' % (str(this_frame_id), t_inference))
         t_inference_key = "inference-" + str(self.opt.drone_id) + "-" + str(this_frame_id)
         redis_set(self.rc_latency, t_inference_key, t_inference)
 
@@ -372,7 +372,7 @@ class YOLOv3:
         self.time_nms_list.append(t_nms)
 
         # Latency: NMS
-        print('\nLatency [NMS] of frame-%s: (%.5fs)' % (str(this_frame_id), t_nms))
+        print('Latency [NMS] of frame-%s: (%.5fs)' % (str(this_frame_id), t_nms))
         t_nms_key = "nms-" + str(self.opt.drone_id) + "-" + str(this_frame_id)
         redis_set(self.rc_latency, t_nms_key, t_nms)
 
@@ -418,7 +418,7 @@ class YOLOv3:
                     self.time_default_list.append(t_default)
 
                     # Latency: Default Detection
-                    print('\nLatency [Default Detection] of frame-%s: (%.5fs)' % (str(this_frame_id), t_default))
+                    print('Latency [Default Detection] of frame-%s: (%.5fs)' % (str(this_frame_id), t_default))
                     t_default_key = "draw2bbox-" + str(self.opt.drone_id) + "-" + str(this_frame_id)
                     redis_set(self.rc_latency, t_default_key, t_default)
 
@@ -458,12 +458,12 @@ class YOLOv3:
                     t_e2e_key = "end2end-" + str(self.opt.drone_id)
                     redis_set(self.rc_latency, t_e2e_key, t_end2end)
                     # print('\nLatency [E2E] of frame-%s: (%.5fs)' % (str(this_frame_id), t_end2end))
-                    print('\nLatency [E2E] with total %d frames: (%.5fs); Now in frame=%d' %
+                    print('Latency [E2E] with total %d frames: (%.5fs); Now in frame=%d' %
                           (total_frames, t_end2end, this_frame_id))
 
                     # Calculate current FPS
                     current_fps = round((t_end2end / total_frames), 2)
-                    print('\nCurrent [FPS] with total %d frames: (%.2f fps)' % (total_frames, current_fps))
+                    print('Current [FPS] with total %d frames: (%.2f fps)' % (total_frames, current_fps))
 
         except Exception as e:
             print("ERRRROOORR Pred: ", e)
@@ -536,7 +536,7 @@ class YOLOv3:
                 t_mod_v1 = time.time() - ts_mod_v1
                 # Latency: save Proc. Latency MODv1
                 t_modv1_key = "modv1-" + str(self.opt.drone_id) + "-" + str(this_frame_id)
-                print('\nLatency [MODv1] of frame-%d: (%.5fs)' % (this_frame_id, t_mod_v1))
+                print('Latency [MODv1] of frame-%d: (%.5fs)' % (this_frame_id, t_mod_v1))
                 redis_set(self.rc_latency, t_modv1_key, t_mod_v1)
 
             if self.opt.modv2:
@@ -551,7 +551,7 @@ class YOLOv3:
                 t_mod_v2 = time.time() - ts_mod_v2
                 # Latency: save Proc. Latency MODv2
                 t_modv2_key = "modv2-" + str(self.opt.drone_id) + "-" + str(this_frame_id)
-                print('\nLatency [MODv2] of frame-%d: (%.5fs)' % (this_frame_id, t_mod_v2))
+                print('Latency [MODv2] of frame-%d: (%.5fs)' % (this_frame_id, t_mod_v2))
                 redis_set(self.rc_latency, t_modv2_key, t_mod_v2)
 
     def __safety_store_txt(self):

@@ -202,13 +202,13 @@ class VideoStreamer(MyRedis):
 
             self.zmq_sender[zid].send_image(str(frame_id), frame)
             t_recv = time.time() - ts
-            print('\nLatency [Send imagezmq] of frame-%s: (%.5fs)' % (str(frame_id), t_recv))
+            print('Latency [Send imagezmq] of frame-%s: (%.5fs)' % (str(frame_id), t_recv))
 
             # Latency: capture publish frame information
             t0_pub2frame = time.time()
             pub(self.rc_data, stream_channel, p_mdata)
             t_pub2frame = time.time() - t0_pub2frame
-            print('\nLatency [Publish frame info] of frame-%s: (%.5fs)' % (str(frame_id), t_pub2frame))
+            print('Latency [Publish frame info] of frame-%s: (%.5fs)' % (str(frame_id), t_pub2frame))
             t_pub2frame_key = "pub2frame-" + str(self.opt.drone_id) + "-" + str(frame_id)
             redis_set(self.rc_data, t_pub2frame_key, t_pub2frame)
 
@@ -268,7 +268,7 @@ class VideoStreamer(MyRedis):
     def __process_image(self, ret, frame, frame_id, t0_frame, received_frame_id, n):
         # Latency: capture each frame
         t_frame = time.time() - t0_frame
-        print('\nLatency [Reading stream frame] of frame-%d: (%.5fs)' % (received_frame_id, t_frame))
+        print('Latency [Reading stream frame] of frame-%d: (%.5fs)' % (received_frame_id, t_frame))
         t_frame_key = "frame-" + str(self.opt.drone_id) + "-" + str(frame_id)
         redis_set(self.rc_latency, t_frame_key, t_frame)
         is_show_result = False
@@ -292,7 +292,7 @@ class VideoStreamer(MyRedis):
                     t0_load_balancer = time.time()
                     self.__load_balancing(frame_id, frame)
                     t_load_bal = time.time() - t0_load_balancer
-                    print("\nLatency [Load Balancer] of frame-%d: (%.5fs)" % (frame_id, t_load_bal))
+                    print("Latency [Load Balancer] of frame-%d: (%.5fs)" % (frame_id, t_load_bal))
 
                     if self.opt.enable_cv_out:
                         is_show_result = True
@@ -310,7 +310,7 @@ class VideoStreamer(MyRedis):
         # date_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
         # print("[FRAME-%d PROCESSING] date and time AFTER:" % frame_id, date_time)
         t_e2e_frame = time.time() - t0_frame
-        print("\nLatency [frame-%d processing]: (%.5fs)" % (frame_id, t_e2e_frame))
+        print("Latency [frame-%d processing]: (%.5fs)" % (frame_id, t_e2e_frame))
 
         print(" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ")
 
@@ -347,7 +347,7 @@ class VideoStreamer(MyRedis):
             self.total_pih_candidates = pih_gen.get_total_pih_candidates()
             self.period_pih_candidates = pih_gen.get_period_pih_candidates()
             t_pihlocfet = time.time() - t0_pihlocfet
-            print("\nLatency [PiH Location Fetcher] of frame-%d: (%.5fs)" % (frame_id, t_pihlocfet))
+            print("Latency [PiH Location Fetcher] of frame-%d: (%.5fs)" % (frame_id, t_pihlocfet))
         except Exception as e:
             print("ERRRPR: ", e)
         return raw_frame

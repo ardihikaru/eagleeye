@@ -69,7 +69,7 @@ def persistenceModuleWindow():
 		if window_data.shape[0] < PERSISTENCE_WINDOW:
 			break
 
-		print("[DBG]  window_data: %s" % str(window_data))
+		print("[DBG]	window_data: %s" % str(window_data))
 		persistenceModule(window_data)
 		
 		if slider.reached_end_of_list():
