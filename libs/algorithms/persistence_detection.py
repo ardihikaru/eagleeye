@@ -22,8 +22,12 @@ class PersistenceDetection:
         self.pih_label_cand = common_settings["bbox_config"]["pih_label_cand"]
         self.pih_label = common_settings["bbox_config"]["pih_label"]
         self.selected_label = self.pih_label_cand  # Default
-        print("[PERSISTENCE WINDOW=%d and TOLERANCE LIMIT=%d]"
+        print("\t[PERSISTENCE WINDOW=%d and TOLERANCE LIMIT=%d]"
               % (self.persistence_window, self.tolerance_limit))
+
+        # print current batch
+        current_pih_batch = self.get_persistence_batch()
+        print("\t[CURRENT PiH BATCH]:", current_pih_batch)
 
     def __get_tolerance_limit(self):
         tolerance_percentage = common_settings["persistence_detection"]["tolerance_limit_percentage"]
