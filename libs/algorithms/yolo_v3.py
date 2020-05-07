@@ -462,7 +462,8 @@ class YOLOv3:
                           (total_frames, t_end2end, this_frame_id))
 
                     # Calculate current FPS
-                    current_fps = round((t_end2end / total_frames), 2)
+                    # current_fps = round((t_end2end / total_frames), 2)
+                    current_fps = round((total_frames / t_end2end), 2)
                     print('Current [FPS] with total %d frames: (%.2f fps)' % (total_frames, current_fps))
 
                     # Publish to PLF (PiH Location Fetcher) to notify that it's done.
