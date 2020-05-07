@@ -465,6 +465,10 @@ class YOLOv3:
                     current_fps = round((t_end2end / total_frames), 2)
                     print('Current [FPS] with total %d frames: (%.2f fps)' % (total_frames, current_fps))
 
+                    # Publish to PLF (PiH Location Fetcher) to notify that it's done.
+                    plf_detection_channel = "PLF-%d-%d" % (self.opt.drone_id, this_frame_id)
+                    redis_set(self.rc_data, plf_detection_channel, True, 10)  # expired in 10 seconds
+
         except Exception as e:
             print("ERRRROOORR Pred: ", e)
 
@@ -579,3 +583,9 @@ class YOLOv3:
         key = "d" + str(self.opt.drone_id) + "-f" + str(frame_id) + suffix
         p_mbbox_coord = json.dumps(mbbox_dict)
         redis_set(self.rc_bbox, key, p_mbbox_coord)
+
+        # print(" ------ mbbox_dict:", mbbox_dict)
+        # print(" HARUSNYA coords key: ", suffix, key, p_mbbox_coord)
+
+        test_data = redis_get(self.rc_bbox, key)
+        # print(" STORED coords key: ", suffix, key, test_data)

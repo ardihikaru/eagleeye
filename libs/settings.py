@@ -1,7 +1,11 @@
 class CommonSettings:
     __shared_state = {
+            "streaming_config": {
+                "delay_disconnected": 3
+            },
             "persistence_detection": {
                 # "persistence_window": 3,
+                # "persistence_window": 150,  # 30*5 = 150 (5 seconds)
                 "persistence_window": 10,
                 "tolerance_limit_percentage": 0.3  # percentage; e.g. 0.3 = 30%
             },
