@@ -10,13 +10,14 @@ import time
 
 class PIHLocationFetcher(MyRedis):
     # def __init__(self, opt, img, frame_id, total_pih_candidates, period_pih_candidates):
-    def __init__(self, opt, img, drone_id, frame_id, raw_image):
+    def __init__(self, opt, img, drone_id, frame_id, raw_image, visual_type):
         super().__init__()
         self.opt = opt
         self.img = img
         self.drone_id = drone_id
         self.frame_id = frame_id
         self.raw_image = raw_image
+        self.visual_type = visual_type
 
         # print(" >>>>>> drone_id:", drone_id)
         # print(" >>>>>> TYPE drone_id:", type(drone_id))
@@ -101,28 +102,31 @@ class PIHLocationFetcher(MyRedis):
 
     def run(self):
         # print(" ### @ RUN ... opt:", self.opt)
-        if self.opt.plot_bbox:
-            # print(" ~~~ self.opt.plot_bbox", self.opt.plot_bbox)
-            self.bbox_coord = self.__get_bbox_coord()
-            self.__plot_bbox()
+        # if self.opt.plot_bbox:
+        #     # print(" ~~~ self.opt.plot_bbox", self.opt.plot_bbox)
+        #     self.bbox_coord = self.__get_bbox_coord()
+        #     self.__plot_bbox()
+        #
+        # if self.opt.plot_mbbox:
+        #     # print(" ~~~ self.opt.plot_mbbox", self.opt.plot_mbbox)
+        #     self.mbbox_coord = self.__get_mbbox_coord()
+        #     self.__plot_mbbox()
 
-        if self.opt.plot_mbbox:
-            # print(" ~~~ self.opt.plot_mbbox", self.opt.plot_mbbox)
+        # if self.opt.viewer_all_bbox:
+        if self.visual_type == 3:
             self.mbbox_coord = self.__get_mbbox_coord()
             self.__plot_mbbox()
 
-        # if self.opt.viewer_all_bbox:
-        #     self.mbbox_coord = self.__get_mbbox_coord()
-        #     self.__plot_mbbox()
-        #
-        #     self.bbox_coord = self.__get_bbox_coord()
-        #     self.__plot_bbox()
+            self.bbox_coord = self.__get_bbox_coord()
+            self.__plot_bbox()
         # elif self.opt.enable_mbbox:
-        #     self.mbbox_coord = self.__get_mbbox_coord()
-        #     self.__plot_mbbox()
+        elif self.visual_type == 2:
+            self.mbbox_coord = self.__get_mbbox_coord()
+            self.__plot_mbbox()
         # elif self.opt.default_detection:
-        #     self.bbox_coord = self.__get_bbox_coord()
-        #     self.__plot_bbox()
+        elif self.visual_type == 1:
+            self.bbox_coord = self.__get_bbox_coord()
+            self.__plot_bbox()
 
         self.__update_total_pih_candidates()
         self.__update_period_pih_candidates()

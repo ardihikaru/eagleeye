@@ -16,15 +16,16 @@ if __name__ == "__main__":
     # parser.add_argument("--enable_cv_out", type=bool, default=False, help="Enable/disable Output video streaming")
     parser.add_argument("--enable_cv_out", type=bool, default=True,
                         help="Enable/disable Output video streaming; run `viewer.py` to see the results")
-    parser.add_argument('--viewer_version', type=int, default=2, help='Viewer version to show real-time image processing')
-    parser.add_argument('--viewer_width', type=int, default=1366, help='Viewer width size')
-    parser.add_argument('--viewer_height', type=int, default=768, help='Viewer height size')
-    parser.add_argument('--viewer_all_bbox', type=bool, default=True, help='Viewer results both from YOLOv3 and MOD')
+    parser.add_argument('--visual_type', type=int, default=3, help='Type_1=YOLO; Type_2=MOD; Type_3=YOLO+MOD; otherwise=No BBox')
+    # parser.add_argument('--viewer_version', type=int, default=2, help='Viewer version to show real-time image processing')
+    # parser.add_argument('--viewer_width', type=int, default=1366, help='Viewer width size')
+    # parser.add_argument('--viewer_height', type=int, default=768, help='Viewer height size')
+    # parser.add_argument('--viewer_all_bbox', type=bool, default=True, help='Viewer results both from YOLOv3 and MOD')
     # parser.add_argument('--viewer_all_bbox', type=bool, default=False, help='Viewer results both from YOLOv3 and MOD')
 
-    parser.add_argument("--enable_mbbox", type=bool, default=True, help="Enable/disable Output MB-Box-based video streaming")
+    # parser.add_argument("--enable_mbbox", type=bool, default=True, help="Enable/disable Output MB-Box-based video streaming")
     # parser.add_argument("--enable_mbbox", type=bool, default=False, help="Enable/disable Output MB-Box-based video streaming")
-    parser.add_argument("--default_detection", type=bool, default=True, help="Enable/disable Output YOLOv3-based video streaming")
+    # parser.add_argument("--default_detection", type=bool, default=True, help="Enable/disable Output YOLOv3-based video streaming")
 
     parser.add_argument('--drone_id', type=int, default=1, help='Drone ID')
     parser.add_argument("--total_workers", type=int, default=1, help="path to dataset")

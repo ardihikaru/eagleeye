@@ -1,6 +1,6 @@
 from libs.algorithms.pih_location_fetcher import PIHLocationFetcher
 from libs.addons.redis.my_redis import MyRedis
-from libs.addons.redis.translator import redis_get, redis_set
+from libs.addons.redis.translator import redis_get, pub, redis_set
 import simplejson as json
 import time
 import imagezmq
@@ -23,6 +23,25 @@ class PIHLocationFetcherHandler(MyRedis):
         self.mbbox = []
         self.__set_plf_receiver()
 
+        self.visual_sender = []
+        self.__set_visual_sender()
+
+    # Visualizer
+    def __set_visual_sender(self):
+        for i in range(self.opt.total_drones):
+            this_drone_id = i + 1
+            port = self.opt.visualizer_port_prefix + str(this_drone_id)
+            url = 'tcp://127.0.0.1:' + port
+            # self.visual_sender = imagezmq.ImageSender(connect_to=url, REQ_REP=False)
+            this_visual_sender = imagezmq.ImageSender(connect_to=url, REQ_REP=False)
+            self.visual_sender.append(this_visual_sender)
+            # self.visualizer_status_channel = "visualizer-status-" + str(self.drone_id)
+
+        # port = self.opt.visualizer_port_prefix + str(self.drone_id)
+        # url = 'tcp://127.0.0.1:' + port
+        # self.visual_sender = imagezmq.ImageSender(connect_to=url, REQ_REP=False)
+        # self.visualizer_status_channel = "visualizer-status-" + str(self.drone_id)
+
     # PiH Location Fetcher (plf)
     def __set_plf_receiver(self):
         url = 'tcp://127.0.0.1:' + str(self.opt.pih_location_fetcher_port)
@@ -36,6 +55,7 @@ class PIHLocationFetcherHandler(MyRedis):
     def capture_extracted_frame_data(self, frame_data):
         self.drone_id = frame_data["drone_id"]
         self.frame_id = frame_data["frame_id"]
+        self.visual_type = frame_data["visual_type"]
         # self.worker_id = frame_data["worker_id"]
 
     # Sent by: `video_streamer.py`
@@ -80,12 +100,36 @@ class PIHLocationFetcherHandler(MyRedis):
                 # print(" --- \t BBox info: ", self.bbox)
                 # print(" --- \t MBBox info: ", self.mbbox)
                 # print(" --- `Received Frame` data has been successfully processed; BBox info: ", bbox_data)
-                self.visualize_result()
+                self.send_to_visualizer()
         except Exception as e:
             print("\t\tRetrieve frame-%d ERROR:" % self.frame_id, e)
 
-    def visualize_result(self):
-        print("~~~ \t This class is expected to send image (TCP) into GUI (main_viewer.py)")
+    def send_to_visualizer(self):
+        print("~~~ \t This class is expected to send image (TCP) into GUI (main_visualizer.py)")
+        # self.__set_visual_sender()
+        this_visualizer_status_channel = "visualizer-status-" + str(self.drone_id)
+
+        t0_sender = time.time()
+        # self.visual_sender.send_image(str(self.frame_id), self.plotted_img)
+        idx_vsender = self.drone_id - 1
+        self.visual_sender[idx_vsender].send_image(str(self.frame_id), self.plotted_img)
+        t_recv = time.time() - t0_sender
+        print('Latency [Send Plotted Frame into Visualizer] of frame-%s: (%.5fs)' % (str(self.frame_id), t_recv))
+
+        # print("###### visualizer_status_channel:", self.visualizer_status_channel)
+        print("###### visualizer_status_channel:", this_visualizer_status_channel)
+        if self.opt.enable_cv_out:
+            print("\t ~~~~~ @ if self.opt.enable_cv_out: ....")
+            data = {
+                "drone_id": self.drone_id,
+                "frame_id": self.frame_id
+                # "visual_type": self.visual_type
+            }
+            print(" \t ---- data:", data)
+            p_mdata = json.dumps(data)
+            # pub(self.rc_data, self.visualizer_status_channel, p_mdata)  # confirm PLF that frame-n has been sent
+            pub(self.rc_data, this_visualizer_status_channel, p_mdata)  # confirm PLF that frame-n has been sent
+        print('\t[PUBLISH Plotted Frame-%d into Visualizer]' % self.frame_id)
 
         # pub_sub_receiver_frame = self.rc_data.pubsub()
         # plf_frame_receiver_status_channel = self.plf_frame_receiver_channel_pre + "-%d-%d" % (self.drone_id, self.frame_id)
@@ -150,7 +194,8 @@ class PIHLocationFetcherHandler(MyRedis):
     def process_pih2image(self):
         t0_pihlocfet = time.time()
         # pih_gen = PIHLocationFetcher(self.opt, self.raw_image, self.frame_id)
-        pih_gen = PIHLocationFetcher(self.opt, self.raw_image, self.drone_id, self.frame_id, self.raw_image)
+        pih_gen = PIHLocationFetcher(self.opt, self.raw_image, self.drone_id, self.frame_id, self.raw_image,
+                                     self.visual_type)
         # pih_gen = PIHLocationFetcher(self.opt, self.raw_image, self.frame_id, self.total_pih_candidates,
         #                              self.period_pih_candidates)
         pih_gen.run()

@@ -356,7 +356,8 @@ class VideoStreamer(MyRedis):
         if self.opt.enable_cv_out:
             data = {
                 "drone_id": self.opt.drone_id,
-                "frame_id": frame_id
+                "frame_id": frame_id,
+                "visual_type": self.opt.visual_type
                 # "worker_id": self.worker_id
             }
             p_mdata = json.dumps(data)
