@@ -13,7 +13,6 @@ if __name__ == "__main__":
     # cap = cv.VideoCapture("data/5g-dive/videos/customTest_MIRC-Roadside-5s.mp4")
     cap = cv.VideoCapture("data/5g-dive/videos/customTest_MIRC-Roadside-20s.mp4")
     # cap = cv.VideoCapture("http://140.113.86.92:10000/drone-3.flv")
-    capture_lat = []
 
     fps = MyFPS().start()
     while cap.isOpened():
