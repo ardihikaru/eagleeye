@@ -8,9 +8,8 @@ from libs.algorithms.pih_location_fetcher import PIHLocationFetcher
 from models import *  # set ONNX_EXPORT in models.py
 from utils.datasets import *
 import simplejson as json
+from imutils.video import FileVideoStream
 
-
-# from datetime import datetime
 
 class VideoStreamer(MyRedis):
     def __init__(self, opt):
@@ -71,7 +70,9 @@ class VideoStreamer(MyRedis):
             print("\nReading video:")
             while self.is_running:
                 try:
-                    self.cap = cv.VideoCapture(self.opt.source)
+                    # self.cap = cv.VideoCapture(self.opt.source)
+                    # self.cap = cv.VideoCapture(self.opt.source)
+                    self.cap = FileVideoStream(self.opt.source).start()
                     self.__start_streaming()
                 except:
                     print("\nUnable to communicate with the Streaming. Restarting . . .")
@@ -218,7 +219,8 @@ class VideoStreamer(MyRedis):
         t_start_key = "start-" + str(self.opt.drone_id)
         redis_set(self.rc_latency, t_start_key, time.time())
 
-        while (self.cap.isOpened()) and self.is_running:
+        # while (self.cap.isOpened()) and self.is_running:
+        while (self.cap.more()) and self.is_running:
             received_frame_id += 1
 
             # Store total captured frames
@@ -233,7 +235,9 @@ class VideoStreamer(MyRedis):
             # frame = the current frame being projected in the video
             try:
                 t0_frame = time.time()
-                ret, frame = self.cap.read()
+                # ret, frame = self.cap.read()
+                ret = True
+                frame = self.cap.read()
 
                 n, frame_id, is_break = self.__process_image(ret, frame, frame_id,
                                                              t0_frame, received_frame_id, n)
