@@ -69,7 +69,7 @@ def frame_producer(my_redis, frame_id, ret, frame, save_path, channel, rc_latenc
 
         # Latency: save frame into disk
         t_f2disk_key = "f2disk-" + str(drone_id) + "-" + str(frame_id)
-        print('\nLatency [Save to disk] of frame-%d: (%.5fs)' % (frame_id, t_save2disk))
+        print('Latency [Save to disk] of frame-%d: (%.5fs)' % (frame_id, t_save2disk))
         redis_set(rc_latency, t_f2disk_key, t_save2disk)
 
         # Publish information
@@ -88,6 +88,6 @@ def frame_producer(my_redis, frame_id, ret, frame, save_path, channel, rc_latenc
 
 
         # Latency: capture publish frame information
-        print('\nLatency [Publish frame info] of frame-%s: (%.5fs)' % (str(frame_id), t_pub2frame))
+        print('Latency [Publish frame info] of frame-%s: (%.5fs)' % (str(frame_id), t_pub2frame))
         t_pub2frame_key = "pub2frame-" + str(drone_id) + "-" + str(frame_id)
         redis_set(rc_latency, t_pub2frame_key, t_pub2frame)
