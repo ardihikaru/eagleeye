@@ -1,4 +1,4 @@
-from libs.addons.streamer.FileVideoStream import FileVideoStream
+# Source: https://www.pyimagesearch.com/2017/02/06/faster-video-file-fps-with-cv2-videocapture-and-opencv/
 
 # import the necessary packages
 from imutils.video import FileVideoStream
