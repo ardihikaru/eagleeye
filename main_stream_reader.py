@@ -22,8 +22,8 @@ if __name__ == "__main__":
     parser.add_argument('--drone_id', type=int, default=1, help='Drone ID')
     parser.add_argument("--total_workers", type=int, default=1, help="path to dataset")
 
-    parser.add_argument("--delay", type=int, default=4, help="path to dataset")
-    # parser.add_argument("--delay", type=int, default=1, help="path to dataset")  # use this for GPU data
+    # parser.add_argument("--delay", type=int, default=4, help="Send frame into YOLO Network in every <delay> frames.")
+    parser.add_argument("--delay", type=int, default=1, help="Send frame into YOLO Network in every <delay> frames.")
 
     parser.add_argument("--output_folder", type=str, default="hasil/media/ramdisk/output/original/", help="path to save raw images")
 

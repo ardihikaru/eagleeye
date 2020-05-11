@@ -73,16 +73,16 @@ class PIHLocationFetcherHandler(MyRedis):
     def watch_frame_receiver(self):
         try:
             _, self.raw_image = self.frame_receiver.recv_image()
-            print(" --- `Frame Data` has been successfully received: ")
+            # print(" --- `Frame Data` has been successfully received: ")
             if self.__is_detection_finished():
                 self.process_pih2image()
-                print(" --- `Received Frame` data has been successfully processed & Plotted;")
+                # print(" --- `Received Frame` data has been successfully processed & Plotted;")
                 self.send_to_visualizer()
         except Exception as e:
             print("\t\tRetrieve frame-%d ERROR:" % self.frame_id, e)
 
     def send_to_visualizer(self):
-        print("~~~ \t This class is expected to send image (TCP) into GUI (main_visualizer.py)")
+        # print("~~~ \t This class is expected to send image (TCP) into GUI (main_visualizer.py)")
         this_visualizer_status_channel = "visualizer-status-" + str(self.drone_id)
 
         t0_sender = time.time()
