@@ -37,7 +37,8 @@ class Visualizer(MyRedis):
         pub_sub_sender = self.rc_data.pubsub()
         pub_sub_sender.subscribe([self.visualizer_status_channel])
 
-        t0 = None
+        # t0 = None
+        t0 = time.time()
         for item in pub_sub_sender.listen():
             if isinstance(item["data"], int):
                 pass
@@ -48,8 +49,8 @@ class Visualizer(MyRedis):
                 cv.imshow("Image", processed_img)
 
                 # FPS load frame of each worker
-                if t0 is None:
-                    t0 = data["ts"]
+                # if t0 is None:
+                #     t0 = data["ts"]
                 # frame_id = total_frames
                 fps_visualizer_key = "fps-visualizer-%s" % str(data["drone_id"])
                 total_frames, current_fps = store_fps(self.rc_latency, fps_visualizer_key, data["drone_id"],

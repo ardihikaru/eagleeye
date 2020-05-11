@@ -65,7 +65,7 @@ class Plot:
 
         plt.bar(y_pos, avg_latency_data, align='center', alpha=0.5)
         plt.xticks(y_pos, drones_ids)
-        plt.ylabel('Frame per Second (FPS)')
+        plt.ylabel('Frame per Second (s)')
 
         plt.show()
         fig.savefig(self.latency_output + 'Visualizer_latency_#Dr=%d.pdf' % self.opt.num_drones, dpi=fig.dpi)

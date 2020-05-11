@@ -18,9 +18,9 @@ def store_fps(rc, key, drone_id, total_frames=None, t0=None):
     # print(" #### time elapsed: (%.5f seconds)" % t_elapsed)
     if total_frames is None:  # `None` means it calculates the FPS of each YOLO worker
         total_frames = get_total_captured_frames(rc, drone_id)
-    time_per_frame = total_frames / t_elapsed
+    time_per_frame = round((t_elapsed / total_frames), 5)
     # print(" #### total_frames:", total_frames)
-    # print(" #### time_per_frame: (%.5f seconds)" % time_per_frame)
+    # print(" #### time_per_frame: (%f seconds)" % time_per_frame)
     # current_fps = 1000 / time_per_frame
     current_fps = 1.0 / time_per_frame
     current_fps = round(current_fps, 2)
