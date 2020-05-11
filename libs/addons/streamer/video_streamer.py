@@ -1,6 +1,7 @@
 import cv2 as cv
 import imagezmq
 from libs.addons.redis.translator import redis_get, redis_set, pub
+from libs.addons.redis.utils import store_latency, store_fps
 from libs.settings import common_settings
 from libs.addons.redis.my_redis import MyRedis
 from libs.algorithms.pih_location_fetcher import PIHLocationFetcher
@@ -57,18 +58,10 @@ class VideoStreamer(MyRedis):
         url = 'tcp://127.0.0.1:' + str(self.opt.pih_location_fetcher_port)
         self.frame_sender = imagezmq.ImageSender(connect_to=url, REQ_REP=False)
         self.plf_send_status_channel = "plf-send-status"
-        # self.plf_sender_channel = "plf-sender-" + str(self.opt.drone_id)
-
-    # def __set_cv_window(self):
-    #     if self.opt.enable_cv_out:
-    #         cv.namedWindow("Image", cv.WND_PROP_FULLSCREEN)
-    #         cv.moveWindow("Image", 0, 0)
-    #         cv.resizeWindow("Image", self.opt.viewer_width, self.opt.viewer_height)  # Enter your size
 
     def run(self):
         if self.opt.source_type == "folder":
             print("\nReading folder:")
-            # self.__set_cv_window()
 
             t_stream_setup_key = "stream-start-" + str(self.opt.drone_id)
             redis_set(self.rc_latency, t_stream_setup_key, time.time())
@@ -79,14 +72,11 @@ class VideoStreamer(MyRedis):
             while self.is_running:
                 try:
                     self.cap = cv.VideoCapture(self.opt.source)
-                    # self.__set_cv_window()
                     self.__start_streaming()
                 except:
                     print("\nUnable to communicate with the Streaming. Restarting . . .")
                     # The following frees up resources and closes all windows
                     self.cap.release()
-                    # if self.opt.enable_cv_out:
-                    #     cv.destroyAllWindows()
 
     def __get_ordered_img(self, dataset):
         max_img = len(dataset)
@@ -137,19 +127,11 @@ class VideoStreamer(MyRedis):
                 t0_frame = time.time()
                 ret, frame = True, im0s
 
-                # self.send_frame_data(frame, frame_id)
-
-                # n, frame_id, processed_img, \
                 n, frame_id, is_break = self.__process_image(ret, frame, frame_id,
                                                              t0_frame, received_frame_id, n)
-                # is_show_result, is_break = self.__process_image(ret, frame, frame_id,
-                #                                                 t0_frame, received_frame_id, n)
 
                 if is_break:
                     break
-
-                # if is_show_result:
-                #     cv.imshow("Image", processed_img)
 
             except Exception as e:
                 print(" ---- e:", e)
@@ -160,9 +142,6 @@ class VideoStreamer(MyRedis):
                 else:
                     print("No more frame to show.")
                 break
-
-            # if cv.waitKey(10) & 0xFF == ord('q'):
-            #     break
 
     def __reset_worker(self):
         if self.worker_id == self.opt.total_workers:
@@ -184,9 +163,7 @@ class VideoStreamer(MyRedis):
         stream_channel = common_settings["redis_config"]["channel_prefix"] + str(self.worker_id)
 
         # Check worker status first, please wait while still working
-        # print(">>>>>> __worker_status = ", self.__worker_status())
         w = 0
-        wait_time = self.wait_time
         if redis_get(self.rc_data, self.worker_id) is None:
             print("This worker is OFF. Nothing to do")
             print("TBD next time: Should skip this worker and move to the next worker instead")
@@ -194,9 +171,6 @@ class VideoStreamer(MyRedis):
         else:
             # None = DISABLED; 1=Ready; 0=Busy
             while self.__worker_status() == 0:
-                # print("\nWorker-%d is still processing other image, waiting (%ds) ..." % (self.worker_id, w))
-                # print("\nWorker-%d is still processing other image, waiting ... " % self.worker_id)
-                # time.sleep(0.005)
                 if not self.opt.disable_delay:
                     time.sleep(self.wait_time)
                 w += self.wait_time
@@ -211,7 +185,6 @@ class VideoStreamer(MyRedis):
             # Configure ZMQ & Redis Pub/Sub parameters
             # Send frame into ZMQ channel
             t0_zmq = time.time()
-            # self.sender_w1.send_image(str(frame_id), frame)
             zid = self.worker_id - 1
 
             self.zmq_sender[zid].send_image(str(frame_id), frame)
@@ -226,9 +199,15 @@ class VideoStreamer(MyRedis):
             t_pub2frame_key = "pub2frame-" + str(self.opt.drone_id) + "-" + str(frame_id)
             redis_set(self.rc_data, t_pub2frame_key, t_pub2frame)
 
-            redis_set(self.rc_data, self.worker_id, 0)
+            redis_set(self.rc_data, self.worker_id, 0)  # set this worker unavailable
 
         self.__reset_worker()
+
+        # FPS load frame of each worker
+        fps_lb_key = "fps-load-balancer-%s" % str(self.opt.drone_id)
+        total_frames, current_fps = store_fps(self.rc_latency, fps_lb_key, self.opt.drone_id)
+        print('Current [FPS Load Balancer of Drone-%d] with total %d frames: (%.2f fps)' % (
+            self.opt.drone_id, total_frames, current_fps))
 
     def __start_streaming(self):
         n = 0
@@ -256,19 +235,11 @@ class VideoStreamer(MyRedis):
                 t0_frame = time.time()
                 ret, frame = self.cap.read()
 
-                # self.send_frame_data(frame, frame_id)
-
-                # n, frame_id, processed_img, \
                 n, frame_id, is_break = self.__process_image(ret, frame, frame_id,
                                                              t0_frame, received_frame_id, n)
-                # is_show_result, is_break = self.__process_image(ret, frame, frame_id,
-                #                                                 t0_frame, received_frame_id, n)
 
                 if is_break:
                     break
-
-                # if is_show_result:
-                #     cv.imshow("Image", processed_img)
 
             except Exception as e:
                 print(" ---- e:", e)
@@ -280,18 +251,13 @@ class VideoStreamer(MyRedis):
                     print("No more frame to show.")
                 break
 
-            # if cv.waitKey(100) & 0xFF == ord('q'):
-            #     break
-
     def __process_image(self, ret, frame, frame_id, t0_frame, received_frame_id, n):
         # Latency: capture each frame
         t_frame = time.time() - t0_frame
         print('Latency [Reading stream frame] of frame-%d: (%.5fs)' % (received_frame_id, t_frame))
         t_frame_key = "frame-" + str(self.opt.drone_id) + "-" + str(frame_id)
         redis_set(self.rc_latency, t_frame_key, t_frame)
-        # is_show_result = False
         is_break = False
-        # processed_img = frame
 
         if n == self.opt.delay:  # read every n-th frame
 
@@ -314,38 +280,16 @@ class VideoStreamer(MyRedis):
                     t_load_bal = time.time() - t0_load_balancer
                     print("Latency [Load Balancer] of frame-%d: (%.5fs)" % (frame_id, t_load_bal))
 
-                    # Send (Publish) information into `PiH location fetcher`
-                    # if self.opt.enable_cv_out:
-                    #     data = {
-                    #         "drone_id": self.opt.drone_id,
-                    #         "frame_id": frame_id,
-                    #         "worker_id": self.worker_id
-                    #     }
-                    #     p_mdata = json.dumps(data)
-                    #     pub(self.rc_data, self.plf_send_status_channel, p_mdata)  # confirm PLF that frame-n has been sent
-                        # is_show_result = True
-                        # processed_img = self.__get_img_data(frame, frame_id)
-                        # processed_img = None
-                        # cv.imshow("Image", processed_img)
-
             else:
                 print("IMAGE is INVALID.")
                 print("I guess there is no more frame to show.")
                 is_break = True
-                # break
 
             n = 0
 
-        # date_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
-        # print("[FRAME-%d PROCESSING] date and time AFTER:" % frame_id, date_time)
-        # t_e2e_frame = time.time() - t0_frame
-        # print("Latency [frame-%d processing]: (%.5fs)" % (frame_id, t_e2e_frame))
-
         print(" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ")
 
-        # return n, frame_id, processed_img, is_break
         return n, frame_id, is_break
-        # return n, frame_id, processed_img, is_show_result, is_break
 
     def send_frame_data(self, frame, frame_id):
         t0_sender = time.time()
@@ -358,45 +302,7 @@ class VideoStreamer(MyRedis):
                 "drone_id": self.opt.drone_id,
                 "frame_id": frame_id,
                 "visual_type": self.opt.visual_type
-                # "worker_id": self.worker_id
             }
             p_mdata = json.dumps(data)
             pub(self.rc_data, self.plf_send_status_channel, p_mdata)  # confirm PLF that frame-n has been sent
         print('\t[PUBLISH Frame-%d into PLF]' % frame_id)
-
-    # def __get_img_data(self, raw_frame, frame_id):
-    #     self.__viewer_v2(raw_frame, frame_id)
-    #     # if self.opt.viewer_version == 1:
-    #     #     return self.__viewer_v1(raw_frame, frame_id)
-    #     # elif self.opt.viewer_version == 2:
-    #     #     return self.__viewer_v2(raw_frame, frame_id)
-    #     # else:
-    #     #     return raw_frame
-    #
-    # # # Show real-time image result (EagleEYE v1: EuCNC Conference 2019)
-    # # def __viewer_v1(self, raw_frame, frame_id):
-    # #     bbox_path = self.opt.normal_output + "frame-%d.jpg" % frame_id
-    # #     if self.opt.enable_mbbox:  # Image with MBBox
-    # #         while not os.path.isfile(bbox_path):
-    # #             time.sleep(0.01)
-    # #             continue
-    # #         time.sleep(0.05)
-    # #         img = np.asarray(cv2.imread(bbox_path))
-    # #         return img
-    # #     else:  # Image with BBox (from YOLOv3 only)
-    # #         return raw_frame
-    #
-    # # Show real-time image result (EagleEYE v2: GLOBECOM Conference 2020)
-    # def __viewer_v2(self, raw_frame, frame_id):
-    #     try:
-    #         t0_pihlocfet = time.time()
-    #         pih_gen = PIHLocationFetcher(self.opt, raw_frame, frame_id, self.total_pih_candidates,
-    #                                      self.period_pih_candidates)
-    #         pih_gen.run()
-    #         self.total_pih_candidates = pih_gen.get_total_pih_candidates()
-    #         self.period_pih_candidates = pih_gen.get_period_pih_candidates()
-    #         t_pihlocfet = time.time() - t0_pihlocfet
-    #         print("Latency [PiH Location Fetcher] of frame-%d: (%.5fs)" % (frame_id, t_pihlocfet))
-    #     except Exception as e:
-    #         print("ERRRPR: ", e)
-    #     return raw_frame

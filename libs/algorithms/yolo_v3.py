@@ -11,6 +11,7 @@ from redis import StrictRedis
 import json
 from libs.settings import common_settings
 from libs.addons.redis.translator import redis_set, redis_get
+from libs.addons.redis.utils import store_latency, store_fps
 import imagezmq
 
 
@@ -24,6 +25,7 @@ class YOLOv3:
         self.t0 = None
         self.str_output = ""
         self.classify = False
+        self.total_proc_frames = 0
 
         # (320, 192) or (416, 256) or (608, 352) for (height, width)
         self.img_size = (320, 192) if ONNX_EXPORT else opt.img_size
@@ -388,31 +390,35 @@ class YOLOv3:
         '''
 
         try:
-            # print(" @@@@ self.pred: ", self.pred)
             for i, det in enumerate(self.pred):  # detections per image
-                self.save_path = self.opt.output + "/" + str(this_frame_id) + ".png" #+ "data/5g-dive/tmp/hasil.png"
-                # self.save_path = "data/5g-dive/tmp/hasil.png"
+                self.save_path = self.opt.output + "/" + str(this_frame_id) + ".png"
                 self.str_output += '%gx%g ' % img.shape[2:]  # print string
-                # print(" ### self.str_output:", self.str_output)
                 if det is not None and len(det):
                     # Rescale boxes from img_size to im0 size
                     det[:, :4] = scale_coords(img.shape[2:], det[:, :4], im0s.shape).round()
 
                     ts_mbbox = time.time()
-                    # if self.mbbox_algorithm:
                     if self.opt.mbbox_detection:
-                        # self.__mbbox_detection(det, img, this_frame_id)  # modifying Mb-box
                         self.__mbbox_detection(det, im0s, this_frame_id)  # modifying Mb-box
                     t_mbbox = time.time() - ts_mbbox
                     self.time_mbbox += t_mbbox
                     self.time_mbbox_list.append(t_mbbox)
 
-                    # ts_default = time.time()
+                    # Store total processed frames
+                    self.total_proc_frames += 1
+                    t_proc_frames_key = "total-proc-frames-w%s-%s" % (str(self.opt.sub_channel), str(self.opt.drone_id))
+                    store_latency(self.rc_latency, t_proc_frames_key, self.total_proc_frames)
+
+                    # FPS each worker
+                    fps_worker_key = "fps-worker-%s" % str(self.opt.sub_channel)
+                    _, current_fps_worker = store_fps(self.rc_latency, fps_worker_key, self.opt.drone_id,
+                                                      total_frames=self.total_proc_frames)
+                    print('Current [FPS of Worker-%s] with total %d frames: (%.2f fps)' % (
+                            self.opt.sub_channel, self.total_proc_frames, current_fps_worker))
+
                     if not self.opt.maximize_latency:
                         if self.opt.default_detection:
                             self.__default_detection(det, im0s, this_frame_id)
-                            # self.__default_detection(det, img)
-                    # t_default = time.time() - ts_default
                     t_default = time.time() - ts_det - t_mbbox
                     self.time_default += t_default
                     self.time_default_list.append(t_default)
@@ -420,7 +426,8 @@ class YOLOv3:
                     # Latency: Default Detection
                     print('Latency [Default Detection] of frame-%s: (%.5fs)' % (str(this_frame_id), t_default))
                     t_default_key = "draw2bbox-" + str(self.opt.drone_id) + "-" + str(this_frame_id)
-                    redis_set(self.rc_latency, t_default_key, t_default)
+                    store_latency(self.rc_latency, t_default_key, t_default)
+                    # redis_set(self.rc_latency, t_default_key, t_default)
 
                     # Print time (inference + NMS)
                     # print('%sDone. (%.3fs)' % (self.str_output, time.time() - t))
@@ -432,11 +439,13 @@ class YOLOv3:
 
                     # Save end latency calculation
                     t_end_key = "end-" + str(self.opt.drone_id)
-                    redis_set(self.rc_latency, t_end_key, time.time())
+                    # redis_set(self.rc_latency, t_end_key, time.time())
+                    store_latency(self.rc_latency, t_end_key, time.time())
 
                     # Mark last processed frame
                     t_last_frame_key = "last-" + str(self.opt.drone_id)
-                    redis_set(self.rc_latency, t_last_frame_key, int(this_frame_id))
+                    # redis_set(self.rc_latency, t_last_frame_key, int(this_frame_id))
+                    store_latency(self.rc_latency, t_last_frame_key, int(this_frame_id))
 
                     # # latency: End-to-end Latency, each frame
                     # t_sframe_key = "start-fi-" + str(self.opt.drone_id)  # to calculate end2end latency each frame.
@@ -449,31 +458,33 @@ class YOLOv3:
                     self.__save_results(im0s, None, self.frame_id, tcp_img=True)
 
                     # Get total captured frames
-                    t_total_frames_key = "total-frames-" + str(self.opt.drone_id)
-                    total_frames = redis_get(self.rc_latency, t_total_frames_key)
+                    # t_total_frames_key = "total-frames-" + str(self.opt.drone_id)
+                    # total_frames = redis_get(self.rc_latency, t_total_frames_key)
 
                     # latency: End-to-end Latency TOTAL
-                    t_start_key = "start-" + str(self.opt.drone_id)
-                    t_end2end = redis_get(self.rc_latency, t_end_key) - redis_get(self.rc_latency, t_start_key)
-                    t_e2e_key = "end2end-" + str(self.opt.drone_id)
-                    redis_set(self.rc_latency, t_e2e_key, t_end2end)
-                    # print('\nLatency [E2E] of frame-%s: (%.5fs)' % (str(this_frame_id), t_end2end))
-                    print('Latency [E2E] with total %d frames: (%.5fs); Now in frame=%d' %
-                          (total_frames, t_end2end, this_frame_id))
+                    # t_start_key = "start-" + str(self.opt.drone_id)
+                    # t_end2end = redis_get(self.rc_latency, t_end_key) - redis_get(self.rc_latency, t_start_key)
+                    # t_e2e_key = "end2end-" + str(self.opt.drone_id)
+                    # redis_set(self.rc_latency, t_e2e_key, t_end2end)
+                    # # print('\nLatency [E2E] of frame-%s: (%.5fs)' % (str(this_frame_id), t_end2end))
+                    # print('Latency [E2E] with total %d frames: (%.5fs); Now in frame=%d' %
+                    #       (total_frames, t_end2end, this_frame_id))
 
                     # Calculate current FPS
-                    # current_fps = round((t_end2end / total_frames), 2)
-                    time_per_frame = total_frames / t_end2end
-                    current_fps = 1000 / time_per_frame
-                    current_fps = round(current_fps, 2)
-                    print('Current [FPS] with total %d frames: (%.2f fps)' % (total_frames, current_fps))
+                    # time_per_frame = total_frames / t_end2end
+                    # current_fps = 1000 / time_per_frame
+                    # current_fps = round(current_fps, 2)
+                    # fps_key = "fps-" + str(self.opt.drone_id) + "-" + str(this_frame_id)
+                    # total_frames, current_fps = store_fps(self.rc_latency, fps_key, self.opt.drone_id)
+                    # print('Current [FPS] with total %d frames: (%.2f fps)' % (total_frames, current_fps))
+                    # # redis_set(self.rc_latency, fps_key, current_fps)
 
                     # Publish to PLF (PiH Location Fetcher) to notify that it's done.
                     plf_detection_channel = "PLF-%d-%d" % (self.opt.drone_id, this_frame_id)
                     redis_set(self.rc_data, plf_detection_channel, True, 10)  # expired in 10 seconds
 
         except Exception as e:
-            print("ERRRROOORR Pred: ", e)
+            print("ERROR Pred: ", e)
 
     def __default_detection(self, det, im0, this_frame_id):
         if self.opt.default_detection:
@@ -505,8 +516,9 @@ class YOLOv3:
                 }
                 bbox_data.append(this_bbox)
 
-                if self.save_img or self.view_img:  # Add bbox to image
-                    plot_one_box(xyxy, im0, label=this_label, color=this_color)
+                # disable plot bbox, since PiH Location Fetcher will do the work!
+                # if self.save_img or self.view_img:  # Add bbox to image
+                #     plot_one_box(xyxy, im0, label=this_label, color=this_color)
 
             # store bbox information
             self.__store_mbbox_coord(this_frame_id, bbox_data, is_reg_bbox=True)

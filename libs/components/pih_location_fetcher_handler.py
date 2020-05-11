@@ -38,7 +38,6 @@ class PIHLocationFetcherHandler(MyRedis):
     def __set_plf_receiver(self):
         url = 'tcp://127.0.0.1:' + str(self.opt.pih_location_fetcher_port)
         self.frame_receiver = imagezmq.ImageHub(open_port=url, REQ_REP=False)
-        # self.plf_receiver_channel = "plf-sender"
 
     def run(self):
         self.watch_frame_sender()
@@ -58,14 +57,11 @@ class PIHLocationFetcherHandler(MyRedis):
             else:
                 frame_data = json.loads(item["data"])
                 self.capture_extracted_frame_data(frame_data)
-                print(" --- `Frame Data` has been sent; DATA=", frame_data)
+                # print(" --- `Frame Data` has been sent; DATA=", frame_data)
                 self.watch_frame_receiver()
 
     def __is_detection_finished(self):
-        # print(" ## @ __is_detection_finished")
         plf_detection_channel = "PLF-%d-%d" % (self.drone_id, self.frame_id)
-        # print("$$ plf_detection_channel:", plf_detection_channel)
-        # detection_result = None
         is_detection_finished = False
         while not is_detection_finished:
             is_detection_finished = redis_get(self.rc_data, plf_detection_channel)
@@ -87,11 +83,9 @@ class PIHLocationFetcherHandler(MyRedis):
 
     def send_to_visualizer(self):
         print("~~~ \t This class is expected to send image (TCP) into GUI (main_visualizer.py)")
-        # self.__set_visual_sender()
         this_visualizer_status_channel = "visualizer-status-" + str(self.drone_id)
 
         t0_sender = time.time()
-        # self.visual_sender.send_image(str(self.frame_id), self.plotted_img)
         idx_vsender = self.drone_id - 1
         self.visual_sender[idx_vsender].send_image(str(self.frame_id), self.plotted_img)
         t_recv = time.time() - t0_sender
@@ -99,6 +93,7 @@ class PIHLocationFetcherHandler(MyRedis):
 
         if self.opt.enable_cv_out:
             data = {
+                "ts": time.time(),
                 "drone_id": self.drone_id,
                 "frame_id": self.frame_id
             }

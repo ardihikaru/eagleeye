@@ -8,6 +8,7 @@ if __name__ == "__main__":
 
     parser.add_argument('--window_width', type=int, default=1366, help='CV Window width size')
     parser.add_argument('--window_height', type=int, default=768, help='CV Window height size')
+    parser.add_argument('--wait_key', type=int, default=1, help='Wait key for the screen')
 
     opt = parser.parse_args()
     print(opt)
