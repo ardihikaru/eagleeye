@@ -7,24 +7,23 @@ if __name__ == "__main__":
     parser.add_argument('--auto_restart', type=bool, default=False, help='Auto Restart reader video')
     parser.add_argument('--disable_delay', type=bool, default=True, help='Enable/disable delay')
     parser.add_argument('--start_frame_id', type=int, default=1, help='Start frame ID')
-    parser.add_argument('--max_frames', type=int, default=57, help='Max Frames; Set value=999999 to have unlimited loop')
+    parser.add_argument('--max_frames', type=int, default=57, help='Max Frames; This parameter is ignored when `is_unlimited`=True')
+    parser.add_argument('--is_unlimited', type=bool, default=True, help='Loop forever')
 
-    # parser.add_argument("--enable_cv_out", type=bool, default=False, help="Enable/disable Output video streaming")
-    parser.add_argument("--enable_cv_out", type=bool, default=True, help="Enable/disable Output video streaming")
-    parser.add_argument('--viewer_version', type=int, default=2, help='Viewer version to show real-time image processing')
-    parser.add_argument('--viewer_width', type=int, default=1366, help='Viewer width size')
-    parser.add_argument('--viewer_height', type=int, default=768, help='Viewer height size')
-    parser.add_argument('--viewer_all_bbox', type=bool, default=True, help='Viewer results both from YOLOv3 and MOD')
+    parser.add_argument('--pih_location_fetcher_port', type=int, default=5571, help='ZMQ Viewer port')
+
+    # Better do not change this
+    parser.add_argument("--enable_cv_out", type=bool, default=True,
+                        help="Enable/disable Output video streaming; run `viewer.py` to see the results")
+
+    # Change to fit your need / scenario
+    parser.add_argument('--visual_type', type=int, default=3, help='Type_1=YOLO; Type_2=MOD; Type_3=YOLO+MOD; otherwise=No BBox')
 
     parser.add_argument('--drone_id', type=int, default=1, help='Drone ID')
     parser.add_argument("--total_workers", type=int, default=1, help="path to dataset")
 
-    parser.add_argument("--enable_mbbox", type=bool, default=True, help="Enable/disable Output MB-Box-based video streaming")
-    # parser.add_argument("--enable_mbbox", type=bool, default=False, help="Enable/disable Output MB-Box-based video streaming")
-    parser.add_argument("--default_detection", type=bool, default=True, help="Enable/disable Output YOLOv3-based video streaming")
-
-    parser.add_argument("--delay", type=int, default=4, help="path to dataset")
-    # parser.add_argument("--delay", type=int, default=1, help="path to dataset")  # use this for GPU data
+    # parser.add_argument("--delay", type=int, default=4, help="Send frame into YOLO Network in every <delay> frames.")
+    parser.add_argument("--delay", type=int, default=1, help="Send frame into YOLO Network in every <delay> frames.")
 
     parser.add_argument("--output_folder", type=str, default="hasil/media/ramdisk/output/original/", help="path to save raw images")
 
@@ -37,8 +36,8 @@ if __name__ == "__main__":
     # YOLOv3 default configuration
     parser.add_argument('--device', default='', help='device id (i.e. 0 or 0,1) or cpu')
     parser.add_argument('--half', action='store_true', help='half precision FP16 inference')
-    # parser.add_argument("--img_size", type=int, default=416, help="size of each image dimension")
-    parser.add_argument("--img_size", type=int, default=832, help="size of each image dimension")
+    parser.add_argument("--img_size", type=int, default=416, help="size of each image dimension")
+    # parser.add_argument("--img_size", type=int, default=832, help="size of each image dimension")
 
     # Used only when source_type = "folder", otherwise it's not used
     parser.add_argument("--source_folder_prefix", type=str, default="out", help="source folder prefix")

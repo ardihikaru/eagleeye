@@ -41,7 +41,7 @@ if __name__ == '__main__':
                         help='Enabling/Disabling Save enlarged img')
 
     # Storing results
-    parser.add_argument('--output_txt', type=str, default=True, help='output txt information')  # output folder
+    parser.add_argument('--output_txt', type=str, default=False, help='output txt information')  # output folder
     parser.add_argument('--save_original_img', type=str, default=False, help='Enabling/Disabling Crop detected image')
     parser.add_argument('--save_crop_img', type=str, default=False, help='Enabling/Disabling Crop detected image')
     parser.add_argument('--save_bbox_img', type=str, default=False, help='Enabling/Disabling Store BBox image')
@@ -67,8 +67,8 @@ if __name__ == '__main__':
     parser.add_argument('--img_height', type=int, default=1080, help='Image Height')
 
     # YOLO configuration; We trained the training data with 832 pixels (Tim's said)
-    # parser.add_argument('--img-size', type=int, default=416, help='inference size (pixels)')
-    parser.add_argument('--img-size', type=int, default=832, help='inference size (pixels)')  ## (3, 480, 832)
+    parser.add_argument('--img-size', type=int, default=416, help='inference size (pixels)')
+    # parser.add_argument('--img-size', type=int, default=832, help='inference size (pixels)')  ## (3, 480, 832)
     # parser.add_argument('--img-size', type=int, default=1080, help='inference size (pixels)')  ## (3, 632, 1080)
     # parser.add_argument('--img-size', type=int, default=1920, help='inference size (pixels)')  ## (3, 1088, 1920)
     # parser.add_argument('--img-size', type=int, default=832, help='inference size (pixels)')
