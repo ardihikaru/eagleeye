@@ -83,11 +83,11 @@ class PIHLocationFetcher(MyRedis):
 
     def run(self):
         if self.visual_type == 3:
-            self.mbbox_coord = self.__get_mbbox_coord()
-            self.__plot_mbbox()
-
             self.bbox_coord = self.__get_bbox_coord()
             self.__plot_bbox()
+
+            self.mbbox_coord = self.__get_mbbox_coord()
+            self.__plot_mbbox()
         elif self.visual_type == 2:
             self.mbbox_coord = self.__get_mbbox_coord()
             self.__plot_mbbox()
