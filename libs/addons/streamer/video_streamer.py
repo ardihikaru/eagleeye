@@ -190,7 +190,7 @@ class VideoStreamer(MyRedis):
 
             self.zmq_sender[zid].send_image(str(frame_id), frame)
             t_recv = time.time() - t0_zmq
-            print('Latency [Send imagezmq] of frame-%s: (%.5fs)' % (str(frame_id), t_recv))
+            # print('Latency [Send imagezmq] of frame-%s: (%.5fs)' % (str(frame_id), t_recv))
 
             # Latency: capture publish frame information
             t0_pub2frame = time.time()
@@ -303,7 +303,7 @@ class VideoStreamer(MyRedis):
         t0_sender = time.time()
         self.frame_sender.send_image(str(frame_id), frame)
         t_recv = time.time() - t0_sender
-        print('Latency [Send Frame into PLF] of frame-%s: (%.5fs)' % (str(frame_id), t_recv))
+        # print('Latency [Send Frame into PLF] of frame-%s: (%.5fs)' % (str(frame_id), t_recv))
 
         if self.opt.enable_cv_out:
             data = {

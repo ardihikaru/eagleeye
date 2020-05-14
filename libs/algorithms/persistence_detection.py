@@ -23,12 +23,12 @@ class PersistenceDetection:
         self.pih_label = common_settings["bbox_config"]["pih_label"]
         self.selected_label = self.pih_label_cand  # Default
         self.det_status = self.pih_label + " object NOT FOUND"
-        print("\t[PERSISTENCE WINDOW=%d and TOLERANCE LIMIT=%d]"
-              % (self.persistence_window, self.tolerance_limit))
+        # print("\t[PERSISTENCE WINDOW=%d and TOLERANCE LIMIT=%d]"
+        #       % (self.persistence_window, self.tolerance_limit))
 
         # print current batch
         current_pih_batch = self.get_persistence_batch()
-        print("\t[CURRENT PiH BATCH]:", current_pih_batch)
+        # print("\t[CURRENT PiH BATCH]:", current_pih_batch)
 
     def __get_tolerance_limit(self):
         tolerance_percentage = common_settings["persistence_detection"]["tolerance_limit_percentage"]
@@ -69,14 +69,15 @@ class PersistenceDetection:
         if tolerance_count <= self.tolerance_limit:
             self.selected_label = self.pih_label
             self.det_status = self.pih_label + " object FOUND"
-            print("[DBG]\tPiH Detected! Set current frameID=%s Label as --> %s" % (str(self.cur_frame_id),
-                                                                                   self.pih_label))
+            # print("[DBG]\tPiH Detected! Set current frameID=%s Label as --> %s" % (str(self.cur_frame_id),
+            #                                                                        self.pih_label))
 
-            print("[DBG]\tpersistence_count=%d; tolerance_count=%d" % (persistence_count, tolerance_count))
+            # print("[DBG]\tpersistence_count=%d; tolerance_count=%d" % (persistence_count, tolerance_count))
         else:
-            print("[DBG]\tPiH not detected! Set current frameID=%s Label as --> %s" % (str(self.cur_frame_id),
-                                                                                       self.pih_label_cand))
-            print("[DBG]\tpersistence_count=%d; tolerance_count=%d" % (persistence_count, tolerance_count))
+            pass
+            # print("[DBG]\tPiH not detected! Set current frameID=%s Label as --> %s" % (str(self.cur_frame_id),
+            #                                                                            self.pih_label_cand))
+            # print("[DBG]\tpersistence_count=%d; tolerance_count=%d" % (persistence_count, tolerance_count))
 
     def get_label(self):
         return self.selected_label
