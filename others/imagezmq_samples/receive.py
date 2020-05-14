@@ -71,6 +71,8 @@ for item in pub_sub.listen():
             print(" .... DAPET GAK YAA")
             image_name, image = image_hub.recv_image()
             print(" ..... DAPET nih..")
+
+            # TO DO HERE ...
         except Exception as e:
             print("ada error ..", e)
 
