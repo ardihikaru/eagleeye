@@ -165,7 +165,7 @@ class YOLOv3:
         # Waiting for get the image information
         stream_ch = "stream_" + self.opt.sub_channel
         # print("\n### Waiting for get the image information @ Channel `%s`" % stream_ch)
-        print("\n[%s] Worker-%s: Ready`" % (get_current_time(), self.opt.sub_channel))
+        print("\n[%s] Worker-%s: Ready" % (get_current_time(), self.opt.sub_channel))
         pubsub = self.rc.pubsub()
         pubsub.subscribe([stream_ch])
         for item in pubsub.listen():

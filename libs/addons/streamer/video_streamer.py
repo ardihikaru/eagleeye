@@ -158,28 +158,33 @@ class VideoStreamer(MyRedis):
         # finally, set avalaible worker_id into `self.worker_id`
         # when all N workers are OFF, force stop this System!
 
+    def __worker_finder_v1(self):
+        while self.__worker_status() == 0:
+            if not self.opt.disable_delay:
+                time.sleep(self.wait_time)
+        return time.time()
+
     def __load_balancing(self, frame_id, frame):
         # Initially, send process into first worker
         self.worker_id += 1
         stream_channel = common_settings["redis_config"]["channel_prefix"] + str(self.worker_id)
 
-        # Check worker status first, please wait while still working
-        w = 0
+        # Check worker status first, please wait while worker-n still working
+        # TBD
         if redis_get(self.rc_data, self.worker_id) is None:
             print("This worker is OFF. Nothing to do")
             print("TBD next time: Should skip this worker and move to the next worker instead")
             self.__find_optimal_worker()
         else:
             # None = DISABLED; 1=Ready; 0=Busy
-            while self.__worker_status() == 0:
-                if not self.opt.disable_delay:
-                    time.sleep(self.wait_time)
-                w += self.wait_time
+            t0_wait = time.time()
+            t1_wait = self.__worker_finder_v1()
+            t_wait = round(((t1_wait - t0_wait) * 1000), 2)
+            print("[%s] select worker-%s (waiting time: %s ms)" % (get_current_time(), self.worker_id, t_wait))
 
             data = {
                 "frame_id": frame_id,
                 "worker_id": self.worker_id
-                # "img_path": save_path
             }
             p_mdata = json.dumps(data)
 
