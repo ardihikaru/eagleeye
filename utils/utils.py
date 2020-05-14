@@ -14,6 +14,7 @@ import torch.nn as nn
 import torchvision
 from tqdm import tqdm
 import csv
+from datetime import datetime
 
 from . import torch_utils  # , google_utils
 
@@ -1075,3 +1076,6 @@ def mbboxlist2dict(mbbox_data):
         dict_mbbox.append(this_bbox)
         idx += 1
     return dict_mbbox
+
+def get_current_time():
+    return datetime.now().strftime("%H:%M:%S")

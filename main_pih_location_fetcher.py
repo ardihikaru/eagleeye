@@ -10,7 +10,7 @@ if __name__ == "__main__":
     parser.add_argument('--total_drones', type=int, default=1, help='Total number of drones')
 
     opt = parser.parse_args()
-    print(opt)
+    # print(opt)
 
     plf_handler = PIHLocationFetcherHandler(opt)
     plf_handler.run()

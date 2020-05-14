@@ -234,8 +234,8 @@ if __name__ == '__main__':
     parser.add_argument('--enable_e2e', type=bool, default=False, help='Enable End-to-end calculation') # `value` += `avg_frame`
     parser.add_argument('--to_ms', type=bool, default=True, help='Convert value (from seconds) into miliseconds')
     parser.add_argument('--drone_id', type=int, default=1, help='Drone ID')
-    parser.add_argument("--output_csv", type=str, default="hasil/media/ramdisk/csv/", help="path to save the graphs")
+    parser.add_argument("--output_csv", type=str, default="exported_data/csv/", help="path to save the exported csv files")
     opt = parser.parse_args()
-    print(opt)
+    # print(opt)
 
     ExportLatency(opt).run()

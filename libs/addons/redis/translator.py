@@ -88,6 +88,6 @@ def frame_producer(my_redis, frame_id, ret, frame, save_path, channel, rc_latenc
 
 
         # Latency: capture publish frame information
-        print('Latency [Publish frame info] of frame-%s: (%.5fs)' % (str(frame_id), t_pub2frame))
+        # print('Latency [Publish frame info] of frame-%s: (%.5fs)' % (str(frame_id), t_pub2frame))
         t_pub2frame_key = "pub2frame-" + str(drone_id) + "-" + str(frame_id)
         redis_set(rc_latency, t_pub2frame_key, t_pub2frame)

@@ -111,7 +111,21 @@ class PIHLocationFetcher(MyRedis):
 
     def __plot_fps_info(self, img_width):
         x_coord, y_coord = (img_width - 150), 30
-        visualizer_fps = get_visualizer_fps(self.rc_latency, self.drone_id)
+        # visualizer_fps = get_visualizer_fps(self.rc_latency, self.drone_id)
+
+        # t0_frame_key = "t0-frame-" + str(self.drone_id) + "-" + str(self.frame_id)
+        t_start_key = "start-" + str(self.drone_id)
+        # t0 = redis_get(self.rc_latency, t0_frame_key)
+        t0 = redis_get(self.rc_latency, t_start_key)
+        # t1 = time.time()
+        t1 = time.time()
+        t_elapsed = t1 - t0
+        visualizer_fps = int(self.frame_id) / t_elapsed
+
+        fps_visualizer_key = "fps-visualizer-%s" % str(self.drone_id)
+        redis_set(self.rc_latency, fps_visualizer_key, visualizer_fps)
+
+        # visualizer_fps = 1.0 / (t1 - t0)
 
         # Set labels
         if visualizer_fps is None:
@@ -176,11 +190,18 @@ class PIHLocationFetcher(MyRedis):
                 plot_one_box(fl_bbox, self.img, label=label, color=color)  # plot bbox
 
         t_plot_bbox = time.time() - t0_plot_bbox
-        print("Latency [Plot YOLOv3 BBox] of frame-%d: (%.5fs)" % (self.frame_id, t_plot_bbox))
+        # print("Latency [Plot YOLOv3 BBox] of frame-%d: (%.5fs)" % (self.frame_id, t_plot_bbox))
 
     def __plot_mbbox(self):
         t0_plot_mbbox = time.time()
         if len(self.mbbox_coord) > 0:  # MBBox exist!
+
+            long = self.gps_data["gps"]["long"]
+            lat = self.gps_data["gps"]["lat"]
+            alt = self.gps_data["gps"]["alt"]
+
+            print("[%s] PiH FOUND at frame-%d (Long=%s; Lat=%s; Alt=%s)\n" %
+                  (get_current_time(), int(self.frame_id), str(long), str(lat), str(alt)))
             t0_pers_det = time.time()
             self.total_pih_candidates += 1
             self.period_pih_candidates.append(int(self.frame_id))
@@ -189,8 +210,8 @@ class PIHLocationFetcher(MyRedis):
             self.__maintaince_period_pih_cand(pers_det.get_persistence_window())
 
             # Get Latency of [Persistance Detection]
-            t_pers_det = time.time() - t0_pers_det
-            print("Latency [Persistance Detection] of frame-%d: (%.5fs)" % (self.frame_id, t_pers_det))
+            # t_pers_det = time.time() - t0_pers_det
+            # print("Latency [Persistance Detection] of frame-%d: (%.5fs)" % (self.frame_id, t_pers_det))
 
             pers_det.run()
             self.selected_label = pers_det.get_label()
@@ -202,7 +223,7 @@ class PIHLocationFetcher(MyRedis):
                 plot_one_box(fl_mbbox, self.img, label=self.selected_label, color=self.rgb_mbbox)  # plot bbox
 
         t_plot_mbbox = time.time() - t0_plot_mbbox
-        print("Latency [Plot MBBox] of frame-%d: (%.5fs)" % (self.frame_id, t_plot_mbbox))
+        # print("Latency [Plot MBBox] of frame-%d: (%.5fs)" % (self.frame_id, t_plot_mbbox))
 
     def __maintaince_period_pih_cand(self, persistence_window):
         if len(self.period_pih_candidates) > persistence_window:

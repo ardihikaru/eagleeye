@@ -1,3 +1,21 @@
+## 1.2.0 (May 15, 2020)
+  - Merge branch 'feature/eagleeyev2' into develop
+  - automate read number of collected drone data
+  - update saved image path; update exported file path
+  - disable log
+  - update log information
+  - bug fixed: infinite loop when waiting the bbox result from yolo network
+  - fixed infinite loop when waiting available worker
+  - moved and denoted as worker_finder() function
+  - update logs;
+  - updated logs in PiH location fetcher
+  - revised logs in yolo worker
+  - revised stored fps information; update log in visualizer
+  - update log
+  - updated FPS calculation
+  - bug fixed: show GPS information; bug show in visualizer
+  - Merge branch 'release-1.1' into develop
+
 ## 1.1.0 (May 12, 2020)
   - Merge branch 'feature/eagleeyev2' into develop
   - changed frame extractor into thread-based frame extractor

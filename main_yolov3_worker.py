@@ -12,7 +12,7 @@ if __name__ == '__main__':
     parser.add_argument('--drone_id', type=int, default=1, help='Drone ID')
     parser.add_argument('--sub_channel', type=str, default="1", help='Redis Subscriber channel')
     parser.add_argument('--plot_latency', type=bool, default=True, help='Save latency result into Graph')
-    parser.add_argument('--latency_output', type=str, default="hasil/media/ramdisk/saved_latency/tmp",
+    parser.add_argument('--latency_output', type=str, default="output/saved_latency/tmp",
                         help='Output location for latency results')
 
     parser.add_argument('--maximize_latency', type=bool, default=False,
@@ -48,13 +48,13 @@ if __name__ == '__main__':
     parser.add_argument('--save_mbbox_img', type=str, default=False, help='Enabling/Disabling Store MBBox image')
 
     # Storage result directory
-    parser.add_argument('--bbox_dir', type=str, default="hasil/media/ramdisk/output/bbox",
+    parser.add_argument('--bbox_dir', type=str, default="output/bbox",
                         help='Raw image output')
-    parser.add_argument('--frames_dir', type=str, default="hasil/media/ramdisk/output/original",
+    parser.add_argument('--frames_dir', type=str, default="output/original",
                         help='BBox image output')
-    parser.add_argument('--mbbox_output', type=str, default="hasil/media/ramdisk/output/mbbox",
+    parser.add_argument('--mbbox_output', type=str, default="output/mbbox",
                         help='MMBox image output')
-    parser.add_argument('--output', type=str, default='hasil/media/ramdisk/output', help='Root output folder')
+    parser.add_argument('--output', type=str, default='output', help='Root output folder')
 
 
     parser.add_argument('--cfg', type=str, default='yolo-obj-v5.cfg', help='*.cfg path')
@@ -84,7 +84,7 @@ if __name__ == '__main__':
     parser.add_argument('--classes', nargs='+', type=int, help='filter by class')
     parser.add_argument('--agnostic-nms', action='store_true', help='class-agnostic NMS')
     opt = parser.parse_args()
-    print(opt)
+    # print(opt)
 
     with torch.no_grad():
         YOLOv3(opt).waiting_frames()
