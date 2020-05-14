@@ -63,10 +63,14 @@ class PIHLocationFetcherHandler(MyRedis):
     def __is_detection_finished(self):
         plf_detection_channel = "PLF-%d-%d" % (self.drone_id, self.frame_id)
         is_detection_finished = False
-        while not is_detection_finished:
-            is_detection_finished = redis_get(self.rc_data, plf_detection_channel)
-            if is_detection_finished is None:
-                is_detection_finished = False
+        pub_sub_sender = self.rc.pubsub()
+        pub_sub_sender.subscribe([plf_detection_channel])
+        for item in pub_sub_sender.listen():
+            if isinstance(item["data"], int):
+                pass
+            else:
+                is_detection_finished = True
+                break
         return is_detection_finished
 
     # Send by: `video_streamer.py`

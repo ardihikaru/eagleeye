@@ -490,7 +490,8 @@ class YOLOv3:
 
                     # Publish to PLF (PiH Location Fetcher) to notify that it's done.
                     plf_detection_channel = "PLF-%d-%d" % (self.opt.drone_id, this_frame_id)
-                    redis_set(self.rc_data, plf_detection_channel, True, 10)  # expired in 10 seconds
+                    pub(self.rc, plf_detection_channel, "ok")
+                    # redis_set(self.rc_data, plf_detection_channel, True, 10)  # expired in 10 seconds
 
         except Exception as e:
             print("ERROR Pred: ", e)
