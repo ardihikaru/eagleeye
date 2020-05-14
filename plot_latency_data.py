@@ -96,8 +96,8 @@ class Plot:
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--num_drones', type=int, default=2, help='Number of Drones')
-    parser.add_argument("--output_graph", type=str, default="hasil/media/ramdisk/plot/", help="path to save the graphs")
+    parser.add_argument("--output_graph", type=str, default="exported_data/plot/", help="path to save the graphs")
     opt = parser.parse_args()
-    print(opt)
+    # print(opt)
 
     Plot(opt).run()

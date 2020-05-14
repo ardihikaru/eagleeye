@@ -25,12 +25,12 @@ if __name__ == "__main__":
     # parser.add_argument("--delay", type=int, default=4, help="Send frame into YOLO Network in every <delay> frames.")
     parser.add_argument("--delay", type=int, default=1, help="Send frame into YOLO Network in every <delay> frames.")
 
-    parser.add_argument("--output_folder", type=str, default="hasil/media/ramdisk/output/original/", help="path to save raw images")
+    parser.add_argument("--output_folder", type=str, default="output/original/", help="path to save raw images")
 
     # To show the result in GUI (Copied from worker_yolov3.py configuration)
-    parser.add_argument('--mbbox_output', type=str, default="hasil/media/ramdisk/output/mbbox",
+    parser.add_argument('--mbbox_output', type=str, default="output/mbbox",
                         help='MMBox image output')
-    parser.add_argument('--normal_output', type=str, default="hasil/media/ramdisk/output/bbox/",
+    parser.add_argument('--normal_output', type=str, default="output/bbox/",
                         help='Folder location to store bbox image')
 
     # YOLOv3 default configuration
