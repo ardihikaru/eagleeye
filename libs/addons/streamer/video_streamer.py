@@ -194,8 +194,8 @@ class VideoStreamer(MyRedis):
             # t1_wait = self.__worker_finder_v1()
             t1_wait = self.__worker_finder_v2()
             t_wait = round(((t1_wait - t0_wait) * 1000), 2)
-            print("[%s] Assign frame-%d into worker-%s (waiting time: %s ms)" %
-                  (get_current_time(), frame_id, self.worker_id, t_wait))
+            print("[%s] Assign D%d-frame-%d into worker-%s (waiting time: %s ms)" %
+                  (get_current_time(), self.opt.drone_id, frame_id, self.worker_id, t_wait))
 
             data = {
                 "frame_id": frame_id,
