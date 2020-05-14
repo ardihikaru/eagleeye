@@ -1,0 +1,43 @@
+Di HIDDEN:
+- Visualizer
+- Dummy GPS
+	- random variable  --> setiap 1 detik, increament 1
+
+YOLO WORKER:
+- Disable 
+  - print OPT
+  - Starting YOLOv3 image detector
+  - Latency load weight
+  - lat load eval model
+- ### Waiting for get the image information @ Channel `stream_2` --> Worker-2: Ready
+- Start processing to get MB-Box. --> - Received frame-xx
+- Latency [Inference] of frame-1103: (0.01671s) --> - [DONE] Inference of frame-xx (xx.xx ms)
+- Latency [NMS] of frame-1103: (0.00284s) --> DISABLED
+- Latency [MODv2] of frame-1103: (0.00348s) --> DISABLED
+- Current [FPS of Worker-1] with tota ---> DISABLED
+- Latency [Default Detection] of frame-1103: --> DISABLED
+- ### This Worker-1 is ready to serve again. --> Worker-2: Ready
+
+PiH Loc. FETCHER:
+- Latency [Plot YOLOv3 BBox] --> DISABLED
+- Latency [Plot MBBox] of frame- --> DISABLED
+- Latency [PiH Location Fetcher] --> DISABLED
+- Latency [Send Plotted Fra --> DISABLED
+- [PUBLISH Plotted --> DISABLED
+- [DBG]   window_data: --> DISABLED
+- [DBG]   PiH not detecte --> DISABLED
+- [DBG]   persistence_cou --> DISABLED
+- PiH FOUND at frame-xx (<timestamp>)
+- 	GPS: (Long: xxx; Lat: xxx; Alt: xx)
+- <enter 1x>
+
+Stream reader:
+-  ~~~~~~~~~~~~~~~~~~~~~~~~ --> Ganti <enter 1x>
+- Latency [Reading stream frame --> DISABLED
+- Latency [Send Frame into PLF --> DISABLED
+-     [PUBLISH Frame- --> DISABLED
+- Latency [Send imagezmq]  --> DISABLED
+- Latency [Publish frame info]  --> DISABLED
+- Current [FPS Load Balancer  --> DISABLED
+- Latency [Load Balance --> DISABLED
+- Received frame-xx (<timestamp>)
