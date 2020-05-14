@@ -196,7 +196,7 @@ class VideoStreamer(MyRedis):
             t0_pub2frame = time.time()
             pub(self.rc_data, stream_channel, p_mdata)
             t_pub2frame = time.time() - t0_pub2frame
-            print('Latency [Publish frame info] of frame-%s: (%.5fs)' % (str(frame_id), t_pub2frame))
+            # print('Latency [Publish frame info] of frame-%s: (%.5fs)' % (str(frame_id), t_pub2frame))
             t_pub2frame_key = "pub2frame-" + str(self.opt.drone_id) + "-" + str(frame_id)
             redis_set(self.rc_data, t_pub2frame_key, t_pub2frame)
 
@@ -207,8 +207,8 @@ class VideoStreamer(MyRedis):
         # FPS load frame of each worker
         fps_lb_key = "fps-load-balancer-%s" % str(self.opt.drone_id)
         total_frames, current_fps = store_fps(self.rc_latency, fps_lb_key, self.opt.drone_id)
-        print('Current [FPS Load Balancer of Drone-%d] with total %d frames: (%.2f fps)' % (
-            self.opt.drone_id, total_frames, current_fps))
+        # print('Current [FPS Load Balancer of Drone-%d] with total %d frames: (%.2f fps)' % (
+        #     self.opt.drone_id, total_frames, current_fps))
 
     def __start_streaming(self):
         n = 0
@@ -262,7 +262,8 @@ class VideoStreamer(MyRedis):
     def __process_image(self, ret, frame, frame_id, t0_frame, received_frame_id, n):
         # Latency: capture each frame
         t_frame = time.time() - t0_frame
-        print('Latency [Reading stream frame] of frame-%d: (%.5fs)' % (received_frame_id, t_frame))
+        # print('Latency [Reading stream frame] of frame-%d: (%.5fs)' % (received_frame_id, t_frame))
+
         t_frame_key = "frame-" + str(self.opt.drone_id) + "-" + str(frame_id)
         redis_set(self.rc_latency, t_frame_key, t_frame)
         is_break = False
@@ -273,6 +274,8 @@ class VideoStreamer(MyRedis):
                 # Start capturing here
                 if received_frame_id >= self.start_frame_id:
                     frame_id += 1
+
+                    print('[%s] Received frame-%d' % (get_current_time(), frame_id))
 
                     # Force stop after n frames; disabled when self.max_frames == 0
                     if not self.opt.is_unlimited:
@@ -286,7 +289,7 @@ class VideoStreamer(MyRedis):
                     t0_load_balancer = time.time()
                     self.__load_balancing(frame_id, frame)
                     t_load_bal = time.time() - t0_load_balancer
-                    print("Latency [Load Balancer] of frame-%d: (%.5fs)" % (frame_id, t_load_bal))
+                    # print("Latency [Load Balancer] of frame-%d: (%.5fs)" % (frame_id, t_load_bal))
 
             else:
                 print("IMAGE is INVALID.")
@@ -295,7 +298,8 @@ class VideoStreamer(MyRedis):
 
             n = 0
 
-        print(" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ")
+        print("")
+        # print(" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ")
 
         return n, frame_id, is_break
 
@@ -313,4 +317,4 @@ class VideoStreamer(MyRedis):
             }
             p_mdata = json.dumps(data)
             pub(self.rc_data, self.plf_send_status_channel, p_mdata)  # confirm PLF that frame-n has been sent
-        print('\t[PUBLISH Frame-%d into PLF]' % frame_id)
+        # print('\t[PUBLISH Frame-%d into PLF]' % frame_id)
