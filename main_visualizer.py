@@ -11,7 +11,7 @@ if __name__ == "__main__":
     parser.add_argument('--wait_key', type=int, default=1, help='Wait key for the screen')
 
     opt = parser.parse_args()
-    print(opt)
+    # print(opt)
 
     visualizer = Visualizer(opt)
     visualizer.run()

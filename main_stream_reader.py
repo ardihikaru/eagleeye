@@ -53,6 +53,6 @@ if __name__ == "__main__":
     # parser.add_argument("--source", type=str, default="http://127.0.0.1:10000/stream-1.flv", help="source")
     # parser.add_argument("--source", type=str, default="http://192.168.42.1/live", help="source")
     opt = parser.parse_args()
-    print(opt)
+    # print(opt)
 
     VideoStreamer(opt).run()
