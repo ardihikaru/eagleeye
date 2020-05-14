@@ -111,7 +111,12 @@ class PIHLocationFetcher(MyRedis):
 
     def __plot_fps_info(self, img_width):
         x_coord, y_coord = (img_width - 150), 30
-        visualizer_fps = get_visualizer_fps(self.rc_latency, self.drone_id)
+        # visualizer_fps = get_visualizer_fps(self.rc_latency, self.drone_id)
+
+        t0_frame_key = "t0-frame-" + str(self.drone_id) + "-" + str(self.frame_id)
+        t0 = redis_get(self.rc_latency, t0_frame_key)
+        t1 = time.time()
+        visualizer_fps = 1.0 / (t1 - t0)
 
         # Set labels
         if visualizer_fps is None:

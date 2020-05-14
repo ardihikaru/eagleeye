@@ -46,8 +46,11 @@ if __name__ == "__main__":
     parser.add_argument("--source_type", type=str, default="streaming", help="source type")
 
     # parser.add_argument("--source", type=str, default="data/5g-dive/57-frames/", help="source")
-    parser.add_argument("--source", type=str, default="data/5g-dive/videos/customTest_MIRC-Roadside-5s.mp4", help="source")
+    # parser.add_argument("--source", type=str, default="data/5g-dive/videos/customTest_MIRC-Roadside-5s.mp4", help="source")
+    # parser.add_argument("--source", type=str, default="data/5g-dive/videos/customTest_MIRC-Roadside-20s.mp4", help="source")
+    parser.add_argument("--source", type=str, default="data/5g-dive/videos/demo_video.MP4", help="source")
     # parser.add_argument("--source", type=str, default="http://192.168.0.50:10000/drone-1.flv", help="source")
+    # parser.add_argument("--source", type=str, default="http://127.0.0.1:10000/stream-1.flv", help="source")
     # parser.add_argument("--source", type=str, default="http://192.168.42.1/live", help="source")
     opt = parser.parse_args()
     print(opt)

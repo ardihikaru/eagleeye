@@ -239,6 +239,10 @@ class VideoStreamer(MyRedis):
                 ret = True
                 frame = self.cap.read()
 
+                # t0 each frame
+                t0_frame_key = "t0-frame-" + str(self.opt.drone_id) + "-" + str(frame_id)
+                redis_set(self.rc_latency, t0_frame_key, time.time())
+
                 n, frame_id, is_break = self.__process_image(ret, frame, frame_id,
                                                              t0_frame, received_frame_id, n)
 
