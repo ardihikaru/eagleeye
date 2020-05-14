@@ -38,40 +38,48 @@ class Plot:
 
         return this_latency
 
-    def __get_drone_ids(self):
+    def __get_drone_ids(self, num_drones):
         ids = []
-        for i in range(self.opt.num_drones):
+        for i in range(num_drones):
             drone_id = str((i+1))
             ids.append(drone_id)
         return tuple(ids)
 
-    def __get_latency_data(self):
+    def __get_latency_data(self, num_drones):
         data = []
-        for i in range(self.opt.num_drones):
+        for i in range(num_drones):
             drone_id = str(i+1)
             lat_data = self.extract_latency_data(drone_id)
             mean_lat_data = round(np.mean(np.array(lat_data)), 2)
             data.append(mean_lat_data)
         return data
 
-    def visualizer_latency_graph(self):
+    def visualizer_latency_graph(self, num_drones):
         fig = plt.figure()
-        title = "Average FPS; #Drones=%s" % str(self.opt.num_drones)
+        title = "Average FPS; #Drones=%s" % str(num_drones)
         plt.title(title)
-
-        drones_ids = self.__get_drone_ids()
+        drones_ids = self.__get_drone_ids(num_drones)
         y_pos = np.arange(len(drones_ids))
-        avg_latency_data = self.__get_latency_data()
+        avg_latency_data = self.__get_latency_data(num_drones)
 
         plt.bar(y_pos, avg_latency_data, align='center', alpha=0.5)
         plt.xticks(y_pos, drones_ids)
         plt.ylabel('Frame per Second (s)')
 
         plt.show()
-        fig.savefig(self.latency_output + 'Visualizer_latency_#Dr=%d.pdf' % self.opt.num_drones, dpi=fig.dpi)
+        fig.savefig(self.latency_output + 'Visualizer_latency_#Dr=%d.pdf' % num_drones, dpi=fig.dpi)
 
     def run(self):
-        self.visualizer_latency_graph()
+        num_drones = 0
+        csv_path = (self.opt.output_graph).replace("plot", "csv")
+        for subdir, dirs, files in os.walk(csv_path):
+            subdir_arr = subdir.split(csv_path)
+            if len(subdir_arr[1]) > 0:  # this is the drone_id
+                # drone_id = subdir_arr[1]
+                num_drones += 1
+
+        if num_drones > 0:
+            self.visualizer_latency_graph(num_drones)
 
         # to smooth the graph
         # self.discard_frame_one()
@@ -95,7 +103,6 @@ class Plot:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--num_drones', type=int, default=2, help='Number of Drones')
     parser.add_argument("--output_graph", type=str, default="exported_data/plot/", help="path to save the graphs")
     opt = parser.parse_args()
     # print(opt)
