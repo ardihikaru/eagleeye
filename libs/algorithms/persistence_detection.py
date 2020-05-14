@@ -105,7 +105,7 @@ class PersistenceDetection:
             if window_data.shape[0] < self.persistence_window:
                 break
 
-            print("[DBG]\twindow_data: %s" % str(window_data))
+            # print("[DBG]\twindow_data: %s" % str(window_data))
             self.persistence_module(window_data)
 
             if slider.reached_end_of_list():
