@@ -122,6 +122,9 @@ class PIHLocationFetcher(MyRedis):
         t_elapsed = t1 - t0
         visualizer_fps = int(self.frame_id) / t_elapsed
 
+        fps_visualizer_key = "fps-visualizer-%s" % str(self.drone_id)
+        redis_set(self.rc_latency, fps_visualizer_key, visualizer_fps)
+
         # visualizer_fps = 1.0 / (t1 - t0)
 
         # Set labels

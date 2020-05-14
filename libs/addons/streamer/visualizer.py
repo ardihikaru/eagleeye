@@ -5,6 +5,7 @@ from libs.addons.redis.my_redis import MyRedis
 from libs.addons.redis.utils import store_fps
 import simplejson as json
 import time
+from datetime import datetime
 
 
 class Visualizer(MyRedis):
@@ -59,21 +60,23 @@ class Visualizer(MyRedis):
                 # if t0 is None:
                 #     t0 = data["ts"]
                 # frame_id = total_frames
-                fps_visualizer_key = "fps-visualizer-%s" % str(data["drone_id"])
+                # fps_visualizer_key = "fps-visualizer-%s" % str(data["drone_id"])
                 # total_frames, current_fps = store_fps(self.rc_latency, fps_visualizer_key, data["drone_id"],
                 #                                       total_frames=int(data["frame_id"]), t0=t0)
 
                 t0_frame_key = "t0-frame-" + str(data["drone_id"]) + "-" + str(data["frame_id"])
                 # print(" --- t0_frame_key: ", t0_frame_key)
-                t0 = redis_get(self.rc_latency, t0_frame_key)
+                # t0 = redis_get(self.rc_latency, t0_frame_key)
+                #
+                # t1 = time.time()
+                # current_fps = 1.0 / (t1 - t0)
 
-                t1 = time.time()
-                current_fps = 1.0 / (t1 - t0)
-
+                frame_time = datetime.now().strftime("%H:%M:%S")
+                print("\n[%s] Received frame-%d" % (frame_time, int(data["frame_id"])))
                 # print('Current [FPS Visualizer of Drone-%d] with total %d frames: (%.2f fps)' % (
                 #     data["drone_id"], total_frames, current_fps))
-                print('Current [FPS Visualizer of Drone-%d] for frame-%s: (%.2f fps)' % (
-                    data["drone_id"], str(data["frame_id"]), current_fps))
+                # print('Current [FPS Visualizer of Drone-%d] for frame-%s: (%.2f fps)' % (
+                #     data["drone_id"], str(data["frame_id"]), current_fps))
                 # print('Latency [Visualize frame] of frame-%s: (%.5fs)' % (str(data["frame_id"]), current_fps))
 
             # if cv.waitKey(1) & 0xFF == ord('q'):
