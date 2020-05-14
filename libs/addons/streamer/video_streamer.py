@@ -164,6 +164,19 @@ class VideoStreamer(MyRedis):
                 time.sleep(self.wait_time)
         return time.time()
 
+    # use pubsub instead of infinite loop
+    def __worker_finder_v2(self):
+        if self.__worker_status() == 0:
+            pub_sub_sender = self.rc.pubsub()
+            worker_channel = "worker-%d" % self.worker_id
+            pub_sub_sender.subscribe([worker_channel])
+            for item in pub_sub_sender.listen():
+                if isinstance(item["data"], int):
+                    pass
+                else:
+                    break
+        return time.time()
+
     def __load_balancing(self, frame_id, frame):
         # Initially, send process into first worker
         self.worker_id += 1
@@ -178,9 +191,11 @@ class VideoStreamer(MyRedis):
         else:
             # None = DISABLED; 1=Ready; 0=Busy
             t0_wait = time.time()
-            t1_wait = self.__worker_finder_v1()
+            # t1_wait = self.__worker_finder_v1()
+            t1_wait = self.__worker_finder_v2()
             t_wait = round(((t1_wait - t0_wait) * 1000), 2)
-            print("[%s] select worker-%s (waiting time: %s ms)" % (get_current_time(), self.worker_id, t_wait))
+            print("[%s] Assign frame-%d into worker-%s (waiting time: %s ms)" %
+                  (get_current_time(), frame_id, self.worker_id, t_wait))
 
             data = {
                 "frame_id": frame_id,

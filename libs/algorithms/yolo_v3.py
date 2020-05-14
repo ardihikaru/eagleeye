@@ -10,7 +10,7 @@ from libs.algorithms.mod_v2 import MODv2
 from redis import StrictRedis
 import json
 from libs.settings import common_settings
-from libs.addons.redis.translator import redis_set, redis_get
+from libs.addons.redis.translator import redis_set, redis_get, pub
 from libs.addons.redis.utils import store_latency, store_fps
 import imagezmq
 
@@ -226,6 +226,8 @@ class YOLOv3:
                 redis_set(self.rc_data, self.opt.sub_channel, 1) # set as `Ready`
                 # print("\n### This Worker-%s is ready to serve again. \n\n" % self.opt.sub_channel)
                 print("\n[%s] Worker-%s: Ready" % (get_current_time(), self.opt.sub_channel))
+                worker_channel = "worker-%s" % self.opt.sub_channel
+                pub(self.rc, worker_channel, "ok")
 
                 # Set prev_fid as DONE
                 redis_set(self.rc_data, prev_fid, None) # set as `Ready`
