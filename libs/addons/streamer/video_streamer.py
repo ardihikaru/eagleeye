@@ -1,6 +1,6 @@
 import cv2 as cv
 import imagezmq
-from libs.addons.redis.translator import redis_get, redis_set, pub
+from libs.addons.redis.translator import redis_get, redis_set, pub, frame_producer
 from libs.addons.redis.utils import store_latency, store_fps
 from libs.settings import common_settings
 from libs.addons.redis.my_redis import MyRedis
@@ -9,6 +9,7 @@ from models import *  # set ONNX_EXPORT in models.py
 from utils.datasets import *
 import simplejson as json
 from imutils.video import FileVideoStream
+from multiprocessing import Process
 
 
 class VideoStreamer(MyRedis):
@@ -60,9 +61,13 @@ class VideoStreamer(MyRedis):
         self.plf_send_status_channel = "plf-send-status"
 
     def __set_zmq_visualizer_sender(self):
-        url = 'tcp://127.0.0.1:' + str(self.opt.visualizer_origin_port)
-        self.frame_sender_visualizer = imagezmq.ImageSender(connect_to=url, REQ_REP=False)
+        # url = 'tcp://127.0.0.1:' + str(self.opt.visualizer_origin_port)
+        # self.frame_sender_visualizer = imagezmq.ImageSender(connect_to=url, REQ_REP=False)
         self.visualizer_channel = "visualizer-origin-" + str(self.opt.drone_id)
+
+    def __run_async_video_reader(self):
+        Process(target=frame_producer, args=(self.rc_data, self.opt.source, self.opt.visual_type, self.opt.drone_id,
+                                             self.visualizer_channel, self.opt.visualizer_origin_port)).start()
 
     def run(self):
         if self.opt.source_type == "folder":
@@ -74,6 +79,9 @@ class VideoStreamer(MyRedis):
 
         else:
             print("\nReading video:")
+
+            self.__run_async_video_reader()
+
             while self.is_running:
                 try:
                     # self.cap = cv.VideoCapture(self.opt.source)
@@ -332,7 +340,7 @@ class VideoStreamer(MyRedis):
     def send_frame_data(self, frame, frame_id):
         # t0_sender = time.time()
         self.frame_sender.send_image(str(frame_id), frame)  # send into PLF component
-        self.frame_sender_visualizer.send_image(str(frame_id), frame)  # send into visualizer (original)
+        # self.frame_sender_visualizer.send_image(str(frame_id), frame)  # send into visualizer (original)
         # t_recv = time.time() - t0_sender
         # print('Latency [Send Frame into PLF] of frame-%s: (%.5fs)' % (str(frame_id), t_recv))
 
@@ -344,5 +352,5 @@ class VideoStreamer(MyRedis):
             }
             p_mdata = json.dumps(data)
             pub(self.rc_data, self.plf_send_status_channel, p_mdata)  # confirm PLF that frame-n has been sent
-            pub(self.rc_data, self.visualizer_channel, p_mdata)  # confirm Visualizer that frame-n has been sent
+            # pub(self.rc_data, self.visualizer_channel, p_mdata)  # confirm Visualizer that frame-n has been sent
         # print('\t[PUBLISH Frame-%d into PLF]' % frame_id)
