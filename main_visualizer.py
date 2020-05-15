@@ -13,6 +13,9 @@ if __name__ == "__main__":
     parser.add_argument('--original', dest='original', action='store_true', help='Only show original output stream')
     parser.set_defaults(original=False)
 
+    parser.add_argument('--small', dest='small', action='store_true', help='Show 1/4 of the monitor resolution')
+    parser.set_defaults(small=True)
+
     opt = parser.parse_args()
     # print(opt)
 

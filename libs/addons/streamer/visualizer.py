@@ -28,10 +28,30 @@ class Visualizer(MyRedis):
         url = 'tcp://127.0.0.1:' + port
         self.original_img_receiver = imagezmq.ImageHub(open_port=url, REQ_REP=False)
 
+    def __set_window_position(self, is_obj_det):
+        x, y = 0, 0
+        if self.opt.small:
+            x = int(self.opt.window_width / 2) + 40
+            if is_obj_det:
+                y = int(self.opt.window_width / 4) + 80
+        cv.moveWindow("Image", x, y)
+
+    def __set_window_size(self):
+        width = self.opt.window_width
+        height = self.opt.window_height
+        ignored_width = 40
+        ignored_height = 40
+        if self.opt.small:
+            width = int(width / 2) - ignored_width
+            height = int(height / 2) - ignored_height
+        cv.resizeWindow("Image", width, height)
+
     def __set_cv_window(self, is_obj_det):
         cv.namedWindow("Image", cv.WND_PROP_FULLSCREEN)
         cv.moveWindow("Image", 0, 0)
-        cv.resizeWindow("Image", self.opt.window_width, self.opt.window_height)
+        self.__set_window_position(is_obj_det)
+        # cv.resizeWindow("Image", self.opt.window_width, self.opt.window_height)
+        self.__set_window_size()
 
     def run(self):
         print("\nMonitoring realtime object detection:")
