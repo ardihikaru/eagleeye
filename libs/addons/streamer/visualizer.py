@@ -1,11 +1,12 @@
 import cv2 as cv
 import imagezmq
-from libs.addons.redis.translator import redis_get
+from libs.addons.redis.translator import redis_get, redis_set
 from libs.addons.redis.my_redis import MyRedis
-from libs.addons.redis.utils import store_fps
+from libs.addons.redis.utils import store_fps, get_gps_data
 import simplejson as json
 import time
 from datetime import datetime
+from utils.utils import plot_gps_info, plot_fps_info
 
 
 class Visualizer(MyRedis):
@@ -13,14 +14,21 @@ class Visualizer(MyRedis):
         super().__init__()
         self.opt = opt
         self.visualizer_status_channel = "visualizer-status-" + str(self.opt.drone_id)
+        self.visualizer_origin_channel = "visualizer-origin-" + str(self.opt.drone_id)
         self.__set_visual_receiver()
 
     def __set_visual_receiver(self):
+        # frame + obj. detection
         port = self.opt.visualizer_port_prefix + str(self.opt.drone_id)
         url = 'tcp://127.0.0.1:' + port
         self.plotted_img_receiver = imagezmq.ImageHub(open_port=url, REQ_REP=False)
 
-    def __set_cv_window(self):
+        # original frame
+        port = self.opt.visualizer_port_prefix + "0"
+        url = 'tcp://127.0.0.1:' + port
+        self.original_img_receiver = imagezmq.ImageHub(open_port=url, REQ_REP=False)
+
+    def __set_cv_window(self, is_obj_det):
         cv.namedWindow("Image", cv.WND_PROP_FULLSCREEN)
         cv.moveWindow("Image", 0, 0)
         cv.resizeWindow("Image", self.opt.window_width, self.opt.window_height)
@@ -28,16 +36,18 @@ class Visualizer(MyRedis):
     def run(self):
         print("\nMonitoring realtime object detection:")
         try:
-            # self.__set_cv_window()
-            self.watch_incoming_frames()
+            if self.opt.original:
+                self.watch_incoming_frames(self.visualizer_origin_channel)
+            else:
+                self.watch_incoming_frames(self.visualizer_status_channel, is_obj_det=True)
         except:
             print("\nUnable to communicate with the Streaming. Restarting . . .")
             cv.destroyAllWindows()
 
     # Sent by: `pih_location_fetcher_handler.py`
-    def watch_incoming_frames(self):
+    def watch_incoming_frames(self, channel, is_obj_det=False):
         pub_sub_sender = self.rc_data.pubsub()
-        pub_sub_sender.subscribe([self.visualizer_status_channel])
+        pub_sub_sender.subscribe([channel])
 
         is_start = False
         # t0 = None
@@ -49,12 +59,23 @@ class Visualizer(MyRedis):
                 if not is_start:
                     is_start = True
                     # t0 = time.time()
-                    self.__set_cv_window()
+                    self.__set_cv_window(is_obj_det)
 
                 data = self.__extract_json_data(item["data"])
 
-                _, processed_img = self.plotted_img_receiver.recv_image()
-                cv.imshow("Image", processed_img)
+                if is_obj_det:
+                    _, img = self.plotted_img_receiver.recv_image()
+                    # _, processed_img = self.plotted_img_receiver.recv_image()
+                else:
+                    _, img = self.original_img_receiver.recv_image()
+                    img_height, img_width, _ = img.shape
+                    gps_data = get_gps_data(self.rc_gps, data["drone_id"])
+                    img = plot_fps_info(img_width, data["drone_id"], data["frame_id"], self.rc_latency, img,
+                                        redis_set, redis_get)
+                    plot_gps_info(img_height, gps_data, "-", img)
+
+                # cv.imshow("Image", processed_img)
+                cv.imshow("Image", img)
 
                 # FPS load frame of each worker
                 # if t0 is None:
@@ -64,7 +85,7 @@ class Visualizer(MyRedis):
                 # total_frames, current_fps = store_fps(self.rc_latency, fps_visualizer_key, data["drone_id"],
                 #                                       total_frames=int(data["frame_id"]), t0=t0)
 
-                t0_frame_key = "t0-frame-" + str(data["drone_id"]) + "-" + str(data["frame_id"])
+                # t0_frame_key = "t0-frame-" + str(data["drone_id"]) + "-" + str(data["frame_id"])
                 # print(" --- t0_frame_key: ", t0_frame_key)
                 # t0 = redis_get(self.rc_latency, t0_frame_key)
                 #

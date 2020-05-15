@@ -7,17 +7,18 @@ if __name__ == "__main__":
     parser.add_argument('--auto_restart', type=bool, default=False, help='Auto Restart reader video')
     parser.add_argument('--disable_delay', type=bool, default=True, help='Enable/disable delay')
     parser.add_argument('--start_frame_id', type=int, default=1, help='Start frame ID')
-    parser.add_argument('--max_frames', type=int, default=57, help='Max Frames; This parameter is ignored when `is_unlimited`=True')
+    parser.add_argument('--max_frames', type=int, default=57, help='Max Frames; Ignored when `is_unlimited`=True')
     parser.add_argument('--is_unlimited', type=bool, default=True, help='Loop forever')
 
-    parser.add_argument('--pih_location_fetcher_port', type=int, default=5571, help='ZMQ Viewer port')
+    parser.add_argument('--pih_location_fetcher_port', type=int, default=5571, help='ZMQ Viewer port PLF')
+    parser.add_argument('--visualizer_origin_port', type=int, default=5580, help='ZMQ Viewer port Original Visualizer')
 
     # Better do not change this
     parser.add_argument("--enable_cv_out", type=bool, default=True,
                         help="Enable/disable Output video streaming; run `viewer.py` to see the results")
 
     # Change to fit your need / scenario
-    parser.add_argument('--visual_type', type=int, default=3, help='Type_1=YOLO; Type_2=MOD; Type_3=YOLO+MOD; otherwise=No BBox')
+    parser.add_argument('--visual_type', type=int, default=3, help='Type_1=YOLO; 2=MOD; 3=YOLO+MOD; otherwise=No BBox')
 
     parser.add_argument('--drone_id', type=int, default=1, help='Drone ID')
     parser.add_argument("--total_workers", type=int, default=1, help="path to dataset")

@@ -40,23 +40,29 @@ class VideoStreamer(MyRedis):
         os.makedirs(out_folder)  # make new output folder
 
         self.zmq_sender = []
-        self.__set_zmq_senders()
-        self.__set_plf_sender()
+        self.__set_zmq_worker_sender()
+        self.__set_zmq_plf_sender()
+        self.__set_zmq_visualizer_sender()
 
         self.total_pih_candidates = 0
         self.period_pih_candidates = []
 
-    def __set_zmq_senders(self):
+    def __set_zmq_worker_sender(self):
         for i in range(int(self.opt.total_workers)):
             url = 'tcp://127.0.0.1:555' + str((i + 1))
             sender = imagezmq.ImageSender(connect_to=url, REQ_REP=False)
             self.zmq_sender.append(sender)
 
     # PiH Location Fetcher (plf)
-    def __set_plf_sender(self):
+    def __set_zmq_plf_sender(self):
         url = 'tcp://127.0.0.1:' + str(self.opt.pih_location_fetcher_port)
         self.frame_sender = imagezmq.ImageSender(connect_to=url, REQ_REP=False)
         self.plf_send_status_channel = "plf-send-status"
+
+    def __set_zmq_visualizer_sender(self):
+        url = 'tcp://127.0.0.1:' + str(self.opt.visualizer_origin_port)
+        self.frame_sender_visualizer = imagezmq.ImageSender(connect_to=url, REQ_REP=False)
+        self.visualizer_channel = "visualizer-origin-" + str(self.opt.drone_id)
 
     def run(self):
         if self.opt.source_type == "folder":
@@ -324,9 +330,10 @@ class VideoStreamer(MyRedis):
         return n, frame_id, is_break
 
     def send_frame_data(self, frame, frame_id):
-        t0_sender = time.time()
-        self.frame_sender.send_image(str(frame_id), frame)
-        t_recv = time.time() - t0_sender
+        # t0_sender = time.time()
+        self.frame_sender.send_image(str(frame_id), frame)  # send into PLF component
+        self.frame_sender_visualizer.send_image(str(frame_id), frame)  # send into visualizer (original)
+        # t_recv = time.time() - t0_sender
         # print('Latency [Send Frame into PLF] of frame-%s: (%.5fs)' % (str(frame_id), t_recv))
 
         if self.opt.enable_cv_out:
@@ -337,4 +344,5 @@ class VideoStreamer(MyRedis):
             }
             p_mdata = json.dumps(data)
             pub(self.rc_data, self.plf_send_status_channel, p_mdata)  # confirm PLF that frame-n has been sent
+            pub(self.rc_data, self.visualizer_channel, p_mdata)  # confirm Visualizer that frame-n has been sent
         # print('\t[PUBLISH Frame-%d into PLF]' % frame_id)
