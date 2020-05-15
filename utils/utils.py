@@ -1131,7 +1131,8 @@ def plot_gps_info(img_height, gps_data, det_status, img):
 
 
 def plot_fps_info(img_width, drone_id, frame_id, rc_latency, img, func_redis_set, func_redis_get, store_fps=False):
-    x_coord, y_coord = (img_width - 150), 30
+    # x_coord, y_coord = (img_width - 150), 30
+    x_coord, y_coord = (img_width - 250), 40
 
     t_start_key = "start-" + str(drone_id)
     t0 = func_redis_get(rc_latency, t_start_key)
@@ -1154,8 +1155,9 @@ def plot_fps_info(img_width, drone_id, frame_id, rc_latency, img, func_redis_set
     tf = max(tl - 1, 1)  # font thickness
     t_size = cv2.getTextSize(label, 0, fontScale=tl / 3, thickness=tf)[0]
     c1 = (int(x_coord), int(y_coord))
-    c2 = x_coord + t_size[0], y_coord - t_size[1] - 3
+    c2 = x_coord + t_size[0] + 30, y_coord - t_size[1] - 3
     cv2.rectangle(img, c1, c2, [0, 0, 0], -1)  # filled
 
-    cv2.putText(img, label, (x_coord, y_coord), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
+    # cv2.putText(img, label, (x_coord, y_coord), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
+    cv2.putText(img, label, (x_coord, y_coord), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 255, 0), 2)
     return img
