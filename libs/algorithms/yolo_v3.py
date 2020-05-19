@@ -223,7 +223,8 @@ class YOLOv3:
                     # print("This MB-Box is NONE. nothing to be saved yet.")
 
                 # Restore availibility
-                redis_set(self.rc_data, self.opt.sub_channel, 1) # set as `Ready`
+                # redis_set(self.rc_data, self.opt.sub_channel, 1) # set as `Ready`
+                redis_set(self.rc_data, self.opt.sub_channel, 1, 30)  # set as `Ready`; add expiration: 30 seconds
                 # print("\n### This Worker-%s is ready to serve again. \n\n" % self.opt.sub_channel)
                 print("\n[%s] Worker-%s: Ready" % (get_current_time(), self.opt.sub_channel))
                 worker_channel = "worker-%s" % self.opt.sub_channel
@@ -488,13 +489,19 @@ class YOLOv3:
                     # print('Current [FPS] with total %d frames: (%.2f fps)' % (total_frames, current_fps))
                     # # redis_set(self.rc_latency, fps_key, current_fps)
 
-                    # Publish to PLF (PiH Location Fetcher) to notify that it's done.
-                    plf_detection_channel = "PLF-%d-%d" % (self.opt.drone_id, this_frame_id)
-                    pub(self.rc, plf_detection_channel, "ok")
-                    # redis_set(self.rc_data, plf_detection_channel, True, 10)  # expired in 10 seconds
+                    # # Publish to PLF (PiH Location Fetcher) to notify that it's done.
+                    self.__set_finish_flag(this_frame_id)
+                    # plf_detection_channel = "PLF-%d-%d" % (self.opt.drone_id, this_frame_id)
+                    # pub(self.rc, plf_detection_channel, "ok")
+                    # # redis_set(self.rc_data, plf_detection_channel, True, 10)  # expired in 10 seconds
 
         except Exception as e:
             print("ERROR Pred: ", e)
+
+    def __set_finish_flag(self, frame_id):
+        key = "PLF-%d-%d" % (self.opt.drone_id, frame_id)
+        # pub(self.rc, plf_detection_channel, "ok")
+        redis_set(self.rc_data, key, True, 2)  # set to expired in 2 seconds
 
     def __default_detection(self, det, im0, this_frame_id):
         if self.opt.default_detection:

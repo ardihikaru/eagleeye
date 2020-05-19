@@ -1132,7 +1132,7 @@ def plot_gps_info(img_height, gps_data, det_status, img):
 
 def plot_fps_info(img_width, drone_id, frame_id, rc_latency, img, func_redis_set, func_redis_get, store_fps=False):
     # x_coord, y_coord = (img_width - 150), 30
-    x_coord, y_coord = (img_width - 250), 40
+    x_coord, y_coord = (img_width - 300), 40
 
     x_coord_lat, y_coord_lat = (img_width - 350), 85  # proc. latency of this frame
 

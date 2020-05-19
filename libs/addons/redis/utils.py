@@ -57,7 +57,6 @@ def get_gps_data(rc, drone_id):
     # gps_data = json.loads(redis_get(rc, key))
     # return gps_data
 
-
 def get_total_captured_frames(rc, drone_id):
     t_total_frames_key = "total-frames-" + str(drone_id)
     total_frames = redis_get(rc, t_total_frames_key)

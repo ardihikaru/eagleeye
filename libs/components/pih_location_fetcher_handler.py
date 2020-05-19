@@ -56,22 +56,35 @@ class PIHLocationFetcherHandler(MyRedis):
                 pass
             else:
                 frame_data = json.loads(item["data"])
+
+                # # ACK that this frame has been received
+                # key = "resp-%s-%s" % (str(frame_data["drone_id"]), str(frame_data["frame_id"]))
+                # print(" @@ # ACK that this frame has been received ... key=", key)
+                # redis_set(self.rc_data, key, True, 4)
+                # print("VALUE key:", redis_get(self.rc_data, key))
+
                 self.capture_extracted_frame_data(frame_data)
                 # print(" --- `Frame Data` has been sent; DATA=", frame_data)
                 self.watch_frame_receiver()
 
     def __is_detection_finished(self):
-        plf_detection_channel = "PLF-%d-%d" % (self.drone_id, self.frame_id)
-        is_detection_finished = False
-        pub_sub_sender = self.rc.pubsub()
-        pub_sub_sender.subscribe([plf_detection_channel])
-        for item in pub_sub_sender.listen():
-            if isinstance(item["data"], int):
-                pass
-            else:
-                is_detection_finished = True
-                break
-        return is_detection_finished
+        status = None
+        while status is None:
+            key = "PLF-%d-%d" % (self.drone_id, self.frame_id)
+            status = redis_get(self.rc_data, key)
+            if status is None:
+                continue
+        return status
+        # is_detection_finished = False
+        # pub_sub_sender = self.rc.pubsub()
+        # pub_sub_sender.subscribe([plf_detection_channel])
+        # for item in pub_sub_sender.listen():
+        #     if isinstance(item["data"], int):
+        #         pass
+        #     else:
+        #         is_detection_finished = True
+        #         break
+        # return is_detection_finished
 
     # Send by: `video_streamer.py`
     def watch_frame_receiver(self):

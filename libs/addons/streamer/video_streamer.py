@@ -66,8 +66,9 @@ class VideoStreamer(MyRedis):
         self.visualizer_channel = "visualizer-origin-" + str(self.opt.drone_id)
 
     def __run_async_video_reader(self):
-        Process(target=frame_producer, args=(self.rc_data, self.opt.source, self.opt.visual_type, self.opt.drone_id,
-                                             self.visualizer_channel, self.opt.visualizer_origin_port)).start()
+        if self.opt.enable_cv_out:
+            Process(target=frame_producer, args=(self.rc_data, self.opt.source, self.opt.visual_type, self.opt.drone_id,
+                                                self.visualizer_channel, self.opt.visualizer_origin_port)).start()
 
     def run(self):
         if self.opt.source_type == "folder":
@@ -149,7 +150,7 @@ class VideoStreamer(MyRedis):
                     break
 
             except Exception as e:
-                print(" ---- e:", e)
+                # print(" ---- e:", e)
                 if not self.opt.auto_restart:
                     print("\nStopping the system. . .")
                     time.sleep(common_settings["streaming_config"]["delay_disconnected"])
@@ -174,8 +175,8 @@ class VideoStreamer(MyRedis):
 
     def __worker_finder_v1(self):
         while self.__worker_status() == 0:
-            if not self.opt.disable_delay:
-                time.sleep(self.wait_time)
+            pass
+            # infinite loop here until this worker becomes available again!
         return time.time()
 
     # use pubsub instead of infinite loop
@@ -205,8 +206,8 @@ class VideoStreamer(MyRedis):
         else:
             # None = DISABLED; 1=Ready; 0=Busy
             t0_wait = time.time()
-            # t1_wait = self.__worker_finder_v1()
-            t1_wait = self.__worker_finder_v2()
+            t1_wait = self.__worker_finder_v1()
+            # t1_wait = self.__worker_finder_v2()
             t_wait = round(((t1_wait - t0_wait) * 1000), 2)
             print("[%s] Assign D%d-frame-%d into worker-%s (waiting time: %s ms)" %
                   (get_current_time(), self.opt.drone_id, frame_id, self.worker_id, t_wait))
@@ -234,13 +235,14 @@ class VideoStreamer(MyRedis):
             t_pub2frame_key = "pub2frame-" + str(self.opt.drone_id) + "-" + str(frame_id)
             redis_set(self.rc_data, t_pub2frame_key, t_pub2frame)
 
-            redis_set(self.rc_data, self.worker_id, 0)  # set this worker unavailable
+            # redis_set(self.rc_data, self.worker_id, 0)  # set this worker unavailable
+            redis_set(self.rc_data, self.worker_id, 0, 30)  # add expiration: 30 seconds
 
         self.__reset_worker()
 
         # FPS load frame of each worker
-        fps_lb_key = "fps-load-balancer-%s" % str(self.opt.drone_id)
-        total_frames, current_fps = store_fps(self.rc_latency, fps_lb_key, self.opt.drone_id)
+        # fps_lb_key = "fps-load-balancer-%s" % str(self.opt.drone_id)
+        # total_frames, current_fps = store_fps(self.rc_latency, fps_lb_key, self.opt.drone_id)
         # print('Current [FPS Load Balancer of Drone-%d] with total %d frames: (%.2f fps)' % (
         #     self.opt.drone_id, total_frames, current_fps))
 
@@ -284,7 +286,7 @@ class VideoStreamer(MyRedis):
                     break
 
             except Exception as e:
-                print(" ---- e:", e)
+                # print(" ---- e:", e)
                 if not self.opt.auto_restart:
                     print("\nStopping the system. . .")
                     time.sleep(7)
@@ -318,11 +320,11 @@ class VideoStreamer(MyRedis):
                             is_break = True
                             # break
 
-                    self.send_frame_data(frame, frame_id)
+                    self.send_raw_frame(frame, frame_id)
 
                     t0_load_balancer = time.time()
                     self.__load_balancing(frame_id, frame)
-                    t_load_bal = time.time() - t0_load_balancer
+                    # t_load_bal = time.time() - t0_load_balancer
                     # print("Latency [Load Balancer] of frame-%d: (%.5fs)" % (frame_id, t_load_bal))
 
             else:
@@ -337,20 +339,33 @@ class VideoStreamer(MyRedis):
 
         return n, frame_id, is_break
 
-    def send_frame_data(self, frame, frame_id):
-        # t0_sender = time.time()
-        self.frame_sender.send_image(str(frame_id), frame)  # send into PLF component
-        # self.frame_sender_visualizer.send_image(str(frame_id), frame)  # send into visualizer (original)
-        # t_recv = time.time() - t0_sender
-        # print('Latency [Send Frame into PLF] of frame-%s: (%.5fs)' % (str(frame_id), t_recv))
-
+    def send_raw_frame(self, frame, frame_id):
+        # print("### @ send_frame_data")
         if self.opt.enable_cv_out:
+            # t0_sender = time.time()
+            self.frame_sender.send_image(str(frame_id), frame)  # send into PLF component
+            # self.frame_sender_visualizer.send_image(str(frame_id), frame)  # send into visualizer (original)
+            # t_recv = time.time() - t0_sender
+            # print('Latency [Send Frame into PLF] of frame-%s: (%.5fs)' % (str(frame_id), t_recv))
+
             data = {
                 "drone_id": self.opt.drone_id,
                 "frame_id": frame_id,
                 "visual_type": self.opt.visual_type
             }
             p_mdata = json.dumps(data)
+
+            # keep publishing until received by visualizer
+            # print("---- data:", data)
+            # key = "resp-%s-%s" % (str(self.opt.drone_id), str(frame_id))
+            # print("### @ # keep publishing until received by visualizer @ key=", key)
+            # while not redis_get(self.rc_data, key):
+                # print("VALUE key:", redis_get(self.rc_data, key))
+                # pub(self.rc_data, self.plf_send_status_channel, p_mdata)  # confirm PLF that frame-n has been sent
+            # print(" --- ACK'ed, no need to publish anymore.")
             pub(self.rc_data, self.plf_send_status_channel, p_mdata)  # confirm PLF that frame-n has been sent
+
+            # redis_set(self.rc_data, key, )
+
             # pub(self.rc_data, self.visualizer_channel, p_mdata)  # confirm Visualizer that frame-n has been sent
         # print('\t[PUBLISH Frame-%d into PLF]' % frame_id)
