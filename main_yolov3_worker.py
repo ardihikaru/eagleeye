@@ -59,7 +59,7 @@ if __name__ == '__main__':
 
     parser.add_argument('--cfg', type=str, default='yolo-obj-v5.cfg', help='*.cfg path')
     parser.add_argument('--names', type=str, default='data/obj.names', help='*.names path')
-    parser.add_argument('--weights', type=str, default='weights/TM-06.weights', help='path to weights file')
+    parser.add_argument('--weights', type=str, default='weights/TM-07.weights', help='path to weights file')
 
     parser.add_argument('--source', type=str, default='', help='source')  # Not used, but do not delete it!
 
