@@ -1,3 +1,5 @@
+
+![figure-introduction](https://lh3.googleusercontent.com/UMRrELVSMZP750fvDUqLXYHHRvOBu2FvNMXmbUVJ8ZpEime9X0wqs5NslE1_0XoyOH6XwyRHzGP-yB6kIUC2aqVj7kbWTMYtqBJsSW4y4sXe2GYQqN2ONCUSJdFesxbRIXy7rqRtG_XhmXK17PJPWxmVwca9Lz_Fa9jR5pmxl7YfZZkX765kZALUwigMMHFpIlY_rXo58YCfKNlRQpVVrnXvPzAborPuy83LLnnOGBaRvJKHUzZWC8O-0sB3JKYOnJuYBc_-68YOL-RhiBbo4OjyudLQK4kpBhPWtXohpN6OJVmz8o2mZBWxi93eYI9F8bBWF7KSakzU1qActq5PPc_2JZMMXfsZqOtEe7uxGsdjj5wG8RpM8EoKQF65V4-a9wRkXiGGddnXBpCr_skgnmWEe89ss4ojX4PiP-CEoD40xeo4BOws6V-2Yu96pK5YuikFHT0tdF0tOAa2e03lV7zt749pEcnkYgXsIvoWjVa7KULPUXSIWQJoMa_-9ZuExjdCX2RxS94qjyrtD9YA1p9SmVLdibUCyFIvkAPCdJwWEaDxi6FOYfGEavxS-u8FenBjBsMeCb9PwGQEPDAlEO3uNMHDaXlhIuPivblNhzjPAHSFrYaQkO0iWrWqc4QqkqCK5iftNJ9i4fTExNErbqEccKx4ZE1Iqx1nhIRnKJgoq2bNv9a5vJOn1q65=w469-h270-no?authuser=1)
 # Introduction
 
 This repository contains the implementation of EagleEYE system developed by [National Chiao Tung University](https://www.nctu.edu.tw/en) of Taiwan for the [5G-DIVE](https://5g-dive.eu/) project.
@@ -5,14 +7,22 @@ This repository contains the implementation of EagleEYE system developed by [Nat
 # Description
 
 #### EagleEYE Overview
-EagleEYE stands for A**e**ri**a**l Ed**g**e-enab**le**d Disaster Relief Respons**e** S**y**st**e**m. EagleEYE is a decentralized system designed to leverage pervasive edge computing infrastructures to support disaster relief teams.
+EagleEYE stands for A**e**ri**a**l Ed**g**e-enab**le**d Disaster Relief Respons**e** S**y**st**e**m. EagleEYE is a decentralized system designed to leverage pervasive edge computing infrastructures to support disaster relief teams. At its core, EagleEYE is designed to scale up/down depending on the processing workload.
+
+![figure-ealgeeye-system](https://lh3.googleusercontent.com/pw/ACtC-3cOXs2Zvy4PhHuwD8K7ZG53fIoMMhj9chknpeqsm3jR53cr1P3GMCcHhkVEI_yVSW3SAM_WMBDR8ef6aqS5MGf5YFX0We2vxkQcvcO95jxNFhyNhJCHV0DYkhaYnnzHehtwNWuarA3-YWkxaIEFRJvL=w1498-h563-no?authuser=0)
 
 #### The novelty of the EagleEYE is in the entirety of:
  - Using drone video and GPS data to identify an emergency situation in real-time.
  - Locating Person in need of Help (PiH) accurately.
  - Navigating drones to the emergency scene autonomously.
 
-At its core, EagleEYE is designed to scale up/down depending on the processing workload.
+#### Publication
+More details on EagleEYE system can also be found in our EUCNC paper publication:
+  - EagleEYE: Aerial Edge-enabled Disaster Relief Response System [IEEExplore]
+  - List of Authors: Muhammad Febrian Ardiansyah, Timothy William, Osamah Ibrahiem Abdullaziz, Li-Chun Wang, Po-Lung Tien, Maria C. Yuang
+```
+  Template to be provided soon
+  ```
 
 # Credits
 
@@ -20,7 +30,7 @@ At its core, EagleEYE is designed to scale up/down depending on the processing w
  - [AlexeyAB](https://github.com/AlexeyAB) for YOLOv3/v4 implementation ([https://github.com/AlexeyAB/darknet](https://github.com/AlexeyAB/darknet))
  - [ultralytics](https://github.com/ultralytics) for YOLOv3 implementation in PyTorch ([https://github.com/ultralytics/yolov3](https://github.com/ultralytics/yolov3))
 
-# Requirements:
+# Requirements
 1. Ubuntu 18.04:
 	- We were using [Ubuntu Server 18.04.4](http://cdimage.ubuntu.com/releases/18.04.4/release/ubuntu-18.04.4-server-amd64.list) in our testing.
 2. CUDA 10.1:
@@ -29,10 +39,12 @@ At its core, EagleEYE is designed to scale up/down depending on the processing w
 3. cuDNN 7.6.5:
 	- Note that you need to sign in to NVIDIA Developer website to be able to download the cuDNN library (e.g.: `cudnn-10.1-linux-x64-v7.6.5.32.tgz`).
 	- Then, you could extract the archieve and copy the library into your CUDA installation directory:
-	`$ tar -xzvf cudnn-10.1-linux-x64-v7.6.5.32`
-	`$ sudo cp -P cuda/include/cudnn.h /usr/local/cuda-10.1/include`
-    `$ sudo cp -P cuda/lib64/libcudnn* /usr/local/cuda-10.1/lib64/`
-    `$ sudo chmod a+r /usr/local/cuda-10.1/lib64/libcudnn*`
+	```
+	$ tar -xzvf cudnn-10.1-linux-x64-v7.6.5.32
+	$ sudo cp -P cuda/include/cudnn.h /usr/local/cuda-10.1/include
+    $ sudo cp -P cuda/lib64/libcudnn* /usr/local/cuda-10.1/lib64/
+    $ sudo chmod a+r /usr/local/cuda-10.1/lib64/libcudnn*
+    ```
 4. Clone the git repository
     `$ git clonegit@github.com:ardihikaru/eagleeye.git`
     `$ cd eagleye`
@@ -82,23 +94,25 @@ At its core, EagleEYE is designed to scale up/down depending on the processing w
 - `nvidia-docker`
 - Nvidia Driver Version >= 440.44
 
-# Useful Links & Tutorials
-
-* [GCP Quickstart](https://github.com/ultralytics/yolov3/wiki/GCP-Quickstart)
-* [Transfer Learning](https://github.com/ultralytics/yolov3/wiki/Example:-Transfer-Learning)
-* [Train Single Image](https://github.com/ultralytics/yolov3/wiki/Example:-Train-Single-Image)
-* [Train Single Class](https://github.com/ultralytics/yolov3/wiki/Example:-Train-Single-Class)
-* [Train Custom Data](https://github.com/ultralytics/yolov3/wiki/Train-Custom-Data)
-
-
 # Reproduce Our Results
 
 *Section under work ...*
 
-# Citation
+# Contributors
 
-*Section under work ...*
+ - Muhammad Febrian Ardiansyah:
+	 - GitHub: [https://github.com/ardihikaru](https://github.com/ardihikaru)
+	 - Email: mfardiansyah.eed08g@nctu.edu.tw
+ - Timothy William:
+	 - GitHub: [https://github.com/moipalamoi](https://github.com/moipalamoi)
+	 - Email: timothywilliam.cs06g@g2.nctu.edu.tw
+ - Osamah Ibrahiem Abdullaziz
+	 - GitHub: [https://github.com/oiasam](https://github.com/oiasam)
+	 - Email: yabolahan.04g@g2.nctu.edu.tw
 
-# Contact
-
-*Section under work ...*
+<!--stackedit_data:
+eyJoaXN0b3J5IjpbLTIwMjE0MTEzNSwxNjEzNjkzNzcxLDg3ND
+AzMjg0NCwtNzU2MjI1MDQyLC03MDMzMzM0NzMsMTY0MDIzNTI4
+NSwtMjExOTQ1ODU3MSw4Nzg2NzczMzMsMjA0MDA0NTMyNiwtOD
+U0MDUzMTkxXX0=
+-->
