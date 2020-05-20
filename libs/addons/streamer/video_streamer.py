@@ -68,7 +68,16 @@ class VideoStreamer(MyRedis):
     def __run_async_video_reader(self):
         if self.opt.enable_cv_out:
             Process(target=frame_producer, args=(self.rc_data, self.opt.source, self.opt.visual_type, self.opt.drone_id,
-                                                self.visualizer_channel, self.opt.visualizer_origin_port)).start()
+                                                 self.visualizer_channel, self.opt.visualizer_origin_port)).start()
+
+    def __signal2stream_raw_frame(self):
+        channel = "stream-origin"
+        dict_data = {
+            "drone_id": self.opt.drone_id,
+            "source": self.opt.source
+        }
+        p_data = json.dumps(dict_data)
+        pub(self.rc, channel, p_data)
 
     def run(self):
         if self.opt.source_type == "folder":
@@ -81,7 +90,9 @@ class VideoStreamer(MyRedis):
         else:
             print("\nReading video:")
 
-            self.__run_async_video_reader()
+            if self.opt.origin_stream:
+                # self.__run_async_video_reader()
+                self.__signal2stream_raw_frame()
 
             while self.is_running:
                 try:
@@ -360,8 +371,8 @@ class VideoStreamer(MyRedis):
             # key = "resp-%s-%s" % (str(self.opt.drone_id), str(frame_id))
             # print("### @ # keep publishing until received by visualizer @ key=", key)
             # while not redis_get(self.rc_data, key):
-                # print("VALUE key:", redis_get(self.rc_data, key))
-                # pub(self.rc_data, self.plf_send_status_channel, p_mdata)  # confirm PLF that frame-n has been sent
+            # print("VALUE key:", redis_get(self.rc_data, key))
+            # pub(self.rc_data, self.plf_send_status_channel, p_mdata)  # confirm PLF that frame-n has been sent
             # print(" --- ACK'ed, no need to publish anymore.")
             pub(self.rc_data, self.plf_send_status_channel, p_mdata)  # confirm PLF that frame-n has been sent
 

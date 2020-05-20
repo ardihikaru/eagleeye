@@ -10,8 +10,10 @@ if __name__ == "__main__":
     # parser.add_argument('--window_height', type=int, default=901, help='CV Window height size')
     # parser.add_argument('--window_width', type=int, default=1024, help='CV Window width size')
     # parser.add_argument('--window_height', type=int, default=768, help='CV Window height size')
-    parser.add_argument('--window_width', type=int, default=1680, help='CV Window width size')
-    parser.add_argument('--window_height', type=int, default=1050, help='CV Window height size')
+    # parser.add_argument('--window_width', type=int, default=1680, help='CV Window width size')
+    # parser.add_argument('--window_height', type=int, default=1050, help='CV Window height size')
+    parser.add_argument('--window_width', type=int, default=1920, help='CV Window width size')
+    parser.add_argument('--window_height', type=int, default=1080, help='CV Window height size')
     parser.add_argument('--wait_key', type=int, default=1, help='Wait key for the screen')
 
     parser.add_argument('--original', dest='original', action='store_true', help='Only show original output stream')

@@ -7,6 +7,7 @@ import simplejson as json
 import time
 from datetime import datetime
 from utils.utils import plot_gps_info, plot_fps_info
+from imutils.video import FileVideoStream
 
 
 class Visualizer(MyRedis):
@@ -46,9 +47,9 @@ class Visualizer(MyRedis):
             height = int(height / 2) - ignored_height
         cv.resizeWindow("Image", width, height)
 
-    def __set_cv_window(self, is_obj_det):
-        cv.namedWindow("Image", cv.WND_PROP_FULLSCREEN)
-        cv.moveWindow("Image", 0, 0)
+    def __set_cv_window(self, is_obj_det, window_name):
+        cv.namedWindow(window_name, cv.WND_PROP_FULLSCREEN)
+        cv.moveWindow(window_name, 0, 0)
         self.__set_window_position(is_obj_det)
         # cv.resizeWindow("Image", self.opt.window_width, self.opt.window_height)
         self.__set_window_size()
@@ -57,15 +58,61 @@ class Visualizer(MyRedis):
         print("\nMonitoring realtime object detection:")
         try:
             if self.opt.original:
-                self.watch_incoming_frames(self.visualizer_origin_channel)
+                self.waiting_for_action()
+                # self.watch_incoming_frames(self.visualizer_origin_channel)
             else:
                 self.watch_incoming_frames(self.visualizer_status_channel, is_obj_det=True)
-        except:
+        except Exception as e:
+            # print(" -- ERROR:", e)
             print("\nUnable to communicate with the Streaming. Restarting . . .")
             cv.destroyAllWindows()
 
+    def waiting_for_action(self):
+        channel = "stream-origin"
+        pub_sub_sender = self.rc_data.pubsub()
+        pub_sub_sender.subscribe([channel])
+        for item in pub_sub_sender.listen():
+            if isinstance(item["data"], int):
+                pass
+            else:
+                # TO DO here
+                data = self.__extract_json_data(item["data"])
+                self.streaming_with_raw_frames(data)
+                break
+
+    def streaming_with_raw_frames(self, data):
+        window_name = "Original_Stream"
+        self.__set_cv_window(False, window_name)
+        # loop over frames from the video file stream
+        fvs = FileVideoStream(data["source"]).start()
+        while fvs.more():
+            try:
+                # grab the frame from the threaded video file stream, resize
+                # it, and convert it to grayscale (while still retaining 3 channels)
+                frame = fvs.read()
+
+                # # add gps information
+                # img_height, img_width, _ = frame.shape
+                # gps_data = get_gps_data(self.rc_gps, data["source"])
+                #
+                # if self.opt.show_fps:
+                #     img = plot_fps_info(img_width, data["drone_id"], data["frame_id"], self.rc_latency, frame,
+                #                         redis_set, redis_get)
+                # plot_gps_info(img_height, gps_data, "-", frame)
+
+                # show the frame and update the FPS counter
+                cv.imshow(window_name, frame)
+                cv.waitKey(1)
+            except Exception as e:
+                print("error: ", e)
+                pass
+        # do a bit of cleanup
+        cv.destroyAllWindows()
+        fvs.stop()
+
     # Sent by: `pih_location_fetcher_handler.py`
     def watch_incoming_frames(self, channel, is_obj_det=False):
+        window_name = "EagleEYE_Stream"
         pub_sub_sender = self.rc_data.pubsub()
         pub_sub_sender.subscribe([channel])
 
@@ -79,7 +126,7 @@ class Visualizer(MyRedis):
                 if not is_start:
                     is_start = True
                     # t0 = time.time()
-                    self.__set_cv_window(is_obj_det)
+                    self.__set_cv_window(is_obj_det, window_name)
 
                 data = self.__extract_json_data(item["data"])
 
@@ -97,7 +144,7 @@ class Visualizer(MyRedis):
                     plot_gps_info(img_height, gps_data, "-", img)
 
                 # cv.imshow("Image", processed_img)
-                cv.imshow("Image", img)
+                cv.imshow(window_name, img)
 
                 # FPS load frame of each worker
                 # if t0 is None:

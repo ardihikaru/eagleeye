@@ -10,6 +10,10 @@ if __name__ == "__main__":
     parser.add_argument('--max_frames', type=int, default=57, help='Max Frames; Ignored when `is_unlimited`=True')
     parser.add_argument('--is_unlimited', type=bool, default=True, help='Loop forever')
 
+    # use this to Disable output stream of raw frames
+    parser.add_argument('--no-origin-stream', dest='origin_stream', action='store_false', help="Disable Stream Raw img")
+    parser.set_defaults(origin_stream=True)
+
     parser.add_argument('--pih_location_fetcher_port', type=int, default=5571, help='ZMQ Viewer port PLF')
     parser.add_argument('--visualizer_origin_port', type=int, default=5580, help='ZMQ Viewer port Original Visualizer')
 
@@ -37,8 +41,8 @@ if __name__ == "__main__":
     # YOLOv3 default configuration
     parser.add_argument('--device', default='', help='device id (i.e. 0 or 0,1) or cpu')
     parser.add_argument('--half', action='store_true', help='half precision FP16 inference')
-    parser.add_argument("--img_size", type=int, default=416, help="size of each image dimension")
-    # parser.add_argument("--img_size", type=int, default=832, help="size of each image dimension")
+    # parser.add_argument("--img_size", type=int, default=416, help="size of each image dimension")
+    parser.add_argument("--img_size", type=int, default=832, help="size of each image dimension")
 
     # Used only when source_type = "folder", otherwise it's not used
     parser.add_argument("--source_folder_prefix", type=str, default="out", help="source folder prefix")
@@ -52,6 +56,7 @@ if __name__ == "__main__":
     # parser.add_argument("--source", type=str, default="data/5g-dive/videos/customDrone_MIRC-Entrance-Hover-1m.MP4", help="source")
     parser.add_argument("--source", type=str, default="data/5g-dive/videos/demo_video.MP4", help="source")
     # parser.add_argument("--source", type=str, default="http://127.0.0.1:10000/stream-1.flv", help="source")
+    # parser.add_argument("--source", type=str, default="rtmp://140.113.86.92/live/demo", help="source")
     # parser.add_argument("--source", type=str, default="http://192.168.0.50:10000/drone-1.flv", help="source")
     # parser.add_argument("--source", type=str, default="http://192.168.42.1/live", help="source")
     opt = parser.parse_args()
