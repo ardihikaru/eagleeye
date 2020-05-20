@@ -8,6 +8,7 @@ import time
 from datetime import datetime
 from utils.utils import plot_gps_info, plot_fps_info
 from imutils.video import FileVideoStream
+from utils.utils import get_current_time
 
 
 class Visualizer(MyRedis):
@@ -85,11 +86,15 @@ class Visualizer(MyRedis):
         self.__set_cv_window(False, window_name)
         # loop over frames from the video file stream
         fvs = FileVideoStream(data["source"]).start()
+        raw_frame_id = 0
         while fvs.more():
             try:
                 # grab the frame from the threaded video file stream, resize
                 # it, and convert it to grayscale (while still retaining 3 channels)
                 frame = fvs.read()
+                raw_frame_id += 1
+
+                print('[%s] Received frame-%d' % (get_current_time(), raw_frame_id))
 
                 # # add gps information
                 # img_height, img_width, _ = frame.shape
