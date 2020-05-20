@@ -501,7 +501,8 @@ class YOLOv3:
     def __set_finish_flag(self, frame_id):
         key = "PLF-%d-%d" % (self.opt.drone_id, frame_id)
         # pub(self.rc, plf_detection_channel, "ok")
-        redis_set(self.rc_data, key, True, 2)  # set to expired in 2 seconds
+        # redis_set(self.rc_data, key, True, 2)  # set to expired in 2 seconds
+        redis_set(self.rc_data, key, True, 5)  # set to expired in 2 seconds
 
     def __default_detection(self, det, im0, this_frame_id):
         if self.opt.default_detection:
