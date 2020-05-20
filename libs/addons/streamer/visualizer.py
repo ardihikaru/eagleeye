@@ -82,7 +82,7 @@ class Visualizer(MyRedis):
                 break
 
     def streaming_with_raw_frames(self, data):
-        window_name = "Original_Stream"
+        window_name = "Drone_Video_Feed"
         self.__set_cv_window(False, window_name)
         # loop over frames from the video file stream
         fvs = FileVideoStream(data["source"]).start()
@@ -117,7 +117,7 @@ class Visualizer(MyRedis):
 
     # Sent by: `pih_location_fetcher_handler.py`
     def watch_incoming_frames(self, channel, is_obj_det=False):
-        window_name = "EagleEYE_Stream"
+        window_name = "EagleEYE_Output_Stream"
         pub_sub_sender = self.rc_data.pubsub()
         pub_sub_sender.subscribe([channel])
 
