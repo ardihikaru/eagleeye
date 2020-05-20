@@ -22,7 +22,7 @@ if __name__ == "__main__":
                         help="Enable/disable Output video streaming; run `viewer.py` to see the results")
 
     # Change to fit your need / scenario
-    parser.add_argument('--visual_type', type=int, default=3, help='Type_1=YOLO; 2=MOD; 3=YOLO+MOD; otherwise=No BBox')
+    parser.add_argument('--visual_type', type=int, default=2, help='Type_1=YOLO; 2=MOD; 3=YOLO+MOD; otherwise=No BBox')
 
     parser.add_argument('--drone_id', type=int, default=1, help='Drone ID')
     parser.add_argument("--total_workers", type=int, default=1, help="path to dataset")

@@ -198,13 +198,18 @@ class PIHLocationFetcher(MyRedis):
     #     cv2.putText(img, obj_data_label,
     #                 (x_coord_obj, y_coord_obj), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), 2)
 
+    def __clean_label(self, old_label):
+        arr = old_label.split(" ")
+        return arr[0]
+
     def __plot_bbox(self):
         t0_plot_bbox = time.time()
         if len(self.bbox_coord) > 0:  # MBBox exist!
             for data in self.bbox_coord:
                 # obj_idx = data["obj_idx"]
                 fl_bbox = [float(xyxy) for xyxy in data["xyxy"]]
-                label = data["label"]
+                # label = data["label"]
+                label = self.__clean_label(data["label"])
                 color = [float(col) for col in data["color"]]
                 plot_one_box(fl_bbox, self.img, label=label, color=color)  # plot bbox
 
