@@ -1,5 +1,5 @@
 
-![figure-introduction](https://lh3.googleusercontent.com/W8a0T3bP9-vIIweUohN16JLArutuJgYlFHF9DWhiZ6sXz1IZUPEEoH7VvkHo1b4bo-GWGHlKMtm-KplJBmPOdTcSUCnZaDNYqJGgUR_b-OWAyyyGOTk9SctM8FtXNQozwZn9pigzxuqQptk7vOCoEiZeNo91sQbKKoN3v6XwXbq7qbYXAMY0RTCeSqrtMG5SyoUA52I2ezu_fjDh3ZT-Q1Ms40nzvbrlaldNpqTCXAYrlRTqLO07RDaNvtmz_QNkjbwIQV9CdQr-R0BzqUr28Ic0rsv-oTn-v_1dL7_vhGZLRu9YUHQcPNN6SQPzg40CBxmINUDj-o95kedCwuPiPza5PhtpG-EfTBPfnNBQk5IMkKpJ1octwfen7-rM0gNVbVraMuFbKO-KV3cxnuZUwhHE7NUjg-0o4g82SxWxdLKRpZ8QH_qIND0UY931yM1aDf0kLq4bJ3FIcmuin7FlQ-6z1BpNyoCUmC7LeyGdYKw4yhEtXPjv8ub08PpG92aWrLiNgFsHZNzfHmCVZDp2IASoftgRJq7HgKSw8ZEKy1gu6s4bZ3EXn6KbiLv4quVdUetd9h6sot7HMFej-D_9y8XZy_D4g4mqyY8cgWcFuIHvSMbo3cerFJB8xSN9tzKFnTESSckHORdj21tlZP9X-sNqlTc6uTXo5IXkr9-bUBvEk6WoAzchNYnnUrOI=w893-h294-no?authuser=1)
+![figure-introduction](https://lh3.googleusercontent.com/11Mn3a8IZSLZmsGSBEBfRZ4J7C3-OrBCPd3IvkXfm2AqVMMmmEY7hsNes7uMJHl-8dekqcUvEvoxjKomKc1deIJFVHHE6eEz_BhLAgNdVznCgtXwQf6IiJfz4zSp2axyeguOAunmZqM2YZtt9Peuu_CESgwWBFLgKiONgBvT-YNbWd9RhrqDbnjcntErknCarIodr1Yg-kd9fUVeGRsOgHzuJBAJJYnpKEKwsW_YrLyIi7L3cyIHqYJg7_4ynEEeIwaeXeY2heEMcrTp4NWSUPj3bVP4KFrLdwXwiwB1lyLz2LGHFftDA60s_ZcwxqTxv_-PUMPQ-WmgOtiXPpPfy_0Bv5dVef19tGZZN1nlrCKsjutZY28UFsbMvBpkkyWpwP0ldGIpR6c_G0zs_OxCi1HqRnNH2MZhxDzeWWi93fBlRhMfsNIIbICq7tKSDz1bH_yf11wgDQCJCbkfxwvyRGtufUf0KP5nzB37XMiRdJqMo5cebD7yI3MDnV7D4CudltKwhlOBDkWulHgv4xr_PlUygVOpfVnTjAl9HlUn-2YFE3wwc9PMVTalcT472GzwJlB9G1szB9Cq45uW8Dnmi6BEyyTLn1urt8V2JLihBWuO3fPvrHvU0nByMpzAIN_R99uIMvp3CHCaRcc5tdvWs1uU-vo49PyEYcGmDPm5mA5jWIdVvR7-x_dAKK1q=w893-h294-no?authuser=1)
 # Introduction
 
 This repository contains the implementation of EagleEYE system developed by [National Chiao Tung University](https://www.nctu.edu.tw/en) (NCTU) of Taiwan for the [5G-DIVE](https://5g-dive.eu/) project.
@@ -45,8 +45,8 @@ More details on EagleEYE system can also be found in our [2020 EUCNC](https://ww
 - Trained our object detection algorithm using the work of [1] and [2]. 
 - Implemented EagleEYE on top of [3] work. We use [3] repository linked above as the base of our EagleEYE development.
 
-### Acknowledgements
-- This project has been partially funded by the H2020 EU/TW joint action 5G-DIVE (Grant #859881)
+#### Acknowledgements
+- This project has been partially funded by the H2020 EU/TW joint action 5G-DIVE (Grant #859881).
 
 # Requirements
 1. Ubuntu 18.04:
@@ -91,6 +91,21 @@ More details on EagleEYE system can also be found in our [2020 EUCNC](https://ww
         `$ pip install Cython numpy scipy`
 
 # Usage (Under work ...)
+
+ 1. Activate the virtualenv by running this command below:
+    - `$ cd eagleye # The location where eagleeye is cloned on your machine`
+    - `$ . venv/bin/activate.fish # Assuming that you use fish`
+ 2. Start the OpenCV visualizer:
+	- `$ python main_visualizer.py --small --original`
+ 3. Start the woker nodes. Below show the example for the activation of 3 worker nodes:
+    - `$ python main_yolov3_worker.py --sub_channel 1`
+    - `$ python main_yolov3_worker.py --sub_channel 2`
+    - `$ python main_yolov3_worker.py --sub_channel 3`
+ 4. Start the PiH Location Fetcher module:
+ 5. Start the Stream Reader module:
+ 6. 
+
+#### OLD Conda Environment
 1. Activate environment (for Conda Env): `$ conda activate 5gdive-yolov3`
 2. Create RAM-based Disk storage:
     ```
@@ -120,6 +135,9 @@ We ran all of the test results provided here in our OPTUNS 5G Edge Data Center i
 
 *Section under work ...*
 
+# Links and Documentation
+
+-  [Single video streaming via HTTP using FFmpeg](https://github.com/ardihikaru/eagleeye/blob/feature/readme/docs/http-stream.md)
 # Contributors
 
  - Muhammad Febrian Ardiansyah:
@@ -133,8 +151,10 @@ We ran all of the test results provided here in our OPTUNS 5G Edge Data Center i
 	 - Email: yabolahan.04g@g2.nctu.edu.tw
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTcyMDI3MTk1MywtMjAyMTQxMTM1LDE2MT
-M2OTM3NzEsODc0MDMyODQ0LC03NTYyMjUwNDIsLTcwMzMzMzQ3
-MywxNjQwMjM1Mjg1LC0yMTE5NDU4NTcxLDg3ODY3NzMzMywyMD
-QwMDQ1MzI2LC04NTQwNTMxOTFdfQ==
+eyJoaXN0b3J5IjpbLTE2MzQ0ODA1MzYsMTM5MzAwMTQ0NywtMT
+I2NzA3NTUyNSwxNjA2ODA1NDc3LDIxMTg2NjAxMCwxNDAzNDg0
+NjMsLTcyMDI3MTk1MywtMjAyMTQxMTM1LDE2MTM2OTM3NzEsOD
+c0MDMyODQ0LC03NTYyMjUwNDIsLTcwMzMzMzQ3MywxNjQwMjM1
+Mjg1LC0yMTE5NDU4NTcxLDg3ODY3NzMzMywyMDQwMDQ1MzI2LC
+04NTQwNTMxOTFdfQ==
 -->
