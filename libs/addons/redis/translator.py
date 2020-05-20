@@ -2,6 +2,7 @@ import simplejson as json
 import time
 import cv2
 import imagezmq
+from imutils.video import FileVideoStream
 
 
 # default = dumped kabeh.
@@ -97,11 +98,14 @@ def frame_producer(rc, source, visual_type, drone_id, visualizer_channel, visual
     frame_sender_visualizer = imagezmq.ImageSender(connect_to=url, REQ_REP=False)
 
     frame_id = 0
-    cap = cv2.VideoCapture(source)
+    # cap = cv2.VideoCapture(source)
+    cap = FileVideoStream(source).start()  # Thread-based video capture
     try:
-        while cap.isOpened():
+        # while cap.isOpened():
+        while cap.more():
             frame_id += 1
-            ret, frame = cap.read()
+            # ret, frame = cap.read()
+            frame = cap.read()
 
             frame_sender_visualizer.send_image(str(frame_id), frame)  # send into visualizer (original)
 

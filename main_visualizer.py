@@ -20,6 +20,9 @@ if __name__ == "__main__":
     parser.add_argument('--small', dest='small', action='store_true', help='Show 1/4 of the monitor resolution')
     parser.set_defaults(small=True)
 
+    parser.add_argument('--no-fps', dest='show_fps', action='store_false', help="Disable FPS information")
+    parser.set_defaults(small=True)
+
     opt = parser.parse_args()
     # print(opt)
 

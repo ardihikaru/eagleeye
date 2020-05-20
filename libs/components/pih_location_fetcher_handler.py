@@ -76,11 +76,13 @@ class PIHLocationFetcherHandler(MyRedis):
             status = redis_get(self.rc_data, key)
             elapsed_time = (time.time() - wait_t0) * 1000  # in ms
 
+            # print(" ----> status [frame_id=%s]:" % str(self.frame_id), status,
+            #       "; elapsed_time: (%.2f)" % elapsed_time)
             # Bug fixed: Unable to receive any result from the expected worker node.
             # mark as no response from YOLOv3 network and ignore BBox info in this particular frame
             if elapsed_time > common_settings["plf_config"]["waiting_limit"]:
-                print(" ----> status [frame_id=%s]:" % str(self.frame_id), status,
-                      "; elapsed_time: (%.2f)" % elapsed_time)
+                # print(" ----> status [frame_id=%s]:" % str(self.frame_id), status,
+                #       "; elapsed_time: (%.2f)" % elapsed_time)
                 status = False
                 break
 

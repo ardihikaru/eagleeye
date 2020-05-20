@@ -87,7 +87,7 @@ class VideoStreamer(MyRedis):
                 try:
                     # self.cap = cv.VideoCapture(self.opt.source)
                     # self.cap = cv.VideoCapture(self.opt.source)
-                    self.cap = FileVideoStream(self.opt.source).start()
+                    self.cap = FileVideoStream(self.opt.source).start()  # Thread-based video capture
                     self.__start_streaming()
                 except:
                     print("\nUnable to communicate with the Streaming. Restarting . . .")

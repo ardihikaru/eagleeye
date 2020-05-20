@@ -90,8 +90,10 @@ class Visualizer(MyRedis):
                     _, img = self.original_img_receiver.recv_image()
                     img_height, img_width, _ = img.shape
                     gps_data = get_gps_data(self.rc_gps, data["drone_id"])
-                    img = plot_fps_info(img_width, data["drone_id"], data["frame_id"], self.rc_latency, img,
-                                        redis_set, redis_get)
+
+                    if self.opt.show_fps:
+                        img = plot_fps_info(img_width, data["drone_id"], data["frame_id"], self.rc_latency, img,
+                                            redis_set, redis_get)
                     plot_gps_info(img_height, gps_data, "-", img)
 
                 # cv.imshow("Image", processed_img)
