@@ -1,3 +1,8 @@
+## 2.0.1 (May 21, 2020)
+  - Merge branch 'feature/readme' into develop
+  - test
+  - Merge branch 'release-2.0' into develop
+
 ## 2.0 (May 21, 2020)
   - Merge branch 'feature/readme' into develop
   - Updated readme to reflect the newest command to run
