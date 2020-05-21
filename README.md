@@ -4,7 +4,7 @@
 
 This repository contains the implementation of EagleEYE system developed by [National Chiao Tung University](https://www.nctu.edu.tw/en) (NCTU) of Taiwan for the [5G-DIVE](https://5g-dive.eu/) project.
 
-# Description
+# Description 
 
 ### EagleEYE Overview
 EagleEYE stands for A**e**ri**a**l Ed**g**e-enab**le**d Disaster Relief Respons**e** S**y**st**e**m. EagleEYE is a decentralized system designed to leverage pervasive edge computing infrastructures to support disaster relief teams. At its core, EagleEYE is designed to scale up/down depending on the processing workload.
