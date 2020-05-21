@@ -1,3 +1,32 @@
+## 2.0 (May 21, 2020)
+  - Merge branch 'feature/readme' into develop
+  - Updated readme to reflect the newest command to run
+  - Merge branch 'feature/eagleeyev2.1' into develop
+  - prioritize sending raw frames into YOLO network first, then, stream raw frames
+  - change window name
+  - bug fixed: window size and window position
+  - change argparse name from `sub_channel` into `node`
+  - standardize color of Person and Flag objects
+  - disable confidence_score outputted into labels
+  - added frame information
+  - change original frame visualizer from SubProcess into normal process using pubsub to notify the visualizer app
+  - Updated broken link in README
+  - Added documentation for RTMP Server Setup
+  - Added documentation for ffmpeg HTTP streaming
+  - add new feature to disable FPS information
+  - added waiting time limit to prevent PiH Location Fetcher for executing infinite loop due to waiting worker node's result
+  - tested with weight TM-07
+  - bug fixed: unable to feed frames into visualizer asynchronously
+  - Added more content to various sections, updated figure
+  - Updated the readme with figures
+  - Updated README
+  - added side-by-side with original input stream
+  - added processing latency for each frame
+  - resize the plotted GPS information
+  - added visualizer side-by-side
+  - added visualizer with original frame
+  - Merge branch 'release-1.2' into develop
+
 ## 1.2.0 (May 15, 2020)
   - Merge branch 'feature/eagleeyev2' into develop
   - automate read number of collected drone data
