@@ -331,12 +331,12 @@ class VideoStreamer(MyRedis):
                             is_break = True
                             # break
 
-                    self.send_raw_frame(frame, frame_id)
-
                     t0_load_balancer = time.time()
                     self.__load_balancing(frame_id, frame)
                     # t_load_bal = time.time() - t0_load_balancer
                     # print("Latency [Load Balancer] of frame-%d: (%.5fs)" % (frame_id, t_load_bal))
+
+                    self.send_raw_frame(frame, frame_id)
 
             else:
                 print("IMAGE is INVALID.")
