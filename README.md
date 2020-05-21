@@ -92,18 +92,27 @@ More details on EagleEYE system can also be found in our [2020 EUCNC](https://ww
 
 # Usage (Under work ...)
 
+
  1. Activate the virtualenv by running this command below:
     - `$ cd eagleye # The location where eagleeye is cloned on your machine`
     - `$ . venv/bin/activate.fish # Assuming that you use fish`
- 2. Start the OpenCV visualizer:
-	- `$ python main_visualizer.py --small --original`
- 3. Start the woker nodes. Below show the example for the activation of 3 worker nodes:
-    - `$ python main_yolov3_worker.py --sub_channel 1`
-    - `$ python main_yolov3_worker.py --sub_channel 2`
-    - `$ python main_yolov3_worker.py --sub_channel 3`
- 4. Start the PiH Location Fetcher module:
- 5. Start the Stream Reader module:
- 6. 
+ 2.  For cleanup, run this delete_keys script:
+     - `$ python delete_keys.py`
+ 3. Start the OpenCV visualizer:
+	- `$ python main_visualizer.py --small --original --no-fps` (EagleEYE_Output_Stream)
+	- `$ python main_visualizer.py --small # Eagle ` (Drone_Video_Feed)
+ 4. Start drone GPS dummy:
+    - `$ python main_gps_collector.py`
+ 5. Start PiH Location Fetcher:
+    - `$ python main_pih_location_fetcher.py`
+ 6. Start the woker nodes. Below show the example for the activation of 4 worker nodes:
+    - `$ python main_yolov3_worker.py --node 1`
+    - `$ python main_yolov3_worker.py --node 2`
+    - `$ python main_yolov3_worker.py --node 3`
+    - `$ python main_yolov3_worker.py --node 4`
+ 7. Start the Stream Reader module:
+    - `$ python main_stream_reader.py --total_workers 4`
+
 
 #### OLD Conda Environment
 1. Activate environment (for Conda Env): `$ conda activate 5gdive-yolov3`
@@ -151,10 +160,10 @@ We ran all of the test results provided here in our OPTUNS 5G Edge Data Center i
 	 - Email: yabolahan.04g@g2.nctu.edu.tw
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE2MzQ0ODA1MzYsMTM5MzAwMTQ0NywtMT
-I2NzA3NTUyNSwxNjA2ODA1NDc3LDIxMTg2NjAxMCwxNDAzNDg0
-NjMsLTcyMDI3MTk1MywtMjAyMTQxMTM1LDE2MTM2OTM3NzEsOD
-c0MDMyODQ0LC03NTYyMjUwNDIsLTcwMzMzMzQ3MywxNjQwMjM1
-Mjg1LC0yMTE5NDU4NTcxLDg3ODY3NzMzMywyMDQwMDQ1MzI2LC
-04NTQwNTMxOTFdfQ==
+eyJoaXN0b3J5IjpbLTkxODIzNDAyMiwtMTYzNDQ4MDUzNiwxMz
+kzMDAxNDQ3LC0xMjY3MDc1NTI1LDE2MDY4MDU0NzcsMjExODY2
+MDEwLDE0MDM0ODQ2MywtNzIwMjcxOTUzLC0yMDIxNDExMzUsMT
+YxMzY5Mzc3MSw4NzQwMzI4NDQsLTc1NjIyNTA0MiwtNzAzMzMz
+NDczLDE2NDAyMzUyODUsLTIxMTk0NTg1NzEsODc4Njc3MzMzLD
+IwNDAwNDUzMjYsLTg1NDA1MzE5MV19
 -->
