@@ -10,7 +10,7 @@ from libs.algorithms.yolo_v3 import YOLOv3
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--drone_id', type=int, default=1, help='Drone ID')
-    parser.add_argument('--sub_channel', type=str, default="1", help='Redis Subscriber channel')
+    parser.add_argument('--node', type=str, default="1", help='Redis Subscriber channel')
     parser.add_argument('--plot_latency', type=bool, default=True, help='Save latency result into Graph')
     parser.add_argument('--latency_output', type=str, default="output/saved_latency/tmp",
                         help='Output location for latency results')
@@ -59,7 +59,7 @@ if __name__ == '__main__':
 
     parser.add_argument('--cfg', type=str, default='yolo-obj-v5.cfg', help='*.cfg path')
     parser.add_argument('--names', type=str, default='data/obj.names', help='*.names path')
-    parser.add_argument('--weights', type=str, default='weights/TM-06.weights', help='path to weights file')
+    parser.add_argument('--weights', type=str, default='weights/TM-07.weights', help='path to weights file')
 
     parser.add_argument('--source', type=str, default='', help='source')  # Not used, but do not delete it!
 
@@ -67,11 +67,12 @@ if __name__ == '__main__':
     parser.add_argument('--img_height', type=int, default=1080, help='Image Height')
 
     # YOLO configuration; We trained the training data with 832 pixels (Tim's said)
-    parser.add_argument('--img-size', type=int, default=416, help='inference size (pixels)')
-    # parser.add_argument('--img-size', type=int, default=832, help='inference size (pixels)')  ## (3, 480, 832)
+    # parser.add_argument('--img-size', type=int, default=416, help='inference size (pixels)')
+    parser.add_argument('--img-size', type=int, default=832, help='inference size (pixels)')
+    # parser.add_argument('--img-size                               ', type=int, default=832, help='inference size (pixels)')  ## (3, 480, 832)
     # parser.add_argument('--img-size', type=int, default=1080, help='inference size (pixels)')  ## (3, 632, 1080)
     # parser.add_argument('--img-size', type=int, default=1920, help='inference size (pixels)')  ## (3, 1088, 1920)
-    # parser.add_argument('--img-size', type=int, default=832, help='inference size (pixels)')
+                    # parser.add_argume                     nt('--img-size', type=int, default=832, help='inference size (pixels)')
     # parser.add_argument('--conf-thres', type=float, default=0.3, help='object confidence threshold')
     parser.add_argument('--conf-thres', type=float, default=0.1, help='object confidence threshold')
     # parser.add_argument('--iou-thres', type=float, default=0.5, help='IOU threshold for NMS')

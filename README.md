@@ -1,40 +1,87 @@
-<table style="width:100%">
-  <tr>
-    <td>
-      <img src="https://user-images.githubusercontent.com/26833433/61591130-f7beea00-abc2-11e9-9dc0-d6abcf41d713.jpg">
-    </td>
-    <td align="center">
-    <a href="https://www.ultralytics.com" target="_blank">
-    <img src="https://storage.googleapis.com/ultralytics/logo/logoname1000.png" width="160"></a>
-      <img src="https://user-images.githubusercontent.com/26833433/61591093-2b4d4480-abc2-11e9-8b46-d88eb1dabba1.jpg">
-          <a href="https://itunes.apple.com/app/id1452689527" target="_blank">
-    <img src="https://user-images.githubusercontent.com/26833433/50044365-9b22ac00-0082-11e9-862f-e77aee7aa7b0.png" width="180"></a>
-    </td>
-    <td>
-      <img src="https://user-images.githubusercontent.com/26833433/61591100-55066b80-abc2-11e9-9647-52c0e045b288.jpg">
-    </td>
-  </tr>
-</table>
 
+![figure-introduction](https://lh3.googleusercontent.com/11Mn3a8IZSLZmsGSBEBfRZ4J7C3-OrBCPd3IvkXfm2AqVMMmmEY7hsNes7uMJHl-8dekqcUvEvoxjKomKc1deIJFVHHE6eEz_BhLAgNdVznCgtXwQf6IiJfz4zSp2axyeguOAunmZqM2YZtt9Peuu_CESgwWBFLgKiONgBvT-YNbWd9RhrqDbnjcntErknCarIodr1Yg-kd9fUVeGRsOgHzuJBAJJYnpKEKwsW_YrLyIi7L3cyIHqYJg7_4ynEEeIwaeXeY2heEMcrTp4NWSUPj3bVP4KFrLdwXwiwB1lyLz2LGHFftDA60s_ZcwxqTxv_-PUMPQ-WmgOtiXPpPfy_0Bv5dVef19tGZZN1nlrCKsjutZY28UFsbMvBpkkyWpwP0ldGIpR6c_G0zs_OxCi1HqRnNH2MZhxDzeWWi93fBlRhMfsNIIbICq7tKSDz1bH_yf11wgDQCJCbkfxwvyRGtufUf0KP5nzB37XMiRdJqMo5cebD7yI3MDnV7D4CudltKwhlOBDkWulHgv4xr_PlUygVOpfVnTjAl9HlUn-2YFE3wwc9PMVTalcT472GzwJlB9G1szB9Cq45uW8Dnmi6BEyyTLn1urt8V2JLihBWuO3fPvrHvU0nByMpzAIN_R99uIMvp3CHCaRcc5tdvWs1uU-vo49PyEYcGmDPm5mA5jWIdVvR7-x_dAKK1q=w893-h294-no?authuser=1)
 # Introduction
 
-This directory contains PyTorch YOLOv3 software developed by Ultralytics LLC, and **is freely available for redistribution under the GPL-3.0 license**. For more information please visit https://www.ultralytics.com.
+This repository contains the implementation of EagleEYE system developed by [National Chiao Tung University](https://www.nctu.edu.tw/en) (NCTU) of Taiwan for the [5G-DIVE](https://5g-dive.eu/) project.
 
 # Description
 
-The https://github.com/ultralytics/yolov3 repo contains inference and training code for YOLOv3 in PyTorch. The code works on Linux, MacOS and Windows. Training is done on the COCO dataset by default: https://cocodataset.org/#home. **Credit to Joseph Redmon for YOLO:** https://pjreddie.com/darknet/yolo/.
+### EagleEYE Overview
+EagleEYE stands for A**e**ri**a**l Ed**g**e-enab**le**d Disaster Relief Respons**e** S**y**st**e**m. EagleEYE is a decentralized system designed to leverage pervasive edge computing infrastructures to support disaster relief teams. At its core, EagleEYE is designed to scale up/down depending on the processing workload.
 
-# Table of Contents
-// TBD
+### EagleEYE System Workflow
+The basic workflow of EagleEYE system are as follows:
 
-# 5g-dive implementation
-### Requirements
-1. Ubuntu 16.06
-2. Python Environment:
-    - Conda Environment: 
-    `$ conda create -n 5gdive-yolov3 python=3.7 -c conda-forge`
-    - Cloning conda env:
-    `$ conda create --name 5gdive-yolov3 --file req_conda.txt`
+ 1. Capture video stream and GPS information from drone(s).
+ 2. Process information and allocate task to worker node(s).
+ 3. Perform parrallelized Person in need of Help (PiH) candidate detection.
+ 4. Perform PiH persistence detection to look for PiH.
+ 5. Acquire the GPS location and the current view of PiH surroundings.
+ 6. Monitor the PiH in real-time and adjust the drone(s) trajectory as necessary.
+
+![figure-ealgeeye-system](https://lh3.googleusercontent.com/pw/ACtC-3cOXs2Zvy4PhHuwD8K7ZG53fIoMMhj9chknpeqsm3jR53cr1P3GMCcHhkVEI_yVSW3SAM_WMBDR8ef6aqS5MGf5YFX0We2vxkQcvcO95jxNFhyNhJCHV0DYkhaYnnzHehtwNWuarA3-YWkxaIEFRJvL=w1498-h563-no?authuser=0)
+
+### The novelty of the EagleEYE is in the entirety of:
+ - Using drone video and GPS data to identify an emergency situation in real-time.
+ - Locating Person in need of Help (PiH) accurately.
+ - Navigating drones to the emergency scene autonomously.
+
+### Publication
+More details on EagleEYE system can also be found in our [2020 EUCNC](https://www.eucnc.eu/) paper publication:
+  - EagleEYE: Aerial Edge-enabled Disaster Relief Response System [IEEExplore]
+  - List of Authors: Muhammad Febrian Ardiansyah, Timothy William, Osamah Ibrahiem Abdullaziz, Li-Chun Wang, Po-Lung Tien, Maria C. Yuang
+```
+  Template to be provided soon
+  ```
+
+# Credits & Acknowledgements
+
+#### Our credit go to the following entities (in no particular order):
+ - [1] [Joseph Redmon](https://pjreddie.com/) for YOLO ([https://pjreddie.com/darknet/](https://pjreddie.com/darknet/))
+ - [2] [AlexeyAB](https://github.com/AlexeyAB) for YOLOv3/v4 implementation ([https://github.com/AlexeyAB/darknet](https://github.com/AlexeyAB/darknet))
+ - [3] [ultralytics](https://github.com/ultralytics) for YOLOv3 implementation in PyTorch ([https://github.com/ultralytics/yolov3](https://github.com/ultralytics/yolov3))
+
+#### In our implementation, we:
+- Trained our object detection algorithm using the work of [1] and [2]. 
+- Implemented EagleEYE on top of [3] work. We use [3] repository linked above as the base of our EagleEYE development.
+
+#### Acknowledgements
+- This project has been partially funded by the H2020 EU/TW joint action 5G-DIVE (Grant #859881).
+
+# Requirements
+1. Ubuntu 18.04:
+	- We were using [Ubuntu Server 18.04.4](http://cdimage.ubuntu.com/releases/18.04.4/release/ubuntu-18.04.4-server-amd64.list) in our testing.
+2. CUDA 10.1:
+	- If you are on Ubuntu 18.04, you could refer to [this](https://medium.com/@exesse/cuda-10-1-installation-on-ubuntu-18-04-lts-d04f89287130) medium post by [Vladislav Kulbatski](https://medium.com/@exesse?source=post_page-----d04f89287130----------------------) for installation step.
+	- Or, you could also refer to NVIDIA official documentation [here](https://docs.nvidia.com/cuda/archive/10.1/).
+3. cuDNN 7.6.5:
+	- Note that you need to sign in to NVIDIA Developer website to be able to download the cuDNN library (e.g.: `cudnn-10.1-linux-x64-v7.6.5.32.tgz`).
+	- Then, you could extract the archieve and copy the library into your CUDA installation directory:
+	```
+	$ tar -xzvf cudnn-10.1-linux-x64-v7.6.5.32
+	$ sudo cp -P cuda/include/cudnn.h /usr/local/cuda-10.1/include
+    $ sudo cp -P cuda/lib64/libcudnn* /usr/local/cuda-10.1/lib64/
+    $ sudo chmod a+r /usr/local/cuda-10.1/lib64/libcudnn*
+    ```
+4. Clone the git repository
+    `$ git clonegit@github.com:ardihikaru/eagleeye.git`
+    `$ cd eagleye`
+5. Python Environment (`virtualenv`):
+    - Download and install Python virtualenv, you could refer to the [Hitchhiker's](https://docs.python-guide.org/) guide [here](https://docs.python-guide.org/dev/virtualenvs/).
+    - Create new virtualenv called `venv` (for first time use; create once):
+    `$ python3 -m venv venv`
+    - Activate the `venv` virtualenv:
+    `$ . venv/bin/activate.fish`
+    - Install additional library:
+    `$ pip install Cython numpy scipy imagezmq`
+    - Install even more library from the `requirements.txt` file:
+    `$ pip install -r requirements.txt`
+6. [OPTIONAL] Python Environment (`conda`):
+    - Download and install Anaconda, you could refer to the guide by [DigitalOcean](https://www.digitalocean.com/) [here](https://www.digitalocean.com/community/tutorials/how-to-install-anaconda-on-ubuntu-18-04-quickstart).
+    - Create a new Conda environment: 
+    `$ conda create -n 5g-dive python=3.7 -c conda-forge`
+    - Cloning a Conda environment:
+    `$ conda create --name 5g-dive --file req_conda.txt`
     - OR, Python 3.7 or later with all of the 
         `pip install -U -r requirements.txt` packages including:
         - `torch >= 1.3`
@@ -42,22 +89,32 @@ The https://github.com/ultralytics/yolov3 repo contains inference and training c
         - `Pillow`
     - **WARNING**: If you get Module not found for `Cython`, please do:
         `$ pip install Cython numpy scipy`
-        
-### Clone and install requirements (If Not using Conda Env)
-- Clone git: 
-`$ git clone git@github.com:ardihikaru/yolov3.git`
-- Go to project directory: 
-`$ cd yolov3`
-- Create new virtual env (created once):
-`$ python3 -m venv venv` 
-- Enable virtual env:
-`$ . venv/bin/activate.fish`
-- Install additional library:
-`$ pip install Cython numpy scipy imagezmq`
-- Install requirement file:
-`$ pip install -r requirements.txt`
 
-### Usage
+# Usage (Under work ...)
+
+
+ 1. Activate the virtualenv by running this command below:
+    - `$ cd eagleye # The location where eagleeye is cloned on your machine`
+    - `$ . venv/bin/activate.fish # Assuming that you use fish`
+ 2.  For cleanup, run this delete_keys script:
+     - `$ python delete_keys.py`
+ 3. Start the OpenCV visualizer:
+	- `$ python main_visualizer.py --small --original --no-fps` (EagleEYE_Output_Stream)
+	- `$ python main_visualizer.py --small # Eagle ` (Drone_Video_Feed)
+ 4. Start drone GPS dummy:
+    - `$ python main_gps_collector.py`
+ 5. Start PiH Location Fetcher:
+    - `$ python main_pih_location_fetcher.py`
+ 6. Start the woker nodes. Below show the example for the activation of 4 worker nodes:
+    - `$ python main_yolov3_worker.py --node 1`
+    - `$ python main_yolov3_worker.py --node 2`
+    - `$ python main_yolov3_worker.py --node 3`
+    - `$ python main_yolov3_worker.py --node 4`
+ 7. Start the Stream Reader module:
+    - `$ python main_stream_reader.py --total_workers 4`
+
+
+#### OLD Conda Environment
 1. Activate environment (for Conda Env): `$ conda activate 5gdive-yolov3`
 2. Create RAM-based Disk storage:
     ```
@@ -72,172 +129,41 @@ The https://github.com/ultralytics/yolov3 repo contains inference and training c
     - `$ python worker_yolov3.py --sub_channel 2`
     - `$ python worker_yolov3.py --sub_channel 3`
 4. Resize input and output image (**optional**):
-    - 
 5. Run video streaming reader: `$ python reading_video.py`
     - By default, I set `3 number of workers`. Please modify them accordingly.
 
-##### All dependencies are included in the associated docker images. Docker requirements are: 
+#### All dependencies are included in the associated docker images. Docker requirements are: 
 - `nvidia-docker`
 - Nvidia Driver Version >= 440.44
 
-# Tutorials
+# Replicate Our Results (Under work ...)
 
-* [GCP Quickstart](https://github.com/ultralytics/yolov3/wiki/GCP-Quickstart)
-* [Transfer Learning](https://github.com/ultralytics/yolov3/wiki/Example:-Transfer-Learning)
-* [Train Single Image](https://github.com/ultralytics/yolov3/wiki/Example:-Train-Single-Image)
-* [Train Single Class](https://github.com/ultralytics/yolov3/wiki/Example:-Train-Single-Class)
-* [Train Custom Data](https://github.com/ultralytics/yolov3/wiki/Train-Custom-Data)
+### Our Setup:
+We ran all of the test results provided here in our OPTUNS 5G Edge Data Center in NCTU. The details of our data center hardware and architecture can be found in the OPTUNS paper publication [1].
+- [1] Yuang, M., Tien, P.L., Ruan, W.Z., Lin, T.C., Wen, S.C., Tseng, P.J., Lin, C.C., Chen, C.N., Chen, C.T., Luo, Y.A. and Tsai, M.R., 2020. OPTUNS: Optical intra-data center network architecture and prototype testbed for a 5G edge cloud. _Journal of Optical Communications and Networking_, _12_(1), pp.A28-A37.
 
-# Jupyter Notebook
+*Section under work ...*
 
-Our Jupyter [notebook](https://colab.research.google.com/github/ultralytics/yolov3/blob/master/examples.ipynb) provides quick training, inference and testing examples.
+# Links and Documentation
 
-# Training
+-  [Single video streaming via HTTP using FFmpeg](https://github.com/ardihikaru/eagleeye/blob/feature/readme/docs/http-stream.md)
+# Contributors
 
-**Start Training:** `python3 train.py` to begin training after downloading COCO data with `data/get_coco_dataset.sh`. Each epoch trains on 117,263 images from the train and validate COCO sets, and tests on 5000 images from the COCO validate set.
+ - Muhammad Febrian Ardiansyah:
+	 - GitHub: [https://github.com/ardihikaru](https://github.com/ardihikaru)
+	 - Email: mfardiansyah.eed08g@nctu.edu.tw
+ - Timothy William:
+	 - GitHub: [https://github.com/moipalamoi](https://github.com/moipalamoi)
+	 - Email: timothywilliam.cs06g@g2.nctu.edu.tw
+ - Osamah Ibrahiem Abdullaziz
+	 - GitHub: [https://github.com/oiasam](https://github.com/oiasam)
+	 - Email: yabolahan.04g@g2.nctu.edu.tw
 
-**Resume Training:** `python3 train.py --resume` to resume training from `weights/last.pt`.
-
-**Plot Training:** `from utils import utils; utils.plot_results()` plots training results from `coco_16img.data`, `coco_64img.data`, 2 example datasets available in the `data/` folder, which train and test on the first 16 and 64 images of the COCO2014-trainval dataset.
-
-<img src="https://user-images.githubusercontent.com/26833433/63258271-fe9d5300-c27b-11e9-9a15-95038daf4438.png" width="900">
-
-## Image Augmentation
-
-`datasets.py` applies random OpenCV-powered (https://opencv.org/) augmentation to the input images in accordance with the following specifications. Augmentation is applied **only** during training, not during inference. Bounding boxes are automatically tracked and updated with the images. 416 x 416 examples pictured below.
-
-Augmentation | Description
---- | ---
-Translation | +/- 10% (vertical and horizontal)
-Rotation | +/- 5 degrees
-Shear | +/- 2 degrees (vertical and horizontal)
-Scale | +/- 10%
-Reflection | 50% probability (horizontal-only)
-H**S**V Saturation | +/- 50%
-HS**V** Intensity | +/- 50%
-
-<img src="https://user-images.githubusercontent.com/26833433/66699231-27beea80-ece5-11e9-9cad-bdf9d82c500a.jpg" width="900">
-
-## Speed
-
-https://cloud.google.com/deep-learning-vm/  
-**Machine type:** preemptible [n1-standard-16](https://cloud.google.com/compute/docs/machine-types) (16 vCPUs, 60 GB memory)   
-**CPU platform:** Intel Skylake  
-**GPUs:** K80 ($0.20/hr), T4 ($0.35/hr), V100 ($0.83/hr) CUDA with [Nvidia Apex](https://github.com/NVIDIA/apex) FP16/32  
-**HDD:** 1 TB SSD  
-**Dataset:** COCO train 2014 (117,263 images)  
-**Model:** `yolov3-spp.cfg`  
-**Command:**  `python3 train.py --img 416 --batch 32 --accum 2`
-
-GPU |n| `--batch --accum` | img/s | epoch<br>time | epoch<br>cost
---- |--- |--- |--- |--- |---
-K80    |1| 32 x 2 | 11  | 175 min  | $0.58
-T4     |1<br>2| 32 x 2<br>64 x 1 | 41<br>61 | 48 min<br>32 min | $0.28<br>$0.36
-V100   |1<br>2| 32 x 2<br>64 x 1 | 122<br>**178** | 16 min<br>**11 min** | **$0.23**<br>$0.31
-2080Ti |1<br>2| 32 x 2<br>64 x 1 | 81<br>140 | 24 min<br>14 min | -<br>-
-
-# Inference
-
-`detect.py` runs inference on any sources:
-
-```bash
-python3 detect.py --source ...
-```
-
-- Image:  `--source file.jpg`
-- Video:  `--source file.mp4`
-- Directory:  `--source dir/`
-- Webcam:  `--source 0`
-- RTSP stream:  `--source rtsp://170.93.143.139/rtplive/470011e600ef003a004ee33696235daa`
-- HTTP stream:  `--source http://wmccpinetop.axiscam.net/mjpg/video.mjpg`
-
-To run a specific models:
-
-**YOLOv3:** `python3 detect.py --cfg cfg/yolov3.cfg --weights yolov3.weights`  
-<img src="https://user-images.githubusercontent.com/26833433/64067835-51d5b500-cc2f-11e9-982e-843f7f9a6ea2.jpg" width="500">
-
-**YOLOv3-tiny:** `python3 detect.py --cfg cfg/yolov3-tiny.cfg --weights yolov3-tiny.weights`  
-<img src="https://user-images.githubusercontent.com/26833433/64067834-51d5b500-cc2f-11e9-9357-c485b159a20b.jpg" width="500">
-
-**YOLOv3-SPP:** `python3 detect.py --cfg cfg/yolov3-spp.cfg --weights yolov3-spp.weights`  
-<img src="https://user-images.githubusercontent.com/26833433/64067833-51d5b500-cc2f-11e9-8208-6fe197809131.jpg" width="500">
-
-
-# Pretrained Weights
-
-Download from: [https://drive.google.com/open?id=1LezFG5g3BCW6iYaV89B2i64cqEUZD7e0](https://drive.google.com/open?id=1LezFG5g3BCW6iYaV89B2i64cqEUZD7e0)
-
-## Darknet Conversion
-
-```bash
-$ git clone https://github.com/ultralytics/yolov3 && cd yolov3
-
-# convert darknet cfg/weights to pytorch model
-$ python3  -c "from models import *; convert('cfg/yolov3-spp.cfg', 'weights/yolov3-spp.weights')"
-Success: converted 'weights/yolov3-spp.weights' to 'converted.pt'
-
-# convert cfg/pytorch model to darknet weights
-$ python3  -c "from models import *; convert('cfg/yolov3-spp.cfg', 'weights/yolov3-spp.pt')"
-Success: converted 'weights/yolov3-spp.pt' to 'converted.weights'
-```
-
-# mAP
-
-```bash
-python3 test.py --weights ... --cfg ...
-```
-
-- mAP@0.5 run at `--iou-thr 0.5`, mAP@0.5...0.95 run at `--iou-thr 0.7`
-- YOLOv3-SPP ultralytics is `ultralytics68.pt` with `yolov3-spp.cfg`
-- Darknet results: https://arxiv.org/abs/1804.02767
-
-<i></i>                      |Size |COCO mAP<br>@0.5...0.95 |COCO mAP<br>@0.5 
----                          | ---         | ---         | ---
-YOLOv3-tiny<br>YOLOv3<br>YOLOv3-SPP<br>**YOLOv3-SPP ultralytics** |320 |14.0<br>28.7<br>30.5<br>**35.5** |29.1<br>51.8<br>52.3<br>**55.4**
-YOLOv3-tiny<br>YOLOv3<br>YOLOv3-SPP<br>**YOLOv3-SPP ultralytics** |416 |16.0<br>31.2<br>33.9<br>**39.2** |33.0<br>55.4<br>56.9<br>**59.9**
-YOLOv3-tiny<br>YOLOv3<br>YOLOv3-SPP<br>**YOLOv3-SPP ultralytics** |512 |16.6<br>32.7<br>35.6<br>**40.5** |34.9<br>57.7<br>59.5<br>**61.4**
-YOLOv3-tiny<br>YOLOv3<br>YOLOv3-SPP<br>**YOLOv3-SPP ultralytics** |608 |16.6<br>33.1<br>37.0<br>**41.1** |35.4<br>58.2<br>60.7<br>**61.5**
-
-```bash
-$ python3 test.py --img-size 608 --iou-thr 0.6 --weights ultralytics68.pt --cfg yolov3-spp.cfg
-
-Namespace(batch_size=32, cfg='yolov3-spp.cfg', conf_thres=0.001, data='data/coco2014.data', device='', img_size=608, iou_thres=0.6, save_json=True, task='test', weights='ultralytics68.pt')
-Using CUDA device0 _CudaDeviceProperties(name='Tesla V100-SXM2-16GB', total_memory=16130MB)
-               Class    Images   Targets         P         R   mAP@0.5        F1: 100% 157/157 [03:30<00:00,  1.16it/s]
-                 all     5e+03  3.51e+04    0.0353     0.891     0.606    0.0673
- Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.409
- Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.615
- Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.437
- Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.242
- Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.448
- Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.519
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.337
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.557
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.612
- Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.438
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.658
- Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.746
-```
-
-# Reproduce Our Results
-
-This command trains `yolov3-spp.cfg` from scratch to our mAP above. Training takes about one week on a 2080Ti.
-```bash
-$ python3 train.py --weights '' --cfg yolov3-spp.cfg --epochs 273 --batch 16 --accum 4 --multi --pre
-```
-<img src="https://user-images.githubusercontent.com/26833433/70661588-76bbca00-1c19-11ea-86f9-23350d8c3193.png" width="900">
-
-# Reproduce Our Environment
-
-To access an up-to-date working environment (with all dependencies including CUDA/CUDNN, Python and PyTorch preinstalled), consider a:
-
-- **GCP** Deep Learning VM with $300 free credit offer: See our [GCP Quickstart Guide](https://github.com/ultralytics/yolov3/wiki/GCP-Quickstart) 
-- **Google Colab Notebook** with 12 hours of free GPU time: [Google Colab Notebook](https://colab.research.google.com/drive/1G8T-VFxQkjDe4idzN8F-hbIBqkkkQnxw)
-- **Docker Image** from https://hub.docker.com/r/ultralytics/yolov3. See [Docker Quickstart Guide](https://github.com/ultralytics/yolov3/wiki/Docker-Quickstart) 
-# Citation
-
-[![DOI](https://zenodo.org/badge/146165888.svg)](https://zenodo.org/badge/latestdoi/146165888)
-
-# Contact
-
-**Issues should be raised directly in the repository.** For additional questions or comments please email Glenn Jocher at glenn.jocher@ultralytics.com or visit us at https://contact.ultralytics.com.
+<!--stackedit_data:
+eyJoaXN0b3J5IjpbLTkxODIzNDAyMiwtMTYzNDQ4MDUzNiwxMz
+kzMDAxNDQ3LC0xMjY3MDc1NTI1LDE2MDY4MDU0NzcsMjExODY2
+MDEwLDE0MDM0ODQ2MywtNzIwMjcxOTUzLC0yMDIxNDExMzUsMT
+YxMzY5Mzc3MSw4NzQwMzI4NDQsLTc1NjIyNTA0MiwtNzAzMzMz
+NDczLDE2NDAyMzUyODUsLTIxMTk0NTg1NzEsODc4Njc3MzMzLD
+IwNDAwNDUzMjYsLTg1NDA1MzE5MV19
+-->
