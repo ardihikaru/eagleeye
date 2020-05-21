@@ -15,6 +15,7 @@ import torchvision
 from tqdm import tqdm
 import csv
 from datetime import datetime
+import time
 
 from . import torch_utils  # , google_utils
 
@@ -1049,8 +1050,10 @@ def plot_results(start=0, stop=0, bucket='', id=()):  # from utils.utils import 
     ax[1].legend()
     fig.savefig('results.png', dpi=200)
 
+
 def save_to_csv(csv_path, fname, data):
     np.savetxt(csv_path + "/" + fname, data, delimiter=',')  # X is an array
+
 
 def int_to_tuple(Ks):
     lst = []
@@ -1058,12 +1061,14 @@ def int_to_tuple(Ks):
         lst.append((i+1))
     return tuple(lst)
 
+
 def read_data(csv_path, fname):
     data_path = csv_path + "/"
     fpath = data_path + fname
     with open(fpath, 'r') as f:
         reader = csv.reader(f)
         return [float(line[0]) for line in list(reader)]
+
 
 def mbboxlist2dict(mbbox_data):
     idx = 1
@@ -1077,5 +1082,98 @@ def mbboxlist2dict(mbbox_data):
         idx += 1
     return dict_mbbox
 
+
 def get_current_time():
     return datetime.now().strftime("%H:%M:%S")
+
+
+def plot_gps_info(img_height, gps_data, det_status, img):
+    x_coord_lbl, y_coord_lbl = 10, (img_height - 90)
+    x_coord_gps, y_coord_gps = 10, (img_height - 60)
+    x_coord_obj, y_coord_obj = 10, (img_height - 30)
+    # gps_data = get_gps_data(self.rc_gps, self.drone_id)
+    gps_ts = time.strftime('%H:%M:%S', time.localtime(gps_data["timestamp"]))
+    long = gps_data["gps"]["long"]
+    lat = gps_data["gps"]["lat"]
+    alt = gps_data["gps"]["alt"]
+
+    # Set labels
+    gps_title_label = "GPS Information (%s):" % gps_ts
+    gps_data_label = "LONG= %f; LAT= %f; ALT= %f;" % (long, lat, alt)
+    # obj_data_label = "Detection status: %s" % self.det_status
+    obj_data_label = "Detection status: %s" % det_status
+
+    # Add filled box
+    # tl = round(0.002 * (self.img.shape[0] + self.img.shape[1]) / 2) + 1  # line thickness
+    tl = round(0.002 * (img.shape[0] + img.shape[1]) / 2) + 1  # line thickness
+    tf = max(tl - 1, 1)  # font thickness
+    t_size_title = cv2.getTextSize(gps_data_label, 0, fontScale=tl / 3, thickness=tf)[0]
+    t_size = cv2.getTextSize(gps_data_label, 0, fontScale=tl / 3, thickness=tf)[0]
+    t_size_obj = cv2.getTextSize(gps_data_label, 0, fontScale=tl / 3, thickness=tf)[0]
+    c1 = (int(x_coord_lbl), int(y_coord_lbl - 30))
+    c2 = x_coord_obj + t_size_title[0] - 300, y_coord_obj - t_size_obj[1] + 40
+
+    # cv2.rectangle(self.img, c1, c2, [0, 0, 0], -1)  # filled
+    cv2.rectangle(img, c1, c2, [0, 0, 0], -1)  # filled
+
+    # cv2.putText(self.img, gps_title_label,
+    cv2.putText(img, gps_title_label,
+                (x_coord_lbl, y_coord_lbl), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), 2)
+
+    # cv2.putText(self.img, gps_data_label,
+    cv2.putText(img, gps_data_label,
+                (x_coord_gps, y_coord_gps), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), 2)
+
+    # Plot detection status
+    # cv2.putText(self.img, obj_data_label,
+    cv2.putText(img, obj_data_label,
+                (x_coord_obj, y_coord_obj), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), 2)
+
+
+def plot_fps_info(img_width, drone_id, frame_id, rc_latency, img, func_redis_set, func_redis_get, store_fps=False):
+    # x_coord, y_coord = (img_width - 150), 30
+    x_coord, y_coord = (img_width - 300), 40
+
+    x_coord_lat, y_coord_lat = (img_width - 350), 85  # proc. latency of this frame
+
+    t_start_key = "start-" + str(drone_id)
+    t0 = func_redis_get(rc_latency, t_start_key)
+    t1 = time.time()
+    t_elapsed = t1 - t0
+    visualizer_fps = int(frame_id) / t_elapsed
+    proc_latency_frame = t_elapsed / int(frame_id) * 1000  # in ms
+
+    fps_visualizer_key = "fps-visualizer-%s" % str(drone_id)
+    if store_fps:
+        func_redis_set(rc_latency, fps_visualizer_key, visualizer_fps)
+
+    # Set labels
+    if visualizer_fps is None:
+        label = "FPS: None"
+    else:
+        label = "FPS: %.2f" % visualizer_fps
+    if proc_latency_frame > 1000: # set as second
+        proc_latency_frame = proc_latency_frame / 1000
+        label_lat = "Proc. Lat.: %.2fs" % proc_latency_frame
+    else:
+        label_lat = "Proc. Lat.: %.0fms" % proc_latency_frame
+
+    # Add filled box: FPS
+    tl = round(0.002 * (img.shape[0] + img.shape[1]) / 2) + 1  # line thickness
+    tf = max(tl - 1, 1)  # font thickness
+    t_size = cv2.getTextSize(label, 0, fontScale=tl / 3, thickness=tf)[0]
+    c1 = (int(x_coord), int(y_coord))
+    c2 = x_coord + t_size[0] + 30, y_coord - t_size[1] - 3
+    cv2.rectangle(img, c1, c2, [0, 0, 0], -1)  # filled
+    cv2.putText(img, label, (x_coord, y_coord), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 255, 0), 2)
+
+    # Add filled box: Proc. Latency of this frame
+    tl = round(0.002 * (img.shape[0] + img.shape[1]) / 2) + 1  # line thickness
+    tf = max(tl - 1, 1)  # font thickness
+    t_size = cv2.getTextSize(label_lat, 0, fontScale=tl / 3, thickness=tf)[0]
+    c1 = (int(x_coord_lat), int(y_coord_lat))
+    c2 = x_coord_lat + t_size[0] + 30, y_coord_lat - t_size[1] - 3
+    cv2.rectangle(img, c1, c2, [0, 0, 0], -1)  # filled
+    cv2.putText(img, label_lat, (x_coord_lat, y_coord_lat), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 255, 0), 2)
+
+    return img

@@ -7,17 +7,22 @@ if __name__ == "__main__":
     parser.add_argument('--auto_restart', type=bool, default=False, help='Auto Restart reader video')
     parser.add_argument('--disable_delay', type=bool, default=True, help='Enable/disable delay')
     parser.add_argument('--start_frame_id', type=int, default=1, help='Start frame ID')
-    parser.add_argument('--max_frames', type=int, default=57, help='Max Frames; This parameter is ignored when `is_unlimited`=True')
+    parser.add_argument('--max_frames', type=int, default=57, help='Max Frames; Ignored when `is_unlimited`=True')
     parser.add_argument('--is_unlimited', type=bool, default=True, help='Loop forever')
 
-    parser.add_argument('--pih_location_fetcher_port', type=int, default=5571, help='ZMQ Viewer port')
+    # use this to Disable output stream of raw frames
+    parser.add_argument('--no-origin-stream', dest='origin_stream', action='store_false', help="Disable Stream Raw img")
+    parser.set_defaults(origin_stream=True)
+
+    parser.add_argument('--pih_location_fetcher_port', type=int, default=5571, help='ZMQ Viewer port PLF')
+    parser.add_argument('--visualizer_origin_port', type=int, default=5580, help='ZMQ Viewer port Original Visualizer')
 
     # Better do not change this
     parser.add_argument("--enable_cv_out", type=bool, default=True,
                         help="Enable/disable Output video streaming; run `viewer.py` to see the results")
 
     # Change to fit your need / scenario
-    parser.add_argument('--visual_type', type=int, default=3, help='Type_1=YOLO; Type_2=MOD; Type_3=YOLO+MOD; otherwise=No BBox')
+    parser.add_argument('--visual_type', type=int, default=2, help='Type_1=YOLO; 2=MOD; 3=YOLO+MOD; otherwise=No BBox')
 
     parser.add_argument('--drone_id', type=int, default=1, help='Drone ID')
     parser.add_argument("--total_workers", type=int, default=1, help="path to dataset")
@@ -36,8 +41,8 @@ if __name__ == "__main__":
     # YOLOv3 default configuration
     parser.add_argument('--device', default='', help='device id (i.e. 0 or 0,1) or cpu')
     parser.add_argument('--half', action='store_true', help='half precision FP16 inference')
-    parser.add_argument("--img_size", type=int, default=416, help="size of each image dimension")
-    # parser.add_argument("--img_size", type=int, default=832, help="size of each image dimension")
+    # parser.add_argument("--img_size", type=int, default=416, help="size of each image dimension")
+    parser.add_argument("--img_size", type=int, default=832, help="size of each image dimension")
 
     # Used only when source_type = "folder", otherwise it's not used
     parser.add_argument("--source_folder_prefix", type=str, default="out", help="source folder prefix")
@@ -47,10 +52,12 @@ if __name__ == "__main__":
 
     # parser.add_argument("--source", type=str, default="data/5g-dive/57-frames/", help="source")
     # parser.add_argument("--source", type=str, default="data/5g-dive/videos/customTest_MIRC-Roadside-5s.mp4", help="source")
-    parser.add_argument("--source", type=str, default="data/5g-dive/videos/customTest_MIRC-Roadside-20s.mp4", help="source")
+    # parser.add_argument("--source", type=str, default="data/5g-dive/videos/customTest_MIRC-Roadside-20s.mp4", help="source")
+    # parser.add_argument("--source", type=str, default="data/5g-dive/videos/customDrone_MIRC-Entrance-Hover-1m.MP4", help="source")
     # parser.add_argument("--source", type=str, default="data/5g-dive/videos/demo_video.MP4", help="source")
-    # parser.add_argument("--source", type=str, default="http://192.168.0.50:10000/drone-1.flv", help="source")
     # parser.add_argument("--source", type=str, default="http://127.0.0.1:10000/stream-1.flv", help="source")
+    parser.add_argument("--source", type=str, default="rtmp://140.113.86.92/live/demo", help="source")
+    # parser.add_argument("--source", type=str, default="http://192.168.0.50:10000/drone-1.flv", help="source")
     # parser.add_argument("--source", type=str, default="http://192.168.42.1/live", help="source")
     opt = parser.parse_args()
     # print(opt)

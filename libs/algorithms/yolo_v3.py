@@ -86,7 +86,7 @@ class YOLOv3:
         self.__set_redis()
         self.save_img = True
 
-        open_port = self.__get_open_port(int(opt.sub_channel))
+        open_port = self.__get_open_port(int(opt.node))
         self.image_hub = imagezmq.ImageHub(open_port=open_port, REQ_REP=False)
         # self.image_hub = imagezmq.ImageHub(open_port='tcp://127.0.0.1:5555', REQ_REP=False)
 
@@ -127,13 +127,13 @@ class YOLOv3:
         )
 
     def __setup_subscriber(self):
-        self.rc_data.delete(self.opt.sub_channel)
+        self.rc_data.delete(self.opt.node)
 
         # Dummy set value
         # expired_at = 2 # in seconds
-        # redis_set(self.rc_data, self.opt.sub_channel, True, expired_at)
-        redis_set(self.rc_data, self.opt.sub_channel, 1)
-        # redis_set(self.rc_data, self.opt.sub_channel, False)
+        # redis_set(self.rc_data, self.opt.node, True, expired_at)
+        redis_set(self.rc_data, self.opt.node, 1)
+        # redis_set(self.rc_data, self.opt.node, False)
 
     def waiting_frames(self):
         # print("Starting YOLOv3 image detector")
@@ -163,9 +163,9 @@ class YOLOv3:
         self.__setup_subscriber()
 
         # Waiting for get the image information
-        stream_ch = "stream_" + self.opt.sub_channel
+        stream_ch = "stream_" + self.opt.node
         # print("\n### Waiting for get the image information @ Channel `%s`" % stream_ch)
-        print("\n[%s] Worker-%s: Ready" % (get_current_time(), self.opt.sub_channel))
+        print("\n[%s] Worker-%s: Ready" % (get_current_time(), self.opt.node))
         pubsub = self.rc.pubsub()
         pubsub.subscribe([stream_ch])
         for item in pubsub.listen():
@@ -191,7 +191,7 @@ class YOLOv3:
                 # Start processing image
                 # print("\nStart processing to get MB-Box.")
                 print("[%s] Received frame-%d" % (get_current_time(), int(frame_id)))
-                redis_set(self.rc_data, self.opt.sub_channel, 0) # set as `Busy`
+                redis_set(self.rc_data, self.opt.node, 0) # set as `Busy`
                 self.__process_detection(image, im0s, frame_id)
 
                 frame_id = str(fetch_data["frame_id"])
@@ -223,10 +223,11 @@ class YOLOv3:
                     # print("This MB-Box is NONE. nothing to be saved yet.")
 
                 # Restore availibility
-                redis_set(self.rc_data, self.opt.sub_channel, 1) # set as `Ready`
-                # print("\n### This Worker-%s is ready to serve again. \n\n" % self.opt.sub_channel)
-                print("\n[%s] Worker-%s: Ready" % (get_current_time(), self.opt.sub_channel))
-                worker_channel = "worker-%s" % self.opt.sub_channel
+                # redis_set(self.rc_data, self.opt.node, 1) # set as `Ready`
+                redis_set(self.rc_data, self.opt.node, 1, 30)  # set as `Ready`; add expiration: 30 seconds
+                # print("\n### This Worker-%s is ready to serve again. \n\n" % self.opt.node)
+                print("\n[%s] Worker-%s: Ready" % (get_current_time(), self.opt.node))
+                worker_channel = "worker-%s" % self.opt.node
                 pub(self.rc, worker_channel, "ok")
 
                 # Set prev_fid as DONE
@@ -415,15 +416,15 @@ class YOLOv3:
 
                     # Store total processed frames
                     self.total_proc_frames += 1
-                    t_proc_frames_key = "total-proc-frames-w%s-%s" % (str(self.opt.sub_channel), str(self.opt.drone_id))
+                    t_proc_frames_key = "total-proc-frames-w%s-%s" % (str(self.opt.node), str(self.opt.drone_id))
                     store_latency(self.rc_latency, t_proc_frames_key, self.total_proc_frames)
 
                     # FPS each worker
-                    fps_worker_key = "fps-worker-%s" % str(self.opt.sub_channel)
+                    fps_worker_key = "fps-worker-%s" % str(self.opt.node)
                     _, current_fps_worker = store_fps(self.rc_latency, fps_worker_key, self.opt.drone_id,
                                                       total_frames=self.total_proc_frames)
                     # print('Current [FPS of Worker-%s] with total %d frames: (%.2f fps)' % (
-                    #         self.opt.sub_channel, self.total_proc_frames, current_fps_worker))
+                    #         self.opt.node, self.total_proc_frames, current_fps_worker))
 
                     if not self.opt.maximize_latency:
                         if self.opt.default_detection:
@@ -488,13 +489,20 @@ class YOLOv3:
                     # print('Current [FPS] with total %d frames: (%.2f fps)' % (total_frames, current_fps))
                     # # redis_set(self.rc_latency, fps_key, current_fps)
 
-                    # Publish to PLF (PiH Location Fetcher) to notify that it's done.
-                    plf_detection_channel = "PLF-%d-%d" % (self.opt.drone_id, this_frame_id)
-                    pub(self.rc, plf_detection_channel, "ok")
-                    # redis_set(self.rc_data, plf_detection_channel, True, 10)  # expired in 10 seconds
+                    # # Publish to PLF (PiH Location Fetcher) to notify that it's done.
+                    self.__set_finish_flag(this_frame_id)
+                    # plf_detection_channel = "PLF-%d-%d" % (self.opt.drone_id, this_frame_id)
+                    # pub(self.rc, plf_detection_channel, "ok")
+                    # # redis_set(self.rc_data, plf_detection_channel, True, 10)  # expired in 10 seconds
 
         except Exception as e:
             print("ERROR Pred: ", e)
+
+    def __set_finish_flag(self, frame_id):
+        key = "PLF-%d-%d" % (self.opt.drone_id, frame_id)
+        # pub(self.rc, plf_detection_channel, "ok")
+        # redis_set(self.rc_data, key, True, 2)  # set to expired in 2 seconds
+        redis_set(self.rc_data, key, True, 5)  # set to expired in 2 seconds
 
     def __default_detection(self, det, im0, this_frame_id):
         if self.opt.default_detection:

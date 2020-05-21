@@ -1,5 +1,9 @@
 class CommonSettings:
     __shared_state = {
+            "plf_config": {
+                # "waiting_limit": 33.4  # in ms --> for 30 fps video
+                "waiting_limit": 50  # in ms
+            },
             "streaming_config": {
                 "delay_disconnected": 3
             },
@@ -13,7 +17,9 @@ class CommonSettings:
                 # "pih_label_cand": "PiH Candidate",
                 "pih_label_cand": "FALSE PiH",
                 "pih_label": "PiH",
-                "pih_color": [198, 50, 13]  # PiH bbox color: Blue
+                "pih_color": [198, 50, 13],  # PiH bbox color: Blue
+                "person_color": [191, 96, 165],  # Person bbox color: Purple
+                "flag_color": [100, 188, 70]  # Flag bbox color: Green
             },
             "redis_config": {
                 "hostname": "localhost",
