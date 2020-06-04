@@ -108,7 +108,10 @@ class PIHLocationFetcherHandler(MyRedis):
             detection_status = self.__is_detection_finished()
             # if self.__is_detection_finished():
             if detection_status:
-                self.process_pih2image()
+                try:
+                    self.process_pih2image()
+                except Exception as e:
+                    print("process pih2image GAGAL ...")
                 # print(" --- `Received Frame` data has been successfully processed & Plotted;")
                 self.send_to_visualizer()
             elif detection_status is not None and not detection_status:  # send raw frame without any BBox

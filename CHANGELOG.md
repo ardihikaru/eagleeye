@@ -1,3 +1,7 @@
+## 2.0.2-video-demo (June 04, 2020)
+  - last changes only for video demo @ 9th June 2020
+  - Merge branch 'release-2.0.1' into develop
+
 ## 2.0.1 (May 21, 2020)
   - Merge branch 'feature/readme' into develop
   - test
