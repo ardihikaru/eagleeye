@@ -66,18 +66,21 @@ class PersistenceDetection:
 
         persistence_count += 1  # Since the first frameID contributes to a count
 
-        if tolerance_count <= self.tolerance_limit:
-            self.selected_label = self.pih_label
-            self.det_status = self.pih_label + " object FOUND"
-            # print("[DBG]\tPiH Detected! Set current frameID=%s Label as --> %s" % (str(self.cur_frame_id),
-            #                                                                        self.pih_label))
+        self.selected_label = self.pih_label
+        self.det_status = self.pih_label + " object FOUND"
 
-            # print("[DBG]\tpersistence_count=%d; tolerance_count=%d" % (persistence_count, tolerance_count))
-        else:
-            pass
-            # print("[DBG]\tPiH not detected! Set current frameID=%s Label as --> %s" % (str(self.cur_frame_id),
-            #                                                                            self.pih_label_cand))
-            # print("[DBG]\tpersistence_count=%d; tolerance_count=%d" % (persistence_count, tolerance_count))
+        # if tolerance_count <= self.tolerance_limit:
+        #     self.selected_label = self.pih_label
+        #     self.det_status = self.pih_label + " object FOUND"
+        #     # print("[DBG]\tPiH Detected! Set current frameID=%s Label as --> %s" % (str(self.cur_frame_id),
+        #     #                                                                        self.pih_label))
+        #
+        #     # print("[DBG]\tpersistence_count=%d; tolerance_count=%d" % (persistence_count, tolerance_count))
+        # else:
+        #     pass
+        #     # print("[DBG]\tPiH not detected! Set current frameID=%s Label as --> %s" % (str(self.cur_frame_id),
+        #     #                                                                            self.pih_label_cand))
+        #     # print("[DBG]\tpersistence_count=%d; tolerance_count=%d" % (persistence_count, tolerance_count))
 
     def get_label(self):
         return self.selected_label

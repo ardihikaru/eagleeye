@@ -40,15 +40,35 @@ class MODv2(RegionCluster):
             self.find_pair_candidates()
             self.pair_selection()
 
+    def __is_flag_valid(self, flag_idx, person_idx):
+        person_xyxy = get_det_xyxy(self.det[person_idx])
+        flag_xyxy = get_det_xyxy(self.det[flag_idx])
+
+        person_xywh = np_xyxy2xywh(person_xyxy)
+        flag_xywh = np_xyxy2xywh(flag_xyxy)
+        # print(" -------- person_xywh VS flag_xywh:", person_xywh, flag_xywh)
+        if flag_xywh[3] > person_xywh[3]:
+            return False
+        return True
+
+    def __is_distance_valid(self, dist_idx):
+        dist_th = 450.0
+        if self.saved_dist[dist_idx] < dist_th:
+            return True
+        return False
+
     def find_pair_candidates(self):
         for cluster_data in self.mapped_obj:
             if len(cluster_data["Person"]) > 0 and len(cluster_data["Flag"]) > 0:
                 for flag_idx in cluster_data["Flag"]:
                     for person_idx in cluster_data["Person"]:
-                        if person_idx not in self.flag_pair_candidates[flag_idx]["id"]:
-                            self.flag_pair_candidates[flag_idx]["id"].append(person_idx)
-                            dist_idx = str(flag_idx) + "-" + str(person_idx)
-                            self.flag_pair_candidates[flag_idx]["dist"].append(self.saved_dist[dist_idx])
+                        dist_idx = str(flag_idx) + "-" + str(person_idx)
+
+                        if self.__is_flag_valid(flag_idx, person_idx) and self.__is_distance_valid(dist_idx):
+                            if person_idx not in self.flag_pair_candidates[flag_idx]["id"]:
+                                self.flag_pair_candidates[flag_idx]["id"].append(person_idx)
+                                # dist_idx = str(flag_idx) + "-" + str(person_idx)
+                                self.flag_pair_candidates[flag_idx]["dist"].append(self.saved_dist[dist_idx])
 
     def pair_selection(self):
         for flag_idx, pair_data in self.flag_pair_candidates.items():
@@ -90,6 +110,7 @@ class MODv2(RegionCluster):
         i = 0
         for person_idx, person_data in self.person_xyxys.items():
             distance = get_xyxy_distance(centroid, person_data[2])
+            # print(" ------------ distance: ", distance)
             dist_idx = str(flag_idx) + "-" + str(person_idx)
             self.saved_dist[dist_idx] = distance
             i += 1

@@ -75,6 +75,7 @@ if __name__ == '__main__':
                     # parser.add_argume                     nt('--img-size', type=int, default=832, help='inference size (pixels)')
     # parser.add_argument('--conf-thres', type=float, default=0.3, help='object confidence threshold')
     parser.add_argument('--conf-thres', type=float, default=0.1, help='object confidence threshold')
+    # parser.add_argument('--conf-thres', type=float, default=0.3, help='object confidence threshold')
     # parser.add_argument('--iou-thres', type=float, default=0.5, help='IOU threshold for NMS')
     parser.add_argument('--iou-thres', type=float, default=0.1, help='IOU threshold for NMS')
     parser.add_argument('--fourcc', type=str, default='mp4v', help='output video codec (verify ffmpeg support)')
