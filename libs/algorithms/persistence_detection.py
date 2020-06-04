@@ -23,7 +23,7 @@ class PersistenceDetection:
         self.pih_label = common_settings["bbox_config"]["pih_label"]
         self.selected_label = self.pih_label_cand  # Default
         self.det_status = self.pih_label + " object NOT FOUND"
-        self.is_found = True
+        # self.is_found = True
         # print("\t[PERSISTENCE WINDOW=%d and TOLERANCE LIMIT=%d]"
         #       % (self.persistence_window, self.tolerance_limit))
 
@@ -89,8 +89,8 @@ class PersistenceDetection:
     def get_det_status(self):
         return self.det_status
 
-    def is_found(self):
-        return self.is_found
+    # def is_found(self):
+    #     return self.is_found
 
     # Sliding window implementation of persistence_module
     def persistence_module_window(self):

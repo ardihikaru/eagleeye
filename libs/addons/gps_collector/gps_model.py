@@ -43,11 +43,11 @@ class GPSModel(MyRedis):
             "timestamp": time.time(),
 
             "drone_timestamp": time.time(),
-            "Heading": "360",
-            "GroundSpeed": "-0.0084148002788424",
-            "Pitch": "-0.00841480027884245",
-            "Roll": "-0.0021843130234628916",
-            "Yaw": "2.517401695251465",
+            "Heading": 360,
+            "GroundSpeed": 10,
+            "Pitch": -0.00841480027884245,
+            "Roll": -0.0021843130234628916,
+            "Yaw": 2.517401695251465,
 
             "gps": {
                 "long": self.dummy_long,
@@ -73,26 +73,25 @@ class GPSModel(MyRedis):
             self.printing_drone_gps(self.opt.drone_id, gps_data["gps"]["long"], gps_data["gps"]["lat"],
                                     gps_data["gps"]["alt"], t0)
         else:
-            drone_id = 0
             for data in gps_data:
-                key = "gps-data-" + str(drone_id)
+                key = "gps-data-" + data["FlyNo"]
 
                 this_gps_data = {
-                    "drone_id": data["FlyNo"],
+                    "drone_id": int(data["FlyNo"]),
                     "id": self.gps_id,
                     "timestamp": time.time(),
 
                     "drone_timestamp": data["Timestamp"],
-                    "Heading": data["Heading"],
-                    "GroundSpeed": data["GroundSpeed"],
-                    "Pitch": data["Pitch"],
-                    "Roll": data["Roll"],
-                    "Yaw": data["Yaw"],
+                    "Heading": int(data["Heading"]),
+                    "GroundSpeed": int(data["GroundSpeed"]),
+                    "Pitch": float(data["Pitch"]),
+                    "Roll": float(data["Roll"]),
+                    "Yaw": float(data["Yaw"]),
 
                     "gps": {
-                        "long": data["Longitude"],
-                        "lat": data["Latitude"],
-                        "alt": data["Altitude"]
+                        "long": float(data["Longitude"]),
+                        "lat": float(data["Latitude"]),
+                        "alt": float(data["Altitude"])
                     }
                 }
 
