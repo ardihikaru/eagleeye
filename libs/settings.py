@@ -15,7 +15,8 @@ class CommonSettings:
             },
             "bbox_config": {
                 # "pih_label_cand": "PiH Candidate",
-                "pih_label_cand": "FALSE PiH",
+                #"pih_label_cand": "FALSE PiH    ",
+                "pih_label_cand": "PiH",
                 "pih_label": "PiH",
                 "pih_color": [198, 50, 13],  # PiH bbox color: Blue
                 "person_color": [191, 96, 165],  # Person bbox color: Purple

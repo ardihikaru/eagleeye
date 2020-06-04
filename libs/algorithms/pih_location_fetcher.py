@@ -118,6 +118,7 @@ class PIHLocationFetcher(MyRedis):
 
     def __clean_label(self, old_label):
         arr = old_label.split(" ")
+        # return arr[0] + " - " + arr[1]
         return arr[0]
 
     def __get_color(self, label, data):
