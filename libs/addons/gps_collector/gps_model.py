@@ -22,10 +22,13 @@ class GPSModel(MyRedis):
         else:
             return self.get_real_data()
 
-    def get_real_data(self):
+    def _set_client_con(self):
         s_url = self.opt.host + ":" + self.opt.port + "/" + self.opt.endpoint
-        client = Client(s_url)
-        all_drone_state = json.loads(client.service.GetAllDroneState())
+        self.client = Client(s_url)
+
+    def get_real_data(self):
+        self._set_client_con()
+        all_drone_state = json.loads(self.client.service.GetAllDroneState())
         self.gps_id += 1
         return all_drone_state
 
@@ -96,3 +99,14 @@ class GPSModel(MyRedis):
                 p_gps_data = json.dumps(this_gps_data)
                 redis_set(self.rc_gps, key, p_gps_data)
                 self.printing_drone_gps(data["FlyNo"], data["Longitude"], data["Latitude"], data["Altitude"], t0)
+
+    def send_gps_to_drone(self, drone_id, gps_data):
+        self._set_client_con()
+        dict_data = {
+            "FlyNo": str(drone_id),
+            "Peoplelatitude": gps_data["gps"]["lat"],
+            "Peoplelongitude": gps_data["gps"]["long"]
+        }
+        dump_data = json.dumps(dict_data)
+        resp = self.client.service.SendPeopleLocation(dump_data)
+        print("[Drone Navigation Server] Response:", resp)

@@ -5,6 +5,7 @@ from utils.utils import *
 import simplejson as json
 from libs.settings import common_settings
 from libs.algorithms.persistence_detection import PersistenceDetection
+from libs.addons.gps_collector.gps_sender import GPSSender
 import time
 
 
@@ -168,6 +169,9 @@ class PIHLocationFetcher(MyRedis):
             pers_det.run()
             self.selected_label = pers_det.get_label()
             self.det_status = pers_det.get_det_status()
+
+            if pers_det.is_found():
+                GPSSender(self.opt, self.drone_id).send_gps_data()
 
             for data in self.mbbox_coord:
                 # obj_idx = data["obj_idx"]
