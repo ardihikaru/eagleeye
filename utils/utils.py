@@ -1143,8 +1143,10 @@ def plot_fps_info(img_width, drone_id, frame_id, rc_latency, img, func_redis_set
     visualizer_fps = int(frame_id) / t_elapsed
     proc_latency_frame = t_elapsed / int(frame_id) * 1000  # in ms
 
-    fps_visualizer_key = "fps-visualizer-%s" % str(drone_id)
-    lat_visualizer_key = "lat-visualizer-%s" % str(drone_id)
+    # fps_visualizer_key = "fps-visualizer-%s" % str(drone_id)
+    # lat_visualizer_key = "lat-visualizer-%s" % str(drone_id)
+    fps_visualizer_key = "fps-visualizer-%s-%s" % (str(drone_id), str(frame_id))
+    lat_visualizer_key = "lat-visualizer-%s-%s" % (str(drone_id), str(frame_id))
     if store_fps:
         func_redis_set(rc_latency, fps_visualizer_key, visualizer_fps)
         func_redis_set(rc_latency, lat_visualizer_key, proc_latency_frame)
