@@ -5,6 +5,8 @@ from libs.addons.redis.translator import redis_get, pub, redis_set
 import simplejson as json
 import time
 import imagezmq
+from utils.utils import plot_gps_info, plot_fps_info
+from libs.addons.redis.utils import get_gps_data
 
 
 class PIHLocationFetcherHandler(MyRedis):
@@ -104,28 +106,36 @@ class PIHLocationFetcherHandler(MyRedis):
     def watch_frame_receiver(self):
         try:
             _, self.raw_image = self.frame_receiver.recv_image()
-            # print(" --- `Frame Data` has been successfully received: ")
+            # print(" --- `Frame Data` has been successfully received: -- self.drone_id=", self.drone_id)
             detection_status = self.__is_detection_finished()
             # if self.__is_detection_finished():
             if detection_status:
                 try:
                     self.process_pih2image()
                 except Exception as e:
-                    print("process pih2image GAGAL ...")
+                    print("process pih2image GAGAL ...", e)
                 # print(" --- `Received Frame` data has been successfully processed & Plotted;")
                 self.send_to_visualizer()
             elif detection_status is not None and not detection_status:  # send raw frame without any BBox
-                self.send_to_visualizer()
+                self.send_to_visualizer(no_bbox=True)
         except Exception as e:
             print("\t\tRetrieve frame-%d ERROR:" % self.frame_id, e)
 
-    def send_to_visualizer(self):
+    def send_to_visualizer(self, no_bbox=False):
         # print("~~~ \t This class is expected to send image (TCP) into GUI (main_visualizer.py)")
         this_visualizer_status_channel = "visualizer-status-" + str(self.drone_id)
 
         t0_sender = time.time()
         idx_vsender = self.drone_id - 1
-        self.visual_sender[idx_vsender].send_image(str(self.frame_id), self.plotted_img)
+        if no_bbox:
+            # print(" ### Send Raw frame to Visualizer. shape = ", self.raw_image.shape)
+            img_height, img_width, _ = self.raw_image.shape
+            fps_img = plot_fps_info(img_width, self.drone_id, self.frame_id, self.rc_latency, self.raw_image, redis_set,
+                                 redis_get, store_fps=True)
+            plot_gps_info(img_height, get_gps_data(self.rc_gps, self.drone_id), "No PiH is detected.", fps_img)
+            self.visual_sender[idx_vsender].send_image(str(self.frame_id), self.raw_image)
+        else:
+            self.visual_sender[idx_vsender].send_image(str(self.frame_id), self.plotted_img)
         t_recv = time.time() - t0_sender
         # print('Latency [Send Plotted Frame into Visualizer] of frame-%s: (%.5fs)' % (str(self.frame_id), t_recv))
 

@@ -56,7 +56,7 @@ if __name__ == "__main__":
     # parser.add_argument("--source", type=str, default="data/5g-dive/videos/customDrone_MIRC-Entrance-Hover-1m.MP4", help="source")
     # parser.add_argument("--source", type=str, default="data/5g-dive/videos/demo_video.MP4", help="source")
     # parser.add_argument("--source", type=str, default="http://127.0.0.1:10000/stream-1.flv", help="source")
-    parser.add_argument("--source", type=str, default="rtmp://140.113.86.92/live/demo", help="source")
+    parser.add_argument("--source", type=str, default="rtmp://192.168.1.155/live/demo", help="source")
     # parser.add_argument("--source", type=str, default="http://192.168.0.50:10000/drone-1.flv", help="source")
     # parser.add_argument("--source", type=str, default="http://192.168.42.1/live", help="source")
     opt = parser.parse_args()
