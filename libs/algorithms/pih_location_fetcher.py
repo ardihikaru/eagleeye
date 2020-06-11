@@ -5,6 +5,7 @@ from utils.utils import *
 import simplejson as json
 from libs.settings import common_settings
 from libs.algorithms.persistence_detection import PersistenceDetection
+from libs.addons.gps_collector.gps_sender import GPSSender
 import time
 
 
@@ -157,6 +158,7 @@ class PIHLocationFetcher(MyRedis):
             t0_pers_det = time.time()
             self.total_pih_candidates += 1
             self.period_pih_candidates.append(int(self.frame_id))
+
             pers_det = PersistenceDetection(self.opt, self.frame_id, self.total_pih_candidates,
                                             self.period_pih_candidates)
             self.__maintaince_period_pih_cand(pers_det.get_persistence_window())
@@ -169,8 +171,12 @@ class PIHLocationFetcher(MyRedis):
             self.selected_label = pers_det.get_label()
             self.det_status = pers_det.get_det_status()
 
+            # TBD:
+            # 1. Send this function asynchronously
+            # 2. Only send 1 time per second
+            # GPSSender(self.opt, self.drone_id).send_gps_data()
+
             for data in self.mbbox_coord:
-                # obj_idx = data["obj_idx"]
                 fl_mbbox = [float(xyxy) for xyxy in data["xyxy"]]
                 plot_one_box(fl_mbbox, self.img, label=self.selected_label, color=self.rgb_pih)  # plot bbox
 
