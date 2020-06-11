@@ -132,7 +132,7 @@ class PIHLocationFetcherHandler(MyRedis):
             img_height, img_width, _ = self.raw_image.shape
             fps_img = plot_fps_info(img_width, self.drone_id, self.frame_id, self.rc_latency, self.raw_image, redis_set,
                                  redis_get, store_fps=True)
-            plot_gps_info(img_height, get_gps_data(self.rc_gps, self.drone_id), "No PiH is detected", fps_img)
+            plot_gps_info(img_height, get_gps_data(self.rc_gps, self.drone_id), "No PiH is detected.", fps_img)
             self.visual_sender[idx_vsender].send_image(str(self.frame_id), self.raw_image)
         else:
             self.visual_sender[idx_vsender].send_image(str(self.frame_id), self.plotted_img)
