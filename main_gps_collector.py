@@ -14,7 +14,7 @@ if __name__ == "__main__":
 
     opt = parser.parse_args()
     print(opt)
-
+    
     gps_agent = GPSModel(opt)
 
     # Execute GPS Data Collector
@@ -22,5 +22,6 @@ if __name__ == "__main__":
         t0 = time.time()
         gps_data = gps_agent.get_data()
         gps_agent.store_gps_data(gps_data, t0)
-        # time.sleep(1)  # interval 1 second
+        if opt.dummy_data:
+            time.sleep(1)  # interval 1 second
         print()
