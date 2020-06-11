@@ -1,3 +1,18 @@
+## 2.0.3-mobileheroes2020 (June 11, 2020)
+  - Merge branch 'feature/ads-integration' into develop
+  - added results for mobileheroes2020 figures
+  - added another experimental data
+  - bug fixed
+  - added graph generator
+  - added another experimental data
+  - added experimental data for worker=2
+  - latency graph for EagleEYE v2
+  - Added 1 sec delay for dummy data
+  - Tested A-DNS new features
+  - A-DNS: Automatically send the cur. GPS information
+  - integration with A-DNS: Collect and Store GPS data
+  - Merge branch 'release-2.0.2-video-demo' into develop
+
 ## 2.0.2-video-demo (June 04, 2020)
   - last changes only for video demo @ 9th June 2020
   - Merge branch 'release-2.0.1' into develop
