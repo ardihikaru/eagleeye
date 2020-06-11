@@ -14,7 +14,7 @@ if __name__ == "__main__":
 
     opt = parser.parse_args()
     print(opt)
-    
+
     gps_agent = GPSModel(opt)
 
     # Execute GPS Data Collector

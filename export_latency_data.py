@@ -43,6 +43,7 @@ class ExportLatency:
         self.yolo_modv1 = []
         self.yolo_modv2 = []
         self.visualizer_fps = []
+        self.visualizer_lat = []
         self.lb_fps = []
         self.worker_fps = []
         self.opt = opt
@@ -78,14 +79,15 @@ class ExportLatency:
             key = "frame-" + str(self.opt.drone_id) + "-" + str(idx)
             value = redis_get(self.rc_latency, key)
 
-            if self.to_ms:
-                value = value * 1000
+            if value is not None:
+                if self.to_ms:
+                    value = value * 1000
 
-                # Add end-to-end latency
-                if self.opt.enable_e2e:
-                    value += self.opt.avg_frame
+                    # Add end-to-end latency
+                    if self.opt.enable_e2e:
+                        value += self.opt.avg_frame
 
-            self.read2stream.append(value)
+                self.read2stream.append(value)
 
         self.save_to_csv('01_read_stream_latency-w=%d.csv' % self.opt.num_workers, self.read2stream)  # X is an array
 
@@ -116,9 +118,10 @@ class ExportLatency:
         for idx in range (1, (self.num_frames+1)):
             key = "inference-" + str(self.opt.drone_id) + "-" + str(idx)
             value = redis_get(self.rc_latency, key)
-            if self.to_ms:
-                value = value * 1000
-            self.yolo_inference.append(value)
+            if value is not None:
+                if self.to_ms:
+                    value = value * 1000
+                self.yolo_inference.append(value)
 
         self.save_to_csv('04_yolo_inference_latency-w=%d.csv' % self.opt.num_workers, self.yolo_inference)  # X is an array
 
@@ -127,9 +130,10 @@ class ExportLatency:
         for idx in range (1, (self.num_frames+1)):
             key = "nms-" + str(self.opt.drone_id) + "-" + str(idx)
             value = redis_get(self.rc_latency, key)
-            if self.to_ms:
-                value = value * 1000
-            self.yolo_nms.append(value)
+            if value is not None:
+                if self.to_ms:
+                    value = value * 1000
+                self.yolo_nms.append(value)
 
         self.save_to_csv('05_yolo_nms_latency-w=%d.csv' % self.opt.num_workers, self.yolo_nms)  # X is an array
 
@@ -138,9 +142,10 @@ class ExportLatency:
         for idx in range (1, (self.num_frames+1)):
             key = "modv1-" + str(self.opt.drone_id) + "-" + str(idx)
             value = redis_get(self.rc_latency, key)
-            if self.to_ms:
-                value = value * 1000
-            self.yolo_modv1.append(value)
+            if value is not None:
+                if self.to_ms:
+                    value = value * 1000
+                self.yolo_modv1.append(value)
 
         self.save_to_csv('06_yolo_modv1_latency-w=%d.csv' % self.opt.num_workers, self.yolo_modv1)  # X is an array
 
@@ -149,9 +154,10 @@ class ExportLatency:
         for idx in range (1, (self.num_frames+1)):
             key = "modv2-" + str(self.opt.drone_id) + "-" + str(idx)
             value = redis_get(self.rc_latency, key)
-            if self.to_ms:
-                value = value * 1000
-            self.yolo_modv2.append(value)
+            if value is not None:
+                if self.to_ms:
+                    value = value * 1000
+                self.yolo_modv2.append(value)
 
         self.save_to_csv('07_yolo_modv2_latency-w=%d.csv' % self.opt.num_workers, self.yolo_modv2)  # X is an array
 
@@ -159,15 +165,26 @@ class ExportLatency:
         for idx in range (1, (self.num_frames+1)):
             key = "fps-visualizer-" + str(self.opt.drone_id)
             value = redis_get(self.rc_latency, key)
-            self.visualizer_fps.append(value)
+            if value is not None:
+                self.visualizer_fps.append(value)
 
         self.save_to_csv('08_visualizer_fps.csv', self.visualizer_fps)  # X is an array
+
+    def get_visualizer_lat(self):
+        for idx in range (1, (self.num_frames+1)):
+            key = "lat-visualizer-" + str(self.opt.drone_id)
+            value = redis_get(self.rc_latency, key)
+            if value is not None:
+                self.visualizer_lat.append(value)
+
+        self.save_to_csv('08-2_visualizer_lat.csv', self.visualizer_fps)  # X is an array
 
     def get_load_balancer_fps(self):
         for idx in range (1, (self.num_frames+1)):
             key = "fps-load-balancer-" + str(self.opt.drone_id)
             value = redis_get(self.rc_latency, key)
-            self.lb_fps.append(value)
+            if value is not None:
+                self.lb_fps.append(value)
 
         self.save_to_csv('08_load_balancer_fps.csv', self.lb_fps)  # X is an array
 
@@ -179,7 +196,8 @@ class ExportLatency:
             for idx in range (1, (self.num_frames+1)):
                 key = "fps-load-balancer-" + str(self.opt.drone_id)
                 value = redis_get(self.rc_latency, key)
-                self.worker_fps.append(value)
+                if value is not None:
+                    self.worker_fps.append(value)
 
             self.save_to_csv('09_[w=%d]_worker_fps.csv' % worker_id, self.worker_fps)
 
@@ -198,6 +216,7 @@ class ExportLatency:
 
         # New latency measurement in EagleEYE_v2
         self.get_visualizer_fps()
+        self.get_visualizer_lat()
         self.get_load_balancer_fps()
         self.get_worker_fps()
 
