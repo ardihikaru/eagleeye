@@ -16,7 +16,7 @@ import argparse
 class Plot:
     def __init__(self, opt):
         self.opt = opt
-        self.latency_output = opt.output_graph
+        self.latency_output = opt.csv_data
         redis = MyRedis()
         self.rc = redis.get_rc()
         self.rc_gps = redis.get_rc_gps()
@@ -25,17 +25,23 @@ class Plot:
     def run(self):
         fps1, lat1 = self.extract_latency_data("1")
         fps2, lat2 = self.extract_latency_data("2")
+        fps3, lat3 = self.extract_latency_data("3")
+        fps4, lat4 = self.extract_latency_data("4")
+        fps5, lat5 = self.extract_latency_data("5")
         fps6, lat6 = self.extract_latency_data("6")
 
         self.plot_graph([
             {"fps": fps1, "lat": lat1},
             {"fps": fps2, "lat": lat2},
+            {"fps": fps3, "lat": lat3},
+            {"fps": fps4, "lat": lat4},
+            {"fps": fps5, "lat": lat5},
             {"fps": fps6, "lat": lat6}
         ])
 
     def extract_latency_data(self, num_worker):
-        fps_data = self.read_data('worker=%s/08_visualizer_fps.csv' % num_worker)
-        lat_data = self.read_data('worker=%s/08-2_visualizer_lat.csv' % num_worker)
+        fps_data = self.read_data('worker=%s/06_visualizer_fps.csv' % num_worker)
+        lat_data = self.read_data('worker=%s/07_visualizer_lat.csv' % num_worker)
 
         this_fps = []
         this_latency = []
@@ -55,13 +61,13 @@ class Plot:
 
     def plot_graph(self, data=None):
 
-        num_data = 300
+        num_data = 1000
         data[0]["fps"] = data[0]["fps"][-num_data:]
         data[0]["lat"] = data[0]["lat"][-num_data:]
         data[1]["fps"] = data[1]["fps"][-num_data:]
         data[1]["lat"] = data[1]["lat"][-num_data:]
-        data[2]["fps"] = data[2]["fps"][-num_data:]
-        data[2]["lat"] = data[2]["lat"][-num_data:]
+        data[5]["fps"] = data[5]["fps"][-num_data:]
+        data[5]["lat"] = data[5]["lat"][-num_data:]
         # print(">>> worker=1 LEN FPS:", len(data[0]["fps"]))
         # print(">>> worker=1 LEN LAT:", len(data[0]["lat"]))
         # print(">>> worker=2 LEN FPS:", len(data[1]["fps"]))
@@ -73,8 +79,8 @@ class Plot:
         w1_avg_lat = round(np.mean(np.array(data[0]["lat"])), 2)
         w2_avg_fps = round(np.mean(np.array(data[1]["fps"])), 2)
         w2_avg_lat = round(np.mean(np.array(data[1]["lat"])), 2)
-        w6_avg_fps = round(np.mean(np.array(data[2]["fps"])), 2)
-        w6_avg_lat = round(np.mean(np.array(data[2]["lat"])), 2)
+        w6_avg_fps = round(np.mean(np.array(data[5]["fps"])), 2)
+        w6_avg_lat = round(np.mean(np.array(data[5]["lat"])), 2)
 
         print("[WORKER=1] Avg_FPS=%s; Avg_Lat=%s" % (str(w1_avg_fps), str(w1_avg_lat)))
         print("[WORKER=2] Avg_FPS=%s; Avg_Lat=%s" % (str(w2_avg_fps), str(w2_avg_lat)))
@@ -85,27 +91,24 @@ class Plot:
         ks = int_to_tuple(K)  # used to plot the results
 
         fig = plt.figure()
-        title = "Pattern Recognition Latency of TM-04 + %s" % self.opt.mod_version
+        title = "Object Detection Latency"
         plt.title(title)
         plt.plot(ks, data[0]["lat"], label='1 Worker')
-        plt.plot(ks, data[1]["lat"], label='3 Workers')
-        plt.plot(ks, data[2]["lat"], label='6 Workers')
+        plt.plot(ks, data[1]["lat"], label='2 Workers')
+        plt.plot(ks, data[5]["lat"], label='6 Workers')
 
         plt.axhline(w1_avg_lat, color='blue', linestyle='dashed', linewidth=1)
         plt.axhline(w2_avg_lat, color='orange', linestyle='dashed', linewidth=1)
         plt.axhline(w6_avg_lat, color='green', linestyle='dashed', linewidth=1)
 
-        plt.xlabel('Frame Batch Number (6 Frames / Batch)')
+        plt.xlabel('Frame ID')
         plt.ylabel('Latency (ms)')
         plt.legend()
 
-        # x_info = [str(i) for i in range(1, K + 1)]
-        # plt.xticks(ks, x_info)
-
         plt.show()
-        # print("##### Saving graph into: ", self.latency_output + 'end2end_latency_per_frame.png')
-        # fig.savefig(self.latency_output + 'PR_latency_comparison_%s.pdf' % self.opt.mod_version, dpi=fig.dpi)
-        # print("saved file into:", self.latency_output + 'PR_latency_comparison_%s.pdf')
+        fig.savefig(self.opt.output_graph + 'object_detection_latency.png', dpi=fig.dpi)
+        fig.savefig(self.opt.output_graph + 'object_detection_latency.pdf', dpi=fig.dpi)
+        print("saved file into:", self.opt.output_graph + 'PR_latency_comparison_%s.pdf (And .png)')
 
         # worker1, worker2, worker3 = None, None, None
         # if batch_latency is None:
@@ -199,7 +202,8 @@ class Plot:
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--mod_version', type=str, default="MOD", help="Version of MOD used in this plot")
-    parser.add_argument("--output_graph", type=str, default="exported_data/csv/", help="path to save the graphs")
+    parser.add_argument("--csv_data", type=str, default="exported_data/csv/", help="path to save the graphs")
+    parser.add_argument("--output_graph", type=str, default="output_graph/mobileheroes2020/", help="path to save the graphs")
     opt = parser.parse_args()
     print(opt)
 
