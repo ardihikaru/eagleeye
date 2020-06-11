@@ -1156,7 +1156,7 @@ def plot_fps_info(img_width, drone_id, frame_id, rc_latency, img, func_redis_set
         label = "FPS: None"
     else:
         label = "FPS: %.2f" % visualizer_fps
-    if proc_latency_frame > 1000: # set as second
+    if proc_latency_frame > 1000:  # set as second
         proc_latency_frame = proc_latency_frame / 1000
         label_lat = "Proc. Lat.: %.2fs" % proc_latency_frame
     else:

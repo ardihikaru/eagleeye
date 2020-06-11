@@ -89,7 +89,7 @@ class ExportLatency:
 
                 self.read2stream.append(value)
 
-        self.save_to_csv('01_read_stream_latency-w=%d.csv' % self.opt.num_workers, self.read2stream)  # X is an array
+        self.save_to_csv('01_read_stream_latency-w=%d.csv' % self.opt.num_workers, self.read2stream)  
 
     # # @`worker_yolov3.py`
     # def get_sub2frame_latency(self):
@@ -100,7 +100,7 @@ class ExportLatency:
     #             value = value * 1000
     #         self.sub2frame.append(value)
     #
-    #     self.save_to_csv('02_sub2frame_latency-w=%d.csv' % self.opt.num_workers, self.sub2frame)  # X is an array
+    #     self.save_to_csv('02_sub2frame_latency-w=%d.csv' % self.opt.num_workers, self.sub2frame)  
 
     # # @`worker_yolov3.py`
     # def get_yolo_load_img_latency(self):
@@ -111,11 +111,11 @@ class ExportLatency:
     #             value = value * 1000
     #         self.yolo_load_img.append(value)
     #
-    #     self.save_to_csv('03_yolo_load_img_latency-w=%d.csv' % self.opt.num_workers, self.yolo_load_img)  # X is an array
+    #     self.save_to_csv('03_yolo_load_img_latency-w=%d.csv' % self.opt.num_workers, self.yolo_load_img)  
 
     # @`worker_yolov3.py`
     def get_yolo_inference_latency(self):
-        for idx in range (1, (self.num_frames+1)):
+        for idx in range(1, (self.num_frames+1)):
             key = "inference-" + str(self.opt.drone_id) + "-" + str(idx)
             value = redis_get(self.rc_latency, key)
             if value is not None:
@@ -123,11 +123,11 @@ class ExportLatency:
                     value = value * 1000
                 self.yolo_inference.append(value)
 
-        self.save_to_csv('04_yolo_inference_latency-w=%d.csv' % self.opt.num_workers, self.yolo_inference)  # X is an array
+        self.save_to_csv('02_yolo_inference_latency-w=%d.csv' % self.opt.num_workers, self.yolo_inference)
 
     # @`worker_yolov3.py`
     def get_yolo_nms_latency(self):
-        for idx in range (1, (self.num_frames+1)):
+        for idx in range(1, (self.num_frames+1)):
             key = "nms-" + str(self.opt.drone_id) + "-" + str(idx)
             value = redis_get(self.rc_latency, key)
             if value is not None:
@@ -135,11 +135,11 @@ class ExportLatency:
                     value = value * 1000
                 self.yolo_nms.append(value)
 
-        self.save_to_csv('05_yolo_nms_latency-w=%d.csv' % self.opt.num_workers, self.yolo_nms)  # X is an array
+        self.save_to_csv('03_yolo_nms_latency-w=%d.csv' % self.opt.num_workers, self.yolo_nms)
 
     # @`worker_yolov3.py: Not used anymore`
     def get_yolo_modv1_latency(self):
-        for idx in range (1, (self.num_frames+1)):
+        for idx in range(1, (self.num_frames+1)):
             key = "modv1-" + str(self.opt.drone_id) + "-" + str(idx)
             value = redis_get(self.rc_latency, key)
             if value is not None:
@@ -147,11 +147,11 @@ class ExportLatency:
                     value = value * 1000
                 self.yolo_modv1.append(value)
 
-        self.save_to_csv('06_yolo_modv1_latency-w=%d.csv' % self.opt.num_workers, self.yolo_modv1)  # X is an array
+        self.save_to_csv('04_yolo_modv1_latency-w=%d.csv' % self.opt.num_workers, self.yolo_modv1)
 
     # @`worker_yolov3.py: Not used anymore`
     def get_yolo_modv2_latency(self):
-        for idx in range (1, (self.num_frames+1)):
+        for idx in range(1, (self.num_frames+1)):
             key = "modv2-" + str(self.opt.drone_id) + "-" + str(idx)
             value = redis_get(self.rc_latency, key)
             if value is not None:
@@ -159,42 +159,42 @@ class ExportLatency:
                     value = value * 1000
                 self.yolo_modv2.append(value)
 
-        self.save_to_csv('07_yolo_modv2_latency-w=%d.csv' % self.opt.num_workers, self.yolo_modv2)  # X is an array
+        self.save_to_csv('05_yolo_modv2_latency-w=%d.csv' % self.opt.num_workers, self.yolo_modv2)
 
     def get_visualizer_fps(self):
-        for idx in range (1, (self.num_frames+1)):
-            key = "fps-visualizer-" + str(self.opt.drone_id)
+        for idx in range(1, (self.num_frames+1)):
+            key = "fps-visualizer-" + str(self.opt.drone_id) + "-" + str(idx)
             value = redis_get(self.rc_latency, key)
             if value is not None:
                 self.visualizer_fps.append(value)
 
-        self.save_to_csv('08_visualizer_fps.csv', self.visualizer_fps)  # X is an array
+        self.save_to_csv('06_visualizer_fps.csv', self.visualizer_fps)
 
     def get_visualizer_lat(self):
-        for idx in range (1, (self.num_frames+1)):
-            key = "lat-visualizer-" + str(self.opt.drone_id)
+        for idx in range(1, (self.num_frames+1)):
+            key = "lat-visualizer-" + str(self.opt.drone_id) + "-" + str(idx)
             value = redis_get(self.rc_latency, key)
             if value is not None:
                 self.visualizer_lat.append(value)
 
-        self.save_to_csv('08-2_visualizer_lat.csv', self.visualizer_fps)  # X is an array
+        self.save_to_csv('07_visualizer_lat.csv', self.visualizer_lat)
 
     def get_load_balancer_fps(self):
-        for idx in range (1, (self.num_frames+1)):
+        for idx in range(1, (self.num_frames+1)):
             key = "fps-load-balancer-" + str(self.opt.drone_id)
             value = redis_get(self.rc_latency, key)
             if value is not None:
                 self.lb_fps.append(value)
 
-        self.save_to_csv('08_load_balancer_fps.csv', self.lb_fps)  # X is an array
+        self.save_to_csv('08_load_balancer_fps.csv', self.lb_fps)  
 
     def get_worker_fps(self):
         for i in range(self.opt.num_workers):
             worker_id = i + 1
 
             self.worker_fps = []
-            for idx in range (1, (self.num_frames+1)):
-                key = "fps-load-balancer-" + str(self.opt.drone_id)
+            for idx in range(1, (self.num_frames+1)):
+                key = "fps-worker-" + str(worker_id)
                 value = redis_get(self.rc_latency, key)
                 if value is not None:
                     self.worker_fps.append(value)
@@ -228,7 +228,7 @@ class ExportLatency:
 
     def save_to_csv(self, fname, data):
         save_path = self.latency_output + str(self.opt.num_workers) + "/" + fname
-        np.savetxt(save_path, data, delimiter=',')  # X is an array
+        np.savetxt(save_path, data, delimiter=',')  
 
     def read_data(self, fname):
         fpath = self.latency_output + fname
