@@ -32,9 +32,22 @@ class Plot:
                 total_frames_this = 0
 
         # self.plot_graph(data)
-        # fps_data.pop(0)
-        fps_data.pop(29)
+        fps_data.pop(32)
+        fps_data.pop(31)
         fps_data.pop(30)
+        fps_data.pop(29)
+        fps_data.pop(28)
+        fps_data.pop(27)
+        fps_data.pop(26)
+        fps_data.pop(0)
+        # fps_data.pop(24)
+        # fps_data.pop(25)
+        # fps_data.pop(26)
+        # fps_data.pop(27)
+        # fps_data.pop(28)
+
+        # fps_data.pop(29)
+        # fps_data.pop(30)
         self.plot_graph(fps_data)
 
     def extract_latency_data(self):
