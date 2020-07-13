@@ -9,6 +9,7 @@ from datetime import datetime
 from utils.utils import plot_gps_info, plot_fps_info
 from imutils.video import FileVideoStream
 from utils.utils import get_current_time
+import numpy as np
 
 
 class Visualizer(MyRedis):
@@ -87,6 +88,11 @@ class Visualizer(MyRedis):
         # loop over frames from the video file stream
         fvs = FileVideoStream(data["source"]).start()
         raw_frame_id = 0
+
+        # t0_awal = time.time()
+        t0_iframe = time.time()
+        frame_receiver = []
+
         while fvs.more():
             try:
                 # grab the frame from the threaded video file stream, resize
@@ -94,7 +100,23 @@ class Visualizer(MyRedis):
                 frame = fvs.read()
                 raw_frame_id += 1
 
+                print(" --- frame SHAPE:", frame.shape)
+                print(" --- frame size: ", frame.size)
+                print(" --- frame itemsize:", frame.itemsize)
+                print("Frame memory usage size: %d bytes" % (frame.size * frame.itemsize))
+
                 print('[%s] Received frame-%d' % (get_current_time(), raw_frame_id))
+
+                # elapsed_time = time.time() - t0_awal
+                t1_iframe = time.time() - t0_iframe
+                t0_iframe = time.time()  # reset
+                frame_receiver.append(t1_iframe)
+                print(" ---- Reading frame-%s in (%.5fs); Total received frames = %s" %
+                      (raw_frame_id, t1_iframe, str(len(frame_receiver))))
+
+                if len(frame_receiver) == 1011:  # to ignore frame-1; prepare frame 1002-1011 as a backup
+                    save_path = "exported_data/csv/collected_frames/data.csv"
+                    np.savetxt(save_path, frame_receiver, delimiter=',')
 
                 # # add gps information
                 # img_height, img_width, _ = frame.shape
@@ -123,6 +145,10 @@ class Visualizer(MyRedis):
 
         is_start = False
         # t0 = None
+        # one_frame = 0.042
+        # total_frames = 0
+        # current_sec = 1
+        # logs_feed = []
         # t0 = time.time()
         for item in pub_sub_sender.listen():
             if isinstance(item["data"], int):
@@ -147,6 +173,26 @@ class Visualizer(MyRedis):
                         img = plot_fps_info(img_width, data["drone_id"], data["frame_id"], self.rc_latency, img,
                                             redis_set, redis_get)
                     plot_gps_info(img_height, gps_data, "-", img)
+
+                # if int(data["frame_id"]) == 1:
+                #     t0 = time.time()
+                #     total_frames = 0
+                #     # total_frames = int(data["frame_id"]) - 1  # exclude first frame
+
+                # if int(data["frame_id"]) > 1:
+                #     total_frames += 1
+                #     elapsed_time = time.time() - t0
+                #     print(".. Elapsed Time: in (%.5fs); Total frame in this sec=%s" % (elapsed_time, str(total_frames)))
+                #
+                #     if (elapsed_time + one_frame) > current_sec:
+                #         print(" ---- TOTAL COLLECTED FRAMES each second: %s" % str(total_frames))
+                #         logs_feed.append(total_frames)
+                #
+                #         save_path = "exported_data/csv/frames_per_sec/total-frames-sec=%s.csv" % str(current_sec)
+                #         np.savetxt(save_path, logs_feed, delimiter=',')
+                #
+                #         current_sec += 1
+                #         total_frames = 0
 
                 # cv.imshow("Image", processed_img)
                 cv.imshow(window_name, img)
