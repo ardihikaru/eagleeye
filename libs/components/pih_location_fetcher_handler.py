@@ -7,7 +7,7 @@ import time
 import imagezmq
 from utils.utils import plot_gps_info, plot_fps_info
 from libs.addons.redis.utils import get_gps_data
-
+import numpy as np
 
 class PIHLocationFetcherHandler(MyRedis):
     def __init__(self, opt):
@@ -27,6 +27,8 @@ class PIHLocationFetcherHandler(MyRedis):
 
         self.visual_sender = []
         self.__set_visual_sender()
+
+        self.lat_pers_det = []
 
     # Visualizer
     def __set_visual_sender(self):
@@ -159,3 +161,12 @@ class PIHLocationFetcherHandler(MyRedis):
         self.plotted_img = pih_gen.get_mbbox_img()
         t_pihlocfet = time.time() - t0_pihlocfet
         # print("Latency [PiH Location Fetcher] of frame-%d: (%.5fs)" % (self.frame_id, t_pihlocfet))
+
+        self.lat_pers_det.append(t_pihlocfet)
+        print(".. proc. Persistance Detection @ Frame-%s: in (%.5fs)." % (str(self.frame_id), t_pihlocfet))
+
+        if int(self.frame_id) % 100 == 0:
+            mean_data = round(np.mean(np.array(self.lat_pers_det)), 2)
+            print(".. Avg in proc. Persistance Detection 100 frames: in (%.5fs)." % (mean_data))
+            save_path = "output_graph/data-persistance-det-%s.csv" % str(self.frame_id)
+            np.savetxt(save_path, self.lat_pers_det, delimiter=',')

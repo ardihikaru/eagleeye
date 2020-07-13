@@ -2,7 +2,7 @@ class CommonSettings:
     __shared_state = {
             "plf_config": {
                 # "waiting_limit": 33.4  # in ms --> for 30 fps video
-                "waiting_limit": 50  # in ms
+                "waiting_limit": 100  # in ms
             },
             "streaming_config": {
                 "delay_disconnected": 3

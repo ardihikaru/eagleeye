@@ -90,6 +90,8 @@ class YOLOv3:
         self.image_hub = imagezmq.ImageHub(open_port=open_port, REQ_REP=False)
         # self.image_hub = imagezmq.ImageHub(open_port='tcp://127.0.0.1:5555', REQ_REP=False)
 
+        self.latency_modv2 = []
+
     def __get_open_port(self, channel):
         return 'tcp://127.0.0.1:555' + str(channel)
 
@@ -168,6 +170,8 @@ class YOLOv3:
         print("\n[%s] Worker-%s: Ready" % (get_current_time(), self.opt.node))
         pubsub = self.rc.pubsub()
         pubsub.subscribe([stream_ch])
+
+        logs = []
         for item in pubsub.listen():
             # noinspection PyPackageRequirements
             try:
@@ -176,6 +180,8 @@ class YOLOv3:
 
                 # imagezmq: receive image
                 image_name, im0s = self.image_hub.recv_image()
+
+                ts = time.time()
 
                 if self.opt.save_original_img:
                     self.__save_results(im0s, None, (self.frame_id+1), tcp_img=True, is_raw=True)
@@ -222,7 +228,18 @@ class YOLOv3:
                     pass
                     # print("This MB-Box is NONE. nothing to be saved yet.")
 
-                # Restore availibility
+                t_recv = time.time() - ts
+                logs.append(t_recv)
+                print(".. Processing Frame-%s: in (%.5fs)." % (str(frame_id), t_recv))
+
+                if int(frame_id) % 100 == 0:
+                    mean_data = round(np.mean(np.array(logs)), 2)
+                    print(".. Avg in processing 100 frames: in (%.5fs)." % (mean_data))
+                    save_path = "output_graph/data-frame-%s.csv" % str(frame_id)
+                    np.savetxt(save_path, logs, delimiter=',')
+
+
+                    # Restore availibility
                 # redis_set(self.rc_data, self.opt.node, 1) # set as `Ready`
                 redis_set(self.rc_data, self.opt.node, 1, 30)  # set as `Ready`; add expiration: 30 seconds
                 # print("\n### This Worker-%s is ready to serve again. \n\n" % self.opt.node)
@@ -586,6 +603,17 @@ class YOLOv3:
                 self.__safety_store_txt()
 
                 t_mod_v2 = time.time() - ts_mod_v2
+
+                self.latency_modv2.append(t_mod_v2)
+                print(".. Proc. MODv2 @ Frame-%s: in (%.5fs)." % (str(this_frame_id), t_mod_v2))
+
+                if int(this_frame_id) % 100 == 0:
+                    mean_data = round(np.mean(np.array(self.latency_modv2)), 2)
+                    print(".. Avg in proc. MODv2 100 frames: in (%.5fs)." % (mean_data))
+                    save_path = "output_graph/data-modv2-%s.csv" % str(this_frame_id)
+                    np.savetxt(save_path, self.latency_modv2, delimiter=',')
+
+
                 # Latency: save Proc. Latency MODv2
                 t_modv2_key = "modv2-" + str(self.opt.drone_id) + "-" + str(this_frame_id)
                 # print('Latency [MODv2] of frame-%d: (%.5fs)' % (this_frame_id, t_mod_v2))
