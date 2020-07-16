@@ -13,7 +13,10 @@ class Plot:
         self.plot_graph(data)
 
     def extract_latency_data(self):
-        lat_data = self.read_data('data-persistance-det-1000.csv')
+        try:
+            lat_data = self.read_data('data-persistance-det-1000.csv')
+        except:
+            lat_data = self.read_data('data-persistance-det-700.csv')
 
         this_latency = []
         for i in range (len(lat_data)):
@@ -57,12 +60,16 @@ class Plot:
         plt.legend()
 
         plt.show()
-        fig.savefig(self.opt.output_graph + 'proc_lat_persistance_det.png', dpi=fig.dpi)
-        fig.savefig(self.opt.output_graph + 'proc_lat_persistance_det.pdf', dpi=fig.dpi)
-        print("saved file into:", self.opt.output_graph + 'proc_lat_persistance_det.pdf (And .png)')
+        fig.savefig(self.opt.output_graph + 'proc_lat_persistance_det_%s.png' % self.opt.img_size, dpi=fig.dpi)
+        fig.savefig(self.opt.output_graph + 'proc_lat_persistance_det_%s.pdf' % self.opt.img_size, dpi=fig.dpi)
+        print("saved file into:", self.opt.output_graph + 'proc_lat_persistance_det_%s.pdf (And .png)' % self.opt.img_size)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+    parser.add_argument("--img_size", type=str, default="224", help="Inference size")
+    #parser.add_argument("--img_size", type=str, default="416", help="Inference size")
+    #parser.add_argument("--img_size", type=str, default="608", help="Inference size")
+    #parser.add_argument("--img_size", type=str, default="832", help="Inference size")
     parser.add_argument("--csv_data", type=str, default="exported_data/csv/persistance_det/", help="path to save the graphs")
     parser.add_argument("--output_graph", type=str, default="output_graph/persistance_det/", help="path to save the graphs")
     opt = parser.parse_args()

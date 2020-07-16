@@ -57,13 +57,17 @@ class Plot:
         plt.legend()
 
         plt.show()
-        fig.savefig(self.opt.output_graph + 'proc_latency.png', dpi=fig.dpi)
-        fig.savefig(self.opt.output_graph + 'proc_latency.pdf', dpi=fig.dpi)
-        print("saved file into:", self.opt.output_graph + 'proc_latency.pdf (And .png)')
+        fig.savefig(self.opt.output_graph + 'proc_latency_%s.png' % self.opt.img_size, dpi=fig.dpi)
+        fig.savefig(self.opt.output_graph + 'proc_latency_%s.pdf' % self.opt.img_size, dpi=fig.dpi)
+        print("saved file into:", self.opt.output_graph + 'proc_latency_%s.pdf (And .png)' % self.opt.img_size)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("--csv_data", type=str, default="exported_data/csv/proc_lat_v2/", help="path to save the graphs")
+    parser.add_argument("--img_size", type=str, default="224", help="Inference size")
+    #parser.add_argument("--img_size", type=str, default="416", help="Inference size")
+    #parser.add_argument("--img_size", type=str, default="608", help="Inference size")
+    #parser.add_argument("--img_size", type=str, default="832", help="Inference size")
+    parser.add_argument("--csv_data", type=str, default="exported_data/csv/proc_lat/", help="path to save the graphs")
     parser.add_argument("--output_graph", type=str, default="output_graph/proc_lat/", help="path to save the graphs")
     opt = parser.parse_args()
     print(opt)

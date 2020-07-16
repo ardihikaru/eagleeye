@@ -57,12 +57,16 @@ class Plot:
         plt.legend()
 
         plt.show()
-        fig.savefig(self.opt.output_graph + 'proc_lat_pih_candidate.png', dpi=fig.dpi)
-        fig.savefig(self.opt.output_graph + 'proc_lat_pih_candidate.pdf', dpi=fig.dpi)
-        print("saved file into:", self.opt.output_graph + 'proc_lat_pih_candidate.pdf (And .png)')
+        fig.savefig(self.opt.output_graph + 'proc_lat_pih_candidate_%s.png' % self.opt.img_size, dpi=fig.dpi)
+        fig.savefig(self.opt.output_graph + 'proc_lat_pih_candidate_%s.pdf' % self.opt.img_size, dpi=fig.dpi)
+        print("saved file into:", self.opt.output_graph + 'proc_lat_pih_candidate_%s.pdf (And .png)' % self.opt.img_size)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+    parser.add_argument("--img_size", type=str, default="224", help="Inference size")
+    #parser.add_argument("--img_size", type=str, default="416", help="Inference size")
+    #parser.add_argument("--img_size", type=str, default="608", help="Inference size")
+    #parser.add_argument("--img_size", type=str, default="832", help="Inference size")
     parser.add_argument("--csv_data", type=str, default="exported_data/csv/pih_candidate/", help="path to save the graphs")
     parser.add_argument("--output_graph", type=str, default="output_graph/pih_candidate/", help="path to save the graphs")
     opt = parser.parse_args()
