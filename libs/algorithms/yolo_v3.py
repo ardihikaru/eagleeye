@@ -235,7 +235,7 @@ class YOLOv3:
                 if int(frame_id) % 100 == 0:
                     mean_data = round(np.mean(np.array(logs)), 2)
                     print(".. Avg in processing 100 frames: in (%.5fs)." % (mean_data))
-                    save_path = "output_graph/data-frame-%s.csv" % str(frame_id)
+                    save_path = "exported_data/csv/proc_lat/data-frame-%s.csv" % str(frame_id)
                     np.savetxt(save_path, logs, delimiter=',')
 
 
@@ -610,7 +610,7 @@ class YOLOv3:
                 if int(this_frame_id) % 100 == 0:
                     mean_data = round(np.mean(np.array(self.latency_modv2)), 2)
                     print(".. Avg in proc. MODv2 100 frames: in (%.5fs)." % (mean_data))
-                    save_path = "output_graph/data-modv2-%s.csv" % str(this_frame_id)
+                    save_path = "exported_data/csv/pih_candidate/data-modv2-%s.csv" % str(this_frame_id)
                     np.savetxt(save_path, self.latency_modv2, delimiter=',')
 
 

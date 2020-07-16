@@ -168,5 +168,5 @@ class PIHLocationFetcherHandler(MyRedis):
         if int(self.frame_id) % 100 == 0:
             mean_data = round(np.mean(np.array(self.lat_pers_det)), 2)
             print(".. Avg in proc. Persistance Detection 100 frames: in (%.5fs)." % (mean_data))
-            save_path = "output_graph/data-persistance-det-%s.csv" % str(self.frame_id)
+            save_path = "exported_data/csv/persistance_det/data-persistance-det-%s.csv" % str(self.frame_id)
             np.savetxt(save_path, self.lat_pers_det, delimiter=',')
