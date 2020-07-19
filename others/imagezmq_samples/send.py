@@ -74,8 +74,9 @@ while is_ready:  # press Ctrl-C to stop image sending program
             fid = str(fid)
 
         img_name = "hover_frame_" + fid + ".jpg"
-        img_path = "data/5g-dive/hover/" + img_name
+        img_path = "./../../data/5g-dive/hover/" + img_name
         frame = cv2.imread(img_path)
+        print(" --- LEN frame:", len(frame))
 
         # print(" >>>>>>> this frame:", frame.shape)
 
