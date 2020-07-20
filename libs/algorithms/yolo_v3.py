@@ -93,9 +93,12 @@ class YOLOv3:
 
         self.latency_modv2 = []
 
-        self.logs = []
-        self.logs_padded = []
-        self.logs_convert = []
+        self.logs = []  # log object_detection
+        self.logs_all = []  # log object_detection + OTHERS
+        # self.logs_padded = []
+        # self.logs_convert = []
+        self.logs_preproc = []
+        self.logs_others = []
 
     def __get_open_port(self, channel):
         return 'tcp://127.0.0.1:555' + str(channel)
@@ -193,8 +196,8 @@ class YOLOv3:
                 t0_padded = time.time()
                 image = letterbox(im0s, new_shape=self.img_size)[0]
                 t1_padded = (time.time() - t0_padded) * 1000
-                print(".. Pre-processing (Padded_Size) @ Frame-%s: in (%.5fms)." % (str(frame_id), t1_padded))
-                self.logs_padded.append(t1_padded)
+                # print(".. Pre-processing (Padded_Size) @ Frame-%s: in (%.5fms)." % (str(frame_id), t1_padded))
+                # self.logs_padded.append(t1_padded)
 
                 # Convert
                 t0_convert = time.time()
@@ -202,8 +205,8 @@ class YOLOv3:
                 image = np.ascontiguousarray(image, dtype=np.float16 if self.half else np.float32)  # uint8 to fp16/fp32
                 image /= 255.0  # 0 - 255 to 0.0 - 1.0
                 t1_convert = (time.time() - t0_convert) * 1000
-                print(".. Pre-processing (Convert) @ Frame-%s: in (%.5fms)." % (str(frame_id), t1_convert))
-                self.logs_convert.append(t1_convert)
+                # print(".. Pre-processing (Convert) @ Frame-%s: in (%.5fms)." % (str(frame_id), t1_convert))
+                # self.logs_convert.append(t1_convert)
 
                 # Start processing image
                 t0_object_det = time.time()
@@ -211,31 +214,66 @@ class YOLOv3:
                 print("[%s] Received frame-%d" % (get_current_time(), int(frame_id)))
                 redis_set(self.rc_data, self.opt.node, 0) # set as `Busy`
                 self.__process_detection(image, im0s, frame_id)
-                t1_object_det = (time.time() - t0_object_det) * 1000
+                t1_object_det_all = (time.time() - t0_object_det) * 1000
+                self.logs_all.append(t1_object_det_all)
 
                 ######
+                if self.opt.post_detection:
+                    t1_object_det = t1_object_det_all - self.logs_others[-1]
+                else:
+                    t1_object_det = t1_object_det_all
                 self.logs.append(t1_object_det)
-                print(".. Processing Object Detection @ Frame-%s: in (%.5fs)." % (str(frame_id), t1_object_det))
+                # print(".. Processing Object Detection @ Frame-%s: in (%.5fs)." % (str(frame_id), t1_object_det))
 
-                if int(frame_id) % 100 == 0:
+                preproc = t1_padded + t1_convert
+                self.logs_preproc.append(preproc)
+
+                print(".. Pre-Processing @ Frame-%s: in (%.5fs)." % (str(frame_id), preproc))
+                print(".. OTHER Processing @ Frame-%s: in (%.5fs)." % (str(frame_id), self.logs_others[-1]))
+                print(".. Processing Object Detection @ Frame-%s: in (%.5fs)." % (str(frame_id), t1_object_det))
+                print(".. Processing Object Detection + OTHERS @ Frame-%s: in (%.5fs)." % (str(frame_id), t1_object_det_all))
+
+                if int(frame_id) % 1000 == 0:
                     mean_data = round(np.mean(np.array(self.logs)), 2)
-                    print(".. Avg in processing 100 frames: in (%.5fs)." % (mean_data))
-                    save_path = "exported_data/csv/proc_lat/data-frame-%s.csv" % str(frame_id)
+                    mean_data_all = round(np.mean(np.array(self.logs_all)), 2)
+                    mean_data_preproc = round(np.mean(np.array(self.logs_preproc)), 2)
+                    mean_data_others = round(np.mean(np.array(self.logs_others)), 2)
+
+                    print(".. [mean_data] Avg in processing 1000 frames: in (%.5fs)." % mean_data)
+                    print(".. [mean_data_all] Avg in processing 1000 frames: in (%.5fs)." % mean_data_all)
+                    print(".. [mean_data_preproc] Avg in processing 1000 frames: in (%.5fs)." % mean_data_preproc)
+                    print(".. [mean_data_others] Avg in processing 1000 frames: in (%.5fs)." % mean_data_others)
+
+                    save_path = "exported_data/csv/proc_lat/object-detection-%s.csv" % str(frame_id)
                     np.savetxt(save_path, self.logs, delimiter=',')
 
-                    padded_fname = "exported_data/csv/proc_lat/fullhd-to-yolo-%s.csv" % str(self.opt.img_size)
+                    preproc_path = "exported_data/csv/proc_lat/preprocessing-%s.csv" % str(self.opt.img_size)
                     try:
-                        os.remove(padded_fname)
+                        os.remove(preproc_path)
                     except:
                         pass
-                    np.savetxt(padded_fname, self.logs_padded, delimiter=',')
+                    np.savetxt(preproc_path, self.logs_preproc, delimiter=',')
 
-                    convert_fname = "exported_data/csv/proc_lat/padded-to-yolo-%s.csv" % str(self.opt.img_size)
+                    preproc_path = "exported_data/csv/proc_lat/others-%s.csv" % str(self.opt.img_size)
                     try:
-                        os.remove(convert_fname)
+                        os.remove(preproc_path)
                     except:
                         pass
-                    np.savetxt(convert_fname, self.logs_convert, delimiter=',')
+                    np.savetxt(preproc_path, self.logs_others, delimiter=',')
+
+                    # padded_fname = "exported_data/csv/proc_lat/fullhd-to-yolo-%s.csv" % str(self.opt.img_size)
+                    # try:
+                    #     os.remove(padded_fname)
+                    # except:
+                    #     pass
+                    # np.savetxt(padded_fname, self.logs_padded, delimiter=',')
+
+                    # convert_fname = "exported_data/csv/proc_lat/padded-to-yolo-%s.csv" % str(self.opt.img_size)
+                    # try:
+                    #     os.remove(convert_fname)
+                    # except:
+                    #     pass
+                    # np.savetxt(convert_fname, self.logs_convert, delimiter=',')
                 ######
 
                 frame_id = str(fetch_data["frame_id"])
@@ -267,10 +305,10 @@ class YOLOv3:
                     pass
                     # print("This MB-Box is NONE. nothing to be saved yet.")
                 t1_saving = (time.time() - t0_saving) * 1000
-                print(".. Preparing sending frames @ Frame-%s: in (%.5fms)." % (str(frame_id), t1_saving))
+                # print(".. Preparing sending frames @ Frame-%s: in (%.5fms)." % (str(frame_id), t1_saving))
 
                 t_recv = (time.time() - ts) * 1000
-                print(".. (Old calculation) Processing Frame-%s: in (%.5fs)." % (str(frame_id), t_recv))
+                # print(".. (Old calculation) Processing Frame-%s: in (%.5fs)." % (str(frame_id), t_recv))
 
                     # Restore availibility
                 # redis_set(self.rc_data, self.opt.node, 1) # set as `Ready`
@@ -414,7 +452,7 @@ class YOLOv3:
         # Latency: Inference
         # print('Latency [Inference] of frame-%s: (%.5fs)' % (str(this_frame_id), t_inference))
         # cur_time = get_current_time()
-        print('[%s] DONE Inference of frame-%s (%.3f ms)' % (get_current_time(), str(this_frame_id), t_inference))
+        # print('[%s] DONE Inference of frame-%s (%.3f ms)' % (get_current_time(), str(this_frame_id), t_inference))
         t_inference_key = "inference-" + str(self.opt.drone_id) + "-" + str(this_frame_id)
         redis_set(self.rc_latency, t_inference_key, t_inference)
         #
@@ -490,6 +528,7 @@ class YOLOv3:
                         self.time_mbbox += t_mbbox
                         self.time_mbbox_list.append(t_mbbox)
 
+                        t0_post_det = time.time()
                         if self.opt.post_detection:
                             # Store total processed frames
                             self.total_proc_frames += 1
@@ -523,6 +562,8 @@ class YOLOv3:
 
                             # Save BBox image
                             self.__save_results(im0s, None, self.frame_id, tcp_img=True)
+                        t1_post_det = (time.time() - t0_post_det) * 1000
+                        self.logs_others.append(t1_post_det)
 
             except Exception as e:
                 print("ERROR Pred: ", e)
