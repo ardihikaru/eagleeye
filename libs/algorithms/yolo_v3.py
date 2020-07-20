@@ -192,8 +192,8 @@ class YOLOv3:
                 # Padded resize
                 t0_padded = time.time()
                 image = letterbox(im0s, new_shape=self.img_size)[0]
-                t1_padded = time.time() - t0_padded
-                print(".. Pre-processing (Padded_Size) @ Frame-%s: in (%.5fs)." % (str(frame_id), t1_padded))
+                t1_padded = (time.time() - t0_padded) * 1000
+                print(".. Pre-processing (Padded_Size) @ Frame-%s: in (%.5fms)." % (str(frame_id), t1_padded))
                 self.logs_padded.append(t1_padded)
 
                 # Convert
@@ -201,8 +201,8 @@ class YOLOv3:
                 image = image[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
                 image = np.ascontiguousarray(image, dtype=np.float16 if self.half else np.float32)  # uint8 to fp16/fp32
                 image /= 255.0  # 0 - 255 to 0.0 - 1.0
-                t1_convert = time.time() - t0_convert
-                print(".. Pre-processing (Convert) @ Frame-%s: in (%.5fs)." % (str(frame_id), t1_convert))
+                t1_convert = (time.time() - t0_convert) * 1000
+                print(".. Pre-processing (Convert) @ Frame-%s: in (%.5fms)." % (str(frame_id), t1_convert))
                 self.logs_convert.append(t1_convert)
 
                 # Start processing image
@@ -214,6 +214,7 @@ class YOLOv3:
                 frame_id = str(fetch_data["frame_id"])
                 prev_fid = str(self.opt.drone_id) + "-" + str((int(frame_id)-1))
 
+                t0_saving = time.time()
                 # Preparing to send the frames.
                 if self.mbbox_img is not None:
                     output_path = self.opt.mbbox_output + "/frame-%s.jpg" % frame_id
@@ -238,6 +239,8 @@ class YOLOv3:
                 else:
                     pass
                     # print("This MB-Box is NONE. nothing to be saved yet.")
+                t1_saving = (time.time() - t0_saving) * 1000
+                print(".. Preparing sending frames @ Frame-%s: in (%.5fms)." % (str(frame_id), t1_saving))
 
                     # Restore availibility
                 # redis_set(self.rc_data, self.opt.node, 1) # set as `Ready`
