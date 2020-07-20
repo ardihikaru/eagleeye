@@ -242,6 +242,9 @@ class YOLOv3:
                 t1_saving = (time.time() - t0_saving) * 1000
                 print(".. Preparing sending frames @ Frame-%s: in (%.5fms)." % (str(frame_id), t1_saving))
 
+                t_recv = (time.time() - ts) * 1000
+                print(".. (Old calculation) Processing Frame-%s: in (%.5fs)." % (str(frame_id), t_recv))
+
                     # Restore availibility
                 # redis_set(self.rc_data, self.opt.node, 1) # set as `Ready`
                 redis_set(self.rc_data, self.opt.node, 1, 30)  # set as `Ready`; add expiration: 30 seconds
