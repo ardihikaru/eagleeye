@@ -13,6 +13,7 @@ from libs.settings import common_settings
 from libs.addons.redis.translator import redis_set, redis_get, pub
 from libs.addons.redis.utils import store_latency, store_fps
 import imagezmq
+import os
 
 
 class YOLOv3:
@@ -91,6 +92,10 @@ class YOLOv3:
         # self.image_hub = imagezmq.ImageHub(open_port='tcp://127.0.0.1:5555', REQ_REP=False)
 
         self.latency_modv2 = []
+
+        self.logs = []
+        self.logs_padded = []
+        self.logs_convert = []
 
     def __get_open_port(self, channel):
         return 'tcp://127.0.0.1:555' + str(channel)
@@ -171,7 +176,6 @@ class YOLOv3:
         pubsub = self.rc.pubsub()
         pubsub.subscribe([stream_ch])
 
-        logs = []
         for item in pubsub.listen():
             # noinspection PyPackageRequirements
             try:
@@ -182,17 +186,24 @@ class YOLOv3:
                 image_name, im0s = self.image_hub.recv_image()
 
                 ts = time.time()
-
                 if self.opt.save_original_img:
                     self.__save_results(im0s, None, (self.frame_id+1), tcp_img=True, is_raw=True)
 
                 # Padded resize
+                t0_padded = time.time()
                 image = letterbox(im0s, new_shape=self.img_size)[0]
+                t1_padded = time.time() - t0_padded
+                print(".. Pre-processing (Padded_Size) @ Frame-%s: in (%.5fs)." % (str(frame_id), t1_padded))
+                self.logs_padded.append(t1_padded)
 
                 # Convert
+                t0_convert = time.time()
                 image = image[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
                 image = np.ascontiguousarray(image, dtype=np.float16 if self.half else np.float32)  # uint8 to fp16/fp32
                 image /= 255.0  # 0 - 255 to 0.0 - 1.0
+                t1_convert = time.time() - t0_convert
+                print(".. Pre-processing (Convert) @ Frame-%s: in (%.5fs)." % (str(frame_id), t1_convert))
+                self.logs_convert.append(t1_convert)
 
                 # Start processing image
                 # print("\nStart processing to get MB-Box.")
@@ -227,17 +238,6 @@ class YOLOv3:
                 else:
                     pass
                     # print("This MB-Box is NONE. nothing to be saved yet.")
-
-                t_recv = time.time() - ts
-                logs.append(t_recv)
-                print(".. Processing Frame-%s: in (%.5fs)." % (str(frame_id), t_recv))
-
-                if int(frame_id) % 100 == 0:
-                    mean_data = round(np.mean(np.array(logs)), 2)
-                    print(".. Avg in processing 100 frames: in (%.5fs)." % (mean_data))
-                    save_path = "exported_data/csv/proc_lat/data-frame-%s.csv" % str(frame_id)
-                    np.savetxt(save_path, logs, delimiter=',')
-
 
                     # Restore availibility
                 # redis_set(self.rc_data, self.opt.node, 1) # set as `Ready`
@@ -384,6 +384,31 @@ class YOLOv3:
         print('[%s] DONE Inference of frame-%s (%.3f ms)' % (get_current_time(), str(this_frame_id), t_inference))
         t_inference_key = "inference-" + str(self.opt.drone_id) + "-" + str(this_frame_id)
         redis_set(self.rc_latency, t_inference_key, t_inference)
+
+        ######
+        self.logs.append(t_inference)
+        # print(".. Processing Frame-%s: in (%.5fs)." % (str(this_frame_id), t_inference))
+
+        if int(this_frame_id) % 100 == 0:
+            mean_data = round(np.mean(np.array(self.logs)), 2)
+            print(".. Avg in processing 100 frames: in (%.5fs)." % (mean_data))
+            save_path = "exported_data/csv/proc_lat/data-frame-%s.csv" % str(this_frame_id)
+            np.savetxt(save_path, self.logs, delimiter=',')
+
+            padded_fname = "exported_data/csv/proc_lat/fullhd-to-yolo-%s.csv" % str(self.opt.img_size)
+            try:
+                os.remove(padded_fname)
+            except:
+                pass
+            np.savetxt(padded_fname, self.logs_padded, delimiter=',')
+
+            convert_fname = "exported_data/csv/proc_lat/padded-to-yolo-%s.csv" % str(self.opt.img_size)
+            try:
+                os.remove(convert_fname)
+            except:
+                pass
+            np.savetxt(convert_fname, self.logs_convert, delimiter=',')
+        ######
 
         # Default: Disabled
         if self.opt.half:
