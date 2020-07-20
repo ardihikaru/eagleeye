@@ -9,11 +9,28 @@ class Plot:
 
     def run(self):
         data = self.extract_latency_data()
+        data_others = self.extract_latency_data("others-832.csv")
+        data_preproc = self.extract_latency_data("preprocessing-832.csv")
+
+        data.pop(0)
+        data_others.pop(0)
+        data_preproc.pop(0)
+
+        mean_data = round(np.mean(np.array(data)), 3)
+        mean_data_others = round(np.mean(np.array(data_others)), 3)
+        mean_data_preproc = round(np.mean(np.array(data_preproc)), 3)
+
+        print("--- mean_data:", mean_data)
+        print("--- mean_data_others:", mean_data_others)
+        print("--- mean_data_preproc:", mean_data_preproc)
 
         self.plot_graph(data)
 
-    def extract_latency_data(self):
-        lat_data = self.read_data('data-frame-1000.csv')
+    def extract_latency_data(self, path=None):
+        if path is None:
+            lat_data = self.read_data('object-detection-1000.csv')
+        else:
+            lat_data = self.read_data(path)
 
         this_latency = []
         for i in range (len(lat_data)):
