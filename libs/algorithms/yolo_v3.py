@@ -206,10 +206,37 @@ class YOLOv3:
                 self.logs_convert.append(t1_convert)
 
                 # Start processing image
+                t0_object_det = time.time()
                 # print("\nStart processing to get MB-Box.")
                 print("[%s] Received frame-%d" % (get_current_time(), int(frame_id)))
                 redis_set(self.rc_data, self.opt.node, 0) # set as `Busy`
                 self.__process_detection(image, im0s, frame_id)
+                t1_object_det = (time.time() - t0_object_det) * 1000
+
+                ######
+                self.logs.append(t1_object_det)
+                # print(".. Processing Frame-%s: in (%.5fs)." % (str(this_frame_id), t_inference))
+
+                if int(frame_id) % 100 == 0:
+                    mean_data = round(np.mean(np.array(self.logs)), 2)
+                    print(".. Avg in processing 100 frames: in (%.5fs)." % (mean_data))
+                    save_path = "exported_data/csv/proc_lat/data-frame-%s.csv" % str(frame_id)
+                    np.savetxt(save_path, self.logs, delimiter=',')
+
+                    padded_fname = "exported_data/csv/proc_lat/fullhd-to-yolo-%s.csv" % str(self.opt.img_size)
+                    try:
+                        os.remove(padded_fname)
+                    except:
+                        pass
+                    np.savetxt(padded_fname, self.logs_padded, delimiter=',')
+
+                    convert_fname = "exported_data/csv/proc_lat/padded-to-yolo-%s.csv" % str(self.opt.img_size)
+                    try:
+                        os.remove(convert_fname)
+                    except:
+                        pass
+                    np.savetxt(convert_fname, self.logs_convert, delimiter=',')
+                ######
 
                 frame_id = str(fetch_data["frame_id"])
                 prev_fid = str(self.opt.drone_id) + "-" + str((int(frame_id)-1))
@@ -390,31 +417,31 @@ class YOLOv3:
         print('[%s] DONE Inference of frame-%s (%.3f ms)' % (get_current_time(), str(this_frame_id), t_inference))
         t_inference_key = "inference-" + str(self.opt.drone_id) + "-" + str(this_frame_id)
         redis_set(self.rc_latency, t_inference_key, t_inference)
-
-        ######
-        self.logs.append(t_inference)
-        # print(".. Processing Frame-%s: in (%.5fs)." % (str(this_frame_id), t_inference))
-
-        if int(this_frame_id) % 100 == 0:
-            mean_data = round(np.mean(np.array(self.logs)), 2)
-            print(".. Avg in processing 100 frames: in (%.5fs)." % (mean_data))
-            save_path = "exported_data/csv/proc_lat/data-frame-%s.csv" % str(this_frame_id)
-            np.savetxt(save_path, self.logs, delimiter=',')
-
-            padded_fname = "exported_data/csv/proc_lat/fullhd-to-yolo-%s.csv" % str(self.opt.img_size)
-            try:
-                os.remove(padded_fname)
-            except:
-                pass
-            np.savetxt(padded_fname, self.logs_padded, delimiter=',')
-
-            convert_fname = "exported_data/csv/proc_lat/padded-to-yolo-%s.csv" % str(self.opt.img_size)
-            try:
-                os.remove(convert_fname)
-            except:
-                pass
-            np.savetxt(convert_fname, self.logs_convert, delimiter=',')
-        ######
+        #
+        # ######
+        # self.logs.append(t_inference)
+        # # print(".. Processing Frame-%s: in (%.5fs)." % (str(this_frame_id), t_inference))
+        #
+        # if int(this_frame_id) % 100 == 0:
+        #     mean_data = round(np.mean(np.array(self.logs)), 2)
+        #     print(".. Avg in processing 100 frames: in (%.5fs)." % (mean_data))
+        #     save_path = "exported_data/csv/proc_lat/data-frame-%s.csv" % str(this_frame_id)
+        #     np.savetxt(save_path, self.logs, delimiter=',')
+        #
+        #     padded_fname = "exported_data/csv/proc_lat/fullhd-to-yolo-%s.csv" % str(self.opt.img_size)
+        #     try:
+        #         os.remove(padded_fname)
+        #     except:
+        #         pass
+        #     np.savetxt(padded_fname, self.logs_padded, delimiter=',')
+        #
+        #     convert_fname = "exported_data/csv/proc_lat/padded-to-yolo-%s.csv" % str(self.opt.img_size)
+        #     try:
+        #         os.remove(convert_fname)
+        #     except:
+        #         pass
+        #     np.savetxt(convert_fname, self.logs_convert, delimiter=',')
+        # ######
 
         # Default: Disabled
         if self.opt.half:
