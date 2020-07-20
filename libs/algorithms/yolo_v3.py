@@ -215,7 +215,7 @@ class YOLOv3:
 
                 ######
                 self.logs.append(t1_object_det)
-                # print(".. Processing Frame-%s: in (%.5fs)." % (str(this_frame_id), t_inference))
+                print(".. Processing Object Detection @ Frame-%s: in (%.5fs)." % (str(frame_id), t1_object_det))
 
                 if int(frame_id) % 100 == 0:
                     mean_data = round(np.mean(np.array(self.logs)), 2)
