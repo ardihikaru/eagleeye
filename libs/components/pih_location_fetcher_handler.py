@@ -159,7 +159,7 @@ class PIHLocationFetcherHandler(MyRedis):
         self.bbox = pih_gen.get_bbox()
         self.mbbox = pih_gen.get_mbbox()
         self.plotted_img = pih_gen.get_mbbox_img()
-        t_pihlocfet = time.time() - t0_pihlocfet
+        t_pihlocfet = (time.time() - t0_pihlocfet) * 1000
         # print("Latency [PiH Location Fetcher] of frame-%d: (%.5fs)" % (self.frame_id, t_pihlocfet))
 
         self.lat_pers_det.append(t_pihlocfet)

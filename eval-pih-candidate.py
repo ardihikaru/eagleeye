@@ -48,9 +48,9 @@ class Plot:
         plt.title(title)
         plt.plot(ks, data, label='Proc. Latency')
 
-        plt.axhline(avg_data, label='AVG (%s ms)' % str(avg_data*1000), color='blue', linestyle='dashed', linewidth=1)
-        plt.axhline(min_data, label='MIN (%s ms)' % str(min_data*1000), color='orange', linestyle='dashed', linewidth=1)
-        plt.axhline(max_data, label='MAX (%s ms)' % str(max_data*1000), color='green', linestyle='dashed', linewidth=1)
+        plt.axhline(avg_data, label='AVG (%s ms)' % str(avg_data), color='blue', linestyle='dashed', linewidth=1)
+        plt.axhline(min_data, label='MIN (%s ms)' % str(min_data), color='orange', linestyle='dashed', linewidth=1)
+        plt.axhline(max_data, label='MAX (%s ms)' % str(max_data), color='green', linestyle='dashed', linewidth=1)
 
         plt.xlabel('Frame ID')
         plt.ylabel('Latency (ms)')
@@ -63,10 +63,10 @@ class Plot:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("--img_size", type=str, default="224", help="Inference size")
+    # parser.add_argument("--img_size", type=str, default="224", help="Inference size")
     #parser.add_argument("--img_size", type=str, default="416", help="Inference size")
     #parser.add_argument("--img_size", type=str, default="608", help="Inference size")
-    #parser.add_argument("--img_size", type=str, default="832", help="Inference size")
+    parser.add_argument("--img_size", type=str, default="832", help="Inference size")
     parser.add_argument("--csv_data", type=str, default="exported_data/csv/pih_candidate/", help="path to save the graphs")
     parser.add_argument("--output_graph", type=str, default="output_graph/pih_candidate/", help="path to save the graphs")
     opt = parser.parse_args()

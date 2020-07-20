@@ -633,14 +633,14 @@ class YOLOv3:
                 self.__store_mbbox_coord(this_frame_id, self.detected_mbbox)  # store mbbox information
                 self.__safety_store_txt()
 
-                t_mod_v2 = time.time() - ts_mod_v2
+                t_mod_v2 = (time.time() - ts_mod_v2) * 1000
 
                 self.latency_modv2.append(t_mod_v2)
                 print(".. Proc. MODv2 @ Frame-%s: in (%.5fs)." % (str(this_frame_id), t_mod_v2))
 
                 if int(this_frame_id) % 100 == 0:
                     mean_data = round(np.mean(np.array(self.latency_modv2)), 2)
-                    print(".. Avg in proc. MODv2 100 frames: in (%.5fs)." % (mean_data))
+                    print(".. Avg in proc. MODv2 100 frames: in (%.5fms)." % (mean_data))
                     save_path = "exported_data/csv/pih_candidate/data-modv2-%s.csv" % str(this_frame_id)
                     np.savetxt(save_path, self.latency_modv2, delimiter=',')
 
