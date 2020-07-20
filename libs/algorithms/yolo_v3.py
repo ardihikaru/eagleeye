@@ -474,104 +474,60 @@ class YOLOv3:
         im0 = image (matrix)
         '''
 
-        try:
-            for i, det in enumerate(self.pred):  # detections per image
-                self.save_path = self.opt.output + "/" + str(this_frame_id) + ".png"
-                self.str_output += '%gx%g ' % img.shape[2:]  # print string
-                if det is not None and len(det):
-                    # Rescale boxes from img_size to im0 size
-                    det[:, :4] = scale_coords(img.shape[2:], det[:, :4], im0s.shape).round()
+        if self.opt.mbbox_detection:
+            try:
+                for i, det in enumerate(self.pred):  # detections per image
+                    self.save_path = self.opt.output + "/" + str(this_frame_id) + ".png"
+                    self.str_output += '%gx%g ' % img.shape[2:]  # print string
+                    if det is not None and len(det):
+                        # Rescale boxes from img_size to im0 size
+                        det[:, :4] = scale_coords(img.shape[2:], det[:, :4], im0s.shape).round()
 
-                    ts_mbbox = time.time()
-                    if self.opt.mbbox_detection:
-                        self.__mbbox_detection(det, im0s, this_frame_id)  # modifying Mb-box
-                    t_mbbox = time.time() - ts_mbbox
-                    self.time_mbbox += t_mbbox
-                    self.time_mbbox_list.append(t_mbbox)
+                        ts_mbbox = time.time()
+                        if self.opt.mbbox_detection:
+                            self.__mbbox_detection(det, im0s, this_frame_id)  # modifying Mb-box
+                        t_mbbox = time.time() - ts_mbbox
+                        self.time_mbbox += t_mbbox
+                        self.time_mbbox_list.append(t_mbbox)
 
-                    # Store total processed frames
-                    self.total_proc_frames += 1
-                    t_proc_frames_key = "total-proc-frames-w%s-%s" % (str(self.opt.node), str(self.opt.drone_id))
-                    store_latency(self.rc_latency, t_proc_frames_key, self.total_proc_frames)
+                        if self.opt.post_detection:
+                            # Store total processed frames
+                            self.total_proc_frames += 1
+                            t_proc_frames_key = "total-proc-frames-w%s-%s" % (
+                            str(self.opt.node), str(self.opt.drone_id))
+                            store_latency(self.rc_latency, t_proc_frames_key, self.total_proc_frames)
 
-                    # FPS each worker
-                    fps_worker_key = "fps-worker-%s" % str(self.opt.node)
-                    _, current_fps_worker = store_fps(self.rc_latency, fps_worker_key, self.opt.drone_id,
-                                                      total_frames=self.total_proc_frames)
-                    # print('Current [FPS of Worker-%s] with total %d frames: (%.2f fps)' % (
-                    #         self.opt.node, self.total_proc_frames, current_fps_worker))
+                            # FPS each worker
+                            fps_worker_key = "fps-worker-%s" % str(self.opt.node)
+                            _, current_fps_worker = store_fps(self.rc_latency, fps_worker_key, self.opt.drone_id,
+                                                              total_frames=self.total_proc_frames)
 
-                    if not self.opt.maximize_latency:
-                        if self.opt.default_detection:
-                            self.__default_detection(det, im0s, this_frame_id)
-                    t_default = time.time() - ts_det - t_mbbox
-                    self.time_default += t_default
-                    self.time_default_list.append(t_default)
+                            if not self.opt.maximize_latency:
+                                if self.opt.default_detection:
+                                    self.__default_detection(det, im0s, this_frame_id)
+                            t_default = time.time() - ts_det - t_mbbox
+                            self.time_default += t_default
+                            self.time_default_list.append(t_default)
 
-                    # Latency: Default Detection
-                    # print('Latency [Default Detection] of frame-%s: (%.5fs)' % (str(this_frame_id), t_default))
-                    t_default_key = "draw2bbox-" + str(self.opt.drone_id) + "-" + str(this_frame_id)
-                    store_latency(self.rc_latency, t_default_key, t_default)
-                    # redis_set(self.rc_latency, t_default_key, t_default)
+                            # Latency: Default Detection
+                            t_default_key = "draw2bbox-" + str(self.opt.drone_id) + "-" + str(this_frame_id)
+                            store_latency(self.rc_latency, t_default_key, t_default)
 
-                    # Print time (inference + NMS)
-                    # print('%sDone. (%.3fs)' % (self.str_output, time.time() - t))
+                            # Save end latency calculation
+                            t_end_key = "end-" + str(self.opt.drone_id)
+                            store_latency(self.rc_latency, t_end_key, time.time())
 
-                    # print('Done. (%.3fs) --> '
-                    #       'Inference(%.3fs); NMS(%.3fs); MB-Box(%.3fs); Default-Bbox(%.3fs)' %
-                    #       ((time.time() - t),
-                    #        t_inference, t_nms, t_mbbox, t_default))
+                            # Mark last processed frame
+                            t_last_frame_key = "last-" + str(self.opt.drone_id)
+                            store_latency(self.rc_latency, t_last_frame_key, int(this_frame_id))
 
-                    # Save end latency calculation
-                    t_end_key = "end-" + str(self.opt.drone_id)
-                    # redis_set(self.rc_latency, t_end_key, time.time())
-                    store_latency(self.rc_latency, t_end_key, time.time())
+                            # Save BBox image
+                            self.__save_results(im0s, None, self.frame_id, tcp_img=True)
 
-                    # Mark last processed frame
-                    t_last_frame_key = "last-" + str(self.opt.drone_id)
-                    # redis_set(self.rc_latency, t_last_frame_key, int(this_frame_id))
-                    store_latency(self.rc_latency, t_last_frame_key, int(this_frame_id))
+            except Exception as e:
+                print("ERROR Pred: ", e)
 
-                    # # latency: End-to-end Latency, each frame
-                    # t_sframe_key = "start-fi-" + str(self.opt.drone_id)  # to calculate end2end latency each frame.
-                    # t_end2end_frame = redis_get(self.rc_latency, t_end_key) - redis_get(self.rc_latency, t_sframe_key)
-                    # t_e2e_frame_key = "end2end-frame-" + str(self.opt.drone_id) + "-" + str(this_frame_id)
-                    # redis_set(self.rc_latency, t_e2e_frame_key, t_end2end_frame)
-                    # print('\nLatency [End2end this frame] of frame-%s: (%.5fs)' % (str(this_frame_id), t_end2end_frame))
-
-                    # Save BBox image
-                    self.__save_results(im0s, None, self.frame_id, tcp_img=True)
-
-                    # Get total captured frames
-                    # t_total_frames_key = "total-frames-" + str(self.opt.drone_id)
-                    # total_frames = redis_get(self.rc_latency, t_total_frames_key)
-
-                    # latency: End-to-end Latency TOTAL
-                    # t_start_key = "start-" + str(self.opt.drone_id)
-                    # t_end2end = redis_get(self.rc_latency, t_end_key) - redis_get(self.rc_latency, t_start_key)
-                    # t_e2e_key = "end2end-" + str(self.opt.drone_id)
-                    # redis_set(self.rc_latency, t_e2e_key, t_end2end)
-                    # # print('\nLatency [E2E] of frame-%s: (%.5fs)' % (str(this_frame_id), t_end2end))
-                    # print('Latency [E2E] with total %d frames: (%.5fs); Now in frame=%d' %
-                    #       (total_frames, t_end2end, this_frame_id))
-
-                    # Calculate current FPS
-                    # time_per_frame = total_frames / t_end2end
-                    # current_fps = 1000 / time_per_frame
-                    # current_fps = round(current_fps, 2)
-                    # fps_key = "fps-" + str(self.opt.drone_id) + "-" + str(this_frame_id)
-                    # total_frames, current_fps = store_fps(self.rc_latency, fps_key, self.opt.drone_id)
-                    # print('Current [FPS] with total %d frames: (%.2f fps)' % (total_frames, current_fps))
-                    # # redis_set(self.rc_latency, fps_key, current_fps)
-
-                    # # Publish to PLF (PiH Location Fetcher) to notify that it's done.
-                    self.__set_finish_flag(this_frame_id)
-                    # plf_detection_channel = "PLF-%d-%d" % (self.opt.drone_id, this_frame_id)
-                    # pub(self.rc, plf_detection_channel, "ok")
-                    # # redis_set(self.rc_data, plf_detection_channel, True, 10)  # expired in 10 seconds
-
-        except Exception as e:
-            print("ERROR Pred: ", e)
+        self.__set_finish_flag(this_frame_id)
 
     def __set_finish_flag(self, frame_id):
         key = "PLF-%d-%d" % (self.opt.drone_id, frame_id)

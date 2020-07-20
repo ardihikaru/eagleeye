@@ -33,7 +33,10 @@ if __name__ == '__main__':
     # parser.add_argument('--modv2', type=bool, default=False,
                         help='Enabling/Disabling MOD Algorithm v2')
 
-    parser.add_argument('--default_detection', type=bool, default=True,
+    parser.add_argument('--post_detection', type=bool, default=False, help='Enabling/Disabling POST proc. detection')
+
+    # parser.add_argument('--default_detection', type=bool, default=True,
+    parser.add_argument('--default_detection', type=bool, default=False,
                         help='Enabling/Disabling Default Box Bounding Algorithm')
     parser.add_argument('--mbbox_detection', type=bool, default=True,
                         help='Enabling/Disabling Merge Box Bounding Algorithm')
