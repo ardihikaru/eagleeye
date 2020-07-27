@@ -3,6 +3,7 @@ import asab
 import logging
 from ews.route_manager.routes import auth as route_auth
 from ews.route_manager.routes import user as route_user
+from ews.route_manager.routes import stream_reader as route_stream_reader
 from aiohttp_jwt import JWTMiddleware
 from ext_lib.database_blacklist.blacklist_helpers import is_token_revoked
 from ext_lib.redis.my_redis import MyRedis
@@ -35,6 +36,7 @@ class RouteManagerModule(asab.Service):
 
         route_auth.route.add_to_router(self.ServiceAPIWebContainer.WebApp.router, prefix='/api/auth')
         route_user.route.add_to_router(self.ServiceAPIWebContainer.WebApp.router, prefix='/api/users')
+        route_stream_reader.route.add_to_router(self.ServiceAPIWebContainer.WebApp.router, prefix='/api/stream')
 
         # Enable exception to JSON exception middleware
         self.ServiceAPIWebContainer.WebApp.middlewares.append(asab.web.rest.JsonExceptionMiddleware)
