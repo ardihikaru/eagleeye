@@ -1,9 +1,12 @@
 # Optional Resources ----------------------------------------------------------------------------------------------
-.idea
-data/5g-dive/
-data/coco/
-output/*
-hasil
+old_codes/data/5g-dive/
+old_codes/data/coco/
+old_codes/output/*
+old_codes/hasil
+
+# Ignore editors
+.idea/
+web-service/.idea/
 
  Repo-specific GitIgnore ----------------------------------------------------------------------------------------------
 *.jpg
@@ -144,6 +147,7 @@ celerybeat-schedule
 .venv
 venv/
 ENV/
+web-service/venv/
 
 # Spyder project settings
 .spyderproject
