@@ -1,9 +1,9 @@
 # Optional Resources ----------------------------------------------------------------------------------------------
 .idea
-data/5g-dive/
-data/coco/
-output/*
-hasil
+old_codes/data/5g-dive/
+old_codes/data/coco/
+old_codes/output/*
+old_codes/hasil
 
  Repo-specific GitIgnore ----------------------------------------------------------------------------------------------
 *.jpg
