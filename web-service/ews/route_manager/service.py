@@ -1,12 +1,11 @@
 import asyncio
 import asab
 import logging
-from trackilo.route_manager.routes import auth as route_auth
-from trackilo.route_manager.routes import user as route_user
-from trackilo.route_manager.routes import people as route_people
+from ews.route_manager.routes import auth as route_auth
+from ews.route_manager.routes import user as route_user
 from aiohttp_jwt import JWTMiddleware
-from trackilo.addons.database_blacklist.blacklist_helpers import is_token_revoked
-from trackilo.addons.redis.my_redis import MyRedis
+from ext_lib.database_blacklist.blacklist_helpers import is_token_revoked
+from ext_lib.redis.my_redis import MyRedis
 from aiohttp_middlewares import (
     cors_middleware,
     error_middleware,
@@ -25,18 +24,17 @@ class RouteManagerModule(asab.Service):
         Route Manager
     """
 
-    def __init__(self, app, service_name="trackilo.service"):
+    def __init__(self, app, service_name="ews.service"):
         super().__init__(app, service_name)
 
         web_svc = app.get_service("asab.WebService")
-        self.ServiceAPIWebContainer = asab.web.WebContainer(web_svc, 'trackilo:api')
+        self.ServiceAPIWebContainer = asab.web.WebContainer(web_svc, 'eagleeye:api')
 
         # Enable CORS to CORS middleware
         self.ServiceAPIWebContainer.WebApp.middlewares.append(cors_middleware(origins=(asab.Config["clients"]["source_ip"],)))
 
         route_auth.route.add_to_router(self.ServiceAPIWebContainer.WebApp.router, prefix='/api/auth')
         route_user.route.add_to_router(self.ServiceAPIWebContainer.WebApp.router, prefix='/api/users')
-        route_people.route.add_to_router(self.ServiceAPIWebContainer.WebApp.router, prefix='/api/people')
 
         # Enable exception to JSON exception middleware
         self.ServiceAPIWebContainer.WebApp.middlewares.append(asab.web.rest.JsonExceptionMiddleware)
@@ -45,8 +43,8 @@ class RouteManagerModule(asab.Service):
         self.ServiceAPIWebContainer.WebApp.middlewares.append(JWTMiddleware(
             secret_or_pub_key=asab.Config["jwt"]["secret_key"],
             request_property="user",
-            # whitelist=[r"/api/users*", r"/api/auth/login"],  # use this to disable access_token validation
-            whitelist=[r"/api/auth/login"],  # Final code: Please enable this one instead
+            whitelist=[r"/api/users*", r"/api/auth/login"],  # use this to disable access_token validation
+            # whitelist=[r"/api/auth/login"],  # Final code: Please enable this one instead
             token_getter=self.get_token,
             is_revoked=self.is_revoked,
         ))

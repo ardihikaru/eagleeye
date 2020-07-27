@@ -3,15 +3,15 @@
 """
 
 from werkzeug.security import generate_password_hash, check_password_hash
-from trackilo.addons.utils import json_load_str, get_json_template, get_unprocessable_request_json, get_synced_date
-from trackilo.addons.database_blacklist.blacklist_helpers import (
+from ext_lib.utils import json_load_str, get_json_template, get_unprocessable_request_json, get_synced_date
+from ext_lib.database_blacklist.blacklist_helpers import (
     revoke_current_token
 )
-from trackilo.database.user.user import UserModel
-from trackilo.database.user.user_functions import get_all_data, store_jwt_data, get_data_by_username, \
+from ews.database.user.user import UserModel
+from ews.database.user.user_functions import get_all_data, store_jwt_data, get_data_by_username, \
     del_data_by_id, upd_data_by_id, get_data_by_id, insert_new_data
 import asab
-from trackilo.addons.redis.my_redis import MyRedis
+from ext_lib.redis.my_redis import MyRedis
 from multidict import MultiDictProxy
 
 
@@ -93,7 +93,6 @@ class User(MyRedis):
 
             # clean up sensitive data
             json_data.pop("password")
-            # json_data.pop("password_confirm")
 
             self.set_msg(msg)
 

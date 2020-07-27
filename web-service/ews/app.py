@@ -2,21 +2,21 @@ import asab
 import asab.web
 import asab.web.rest
 import asab.web.session
-from trackilo.route_manager import RouteManagerModule
+from ews.route_manager import RouteManagerModule
 from mongoengine import connect
 
 
-class TrackiloWebService(asab.Application):
+class EagleEYEWebService(asab.Application):
 
 	def __init__(self):
 		super().__init__()
 
 		# Connect Database
-		connect('trackiloDB')
+		connect('eagleeyeDB')
 
 		# Web module/service
 		self.add_module(asab.web.Module)
 		self.add_module(RouteManagerModule)
 
 	async def initialize(self):
-		print("Trackilo Web Service is running!")
+		print("EagleEYE Web Service is running!")

@@ -4,13 +4,10 @@
 
 from aiohttp_route_decorator import RouteCollector
 import aiohttp
-from trackilo.controllers.user.user import User as DataController
-from trackilo.addons.utils import get_unprocessable_request
+from ews.controllers.user.user import User as DataController
+from ext_lib.utils import get_unprocessable_request
 
 route = RouteCollector()
-
-# Handler should be handled with CORS
-# container.WebApp['aiohttp_cors'].add(route)
 
 
 @route('/login', methods=['POST', 'OPTIONS'])

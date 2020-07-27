@@ -4,7 +4,7 @@
         https://github.com/ardihikaru/flask-api/tree/master/app/addons/database_blacklist
 """
 
-from trackilo.addons.redis.translator import redis_set, redis_get
+from ext_lib.redis.translator import redis_set, redis_get
 import jwt
 
 
