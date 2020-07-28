@@ -37,7 +37,7 @@ class RouteManagerModule(asab.Service):
 
         route_auth.route.add_to_router(self.ServiceAPIWebContainer.WebApp.router, prefix='/api/auth')
         route_user.route.add_to_router(self.ServiceAPIWebContainer.WebApp.router, prefix='/api/users')
-        route_stream_reader.route.add_to_router(self.ServiceAPIWebContainer.WebApp.router, prefix='/api/streams')
+        route_stream_reader.route.add_to_router(self.ServiceAPIWebContainer.WebApp.router, prefix='/api/stream')
         route_node.route.add_to_router(self.ServiceAPIWebContainer.WebApp.router, prefix='/api/nodes')
 
         # Enable exception to JSON exception middleware

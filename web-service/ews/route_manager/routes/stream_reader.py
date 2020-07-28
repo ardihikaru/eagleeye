@@ -48,10 +48,12 @@ async def stream_live(request):
     """
     # uri = request.match_info.get('uri', "Anonymous")
 
+    print(" -- disini ..")
     try:
         if request.method == 'POST':
             request_json = await request.json()
             return DataController().read(request_json)
+            # return aiohttp.web.json_response(DataController().read(request_json))
     except Exception as e:
         # Log the error
         L.error("Invalid request: {}".format(e))
