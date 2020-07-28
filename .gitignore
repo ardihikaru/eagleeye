@@ -8,6 +8,8 @@ old_codes/hasil
 # Ignore editors
 .idea/
 web-service/.idea/
+object-detection-service/.idea/
+scheduler-service/.idea/
 
  Repo-specific GitIgnore ----------------------------------------------------------------------------------------------
 *.jpg
