@@ -18,3 +18,12 @@ class MyRedis:
 
     def get_rc(self):
         return self.rc
+
+    def delete_by_client(self, rci):
+        # print(" Current Keys = ", rci.keys())
+        for key in rci.keys():
+            rci.delete(key)
+        # print(" New Keys = ", rci.keys())
+
+    def delete_all_keys(self):
+        self.delete_by_client(self.rc)

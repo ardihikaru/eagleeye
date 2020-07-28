@@ -184,3 +184,6 @@ def letterbox(img, new_shape=(416, 416), color=(128, 128, 128),
     img = cv2.copyMakeBorder(img, top, bottom, left, right, cv2.BORDER_CONSTANT, value=color)  # add border
     return img, ratio, (dw, dh)
 
+
+def get_current_time():
+    return datetime.now().strftime("%H:%M:%S")

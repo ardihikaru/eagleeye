@@ -3,6 +3,7 @@ import asab.web
 import asab.web.rest
 import asab.web.session
 from ews.route_manager import RouteManagerModule
+from ext_lib.redis.my_redis import MyRedis
 from mongoengine import connect
 
 
@@ -13,6 +14,10 @@ class EagleEYEWebService(asab.Application):
 
 		# Connect Database
 		connect('eagleeyeDB')
+
+		# Delete all keys in redis as the application runs
+		redis = MyRedis(asab.Config)
+		redis.delete_all_keys()
 
 		# Web module/service
 		self.add_module(asab.web.Module)

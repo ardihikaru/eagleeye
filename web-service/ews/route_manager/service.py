@@ -45,7 +45,8 @@ class RouteManagerModule(asab.Service):
         self.ServiceAPIWebContainer.WebApp.middlewares.append(JWTMiddleware(
             secret_or_pub_key=asab.Config["jwt"]["secret_key"],
             request_property="user",
-            whitelist=[r"/api/users*", r"/api/auth/login"],  # use this to disable access_token validation
+            whitelist=[r"/api/stream*", r"/api/users*", r"/api/auth/login"],  # use this to disable access_token validation
+            # whitelist=[r"/api/users*", r"/api/auth/login"],  # use this to disable access_token validation
             # whitelist=[r"/api/auth/login"],  # Final code: Please enable this one instead
             token_getter=self.get_token,
             is_revoked=self.is_revoked,
