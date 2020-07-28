@@ -30,3 +30,15 @@ def redis_get_all_keys(redis_client):
         pass
     finally:
         return data
+
+
+def pub(my_redis, channel, message):
+    my_redis.publish(channel, message)
+
+
+def sub(my_redis, channel, func, consumer_name=None):
+    pubsub = my_redis.pubsub()
+    pubsub.subscribe([channel])
+    for item in pubsub.listen():
+        func(consumer_name, item['data'])
+

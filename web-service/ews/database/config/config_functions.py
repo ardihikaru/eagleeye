@@ -1,27 +1,18 @@
 """
-    List of functions to manage actions (Create, Read, Update, Delete) of `Nodes` data
+    List of functions to manage actions (Create, Read, Update, Delete) of `Configs` data
 """
 
-import asab
 from mongoengine import DoesNotExist, NotUniqueError, Q, ValidationError
 from ext_lib.utils import mongo_list_to_dict, mongo_dict_to_dict, pop_if_any
 from datetime import datetime
-import jwt
-from datetime import timedelta
 
 
-def insert_new_data(db_model, new_data, msg):
+def insert_new_data(db_model, new_data, msg=None):
     try:
-        new_data.pop("password_confirm")
         inserted_data = db_model(**new_data).save()
 
     except ValidationError as e:
-        try:
-            err_ar = str(e).split("(")
-            err = err_ar[2].replace(")", "")
-            return False, None, err
-        except:
-            return False, None, str(e)
+        return False, None, str(e)
 
     except NotUniqueError as e:
         return False, None, str(e)
@@ -31,7 +22,7 @@ def insert_new_data(db_model, new_data, msg):
     new_data["updated_at"] = inserted_data.updated_at.strftime("%Y-%m-%d, %H:%M:%S")
 
     if len(inserted_data) > 0:
-        return True, inserted_data, msg
+        return True, new_data, msg
     else:
         return False, None, msg
 
@@ -59,17 +50,6 @@ def get_data_by_id(db_model, _id):
     dict_data = mongo_dict_to_dict(data)
 
     return True, dict_data, None
-
-
-def get_data_by_consumer(db_model, consumer):
-    try:
-        data = db_model.objects.get(consumer=consumer).to_json()
-    except Exception as e:
-        return False, None
-
-    dict_data = mongo_dict_to_dict(data)
-
-    return True, dict_data
 
 
 def del_data_by_id(db_model, _id):

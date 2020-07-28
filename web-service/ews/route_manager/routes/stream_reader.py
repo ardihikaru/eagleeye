@@ -16,21 +16,21 @@ L = logging.getLogger(__name__)
 
 route = RouteCollector()
 
-
-@route('/video_feed', methods=['GET'])
-async def stream_live(request):
-    """
-        To streaming video from the drone
-    """
-    # uri = request.match_info.get('uri', "Anonymous")
-
-    try:
-        request_json = await request.json()
-        return DataController().video_feed(request_json)
-    except Exception as e:
-        # Log the error
-        L.error("Invalid request: {}".format(e))
-        return aiohttp.web.HTTPBadRequest()
+#
+# @route('/video_feed', methods=['GET'])
+# async def stream_live(request):
+#     """
+#         To streaming video from the drone
+#     """
+#     # uri = request.match_info.get('uri', "Anonymous")
+#
+#     try:
+#         request_json = await request.json()
+#         return DataController().video_feed(request_json)
+#     except Exception as e:
+#         # Log the error
+#         L.error("Invalid request: {}".format(e))
+#         return aiohttp.web.HTTPBadRequest()
 
 
 @route('/live', methods=['POST', 'OPTIONS'])

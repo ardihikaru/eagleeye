@@ -1,57 +1,107 @@
 import asab
 from ext_lib.utils import get_json_template
 import aiohttp
-from ews.controllers.stream_reader.functions import validate_request_json, request_to_redisdb
+from ews.controllers.stream_reader.functions import validate_request_json, request_to_mongodb, request_to_redisdb
 from ext_lib.redis.my_redis import MyRedis
+from ext_lib.redis.translator import pub
 import cv2
 from aiohttp.multipart import MultipartWriter
 import time
 from ext_lib.utils import get_current_time
+from ews.database.config.config import ConfigModel
+from ews.database.config.config_functions import insert_new_data, get_data_by_id, del_data_by_id
+from concurrent.futures import ThreadPoolExecutor
+import simplejson as json
 
 
-class StreamReader(MyRedis):
+# class StreamReader(MyRedis):
+# class StreamReader(AsyncHandler):
+class StreamReader:
     def __init__(self):
-        super().__init__(asab.Config)
-        self.cap = None
+        # super().__init__(asab.Config)
+        # executor = ThreadPoolExecutor(int(asab.Config["thread"]["num_executor"]))
+        self.executor = ThreadPoolExecutor(int(asab.Config["thread"]["num_executor"]))
+        self.redis = MyRedis(asab.Config)
+        # self.ctx = mp.get_context('spawn')
+        # super().__init__(executor)
+        # self.cap = None
+        # self.executor = ThreadPoolExecutor(int(asab.Config["thread"]["num_executor"]))
 
     def read(self, request_json):
+        # Validate input
         print(request_json)
         t0_validator = time.time()
         validate_request_json(request_json)
         t1_validator = (time.time() - t0_validator) * 1000
         print('[%s] Latency for Request Valication (%.3f ms)' % (get_current_time(), t1_validator))
 
-        t0_request_saving = time.time()
-        request_to_redisdb(self.rc, request_json)
-        t1_request_saving = (time.time() - t0_request_saving) * 1000
-        print('[%s] Latency for Saving Request data (%.3f ms)' % (get_current_time(), t1_request_saving))
+        # send data into Scheduler service through the pub/sub
+        t0_publish = time.time()
+        print("# send data into Scheduler service through the pub/sub")
+        dump_request = json.dumps(request_json)
+        pub(self.redis.get_rc(), asab.Config["pubsub:channel"]["scheduler"], dump_request)
+        t1_publish = (time.time() - t0_publish) * 1000
+        # TODO: Saving latency for publishing data
+        print('[%s] Latency for Publishing data (%.3f ms)' % (get_current_time(), t1_publish))
+
+        # save input into mongoDB through thread process
+        print("# save input into mongoDB through thread process")
+        request_to_mongodb(self.executor, request_json)
+
+        # t0_request_saving = time.time()
+        # request_to_redisdb(self.rc, request_json)
+        # t1_request_saving = (time.time() - t0_request_saving) * 1000
+        # print('[%s] Latency for Saving Request data (%.3f ms)' % (get_current_time(), t1_request_saving))
+
+        # t0_saving_mongo = time.time()
+        # is_success, config_data, msg = insert_new_data(ConfigModel, request_json)
+        # t1_saving_mongo = (time.time() - t0_saving_mongo) * 1000
+        # print(" -- config_data:", config_data)
+        # print('[%s] Latency for Saving data into MongoDB (%.3f ms)' % (get_current_time(), t1_saving_mongo))
+
+        # t0_loading_mongo = time.time()
+        # is_success, config_data, msg = get_data_by_id(ConfigModel, config_data["id"])
+        # t1_loading_mongo = (time.time() - t0_loading_mongo) * 1000
+        # print('[%s] Latency for Loading data into MongoDB (%.3f ms)' % (get_current_time(), t1_loading_mongo))
+        #
+        # t0_deleting_mongo = time.time()
+        # _, _ = del_data_by_id(ConfigModel, config_data["id"])
+        # t1_deleting_mongo = (time.time() - t0_deleting_mongo) * 1000
+        # print('[%s] Latency for Deleting data into MongoDB (%.3f ms)' % (get_current_time(), t1_deleting_mongo))
+
+        # t0_publish = time.time()
+        # channel = "scheduler"
+        # # pub(self.rc, channel, request_json)
+        # pub(self.redis.get_rc(), channel, request_json)
+        # t1_publish = (time.time() - t0_publish) * 1000
+        # print('[%s] Latency for Publishing data (%.3f ms)' % (get_current_time(), t1_publish))
 
         return aiohttp.web.json_response(get_json_template(True, request_json, -1, "OK"))
 
-    async def video_feed(self, request_json):
-        response = aiohttp.web.StreamResponse(
-            status=200,
-            reason='OK',
-            headers={
-                # 'Content-Type': 'multipart/x-mixed-replace;boundary={}'.format(my_boundary)
-                'Content-Type': 'multipart/x-mixed-replace'
-            }
-        )
-        camera = cv2.VideoCapture(request_json["uri"])  # use 0 for web camera
-        while True:
-            # frame = get_jpeg_frame()
-            # Capture frame-by-frame
-            success, frame = camera.read()  # read the camera frame
-            if not success:
-                break
-            else:
-                ret, buffer = cv2.imencode('.jpg', frame)
-                frame = buffer.tobytes()
-            # with MultipartWriter('image/jpeg', boundary=my_boundary) as mpwriter:
-            with MultipartWriter('image/jpeg') as mpwriter:
-                mpwriter.append(frame, {'Content-Type': 'image/jpeg'})
-                await mpwriter.write(response, close_boundary=False)
-            await response.drain()
+    # async def video_feed(self, request_json):
+    #     response = aiohttp.web.StreamResponse(
+    #         status=200,
+    #         reason='OK',
+    #         headers={
+    #             # 'Content-Type': 'multipart/x-mixed-replace;boundary={}'.format(my_boundary)
+    #             'Content-Type': 'multipart/x-mixed-replace'
+    #         }
+    #     )
+    #     camera = cv2.VideoCapture(request_json["uri"])  # use 0 for web camera
+    #     while True:
+    #         # frame = get_jpeg_frame()
+    #         # Capture frame-by-frame
+    #         success, frame = camera.read()  # read the camera frame
+    #         if not success:
+    #             break
+    #         else:
+    #             ret, buffer = cv2.imencode('.jpg', frame)
+    #             frame = buffer.tobytes()
+    #         # with MultipartWriter('image/jpeg', boundary=my_boundary) as mpwriter:
+    #         with MultipartWriter('image/jpeg') as mpwriter:
+    #             mpwriter.append(frame, {'Content-Type': 'image/jpeg'})
+    #             await mpwriter.write(response, close_boundary=False)
+    #         await response.drain()
 
     # def gen_frames(self, uri):  # generate frame by frame from camera
     #     camera = cv2.VideoCapture(uri)  # use 0 for web camera
