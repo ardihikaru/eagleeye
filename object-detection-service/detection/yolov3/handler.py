@@ -19,6 +19,12 @@ class YOLOv3Handler(MyRedis):
     async def start(self):
         print("\n[%s] YOLOv3Handler try to consume the published data from [Scheduler Service]" % get_current_time())
 
+        # Sample actions
+        import time
+        for i in range(5):
+            print("#### I am running, dude.")
+            time.sleep(1)
+
         # # Scheduler-service will ONLY handle a single stream, once it starts, ignore other input stream
         # # TODO: To allow capturing multiple video streams (Future work)
         # is_streaming = False
