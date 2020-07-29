@@ -56,11 +56,9 @@ class Node(MyRedis):
         if "id" in json_data:
             if isinstance(json_data["id"], str):
                 _, _ = del_data_by_id(NodeModel, json_data["id"])
-                # self.del_data_by_id(json_data["id"])
             elif isinstance(json_data["id"], list):
                 for user_id in json_data["id"]:
                     _, _ = del_data_by_id(NodeModel, user_id)
-                    # self.del_data_by_id(user_id)
             else:
                 return get_unprocessable_request_json()
             resp_data = {}

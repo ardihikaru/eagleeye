@@ -17,7 +17,7 @@ L = logging.getLogger(__name__)
 route = RouteCollector()
 
 
-@route('', methods=['POST', 'GET', 'PUT', 'DELETE'])
+@route('', methods=['POST', 'GET', 'DELETE'])
 async def index(request):
     """
         Endpoint to:
@@ -64,7 +64,7 @@ async def index(request):
     if request.method == 'DELETE':
         try:
             json_data = await request.json()
-            resp = DataController().delete_data_by_id(json_data)
+            resp = DataController().bulk_delete_data_by_id(json_data)
         except:
             return get_unprocessable_request()
 
