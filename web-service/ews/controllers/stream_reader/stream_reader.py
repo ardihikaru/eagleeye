@@ -1,7 +1,8 @@
 import asab
 from ext_lib.utils import get_json_template
 import aiohttp
-from ews.controllers.stream_reader.functions import request_to_config, config_to_mongodb, get_config_data
+from ews.controllers.stream_reader.functions import request_to_config, config_to_mongodb, get_config_data, \
+    get_config_by_id, upd_config_by_id, del_config_by_id
 from ext_lib.redis.my_redis import MyRedis
 from ext_lib.redis.translator import pub
 import time
@@ -79,6 +80,18 @@ class StreamReader:
     async def get_data(self):
         is_success, config, total, msg = get_config_data()
         return aiohttp.web.json_response(get_json_template(is_success, config, total, msg))
+
+    def delete_data_by_id_one(self, _id):
+        return del_config_by_id(_id)
+        # return get_json_template(True, {}, -1, "OK")
+
+    def update_data_by_id(self, _id, json_data):
+        return upd_config_by_id(_id, json_data)
+        # return get_json_template(is_success, user_data, -1, msg)
+
+    def get_data_by_id(self, _id):
+        return get_config_by_id(_id)
+        # return get_json_template(is_success, user_data, -1, msg)
 
     # async def video_feed(self, request_json):
     #     response = aiohttp.web.StreamResponse(
