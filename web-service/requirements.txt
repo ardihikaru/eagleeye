@@ -4,15 +4,5 @@ aiohttp_jwt
 aiohttp_middlewares
 aiohttp_route_decorator
 werkzeug
-opencv-python
 simplejson
 redis
-
-Cython
-matplotlib
-numpy
-Pillow
-scipy
-torch==1.4.0
-torchvision==0.5.0
-tqdm==4.42.0
