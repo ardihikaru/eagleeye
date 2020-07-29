@@ -75,13 +75,13 @@ async def index(request):
 async def index_by(request):
     """
         Endpoint to:
-         1. GET user data by id
+         1. GET node by id
             Try: curl http://localhost:8080/api/nodes/{_id}
-         2. DELETE user data by id
+         2. DELETE node by id
             Try: curl http://localhost:8080/api/nodes/{_id} -X DELETE
-         3. PUT (Edit) user data by id
+         3. PUT (Edit) node by id
             Try: curl http://localhost:8080/api/nodes/{_id}
-                    -X POST -H "Content-Type: application/json" -d '{"name":"Kucing"}'
+                    -X POST -H "Content-Type: application/json" -d '{"name":"Node 2"}'
     """
 
 
