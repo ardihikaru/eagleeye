@@ -151,7 +151,6 @@ celerybeat-schedule
 .venv
 venv/
 ENV/
-web-service/venv/
 
 # Spyder project settings
 .spyderproject
