@@ -74,7 +74,6 @@ def del_data_by_id(db_model, _id):
 
 def upd_data_by_id(db_model, _id, new_data):
     try:
-        pop_if_any(new_data, "password")
         pop_if_any(new_data, "created_at")
         pop_if_any(new_data, "updated_at")
         pop_if_any(new_data, "id")

@@ -3,7 +3,7 @@ from ext_lib.redis.translator import redis_set
 import logging
 import time
 from ews.database.config.config_functions import insert_new_data, get_all_data, del_data_by_id, get_data_by_uri, \
-    get_data_by_id
+    get_data_by_id, upd_data_by_id
 from ews.database.config.config import ConfigModel
 from ext_lib.utils import get_current_time, get_random_str
 from ext_lib.utils import get_json_template
@@ -100,7 +100,8 @@ def get_config_by_id(_id):
     return get_json_template(is_success, config, -1, msg)
 
 def upd_config_by_id(_id, json_data):
-    return upd_data_by_id(ConfigModel, _id, new_data=json_data)
+    is_success, config, msg = upd_data_by_id(ConfigModel, _id, json_data)
+    return get_json_template(is_success, config, -1, msg)
 
 def del_config_by_id(_id):
     _, _ = del_data_by_id(ConfigModel, _id)
