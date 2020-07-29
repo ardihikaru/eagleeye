@@ -52,6 +52,17 @@ def get_data_by_id(db_model, _id):
     return True, dict_data, None
 
 
+def get_data_by_uri(db_model, uri):
+    try:
+        data = db_model.objects.get(uri=uri).to_json()
+    except Exception as e:
+        return False, None, str(e)
+
+    dict_data = mongo_dict_to_dict(data)
+
+    return True, dict_data, None
+
+
 def del_data_by_id(db_model, _id):
     try:
         db_model.objects.get(id=_id).delete()

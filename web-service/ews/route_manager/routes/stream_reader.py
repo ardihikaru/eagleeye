@@ -33,7 +33,7 @@ route = RouteCollector()
 #         return aiohttp.web.HTTPBadRequest()
 
 
-@route('/live', methods=['POST', 'OPTIONS'])
+@route('/live', methods=['GET', 'POST', 'OPTIONS'])
 async def stream_live(request):
     """
         Endpoint to start streaming
@@ -46,13 +46,38 @@ async def stream_live(request):
                         "worker": 1
                     }'
     """
-    # uri = request.match_info.get('uri', "Anonymous")
-
-    print(" -- disini ..")
     try:
         if request.method == 'POST':
             request_json = await request.json()
             return DataController().read(request_json)
+            # return aiohttp.web.json_response(DataController().read(request_json))
+
+        if request.method == 'GET':
+            return await DataController().get_data()
+    except Exception as e:
+        # Log the error
+        L.error("Invalid request: {}".format(e))
+        return aiohttp.web.HTTPBadRequest()
+
+
+@route('/live/{_id}', methods=['POST', 'OPTIONS'])
+async def get_stream_data(request):
+    """
+        Endpoint to start streaming
+        Try: curl http://localhost:8080/api/stream/live -X POST -H "Content-Type: application/json"
+                -d '{
+                        "raw": false,
+                        "algorithm": "YOLOv3",
+                        "uri": "rtmp://140.113.86.98:15500/live/demo",
+                        "exec": true,
+                        "worker": 1
+                    }'
+    """
+    _id = request.match_info.get('_id', "Anonymous")
+
+    try:
+        if request.method == 'GET':
+            return DataController().get_data_by(_id)
             # return aiohttp.web.json_response(DataController().read(request_json))
     except Exception as e:
         # Log the error

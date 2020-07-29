@@ -11,6 +11,7 @@ class ConfigModel(Document):
     uri = StringField(required=True, unique=True)
     algorithm = StringField(required=True)
     scalable = BooleanField(required=True)
+    stream = BooleanField(required=True)
     created_at = DateTimeField(default=datetime.datetime.now)
     updated_at = DateTimeField(default=datetime.datetime.now)
 
