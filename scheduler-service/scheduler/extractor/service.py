@@ -4,6 +4,8 @@ import logging
 from ext_lib.redis.my_redis import MyRedis
 from ext_lib.utils import get_current_time, pubsub_to_json
 import time
+from imutils.video import FileVideoStream
+import cv2
 
 ###
 
@@ -25,21 +27,41 @@ class ExtractorService(asab.Service):
         self.redis = MyRedis(asab.Config)
         # self._run()
 
-    def extract_folder(self, config):
-        print("#### I am extractor FODLER function from ExtractorService!")
+        # params for extractor
+        self.cap = None
+        self.frame_id = 0
 
-    def extract_video_stream(self, config):
+    async def extract_folder(self, config):
+        print("#### I am extractor FODLER function from ExtractorService!")
+        print(config)
+
+    async def extract_video_stream(self, config):
         print("#### I am extractor VIDEO STREAM function from ExtractorService!")
-    # def _run(self):
-    #     channel = asab.Config["pubsub:channel"]["scheduler"]
-    #     consumer = self.redis.get_rc().pubsub()
-    #     consumer.subscribe([channel])
-    #     for item in consumer.listen():
-    #         if isinstance(item["data"], int):
-    #             pass
-    #         else:
-    #             request_data = pubsub_to_json(item["data"])
-    #             t0_data = request_data["timestamp"]
-    #             t1_data = (time.time() - t0_data) * 1000
-    #             print('\n #### [%s] Latency for Start threading (%.3f ms)' % (get_current_time(), t1_data))
-    #             # TODO: Saving latency for scheduler:consumer
+        print(config)
+        try:
+            self.cap = await self._set_cap(config)
+
+            while await self._streaming():
+                self.frame_id += 1
+                success, frame = await self._read_frame()
+                print(" --- success:", self.frame_id, success, frame.shape)
+        except Exception as e:
+            print(" ---- >> e:", e)
+
+    async def _set_cap(self, config):
+        if bool(asab.Config["stream:config"]["thread"]):
+            return FileVideoStream(config["uri"]).start()  # Thread-based video capture
+        else:
+            return cv2.VideoCapture(config["uri"])
+
+    async def _streaming(self):
+        if bool(asab.Config["stream:config"]["thread"]):
+            return self.cap.more()
+        else:
+            return True
+
+    async def _read_frame(self):
+        if bool(asab.Config["stream:config"]["thread"]):
+            return True, self.cap.read()
+        else:
+            return self.cap.read()

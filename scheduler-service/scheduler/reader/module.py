@@ -14,5 +14,5 @@ class ReaderModule(asab.Module):
 	async def initialize(self, app):
 		print(" --- initialize @ ReaderModule ..")
 		self.SubscriptionHandler.ExtractorService = app.get_service('scheduler.ExtractorService')
-		self.SubscriptionHandler.start()
+		await self.SubscriptionHandler.start()
 		# self.Handler.IdentityService = app.get_service('ecr.IdentityService')
