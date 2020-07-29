@@ -4,8 +4,15 @@
 
 from aiohttp_route_decorator import RouteCollector
 import aiohttp
-from ews.controllers.user.user import User as DataController
+from ews.controllers.node.node import Node as DataController
 from ext_lib.utils import get_unprocessable_request
+import logging
+
+###
+
+L = logging.getLogger(__name__)
+
+###
 
 route = RouteCollector()
 
@@ -43,7 +50,10 @@ async def index(request):
             json_data = await request.json()
             resp = DataController().register(json_data)
         except:
-            return get_unprocessable_request()
+            # return get_unprocessable_request()
+            # Log the error
+            L.error("Invalid request: {}".format(e))
+            return aiohttp.web.HTTPBadRequest()
 
         return aiohttp.web.json_response(resp)
 

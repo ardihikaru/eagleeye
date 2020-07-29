@@ -12,16 +12,12 @@ from datetime import timedelta
 
 def insert_new_data(db_model, new_data, msg):
     try:
-        new_data.pop("password_confirm")
+        print("new_data:", new_data)
         inserted_data = db_model(**new_data).save()
+        print(" .. inserted_data:", inserted_data)
 
     except ValidationError as e:
-        try:
-            err_ar = str(e).split("(")
-            err = err_ar[2].replace(")", "")
-            return False, None, err
-        except:
-            return False, None, str(e)
+        return False, None, str(e)
 
     except NotUniqueError as e:
         return False, None, str(e)

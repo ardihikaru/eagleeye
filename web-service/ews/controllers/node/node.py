@@ -4,14 +4,14 @@
 
 from ext_lib.utils import json_load_str, get_json_template, get_unprocessable_request_json
 from ews.database.node.node import NodeModel
-from ews.database.node.node_functions import get_all_data, get_data_by_consumer, \
+from ews.database.node.node_functions import get_all_data, \
     del_data_by_id, upd_data_by_id, get_data_by_id, insert_new_data
 import asab
 from ext_lib.redis.my_redis import MyRedis
 from multidict import MultiDictProxy
 
 
-class User(MyRedis):
+class Node(MyRedis):
     def __init__(self):
         super().__init__(asab.Config)
         self.status_code = 200
@@ -75,6 +75,5 @@ class User(MyRedis):
         return get_json_template(is_success, user_data, -1, msg)
 
     def get_data_by_id(self, userid):
-        # self.trx_get_data_by_id(userid)
         is_success, user_data, msg = get_data_by_id(NodeModel, userid)
         return get_json_template(is_success, user_data, -1, msg)
