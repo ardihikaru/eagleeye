@@ -25,8 +25,11 @@ class ExtractorService(asab.Service):
         self.redis = MyRedis(asab.Config)
         # self._run()
 
-    def extract(self):
-        print("#### I am extractor function from ExtractorService!")
+    def extract_folder(self, config):
+        print("#### I am extractor FODLER function from ExtractorService!")
+
+    def extract_video_stream(self, config):
+        print("#### I am extractor VIDEO STREAM function from ExtractorService!")
     # def _run(self):
     #     channel = asab.Config["pubsub:channel"]["scheduler"]
     #     consumer = self.redis.get_rc().pubsub()

@@ -36,17 +36,21 @@ class ReaderHandler(MyRedis):
                 pass
             else:
                 # TODO: To tag the corresponding drone_id to identify where the image came from (Future work)
-                request_data = pubsub_to_json(item["data"])
-                t0_data = request_data["timestamp"]
+                config = pubsub_to_json(item["data"])
+                t0_data = config["timestamp"]
                 t1_data = (time.time() - t0_data) * 1000
                 print('\n #### [%s] Latency for Start threading (%.3f ms)' % (get_current_time(), t1_data))
                 # TODO: Saving latency for scheduler:consumer
 
                 print("Once data collected, try extracting data..")
-                self.ExtractorService.extract(request_data)
+                print(" >>> config:", config)
+                if config["stream"]:
+                    self.ExtractorService.extract_video_stream(config)
+                else:
+                    self.ExtractorService.extract_folder(config)
 
                 # Stop watching once
-                if "stop" in request_data:
+                if "stop" in config:
                     print("### System is interrupted and asked to stop comsuming data.")
                     break
 
