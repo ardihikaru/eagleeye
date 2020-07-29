@@ -1,18 +1,13 @@
 import asab
 from .service import ReaderService
-from .handler import ReaderHandler
+from ext_lib.utils import get_current_time
 
 
 class ReaderModule(asab.Module):
 
 	def __init__(self, app):
 		super().__init__(app)
-		print(" -- @ ReaderModule...")
-		self.Service = ReaderService(app, "ReaderService")
-		self.SubscriptionHandler = ReaderHandler(app)
+		self.Service = ReaderService(app, "scheduler.ReaderService")
 
 	async def initialize(self, app):
-		print(" --- initialize @ ReaderModule ..")
-		self.SubscriptionHandler.ExtractorService = app.get_service('scheduler.ExtractorService')
-		await self.SubscriptionHandler.start()
-		# self.Handler.IdentityService = app.get_service('ecr.IdentityService')
+		print("\n[%s] Initialize ReaderModule." % get_current_time())

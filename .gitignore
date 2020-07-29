@@ -4,6 +4,7 @@ old_codes/data/5g-dive/
 old_codes/data/coco/
 old_codes/output/*
 old_codes/hasil
+data
 
 # Ignore editors
 .idea/

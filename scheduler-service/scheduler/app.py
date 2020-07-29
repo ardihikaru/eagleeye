@@ -2,9 +2,11 @@ import asab
 import asab.web
 import asab.web.rest
 import asab.web.session
+from scheduler.resizer import ResizerModule
 from scheduler.extractor import ExtractorModule
 from scheduler.reader import ReaderModule
 from mongoengine import connect
+from ext_lib.utils import get_current_time
 
 
 class EagleEYEWebService(asab.Application):
@@ -14,13 +16,16 @@ class EagleEYEWebService(asab.Application):
 
 		# Connect Database
 		connect('eagleeyeDB')
-
-		print("Scheduler Service is running!")
-
+		
 		# Add reader module
-		self.add_module(asab.web.Module)
+		self.add_module(ResizerModule)
 		self.add_module(ExtractorModule)
 		self.add_module(ReaderModule)
 
-	# async def initialize(self):
-		# print("Scheduler Service is running!")
+		# Initialize reader service
+		self.ReaderService = self.get_service("scheduler.ReaderService")
+
+	async def initialize(self):
+		print("\n[%s] Scheduler Service is running!" % get_current_time())
+		# Start subscription
+		await self.ReaderService.start_subscription()

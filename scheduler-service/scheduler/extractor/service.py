@@ -23,6 +23,7 @@ class ExtractorService(asab.Service):
 
     def __init__(self, app, service_name="scheduler.ExtractorService"):
         super().__init__(app, service_name)
+        self.ResizerService = app.get_service("scheduler.ResizerService")
 
         # start pub/sub
         self.redis = MyRedis(asab.Config)

@@ -3,7 +3,6 @@ import logging
 import time
 from ext_lib.redis.my_redis import MyRedis
 from ext_lib.utils import pubsub_to_json, get_current_time
-# from ..storage import Transaction
 
 ###
 
@@ -16,10 +15,8 @@ class ReaderHandler(MyRedis):
 
     def __init__(self, app):
         super().__init__(asab.Config)
-        print(" # @ ReaderHandler ...")
-        self.ReaderService = app.get_service("ReaderService")
-        # app.WebContainer.WebApp.router.add_put('/sync', self.put_transactions)
-        # app.WebContainer.WebApp.router.add_get('/transactions', self.get_transactions)
+        # print(" # @ ReaderHandler ...")
+        self.ReaderService = app.get_service("scheduler.ReaderService")
 
         # Extractor service may not exist at this point
         # This variable will be set up in the init time
@@ -27,7 +24,7 @@ class ReaderHandler(MyRedis):
         self.ExtractorService = None
 
     async def start(self):
-        print("ReaderHandler try to consume the published data")
+        print("\n[%s] ReaderHandler try to consume the published data" % get_current_time())
 
         # Scheduler-service will ONLY handle a single stream, once it starts, ignore other input stream
         # TODO: To allow capturing multiple video streams (Future work)
@@ -69,46 +66,3 @@ class ReaderHandler(MyRedis):
                         break
 
         print("## System is no longer consuming data")
-
-    # async def get_transactions(self, request):
-    #     fromDate, toDate = None, None
-    #     if request.query:
-    #         pattern = re.compile('\A(from=|to=)\d+((&from=|&to=)\d+)?')
-    #         if pattern.fullmatch(request.query_string):
-    #             fromDate = request.query.get('from', None)
-    #             toDate = request.query.get('to', None)
-    #         else:
-    #             raise aiohttp.web.HTTPBadRequest()
-    # 
-    #     result_cursor = self.TransactionService.find_transactions(fromDate, toDate)
-    # 
-    #     result = []
-    #     for item in await result_cursor.to_list(length=1000):
-    #         result.append(item)
-    # 
-    #     return asab.web.rest.json_response(request, result)
-    # 
-    # async def put_transactions(self, request):
-    #     # Parse/validate request
-    #     try:
-    #         transaction = Transaction.from_dict(loads(await request.text()))
-    #     except Exception as e:
-    #         L.error("put_transactions received a bad request: {}".format(e))
-    #         raise aiohttp.web.HTTPBadRequest()
-    # 
-    #     # Replay transaction
-    # 
-    #     await self.TransactionService.replay_transaction(transaction)
-    # 
-    #     # Return OK
-    #     return aiohttp.web.HTTPOk()
-    # 
-    # async def pop_queue(self, request):
-    #     if request.identity is None:
-    #         raise aiohttp.web.HTTPBadRequest()
-    # 
-    #     return aiohttp.web.Response(
-    #         body=await self.LedgerSyncService.pop_sync_queue(request.identity._id)
-    #     )
-
-
