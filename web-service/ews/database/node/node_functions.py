@@ -12,10 +12,7 @@ from datetime import timedelta
 
 def insert_new_data(db_model, new_data, msg):
     try:
-        print("new_data:", new_data)
         inserted_data = db_model(**new_data).save()
-        print(" .. inserted_data:", inserted_data)
-
     except ValidationError as e:
         return False, None, str(e)
 
@@ -26,8 +23,8 @@ def insert_new_data(db_model, new_data, msg):
     new_data["created_at"] = inserted_data.created_at.strftime("%Y-%m-%d, %H:%M:%S")
     new_data["updated_at"] = inserted_data.updated_at.strftime("%Y-%m-%d, %H:%M:%S")
 
-    if len(inserted_data) > 0:
-        return True, inserted_data, msg
+    if len(new_data) > 0:
+        return True, new_data, msg
     else:
         return False, None, msg
 

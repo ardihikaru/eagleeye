@@ -25,6 +25,10 @@ class Node(MyRedis):
         msg = "Registration of a new Node is success."
         #  inserting
         is_success, inserted_data, msg = insert_new_data(NodeModel, json_data, msg)
+
+        # TODO: When inserting a new Node succeed, it should spawn an Object Detection module.
+        # TODO: To spawn YOLOv3 Module
+
         return get_json_template(response=is_success, results=inserted_data, total=-1, message=msg)
 
     def __extract_get_args(self, get_args):

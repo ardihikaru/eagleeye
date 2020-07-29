@@ -26,8 +26,7 @@ async def index(request):
                     -d '{
                             "name": "Node 1",
                             "channel": "n1",
-                            "consumer": "",
-                            "idle": true
+                            "consumer": ""
                     }'
          1. GET all user data
             Try: curl http://localhost:8080/api/nodes
@@ -58,8 +57,8 @@ async def index(request):
         return aiohttp.web.json_response(resp)
 
     if request.method == 'GET':
-        params = request.rel_url.query
-        resp = DataController().get_users(params)
+        # params = request.rel_url.query
+        resp = DataController().get_data()
         return aiohttp.web.json_response(resp)
 
     if request.method == 'DELETE':
