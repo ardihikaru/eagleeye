@@ -104,5 +104,5 @@ def upd_config_by_id(_id, json_data):
     return get_json_template(is_success, config, -1, msg)
 
 def del_config_by_id(_id):
-    _, _ = del_data_by_id(ConfigModel, _id)
-    return get_json_template(True, {}, -1, "OK")
+    is_success, msg = del_data_by_id(ConfigModel, _id)
+    return get_json_template(is_success, {}, -1, msg)

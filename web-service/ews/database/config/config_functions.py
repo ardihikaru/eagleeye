@@ -69,7 +69,7 @@ def del_data_by_id(db_model, _id):
     except Exception as e:
         return False, str(e)
 
-    return True, None
+    return True, "OK"
 
 
 def upd_data_by_id(db_model, _id, new_data):
