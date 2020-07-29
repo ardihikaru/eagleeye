@@ -101,7 +101,14 @@ class ExtractorService(asab.Service):
             while await self._streaming():
                 self.frame_id += 1
                 success, frame = await self._read_frame()
-                print("\n --- success:", self.frame_id, success, frame.shape)
+                # print("\n --- success:", self.frame_id, success, frame.shape)
+
+                # Convert the yolo input images; Here it converts from FullHD into <img_size> (padded size)
+                # TODO: To add GPU-based downsample function
+                yolo_frame = await self.ResizerService.cpu_convert_to_padded_size(frame)
+                # yolo_frame = await self.ResizerService.gpu_convert_to_padded_size(frame)
+                print("\n --- success:", self.frame_id, success, yolo_frame.shape)
+
         except Exception as e:
             print(" ---- >> e:", e)
 
