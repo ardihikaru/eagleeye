@@ -9,6 +9,12 @@ from ews.database.node.node_functions import get_all_data, \
 import asab
 from ext_lib.redis.my_redis import MyRedis
 from multidict import MultiDictProxy
+from subprocess import Popen
+import time
+from ext_lib.utils import get_current_time, get_random_str
+from concurrent.futures import ThreadPoolExecutor
+import os
+import signal
 
 
 class Node(MyRedis):
@@ -20,14 +26,55 @@ class Node(MyRedis):
         self.total_records = 0
         self.msg = None
         self.password_hash = None
+        self.executor = ThreadPoolExecutor(int(asab.Config["thread"]["num_executor"]))
 
-    def register(self, json_data):
+    def _spawn_node(self, pool_name, node_data):
+        print("I am spawning a new node now.")
+
+        pid = os.getpid()
+        print(" --- _spawn_node PID", pid)
+
+        # time.sleep(5)
+        # print(" ---- AFTER WAITING in 5 secs")
+        # TODO: Once orchestrated with k8s, we no longer use Popen to Deploy each node (Future work)
+        process = Popen('python ./../object-detection-service/detection.py -c ./../object-detection-service/etc/detection.conf', shell=True)
+        print(" --- CHILD ID", process.pid)
+        time.sleep(5)
+
+        print(" ---- TYPE process.pid:", type(process.pid))
+        os.kill(process.pid, signal.SIGTERM)  # or signal.SIGKILL
+        # os.kill(pid, signal.SIGTERM)  # or signal.SIGKILL
+        print(" --- killed [PID=%s] after 5 seconds" % str(process.pid))
+
+    def _node_generator(self, node_data):
+
+        pid = os.getpid()
+        print(" --- PARENT PID", pid)
+
+        t0_thread = time.time()
+        pool_name = "[THREAD-%s]" % get_random_str()
+        try:
+            kwargs = {
+                "pool_name": pool_name,
+                "node_data": node_data
+            }
+            self.executor.submit(self._spawn_node, **kwargs)
+        except:
+            print("Somehow we unable to Start the Thread of NodeGenerator")
+        t1_thread = (time.time() - t0_thread) * 1000
+        print('\n #### [%s] Latency for Start threading (%.3f ms)' % (get_current_time(), t1_thread))
+
+        # TODO: Save the latency into ElasticSearchDB for the real-time monitoring
+
+
+    def register(self, node_data):
         msg = "Registration of a new Node is success."
         #  inserting
-        is_success, inserted_data, msg = insert_new_data(NodeModel, json_data, msg)
+        is_success, inserted_data, msg = insert_new_data(NodeModel, node_data, msg)
 
         # TODO: When inserting a new Node succeed, it should spawn an Object Detection module.
         # TODO: To spawn YOLOv3 Module
+        self._node_generator(node_data)
 
         return get_json_template(response=is_success, results=inserted_data, total=-1, message=msg)
 

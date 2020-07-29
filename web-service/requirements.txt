@@ -6,3 +6,4 @@ aiohttp_route_decorator
 werkzeug
 simplejson
 redis
+motor

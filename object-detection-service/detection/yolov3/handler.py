@@ -2,6 +2,7 @@ import asab
 import logging
 from ext_lib.redis.my_redis import MyRedis
 from ext_lib.utils import get_current_time
+import os
 
 ###
 
@@ -28,14 +29,29 @@ class YOLOv3Handler(MyRedis):
             obj = cursor.next_object()
             print(obj)
 
+    async def stop(self):
+        print("\n[%s] Object Detection Service is going to stop" % get_current_time())
+        exit()
+
     async def start(self):
         print("\n[%s] YOLOv3Handler try to consume the published data from [Scheduler Service]" % get_current_time())
 
+        pid = os.getpid()
+        print(" --- Object Detection Service's PID", pid)
+
         # Sample actions
         import time
-        for i in range(5):
-            print("#### I am running, dude.")
+        import signal
+        for i in range(100):
+            my_pid = os.getpid()
+            print("## %s ## I am running, dude. >>> PID=" % i, my_pid)
             time.sleep(1)
+
+            if i == 10:
+                print(" >>> I AM KILLING MYSELF!!! pid=", pid)
+                await self.stop()
+                # os.kill(pid, signal.SIGTERM)  # or signal.SIGKILL
+                # exit()
 
         # channel = asab.Config["pubsub:channel"]["scheduler"]
         # consumer = self.rc.pubsub()

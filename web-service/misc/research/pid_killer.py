@@ -1,5 +1,5 @@
 import os
 import signal
 
-pid = 8266
-os.kill(pid, signal.SIGTERM) # or signal.SIGKILL
+pid = 71546
+os.kill(pid, signal.SIGTERM)  # or signal.SIGKILL
