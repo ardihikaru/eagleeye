@@ -15,6 +15,18 @@ class YOLOv3Handler(MyRedis):
     def __init__(self, app):
         super().__init__(asab.Config)
         self.ReaderService = app.get_service("detection.YOLOv3Service")
+        self.storage = app.get_service("asab.StorageService")
+
+    async def set_configuration(self):
+        # Initialize YOLOv3 configuration
+        print("\n[%s] Initialize YOLOv3 configuration" % get_current_time())
+
+        coll = await self.storage.collection("Users")
+        cursor = coll.find({})
+        print("Result of list *** DISINI ***")
+        while await cursor.fetch_next:
+            obj = cursor.next_object()
+            print(obj)
 
     async def start(self):
         print("\n[%s] YOLOv3Handler try to consume the published data from [Scheduler Service]" % get_current_time())
@@ -25,11 +37,6 @@ class YOLOv3Handler(MyRedis):
             print("#### I am running, dude.")
             time.sleep(1)
 
-        # # Scheduler-service will ONLY handle a single stream, once it starts, ignore other input stream
-        # # TODO: To allow capturing multiple video streams (Future work)
-        # is_streaming = False
-        # recognized_uri = None
-        #
         # channel = asab.Config["pubsub:channel"]["scheduler"]
         # consumer = self.rc.pubsub()
         # consumer.subscribe([channel])

@@ -1,7 +1,7 @@
 asab
 redis
 opencv-python
-mongoengine
+motor
 
 Cython
 matplotlib
