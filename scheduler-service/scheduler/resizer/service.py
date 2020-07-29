@@ -1,6 +1,6 @@
 import asab
 import logging
-from ext_lib.utils import get_current_time, letterbox
+from ext_lib.utils import letterbox
 import numpy as np
 import time
 

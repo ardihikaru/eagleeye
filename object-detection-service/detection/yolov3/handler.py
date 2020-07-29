@@ -1,8 +1,7 @@
 import asab
 import logging
-import time
 from ext_lib.redis.my_redis import MyRedis
-from ext_lib.utils import pubsub_to_json, get_current_time
+from ext_lib.utils import get_current_time
 
 ###
 

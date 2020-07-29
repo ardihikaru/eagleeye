@@ -1,4 +1,3 @@
-import asab
 import asab.web.session
 from detection.yolov3 import YOLOv3Module
 from mongoengine import connect

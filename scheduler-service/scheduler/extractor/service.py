@@ -1,9 +1,7 @@
-import asyncio
 import asab
 import logging
 from ext_lib.redis.my_redis import MyRedis
-from ext_lib.utils import get_current_time, pubsub_to_json
-import time
+from ext_lib.utils import get_current_time
 from imutils.video import FileVideoStream
 from ext_lib.image_loader.load_images import LoadImages
 import cv2
@@ -27,7 +25,6 @@ class ExtractorService(asab.Service):
 
         # start pub/sub
         self.redis = MyRedis(asab.Config)
-        # self._run()
 
         # params for extractor
         self.cap = None
