@@ -6,7 +6,7 @@ from mongoengine import connect
 from ext_lib.utils import get_current_time
 
 
-class EagleEYEWebService(asab.Application):
+class SchedulerService(asab.Application):
 
 	def __init__(self):
 		super().__init__()

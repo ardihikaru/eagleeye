@@ -1,5 +1,5 @@
-from scheduler.app import EagleEYEWebService
+from scheduler.app import SchedulerService
 
 if __name__ == '__main__':
-	app = EagleEYEWebService()
+	app = SchedulerService()
 	app.run()
