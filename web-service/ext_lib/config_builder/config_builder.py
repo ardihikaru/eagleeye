@@ -1,7 +1,7 @@
 import configparser
 
 
-class ABC:
+class ConfigBuilder:
 	def __init__(self):
 		self.config = configparser.ConfigParser()
 		self.conf_path = None
