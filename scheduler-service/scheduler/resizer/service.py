@@ -46,6 +46,6 @@ class ResizerService(asab.Service):
         return img4yolo
 
     async def gpu_convert_to_padded_size(self, img):
-        print("#### I am a CPU-based resizer function from ResizerService!")
+        print("#### I am a GPU-based resizer function from ResizerService!")
 
         return img
