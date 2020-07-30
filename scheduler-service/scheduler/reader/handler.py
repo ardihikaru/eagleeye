@@ -59,10 +59,15 @@ class ReaderHandler(MyRedis):
                         await self.ExtractorService.extract_video_stream(config)
                     else:
                         await self.ExtractorService.extract_folder(config)
+                    is_streaming = False
 
+                    # TODO: This should be moved away in extract_video_stream() and extract_folder()
                     # Stop watching once
-                    if "stop" in config:
-                        print("### System is interrupted and asked to stop comsuming data.")
-                        break
+                    # if "stop" in config:
+                    #     print("### System is interrupted and asked to stop comsuming data.")
+                    #     break
+
+                # Nothing to do here, time to leave the subscription
+                break
 
         print("## System is no longer consuming data")
