@@ -13,6 +13,7 @@ from multidict import MultiDictProxy
 from subprocess import Popen
 import time
 from ext_lib.utils import get_current_time, get_random_str
+from ext_lib.config_builder.config_builder import ConfigBuilder
 from concurrent.futures import ThreadPoolExecutor
 import os
 import signal
@@ -34,7 +35,16 @@ class Node(MyRedis):
         print("I am spawning a new node now.")
 
         pid = os.getpid()
-        print(" --- _spawn_node PID", pid)
+        print(" --- _spawn_node PID", pid, node_data)
+
+        # Make config file according to this file
+        builder = ConfigBuilder()
+        builder.set_config_path("./../object-detection-service/etc/detection.conf")
+        builder.set_default_redis_conf()
+        builder.set_default_mongodb_conf()
+        builder.set_default_pubsub_channel_conf(node_id=str(node_data["id"]))
+        builder.set_default_yolov3_conf()
+        builder.create_config()
 
         # time.sleep(5)
         # print(" ---- AFTER WAITING in 5 secs")
