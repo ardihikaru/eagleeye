@@ -47,6 +47,9 @@ class ConfigBuilder:
 			"window_size_width": "1080"
 		}
 
+	def set_custom_conf(self, key, items):
+		self.config[key] = items
+
 	def set_config_path(self, path):
 		self.conf_path = path
 

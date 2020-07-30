@@ -36,6 +36,8 @@ class YOLOv3Handler(MyRedis):
         """
         print("\n[%s] Updating PID information" % get_current_time())
 
+        # Get node-ID
+
         coll = await self.storage.collection("Users")
         cursor = coll.find({})
         print("Result of list *** DISINI ***")

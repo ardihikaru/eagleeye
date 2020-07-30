@@ -12,7 +12,7 @@ from ext_lib.redis.translator import pub
 from multidict import MultiDictProxy
 from subprocess import Popen
 import time
-from ext_lib.utils import get_current_time, get_random_str
+from ext_lib.utils import get_current_time, get_random_str, pop_if_any
 from ext_lib.config_builder.config_builder import ConfigBuilder
 from concurrent.futures import ThreadPoolExecutor
 import os
@@ -44,6 +44,7 @@ class Node(MyRedis):
         builder.set_default_mongodb_conf()
         builder.set_default_pubsub_channel_conf(node_id=str(node_data["id"]))
         builder.set_default_yolov3_conf()
+        builder.set_custom_conf("node", node_data)
         builder.create_config()
 
         # time.sleep(5)
