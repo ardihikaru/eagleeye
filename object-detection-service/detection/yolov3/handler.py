@@ -2,6 +2,7 @@ import asab
 import logging
 from ext_lib.redis.my_redis import MyRedis
 from ext_lib.utils import get_current_time
+from detection.controllers.node.node import Node
 import os
 
 ###
@@ -15,19 +16,23 @@ class YOLOv3Handler(MyRedis):
 
     def __init__(self, app):
         super().__init__(asab.Config)
-        self.ReaderService = app.get_service("detection.YOLOv3Service")
-        self.storage = app.get_service("asab.StorageService")
+        self.YOLOv3Service = app.get_service("detection.YOLOv3Service")
+        # self.storage = app.get_service("asab.StorageService")
+
+        # Default None
+        self.node_id = asab.Config["node"]["id"]
+        self.pid = os.getpid()
 
     async def set_configuration(self):
         # Initialize YOLOv3 configuration
         print("\n[%s] Initialize YOLOv3 configuration" % get_current_time())
 
-        coll = await self.storage.collection("Users")
-        cursor = coll.find({})
-        print("Result of list *** DISINI ***")
-        while await cursor.fetch_next:
-            obj = cursor.next_object()
-            print(obj)
+        # coll = await self.storage.collection("Users")
+        # cursor = coll.find({})
+        # print("Result of list *** DISINI ***")
+        # while await cursor.fetch_next:
+        #     obj = cursor.next_object()
+        #     print(obj)
 
     async def set_deployment_status(self):
         """
@@ -36,17 +41,16 @@ class YOLOv3Handler(MyRedis):
         """
         print("\n[%s] Updating PID information" % get_current_time())
 
-        # Get node-ID
-
-        coll = await self.storage.collection("Users")
-        cursor = coll.find({})
-        print("Result of list *** DISINI ***")
-        while await cursor.fetch_next:
-            obj = cursor.next_object()
-            print(obj)
+        # Update Node information: `channel` and `pid`
+        self.YOLOv3Service.update_node_information(self.node_id, self.pid)
 
     async def stop(self):
         print("\n[%s] Object Detection Service is going to stop" % get_current_time())
+        
+        # Delete Node
+        self.YOLOv3Service.delete_node_information(self.node_id, self.pid)
+
+        # exit the Object Detection Service
         exit()
 
     async def start(self):

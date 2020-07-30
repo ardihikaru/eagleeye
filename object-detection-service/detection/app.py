@@ -2,6 +2,7 @@ import asab.storage
 import asab.web.session
 from detection.yolov3 import YOLOv3Module
 from ext_lib.utils import get_current_time
+from mongoengine import connect
 
 
 class ObjectDetectionService(asab.Application):
@@ -10,8 +11,8 @@ class ObjectDetectionService(asab.Application):
 	def __init__(self):
 		super().__init__()
 
-		# self.opt = opt
-		# print(">>>> node ID: ", opt.node)
+		# Connect Database
+		connect('eagleeyeDB')
 
 		# Loading the web service module
 		self.add_module(asab.storage.Module)
@@ -35,4 +36,5 @@ class ObjectDetectionService(asab.Application):
 		# 	print(obj)
 
 		# Start subscription
+		# await self.YOLOv3Service.start_subscription()
 		await self.YOLOv3Service.start_subscription()

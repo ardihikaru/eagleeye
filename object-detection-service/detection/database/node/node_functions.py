@@ -2,13 +2,10 @@
     List of functions to manage actions (Create, Read, Update, Delete) of `Nodes` data
 """
 
-import asab
 from mongoengine import DoesNotExist, NotUniqueError, Q, ValidationError
 from ext_lib.utils import mongo_list_to_dict, mongo_dict_to_dict, pop_if_any
 from datetime import datetime
-import jwt
-from datetime import timedelta
-import asab
+
 
 def insert_new_data(db_model, new_data, msg):
     try:
@@ -77,12 +74,15 @@ def del_data_by_id(db_model, _id):
 
 def upd_data_by_id(db_model, _id, new_data):
     try:
-        pop_if_any(new_data, "id")
+        print(" >>> @ upd_data_by_id ..")
+        print(" ,,,,", _id, new_data)
         db_model.objects.get(id=_id).update(**new_data)
     except Exception as e:
+        print(" >>>> e:", e)
         return False, None, str(e)
 
     new_data["id"] = _id
     new_data["updated_at"] = datetime.now().strftime("%Y-%m-%d, %H:%M:%S")
 
+    print(" >>> new_data:", new_data)
     return True, new_data, None
