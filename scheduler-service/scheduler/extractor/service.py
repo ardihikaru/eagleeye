@@ -92,6 +92,9 @@ class ExtractorService(asab.Service):
 		print("#### I am extractor VIDEO STREAM function from ExtractorService!")
 		print(config)
 		try:
+			# Reset frame_id
+			self.frame_id = 0
+
 			self.cap = await self._set_cap(config)
 
 			while await self._streaming():

@@ -28,8 +28,6 @@ class ReaderHandler(MyRedis):
 
         # Scheduler-service will ONLY handle a single stream, once it starts, ignore other input stream
         # TODO: To allow capturing multiple video streams (Future work)
-        is_streaming = False
-        recognized_uri = None
 
         channel = asab.Config["pubsub:channel"]["scheduler"]
         consumer = self.rc.pubsub()
@@ -41,33 +39,22 @@ class ReaderHandler(MyRedis):
                 # TODO: To tag the corresponding drone_id to identify where the image came from (Future work)
                 config = pubsub_to_json(item["data"])
 
-                # Input source handler: To ONLY allow one video stream once started
-                if recognized_uri is None:
-                    recognized_uri = config["uri"]
+                print(" >>> masuk lg nih ..")
 
                 # Run ONCE due to the current capability to capture only one video stream
                 # TODO: To allow capturing multiple video streams (Future work)
-                if not is_streaming:
-                    is_streaming = True
-                    t0_data = config["timestamp"]
-                    t1_data = (time.time() - t0_data) * 1000
-                    print('\n #### [%s] Latency for Start threading (%.3f ms)' % (get_current_time(), t1_data))
-                    # TODO: Saving latency for scheduler:consumer
+                t0_data = config["timestamp"]
+                t1_data = (time.time() - t0_data) * 1000
+                print('\n #### [%s] Latency for Start threading (%.3f ms)' % (get_current_time(), t1_data))
+                # TODO: Saving latency for scheduler:consumer
 
-                    print("Once data collected, try extracting data..")
-                    if config["stream"]:
-                        await self.ExtractorService.extract_video_stream(config)
-                    else:
-                        await self.ExtractorService.extract_folder(config)
-                    is_streaming = False
+                print("Once data collected, try extracting data..")
+                if config["stream"]:
+                    await self.ExtractorService.extract_video_stream(config)
+                else:
+                    await self.ExtractorService.extract_folder(config)
+                print("## No images can be captured for the time being.")
 
-                    # TODO: This should be moved away in extract_video_stream() and extract_folder()
-                    # Stop watching once
-                    # if "stop" in config:
-                    #     print("### System is interrupted and asked to stop comsuming data.")
-                    #     break
-
-                # Nothing to do here, time to leave the subscription
-                break
+                # TODO: To restart; This should be moved away in extract_video_stream() and extract_folder()
 
         print("## System is no longer consuming data")
