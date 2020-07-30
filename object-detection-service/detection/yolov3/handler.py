@@ -29,6 +29,20 @@ class YOLOv3Handler(MyRedis):
             obj = cursor.next_object()
             print(obj)
 
+    async def set_deployment_status(self):
+        """
+            To change Field `pid` from -1 into this process's PID
+        Returns: None
+        """
+        print("\n[%s] Updating PID information" % get_current_time())
+
+        coll = await self.storage.collection("Users")
+        cursor = coll.find({})
+        print("Result of list *** DISINI ***")
+        while await cursor.fetch_next:
+            obj = cursor.next_object()
+            print(obj)
+
     async def stop(self):
         print("\n[%s] Object Detection Service is going to stop" % get_current_time())
         exit()
@@ -53,29 +67,29 @@ class YOLOv3Handler(MyRedis):
                 # os.kill(pid, signal.SIGTERM)  # or signal.SIGKILL
                 # exit()
 
-        # channel = asab.Config["pubsub:channel"]["scheduler"]
-        # consumer = self.rc.pubsub()
-        # consumer.subscribe([channel])
-        # for item in consumer.listen():
-        #     if isinstance(item["data"], int):
-        #         pass
-        #     else:
-        #         # TODO: To tag the corresponding drone_id to identify where the image came from (Future work)
-        #         config = pubsub_to_json(item["data"])
-        #
-        #         # Input source handler: To ONLY allow one video stream once started
-        #         if recognized_uri is None:
-        #             recognized_uri = config["uri"]
-        #
-        #         # Run ONCE due to the current capability to capture only one video stream
-        #         # TODO: To allow capturing multiple video streams (Future work)
-        #         if not is_streaming:
-        #             is_streaming = True
-        #             t0_data = config["timestamp"]
-        #             t1_data = (time.time() - t0_data) * 1000
-        #             print('\n #### [%s] Latency for Start threading (%.3f ms)' % (get_current_time(), t1_data))
-        #             # TODO: Saving latency for scheduler:consumer
-        #
+        channel = asab.Config["pubsub:channel"]["scheduler"]
+        consumer = self.rc.pubsub()
+        consumer.subscribe([channel])
+        for item in consumer.listen():
+            if isinstance(item["data"], int):
+                pass
+            else:
+                # TODO: To tag the corresponding drone_id to identify where the image came from (Future work)
+                config = pubsub_to_json(item["data"])
+
+                # Input source handler: To ONLY allow one video stream once started
+                if recognized_uri is None:
+                    recognized_uri = config["uri"]
+
+                # Run ONCE due to the current capability to capture only one video stream
+                # TODO: To allow capturing multiple video streams (Future work)
+                if not is_streaming:
+                    is_streaming = True
+                    t0_data = config["timestamp"]
+                    t1_data = (time.time() - t0_data) * 1000
+                    print('\n #### [%s] Latency for Start threading (%.3f ms)' % (get_current_time(), t1_data))
+                    # TODO: Saving latency for scheduler:consumer
+
         #             print("Once data collected, try extracting data..")
         #             if config["stream"]:
         #                 await self.ExtractorService.extract_video_stream(config)

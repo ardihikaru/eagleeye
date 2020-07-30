@@ -11,18 +11,10 @@ from concurrent.futures import ThreadPoolExecutor
 import simplejson as json
 
 
-# class StreamReader(MyRedis):
-# class StreamReader(AsyncHandler):
 class StreamReader:
     def __init__(self):
-        # super().__init__(asab.Config)
-        # executor = ThreadPoolExecutor(int(asab.Config["thread"]["num_executor"]))
         self.executor = ThreadPoolExecutor(int(asab.Config["thread"]["num_executor"]))
         self.redis = MyRedis(asab.Config)
-        # self.ctx = mp.get_context('spawn')
-        # super().__init__(executor)
-        # self.cap = None
-        # self.executor = ThreadPoolExecutor(int(asab.Config["thread"]["num_executor"]))
 
     def read(self, request_json):
         # Validate input
@@ -30,7 +22,7 @@ class StreamReader:
         t0_validator = time.time()
         config = request_to_config(request_json)
         t1_validator = (time.time() - t0_validator) * 1000
-        print('[%s] Latency for Request Valication (%.3f ms)' % (get_current_time(), t1_validator))
+        print('[%s] Latency for Request Validation (%.3f ms)' % (get_current_time(), t1_validator))
 
         # send data into Scheduler service through the pub/sub
         t0_publish = time.time()

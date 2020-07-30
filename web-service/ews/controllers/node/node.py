@@ -8,6 +8,7 @@ from ews.database.node.node_functions import get_all_data, \
     del_data_by_id, upd_data_by_id, get_data_by_id, insert_new_data
 import asab
 from ext_lib.redis.my_redis import MyRedis
+from ext_lib.redis.translator import pub
 from multidict import MultiDictProxy
 from subprocess import Popen
 import time
@@ -15,6 +16,7 @@ from ext_lib.utils import get_current_time, get_random_str
 from concurrent.futures import ThreadPoolExecutor
 import os
 import signal
+import simplejson as json
 
 
 class Node(MyRedis):
@@ -40,6 +42,15 @@ class Node(MyRedis):
         process = Popen('python ./../object-detection-service/detection.py -c ./../object-detection-service/etc/detection.conf', shell=True)
         print(" --- CHILD ID", process.pid)
         time.sleep(5)
+
+        # send data into Scheduler service through the pub/sub
+        t0_publish = time.time()
+        print("# send data into Scheduler service through the pub/sub")
+        dump_request = json.dumps(node_data)
+        pub(self.get_rc(), asab.Config["pubsub:channel"]["node"], dump_request)
+        t1_publish = (time.time() - t0_publish) * 1000
+        # TODO: Saving latency for scheduler:producer
+        print('[%s] Latency for Publishing data into Object Detection Service (%.3f ms)' % (get_current_time(), t1_publish))
 
         print(" ---- TYPE process.pid:", type(process.pid))
         os.kill(process.pid, signal.SIGTERM)  # or signal.SIGKILL
@@ -76,6 +87,7 @@ class Node(MyRedis):
         # TODO: To spawn YOLOv3 Module
         if is_success:
             # TODO: Once spwaned, Field `pid` should be updated.
+            node_data["id"] = inserted_data["id"]
             self._node_generator(node_data)
 
         return get_json_template(response=is_success, results=inserted_data, total=-1, message=msg)

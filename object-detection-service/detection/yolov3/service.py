@@ -23,4 +23,5 @@ class YOLOv3Service(asab.Service):
 
     async def start_subscription(self):
         await self.SubscriptionHandler.set_configuration()
+        await self.SubscriptionHandler.set_deployment_status()
         await self.SubscriptionHandler.start()

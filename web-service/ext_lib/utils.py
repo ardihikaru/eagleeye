@@ -9,6 +9,7 @@ import cv2
 import numpy as np
 import string
 import random
+import configparser
 
 
 def mongo_list_to_dict(mongo_resp):
