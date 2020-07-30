@@ -75,6 +75,7 @@ class Node(MyRedis):
         # TODO: When inserting a new Node succeed, it should spawn an Object Detection module.
         # TODO: To spawn YOLOv3 Module
         if is_success:
+            # TODO: Once spwaned, Field `pid` should be updated.
             self._node_generator(node_data)
 
         return get_json_template(response=is_success, results=inserted_data, total=-1, message=msg)

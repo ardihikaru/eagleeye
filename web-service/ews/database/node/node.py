@@ -2,7 +2,7 @@
     Class Model for `Nodes` Collections
 """
 
-from mongoengine import Document, StringField, DateTimeField, BooleanField
+from mongoengine import Document, StringField, DateTimeField, BooleanField, IntField
 import datetime
 
 
@@ -12,6 +12,7 @@ class NodeModel(Document):
     channel = StringField(required=True, unique=True)
     consumer = StringField()  # drone_id
     idle = BooleanField(default=True)
+    pid = IntField(default=-1)
     created_at = DateTimeField(default=datetime.datetime.now)
     updated_at = DateTimeField(default=datetime.datetime.now)
 
