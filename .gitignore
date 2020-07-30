@@ -11,6 +11,7 @@ data
 web-service/.idea/
 object-detection-service/.idea/
 scheduler-service/.idea/
+candidate-selection-service/.idea/
 
  Repo-specific GitIgnore ----------------------------------------------------------------------------------------------
 *.jpg
