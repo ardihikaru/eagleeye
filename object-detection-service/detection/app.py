@@ -37,4 +37,7 @@ class ObjectDetectionService(asab.Application):
 
 		# Start subscription
 		# await self.YOLOv3Service.start_subscription()
-		await self.YOLOv3Service.start_subscription()
+		try:
+			await self.YOLOv3Service.start_subscription()
+		except:
+			print("\n[%s] This Object Detection Service has successfully stopped." % get_current_time())

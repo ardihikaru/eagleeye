@@ -18,7 +18,7 @@ class Node(MyRedis):
         is_success, user_data, msg = upd_data_by_id(NodeModel, _id, new_data=json_data)
         return is_success, user_data, -1, msg
 
-    def delete_data_by_id_one(self, _id):
+    def delete_data_by_id(self, _id):
         is_success, _ = del_data_by_id(NodeModel, _id)
         return is_success, {}, -1, "OK"
 

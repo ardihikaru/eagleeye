@@ -2,13 +2,13 @@
     List of functions to manage actions (Create, Read, Update, Delete) of `Nodes` data
 """
 
-import asab
 from mongoengine import DoesNotExist, NotUniqueError, Q, ValidationError
-from ext_lib.utils import mongo_list_to_dict, mongo_dict_to_dict, pop_if_any
+from ext_lib.utils import mongo_list_to_dict, mongo_dict_to_dict, pop_if_any, get_current_time
 from datetime import datetime
-import jwt
-from datetime import timedelta
-import asab
+from ext_lib.redis.translator import pub
+import time
+import simplejson as json
+
 
 def insert_new_data(db_model, new_data, msg):
     try:
@@ -66,9 +66,22 @@ def get_data_by_consumer(db_model, consumer):
     return True, dict_data
 
 
-def del_data_by_id(db_model, _id):
+def del_data_by_id(db_model, _id, rc):
     try:
         db_model.objects.get(id=_id).delete()
+
+        # once successfully created, try sending information into Object Detection Service
+        # channel = "node-" + _id + "-killer"
+        channel = "node-" + _id
+        # send data into Scheduler service through the pub/sub
+        t0_publish = time.time()
+        dump_request = json.dumps({"active": False})
+        pub(rc, channel, dump_request)
+        t1_publish = (time.time() - t0_publish) * 1000
+        # TODO: Saving latency for scheduler:producer:destroy
+        print('[%s] Latency to send a notification to destroy Object Detection Service (%.3f ms)' %
+              (get_current_time(), t1_publish))
+
     except Exception as e:
         return False, str(e)
 

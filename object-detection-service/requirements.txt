@@ -2,6 +2,8 @@ asab
 redis
 opencv-python
 motor
+simplejson
+mongoengine
 
 Cython
 matplotlib

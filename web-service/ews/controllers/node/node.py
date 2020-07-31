@@ -45,6 +45,7 @@ class Node(MyRedis):
         builder.set_default_pubsub_channel_conf(node_id=str(node_data["id"]))
         builder.set_default_yolov3_conf()
         builder.set_custom_conf("node", node_data)
+        builder.set_custom_conf("thread", {"num_executor": "1"})
         builder.create_config()
 
         # time.sleep(5)
@@ -63,10 +64,10 @@ class Node(MyRedis):
         # TODO: Saving latency for scheduler:producer
         print('[%s] Latency for Publishing data into Object Detection Service (%.3f ms)' % (get_current_time(), t1_publish))
 
-        print(" ---- TYPE process.pid:", type(process.pid))
-        os.kill(process.pid, signal.SIGTERM)  # or signal.SIGKILL
-        # os.kill(pid, signal.SIGTERM)  # or signal.SIGKILL
-        print(" --- killed [PID=%s] after 5 seconds" % str(process.pid))
+        # print(" ---- TYPE process.pid:", type(process.pid))
+        # os.kill(process.pid, signal.SIGTERM)  # or signal.SIGKILL
+        # # os.kill(pid, signal.SIGTERM)  # or signal.SIGKILL
+        # print(" --- killed [PID=%s] after 5 seconds" % str(process.pid))
 
     def _node_generator(self, node_data):
 
@@ -127,10 +128,10 @@ class Node(MyRedis):
     def bulk_delete_data_by_id(self, json_data):
         if "id" in json_data:
             if isinstance(json_data["id"], str):
-                _, _ = del_data_by_id(NodeModel, json_data["id"])
+                _, _ = del_data_by_id(NodeModel, json_data["id"], self.rc)
             elif isinstance(json_data["id"], list):
                 for user_id in json_data["id"]:
-                    _, _ = del_data_by_id(NodeModel, user_id)
+                    _, _ = del_data_by_id(NodeModel, user_id, self.rc)
             else:
                 return get_unprocessable_request_json()
             resp_data = {}
@@ -141,7 +142,7 @@ class Node(MyRedis):
             return get_unprocessable_request_json()
 
     def delete_data_by_id_one(self, _id):
-        _, _ = del_data_by_id(NodeModel, _id)
+        _, _ = del_data_by_id(NodeModel, _id, self.rc)
         return get_json_template(True, {}, -1, "OK")
 
     def update_data_by_id(self, _id, json_data):
