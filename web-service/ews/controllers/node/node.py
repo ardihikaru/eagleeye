@@ -32,11 +32,6 @@ class Node(MyRedis):
         self.executor = ThreadPoolExecutor(int(asab.Config["thread"]["num_executor"]))
 
     def _spawn_node(self, pool_name, node_data):
-        print("I am spawning a new node now.")
-
-        pid = os.getpid()
-        print(" --- _spawn_node PID", pid, node_data)
-
         # Make config file according to this file
         builder = ConfigBuilder()
         builder.set_config_path("./../object-detection-service/etc/detection.conf")
@@ -48,12 +43,8 @@ class Node(MyRedis):
         builder.set_custom_conf("thread", {"num_executor": "1"})
         builder.create_config()
 
-        # time.sleep(5)
-        # print(" ---- AFTER WAITING in 5 secs")
         # TODO: Once orchestrated with k8s, we no longer use Popen to Deploy each node (Future work)
         process = Popen('python ./../object-detection-service/detection.py -c ./../object-detection-service/etc/detection.conf', shell=True)
-        print(" --- CHILD ID", process.pid)
-        time.sleep(5)
 
         # send data into Scheduler service through the pub/sub
         t0_publish = time.time()
@@ -64,16 +55,7 @@ class Node(MyRedis):
         # TODO: Saving latency for scheduler:producer
         print('[%s] Latency for Publishing data into Object Detection Service (%.3f ms)' % (get_current_time(), t1_publish))
 
-        # print(" ---- TYPE process.pid:", type(process.pid))
-        # os.kill(process.pid, signal.SIGTERM)  # or signal.SIGKILL
-        # # os.kill(pid, signal.SIGTERM)  # or signal.SIGKILL
-        # print(" --- killed [PID=%s] after 5 seconds" % str(process.pid))
-
     def _node_generator(self, node_data):
-
-        pid = os.getpid()
-        print(" --- PARENT PID", pid)
-
         t0_thread = time.time()
         pool_name = "[THREAD-%s]" % get_random_str()
         try:
