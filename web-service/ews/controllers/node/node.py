@@ -41,6 +41,11 @@ class Node(MyRedis):
         builder.set_default_yolov3_conf()
         builder.set_custom_conf("node", node_data)
         builder.set_custom_conf("thread", {"num_executor": "1"})
+        # TODO: We need a function to dynamically set the Node URI
+        builder.set_custom_conf("zmq", {
+            "node_uri": "tcp://127.0.0.1:5571",  # TODO: Need to be dynamic!
+            "node_channel": "node-" + str(node_data["id"]) + "-zmq"
+        })
         builder.create_config()
 
         # TODO: Once orchestrated with k8s, we no longer use Popen to Deploy each node (Future work)

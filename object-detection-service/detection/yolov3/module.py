@@ -10,4 +10,5 @@ class YOLOv3Module(asab.Module):
 		self.Service = YOLOv3Service(app, "detection.YOLOv3Service")
 
 	async def initialize(self, app):
+		self.Service.ZMQService = app.get_service('detection.ZMQService')
 		print("\n[%s] Initialize YOLOv3Module." % get_current_time())

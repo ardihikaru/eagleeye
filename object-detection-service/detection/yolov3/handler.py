@@ -20,9 +20,10 @@ class YOLOv3Handler(MyRedis):
         self.executor = ThreadPoolExecutor(int(asab.Config["thread"]["num_executor"]))
 
         # Default None
+        self.node_name = int(asab.Config["node"]["name"])  # Should be an integer and unique, i.e. 1, 2, 3 ...
         self.node_id = asab.Config["node"]["id"]
         self.pid = os.getpid()
-        
+
     async def set_configuration(self):
         # Initialize YOLOv3 configuration
         print("\n[%s] Initialize YOLOv3 configuration" % get_current_time())
@@ -37,6 +38,9 @@ class YOLOv3Handler(MyRedis):
         # Update Node information: `channel` and `pid`
         await self.YOLOv3Service.update_node_information(self.node_id, self.pid)
 
+        # Set ZMQ Receiver (& Sender) configuration
+        await self.YOLOv3Service.set_zmq_configurations(self.node_name, self.node_id)
+
     async def _stop(self):
         print("\n[%s] Object Detection Service is going to stop" % get_current_time())
         
@@ -47,8 +51,12 @@ class YOLOv3Handler(MyRedis):
         exit()
 
     async def start(self):
-        print("\n[%s] YOLOv3Handler try to consume the published data from [Scheduler Service]" % get_current_time())
         channel = "node-" + self.node_id
+        print("\n[%s] YOLOv3Handler try to subsscribe to channel `%s` from [Scheduler Service]" %
+              (get_current_time(), channel))
+
+        # set ZMQ Frame Receiver
+
         consumer = self.rc.pubsub()
         consumer.subscribe([channel])
         for item in consumer.listen():
@@ -65,6 +73,11 @@ class YOLOv3Handler(MyRedis):
 
                 # TODO: To start TCP Connection and be ready to capture the image from [Scheduler Service]
                 print(" ###### I AM DOING SOMETHING HERE")
+                try:
+                    _, self.raw_image = self.frame_receiver.recv_image()
+                    print(" --- `Frame Data` has been successfully received: -- self.drone_id=", self.drone_id)
+                except Exception as e:
+                    print("\t\tRetrieve frame-%d ERROR:" % self.frame_id, e)
 
         print("\n[%s] YOLOv3Handler stopped listening to [Scheduler Service]" % get_current_time())
         # Call stop function since it no longers listening

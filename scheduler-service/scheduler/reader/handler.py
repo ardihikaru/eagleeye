@@ -17,11 +17,16 @@ class ReaderHandler(MyRedis):
         super().__init__(asab.Config)
         # print(" # @ ReaderHandler ...")
         self.ReaderService = app.get_service("scheduler.ReaderService")
+        self.ZMQService = app.get_service("scheduler.ZMQService")
 
         # Extractor service may not exist at this point
         # This variable will be set up in the init time
         # of ServiceAPIModule
         self.ExtractorService = None
+
+    async def set_zmq_configurations(self):
+        await self.ZMQService.set_configurations()
+
 
     async def start(self):
         print("\n[%s] ReaderHandler try to consume the published data" % get_current_time())
@@ -50,9 +55,9 @@ class ReaderHandler(MyRedis):
 
                 print("Once data collected, try extracting data..")
                 if config["stream"]:
-                    await self.ExtractorService.extract_video_stream(config)
+                    await self.ExtractorService.extract_video_stream(config, self.ZMQService.get_senders())
                 else:
-                    await self.ExtractorService.extract_folder(config)
+                    await self.ExtractorService.extract_folder(config, self.ZMQService.get_senders())
                 print("## No images can be captured for the time being.")
 
                 # TODO: To restart; This should be moved away in extract_video_stream() and extract_folder()

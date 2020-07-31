@@ -2,9 +2,12 @@ import asab
 import logging
 from ext_lib.redis.my_redis import MyRedis
 from ext_lib.utils import get_current_time
+from ext_lib.redis.translator import pub
 from imutils.video import FileVideoStream
 from ext_lib.image_loader.load_images import LoadImages
 import cv2
+import time
+import simplejson as json
 
 ###
 
@@ -35,8 +38,8 @@ class ExtractorService(asab.Service):
 		self.source_folder_prefix = asab.Config["objdet:yolo"]["source_folder_prefix"]
 		self.file_ext = asab.Config["objdet:yolo"]["file_ext"]
 
-	async def extract_folder(self, config):
-		print("#### I am extractor FODLER function from ExtractorService!")
+	async def extract_folder(self, config, senders):
+		print("#### I am extractor FOLDER function from ExtractorService!")
 		print(config)
 		dataset = await self._read_from_folder(config)
 
@@ -88,7 +91,7 @@ class ExtractorService(asab.Service):
 
 		return ordered_dataset
 
-	async def extract_video_stream(self, config):
+	async def extract_video_stream(self, config, senders):
 		print("#### I am extractor VIDEO STREAM function from ExtractorService!")
 		print(config)
 		try:
@@ -100,13 +103,51 @@ class ExtractorService(asab.Service):
 			while await self._streaming():
 				self.frame_id += 1
 				success, frame = await self._read_frame()
-				# print("\n --- success:", self.frame_id, success, frame.shape)
+				print("\n --- success:", self.frame_id, success, frame.shape)
+
+				# TODO: To implement scheduler here and find which node will be selected
+				# Dummy and always select Node=1 now; id=0
+				sel_node_id = 0
+
+				# First, notify the Object Detection Service to get ready (publish)
+				node_id = senders["node"][0]["id"]
+				node_channel = senders["node"][0]["channel"]
+				print(" >>>> node_id=", node_id)
+				print(" >>>> node_channel=", node_channel)
+				# send data into Scheduler service through the pub/sub
+				t0_publish = time.time()
+				print("# send data into Scheduler service through the pub/sub")
+				dump_request = json.dumps({"active": True, "frame": "ini frame data coy"})
+				pub(self.redis.get_rc(), node_channel, dump_request)
+				t1_publish = (time.time() - t0_publish) * 1000
+				# TODO: Saving latency for scheduler:producer:notification:image
+				print('[%s] Latency for Publishing FRAME NOTIFICATION into Object Detection Service (%.3f ms)' % (
+				get_current_time(), t1_publish))
+
+				# Sending image data through ZMQ (TCP connection)
+				t0_zmq = time.time()
+				zmq_id = str(self.frame_id) + "-" + str(t0_zmq)
+				# self.sender.send_image(str(self.frame_id), frame)
+				senders["zmq"][sel_node_id].send_image(zmq_id, frame)
+				t1_zmq = (time.time() - t0_zmq) * 1000
+				print('Latency [Send imagezmq] of frame-%s: (%.5fms)' % (str(self.frame_id), t1_zmq))
 
 				# Convert the yolo input images; Here it converts from FullHD into <img_size> (padded size)
 				# TODO: To add GPU-based downsample function
 				yolo_frame = await self.ResizerService.cpu_convert_to_padded_size(frame)
 				# yolo_frame = await self.ResizerService.gpu_convert_to_padded_size(frame)
-				print("\n --- success:", self.frame_id, success, yolo_frame.shape)
+				print("--- success:", self.frame_id, success, yolo_frame.shape)
+
+				# CHECKING: how is the latency if we send converted version?
+				# Sending image data through ZMQ (TCP connection)
+				t0_zmq = time.time()
+				zmq_id = str(self.frame_id) + "-" + str(t0_zmq)
+				# self.sender.send_image(str(self.frame_id), frame)
+				senders["zmq"][sel_node_id].send_image(zmq_id, yolo_frame)
+				t1_zmq = (time.time() - t0_zmq) * 1000
+				print('Latency [Send imagezmq YOLO Img] of frame-%s: (%.5fms)' % (str(self.frame_id), t1_zmq))
+
+				print()
 
 		except Exception as e:
 			# print(" ---- >> e:", e)

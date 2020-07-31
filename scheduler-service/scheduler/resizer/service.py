@@ -17,7 +17,7 @@ class ResizerService(asab.Service):
         A class to resize images, i.e. from FullHD into padded size (for YOLO)
     """
 
-    def __init__(self, app, service_name="scheduler.ResizerModule"):
+    def __init__(self, app, service_name="scheduler.ResizerService"):
         super().__init__(app, service_name)
 
         # Special params: from YOLO's config items
