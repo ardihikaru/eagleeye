@@ -78,8 +78,12 @@ class YOLOv3Handler(MyRedis):
                 # TODO: To start TCP Connection and be ready to capture the image from [Scheduler Service]
                 print(" ###### I AM DOING SOMETHING HERE")
                 while True:
-                    is_success, array_name, img = await self.YOLOv3Service.get_img()
-                    print(">>>> RECEIVED DATA:", is_success, array_name, img.shape)
+                    is_success, frame_id, t0_zmq, img = await self.YOLOv3Service.get_img()
+                    print(">>>> RECEIVED DATA:", is_success, frame_id, t0_zmq, img.shape)
+                    t1_zmq = (time.time() - t0_zmq) * 1000
+                    print('\n #### [%s] Latency for Receiving Image ZMQ (%.3f ms)' % (get_current_time(), t1_zmq))
+                    # TODO: To save latency into ElasticSearchDB (Future work)
+
                     # print(" >>>> DISINI >>>> ", is_success, img.shape)
                     break
 

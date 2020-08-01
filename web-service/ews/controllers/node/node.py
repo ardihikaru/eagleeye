@@ -58,7 +58,8 @@ class Node(MyRedis):
         pub(self.get_rc(), asab.Config["pubsub:channel"]["node"], dump_request)
         t1_publish = (time.time() - t0_publish) * 1000
         # TODO: Saving latency for scheduler:producer
-        print('[%s] Latency for Publishing data into Object Detection Service (%.3f ms)' % (get_current_time(), t1_publish))
+        print('[%s] Latency for Publishing data into Object Detection Service (%.3f ms)' %
+              (get_current_time(), t1_publish))
 
     def _node_generator(self, node_data):
         t0_thread = time.time()
