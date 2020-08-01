@@ -11,12 +11,12 @@ L = logging.getLogger(__name__)
 ###
 
 
-class YOLOv3Service(asab.Service):
+class AlgorithmService(asab.Service):
     """
         Object Detection algorithm based on YOLOv3
     """
 
-    def __init__(self, app, service_name="detection.YOLOv3Service"):
+    def __init__(self, app, service_name="detection.AlgorithmService"):
         super().__init__(app, service_name)
         self.app = app
         self.SubscriptionHandler = YOLOv3Handler(app)
@@ -53,6 +53,10 @@ class YOLOv3Service(asab.Service):
             "pid": pid,
             "channel": "node-" + node_id
         })
+
+    async def detect_object(self, frame):
+        print("######### START OBJECT DETECTION")
+        pass
     
     async def delete_node_information(self, node_id):
         node = Node()

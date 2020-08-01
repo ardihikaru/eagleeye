@@ -1,7 +1,7 @@
 import asab.storage
 import asab.web.session
 from detection.zmq import ZMQModule
-from detection.yolov3 import YOLOv3Module
+from detection.algorithm import AlgorithmModule
 from ext_lib.utils import get_current_time
 from mongoengine import connect
 
@@ -20,10 +20,10 @@ class ObjectDetectionService(asab.Application):
 
 		# Add modules
 		self.add_module(ZMQModule)
-		self.add_module(YOLOv3Module)
+		self.add_module(AlgorithmModule)
 
 		# Initialize reader service
-		self.YOLOv3Service = self.get_service("detection.YOLOv3Service")
+		self.AlgorithmService = self.get_service("detection.AlgorithmService")
 
 	async def initialize(self):
 		print("\n[%s] Object Detection Service is running!" % get_current_time())
@@ -38,8 +38,8 @@ class ObjectDetectionService(asab.Application):
 		# 	print(obj)
 
 		# Start subscription
-		# await self.YOLOv3Service.start_subscription()
+		# await self.AlgorithmService.start_subscription()
 		try:
-			await self.YOLOv3Service.start_subscription()
+			await self.AlgorithmService.start_subscription()
 		except:
 			print("\n[%s] This Object Detection Service has successfully stopped." % get_current_time())

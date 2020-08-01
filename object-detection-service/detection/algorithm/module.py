@@ -1,14 +1,14 @@
 import asab
-from .service import YOLOv3Service
+from .service import AlgorithmService
 from ext_lib.utils import get_current_time
 
 
-class YOLOv3Module(asab.Module):
+class AlgorithmModule(asab.Module):
 
 	def __init__(self, app):
 		super().__init__(app)
-		self.Service = YOLOv3Service(app, "detection.YOLOv3Service")
+		self.Service = AlgorithmService(app, "detection.AlgorithmService")
 
 	async def initialize(self, app):
 		self.Service.ZMQService = app.get_service('detection.ZMQService')
-		print("\n[%s] Initialize YOLOv3Module." % get_current_time())
+		print("\n[%s] Initialize AlgorithmModule." % get_current_time())
