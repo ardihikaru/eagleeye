@@ -24,6 +24,8 @@ class ExtractorService(asab.Service):
 		super().__init__(app, service_name)
 		self.ResizerService = app.get_service("scheduler.ResizerService")
 
+		self.ZMQService = app.get_service("scheduler.ZMQService")
+
 		# start pub/sub
 		self.redis = MyRedis(asab.Config)
 
@@ -36,10 +38,12 @@ class ExtractorService(asab.Service):
 		self.source_folder_prefix = asab.Config["objdet:yolo"]["source_folder_prefix"]
 		self.file_ext = asab.Config["objdet:yolo"]["file_ext"]
 
-	async def extract_folder(self, config, senders):
-	# async def extract_folder(self, config):
+	# async def extract_folder(self, config, senders):
+	async def extract_folder(self, config):
 		print("#### I am extractor FOLDER function from ExtractorService!")
 		print(config)
+		senders = self.ZMQService.get_senders()
+
 		dataset = await self._read_from_folder(config)
 
 		# Loop each frame
@@ -90,9 +94,11 @@ class ExtractorService(asab.Service):
 
 		return ordered_dataset
 
-	async def extract_video_stream(self, config, senders):
+	# async def extract_video_stream(self, config, senders):
+	async def extract_video_stream(self, config):
 		print("#### I am extractor VIDEO STREAM function from ExtractorService!")
 		print(config)
+		senders = self.ZMQService.get_senders()
 		try:
 			# Reset frame_id
 			self.frame_id = 0
@@ -126,14 +132,7 @@ class ExtractorService(asab.Service):
 				get_current_time(), t1_publish))
 
 				# Sending image data through ZMQ (TCP connection)
-				t0_zmq = time.time()
-				print("> >>>>>> START SENDING ZMQ in ts:", t0_zmq)
-				zmq_id = str(self.frame_id) + "-" + str(t0_zmq)
-
-				# senders["zmq"][sel_node_id].transfer_img(zmq_id, frame)
-				senders["zmq"][sel_node_id].send_image(zmq_id, frame)
-				t1_zmq = (time.time() - t0_zmq) * 1000
-				print('Latency [Send imagezmq] of frame-%s: (%.5fms)' % (str(self.frame_id), t1_zmq))
+				# self.ZMQService.send_this_image(senders["zmq"][sel_node_id], self.frame_id, frame)
 
 				# Convert the yolo input images; Here it converts from FullHD into <img_size> (padded size)
 				# TODO: To add GPU-based downsample function
@@ -143,6 +142,7 @@ class ExtractorService(asab.Service):
 
 				# # CHECKING: how is the latency if we send converted version?
 				# # Sending image data through ZMQ (TCP connection)
+				self.ZMQService.send_this_image(senders["zmq"][sel_node_id], self.frame_id, yolo_frame)
 				# t0_zmq = time.time()
 				# zmq_id = str(self.frame_id) + "-" + str(t0_zmq)
 				# # self.sender.send_image(str(self.frame_id), frame)

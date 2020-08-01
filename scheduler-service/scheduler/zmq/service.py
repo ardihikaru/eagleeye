@@ -1,6 +1,7 @@
 import asab
 import logging
 import imagezmq
+import time
 from scheduler.controllers.node.node import Node
 
 ###
@@ -43,3 +44,15 @@ class ZMQService(asab.Service):
             "zmq": self.zmq_sender,
             "node": self.node_info
         }
+
+    def send_this_image(self, sender, frame_id, frame):
+        t0_zmq = time.time()
+        print("> >>>>>> START SENDING ZMQ in ts:", t0_zmq)
+        zmq_id = str(frame_id) + "-" + str(t0_zmq)
+        sender.send_image(zmq_id, frame)
+        t1_zmq = (time.time() - t0_zmq) * 1000
+        print('Latency [Send imagezmq] of frame-%s: (%.5fms)' % (str(frame_id), t1_zmq))
+        # TODO: Saving latency for scheduler:latency:sending_image_zmq
+
+
+
