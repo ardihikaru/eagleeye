@@ -43,30 +43,11 @@ class YOLOv3Service(asab.Service):
     # TODO: To tag each captured image and identify the sender (DroneID)
     async def get_img(self):
         try:
-            # print("##### @ get_img ......")
             array_name, image = self.ZMQService.get_zmq_receiver().recv_image()
             tmp = array_name.split("-")
             frame_id = int(tmp[0])
             t0 = float(tmp[1])
-            # array_name, image = self.ZMQService.get_zmq_receiver().recv_img()
-            # print(">>> DISINI SIH ..")
-            # print(" --- `Frame Data` has been successfully received >>> ", array_name, image.shape)
-
-            # detection_status = self.__is_detection_finished()
-            # if self.__is_detection_finished():
-            # if detection_status:
-            #     try:
-            #         self.process_pih2image()
-            #     except Exception as e:
-            #         print("process pih2image GAGAL ...", e)
-            #     print(" --- `Received Frame` data has been successfully processed & Plotted;")
-                # self.send_to_visualizer()
-            # elif detection_status is not None and not detection_status:  # send raw frame without any BBox
-            #     self.send_to_visualizer(no_bbox=True)
-            # print(" >>>>> EMBUH ...")
             return True, frame_id, t0, image
-            # return True, array_name, image
-            # return False, None, None
 
         except Exception as e:
             print("\tERROR:", e)
