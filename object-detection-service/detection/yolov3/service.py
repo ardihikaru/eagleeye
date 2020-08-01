@@ -33,12 +33,36 @@ class YOLOv3Service(asab.Service):
 
     # TODO: To implement the coding!
     async def set_zmq_configurations(self, node_name, node_id):
-        self.ZMQService.set_configurations(node_name, node_id)
+        await self.ZMQService.set_configurations(node_name, node_id)
         # node = Node()
         # node.update_data_by_id(node_id, {
         #     "pid": pid,
         #     "channel": "node-" + node_id
         # })
+        
+    # TODO: To tag each captured image and identify the sender (DroneID)
+    async def get_img(self):
+        try:
+            print("##### @ get_img ......")
+            _, raw_image = self.ZMQService.get_zmq_receiver().recv_image()
+            print(">>> DISINI SIH ..")
+            print(" --- `Frame Data` has been successfully received >>> ", raw_image.shape)
+            # detection_status = self.__is_detection_finished()
+            # if self.__is_detection_finished():
+            # if detection_status:
+            #     try:
+            #         self.process_pih2image()
+            #     except Exception as e:
+            #         print("process pih2image GAGAL ...", e)
+            #     print(" --- `Received Frame` data has been successfully processed & Plotted;")
+                # self.send_to_visualizer()
+            # elif detection_status is not None and not detection_status:  # send raw frame without any BBox
+            #     self.send_to_visualizer(no_bbox=True)
+            print(" >>>>> EMBUH ...")
+            return True, raw_image
+        except Exception as e:
+            print("\tERROR:", e)
+            return False, None
 
     async def update_node_information(self, node_id, pid):
         node = Node()

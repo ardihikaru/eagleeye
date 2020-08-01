@@ -39,6 +39,7 @@ class YOLOv3Handler(MyRedis):
         await self.YOLOv3Service.update_node_information(self.node_id, self.pid)
 
         # Set ZMQ Receiver (& Sender) configuration
+        print("## # Set ZMQ Receiver (& Sender) configuration ##")
         await self.YOLOv3Service.set_zmq_configurations(self.node_name, self.node_id)
 
     async def _stop(self):
@@ -73,11 +74,13 @@ class YOLOv3Handler(MyRedis):
 
                 # TODO: To start TCP Connection and be ready to capture the image from [Scheduler Service]
                 print(" ###### I AM DOING SOMETHING HERE")
-                try:
-                    _, self.raw_image = self.frame_receiver.recv_image()
-                    print(" --- `Frame Data` has been successfully received: -- self.drone_id=", self.drone_id)
-                except Exception as e:
-                    print("\t\tRetrieve frame-%d ERROR:" % self.frame_id, e)
+                is_success, img = await self.YOLOv3Service.get_img()
+                print(" >>>> DISINI >>>> ", is_success, img.shape)
+                # try:
+                #     _, self.raw_image = self.frame_receiver.recv_image()
+                #     print(" --- `Frame Data` has been successfully received: -- self.drone_id=", self.drone_id)
+                # except Exception as e:
+                #     print("\t\tRetrieve frame-%d ERROR:" % self.frame_id, e)
 
         print("\n[%s] YOLOv3Handler stopped listening to [Scheduler Service]" % get_current_time())
         # Call stop function since it no longers listening

@@ -110,8 +110,8 @@ class ExtractorService(asab.Service):
 				sel_node_id = 0
 
 				# First, notify the Object Detection Service to get ready (publish)
-				node_id = senders["node"][0]["id"]
-				node_channel = senders["node"][0]["channel"]
+				node_id = senders["node"][sel_node_id]["id"]
+				node_channel = senders["node"][sel_node_id]["channel"]
 				print(" >>>> node_id=", node_id)
 				print(" >>>> node_channel=", node_channel)
 				# send data into Scheduler service through the pub/sub
@@ -138,14 +138,14 @@ class ExtractorService(asab.Service):
 				# yolo_frame = await self.ResizerService.gpu_convert_to_padded_size(frame)
 				print("--- success:", self.frame_id, success, yolo_frame.shape)
 
-				# CHECKING: how is the latency if we send converted version?
-				# Sending image data through ZMQ (TCP connection)
-				t0_zmq = time.time()
-				zmq_id = str(self.frame_id) + "-" + str(t0_zmq)
-				# self.sender.send_image(str(self.frame_id), frame)
-				senders["zmq"][sel_node_id].send_image(zmq_id, yolo_frame)
-				t1_zmq = (time.time() - t0_zmq) * 1000
-				print('Latency [Send imagezmq YOLO Img] of frame-%s: (%.5fms)' % (str(self.frame_id), t1_zmq))
+				# # CHECKING: how is the latency if we send converted version?
+				# # Sending image data through ZMQ (TCP connection)
+				# t0_zmq = time.time()
+				# zmq_id = str(self.frame_id) + "-" + str(t0_zmq)
+				# # self.sender.send_image(str(self.frame_id), frame)
+				# senders["zmq"][sel_node_id].send_image(zmq_id, yolo_frame)
+				# t1_zmq = (time.time() - t0_zmq) * 1000
+				# print('Latency [Send imagezmq YOLO Img] of frame-%s: (%.5fms)' % (str(self.frame_id), t1_zmq))
 
 				print()
 

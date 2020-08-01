@@ -81,8 +81,8 @@ def threaded_insertion(pool_name, request_json):
     _, _ = del_data_by_id(ConfigModel, config_data["id"])
     t1_deleting_mongo = (time.time() - t0_deleting_mongo) * 1000
     print('[%s] Latency for Deleting data into MongoDB (%.3f ms)' % (get_current_time(), t1_deleting_mongo))
-    time.sleep(5)
-    print(" -- coming back after sleeping in 5 secs ..")
+    # time.sleep(5)
+    # print(" -- coming back after sleeping in 5 secs ..")
 
 
 def get_config_data():

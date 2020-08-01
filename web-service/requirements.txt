@@ -7,3 +7,4 @@ werkzeug
 simplejson
 redis
 motor
+imagezmq
