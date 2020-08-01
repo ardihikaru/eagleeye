@@ -117,7 +117,7 @@ class ExtractorService(asab.Service):
 				# send data into Scheduler service through the pub/sub
 				t0_publish = time.time()
 				print("# send data into Scheduler service through the pub/sub")
-				dump_request = json.dumps({"active": True, "frame": "ini frame data coy"})
+				dump_request = json.dumps({"active": True, "frame": "ini frame data coy", "ts": time.time()})
 				pub(self.redis.get_rc(), node_channel, dump_request)
 				t1_publish = (time.time() - t0_publish) * 1000
 				# TODO: Saving latency for scheduler:producer:notification:image
@@ -126,9 +126,11 @@ class ExtractorService(asab.Service):
 
 				# Sending image data through ZMQ (TCP connection)
 				t0_zmq = time.time()
+				print("> >>>>>> START SENDING ZMQ in ts:", t0_zmq)
 				zmq_id = str(self.frame_id) + "-" + str(t0_zmq)
 				# self.sender.send_image(str(self.frame_id), frame)
-				senders["zmq"][sel_node_id].send_image(zmq_id, frame)
+				senders["zmq"][sel_node_id].transfer_img(zmq_id, frame)
+				# senders["zmq"][sel_node_id].send_image(zmq_id, frame)
 				t1_zmq = (time.time() - t0_zmq) * 1000
 				print('Latency [Send imagezmq] of frame-%s: (%.5fms)' % (str(self.frame_id), t1_zmq))
 
@@ -136,7 +138,7 @@ class ExtractorService(asab.Service):
 				# TODO: To add GPU-based downsample function
 				yolo_frame = await self.ResizerService.cpu_convert_to_padded_size(frame)
 				# yolo_frame = await self.ResizerService.gpu_convert_to_padded_size(frame)
-				print("--- success:", self.frame_id, success, yolo_frame.shape)
+				print("--- YOLO success:", self.frame_id, success, yolo_frame.shape)
 
 				# # CHECKING: how is the latency if we send converted version?
 				# # Sending image data through ZMQ (TCP connection)
@@ -150,7 +152,7 @@ class ExtractorService(asab.Service):
 				print()
 
 		except Exception as e:
-			# print(" ---- >> e:", e)
+			print(" ---- >> e:", e)
 			return False
 			# TODO: To have further actions, i.e. restart connection (work for both Video file / Streaming
 			# TODO: When reloaded, we need to clean up: RedisDB and any other storage related to this action

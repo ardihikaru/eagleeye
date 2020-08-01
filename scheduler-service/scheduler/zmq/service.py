@@ -3,6 +3,7 @@ import logging
 import time
 import imagezmq
 from scheduler.controllers.node.node import Node
+from ext_lib.zeromq.zmqimage import ZMQConnect
 
 ###
 
@@ -33,9 +34,10 @@ class ZMQService(asab.Service):
             # Set ZMQ Senders
             for i in range(total):
                 # url = 'tcp://127.0.0.1:555' + str((i + 1))
-                url = 'tcp://127.0.0.1:555' + str(self.node_info[i]["name"])
-                print(" >>>> url:", url)
-                sender = imagezmq.ImageSender(connect_to=url, REQ_REP=False)
+                uri = 'tcp://127.0.0.1:556' + str(self.node_info[i]["name"])
+                print(" >>>> uri:", uri)
+                # sender = imagezmq.ImageSender(connect_to=url, REQ_REP=False)
+                sender = ZMQConnect(connect_to=uri)
                 self.zmq_sender.append(sender)
         else:
             print(" >>>> Force to exit, since No Node are available!")

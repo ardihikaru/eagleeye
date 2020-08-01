@@ -44,9 +44,10 @@ class YOLOv3Service(asab.Service):
     async def get_img(self):
         try:
             print("##### @ get_img ......")
-            _, raw_image = self.ZMQService.get_zmq_receiver().recv_image()
+            # _, raw_image = self.ZMQService.get_zmq_receiver().recv_image()
+            array_name, image = self.ZMQService.get_zmq_receiver().recv_img()
             print(">>> DISINI SIH ..")
-            print(" --- `Frame Data` has been successfully received >>> ", raw_image.shape)
+            print(" --- `Frame Data` has been successfully received >>> ", array_name, image.shape)
             # detection_status = self.__is_detection_finished()
             # if self.__is_detection_finished():
             # if detection_status:
@@ -58,11 +59,11 @@ class YOLOv3Service(asab.Service):
                 # self.send_to_visualizer()
             # elif detection_status is not None and not detection_status:  # send raw frame without any BBox
             #     self.send_to_visualizer(no_bbox=True)
-            print(" >>>>> EMBUH ...")
-            return True, raw_image
+            # print(" >>>>> EMBUH ...")
+            return True, array_name, image
         except Exception as e:
             print("\tERROR:", e)
-            return False, None
+            return False, None, None
 
     async def update_node_information(self, node_id, pid):
         node = Node()

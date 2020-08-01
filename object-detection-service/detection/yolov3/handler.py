@@ -68,14 +68,21 @@ class YOLOv3Handler(MyRedis):
                 image_info = pubsub_to_json(item["data"])
                 print(" >>> image_info:", image_info)
 
+                import time
+                print(">> > > > >> >START Receiving ZMQ in OBJDET @ ts:", time.time())
+
                 # TODO: if the image_info's key `active`=False, BREAK the Pub/sub listener!
                 if not image_info["active"]:
                     break
 
                 # TODO: To start TCP Connection and be ready to capture the image from [Scheduler Service]
                 print(" ###### I AM DOING SOMETHING HERE")
-                is_success, img = await self.YOLOv3Service.get_img()
-                print(" >>>> DISINI >>>> ", is_success, img.shape)
+                while True:
+                    is_success, array_name, img = await self.YOLOv3Service.get_img()
+                    print(">>>> RECEIVED DATA:", is_success, array_name, img.shape)
+                    print(" >>>> DISINI >>>> ", is_success, img.shape)
+                    break
+
                 # try:
                 #     _, self.raw_image = self.frame_receiver.recv_image()
                 #     print(" --- `Frame Data` has been successfully received: -- self.drone_id=", self.drone_id)

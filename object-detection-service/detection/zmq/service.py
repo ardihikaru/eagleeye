@@ -2,7 +2,7 @@ import asab
 import logging
 import time
 import imagezmq
-from detection.controllers.node.node import Node
+from ext_lib.zeromq.zmqimage import ZMQImageServer
 
 ###
 
@@ -25,9 +25,10 @@ class ZMQService(asab.Service):
     async def set_configurations(self, node_name, node_id):  # node_name is the port suffix!
         print(" ### @ set_configurations ...")
         uri = asab.Config["zmq"]["node_uri"]
-        print(" >>>>> URI ZMQ=", uri)
+        print(" >>>>>>>>>> URI ZMQ=", uri)
         # channel = asab.Config["zmq"]["node_channel"]
-        self.zmq_receiver = imagezmq.ImageHub(open_port=uri, REQ_REP=False)
+        # self.zmq_receiver = imagezmq.ImageHub(open_port=uri, REQ_REP=False)
+        self.zmq_receiver = ZMQImageServer(open_port=uri)
         print(" >>>> self.zmq_receiver:", self.zmq_receiver)
     #     # Collect available nodes
     #     node = Node()
