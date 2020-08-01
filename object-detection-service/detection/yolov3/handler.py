@@ -80,7 +80,7 @@ class YOLOv3Handler(MyRedis):
                 while True:
                     is_success, array_name, img = await self.YOLOv3Service.get_img()
                     print(">>>> RECEIVED DATA:", is_success, array_name, img.shape)
-                    print(" >>>> DISINI >>>> ", is_success, img.shape)
+                    # print(" >>>> DISINI >>>> ", is_success, img.shape)
                     break
 
                 # try:

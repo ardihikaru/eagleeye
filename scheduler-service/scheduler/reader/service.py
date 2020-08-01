@@ -11,9 +11,7 @@ L = logging.getLogger(__name__)
 
 
 class ReaderService(asab.Service):
-    """
-        Video stream / tuple of images extractor
-    """
+    """ Video stream / tuple of images extractor """
 
     def __init__(self, app, service_name="scheduler.ReaderService"):
         super().__init__(app, service_name)

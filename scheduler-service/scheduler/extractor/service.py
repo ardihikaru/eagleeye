@@ -2,7 +2,7 @@ import asab
 import logging
 from ext_lib.redis.my_redis import MyRedis
 from ext_lib.utils import get_current_time
-from ext_lib.redis.translator import pub
+from ext_lib.redis.translator import pub, redis_get
 from imutils.video import FileVideoStream
 from ext_lib.image_loader.load_images import LoadImages
 import cv2
@@ -25,6 +25,10 @@ class ExtractorService(asab.Service):
 	def __init__(self, app, service_name="scheduler.ExtractorService"):
 		super().__init__(app, service_name)
 		self.ResizerService = app.get_service("scheduler.ResizerService")
+		# self.ZMQService = app.get_service("scheduler.ZMQService")
+		# self.ZMQService.set_configurations()
+		# self.zmq_senders = self.ZMQService.get_senders()
+		# print(" >>> self.zmq_senders:", self.zmq_senders)
 
 		# start pub/sub
 		self.redis = MyRedis(asab.Config)
@@ -39,6 +43,7 @@ class ExtractorService(asab.Service):
 		self.file_ext = asab.Config["objdet:yolo"]["file_ext"]
 
 	async def extract_folder(self, config, senders):
+	# async def extract_folder(self, config):
 		print("#### I am extractor FOLDER function from ExtractorService!")
 		print(config)
 		dataset = await self._read_from_folder(config)
@@ -92,6 +97,7 @@ class ExtractorService(asab.Service):
 		return ordered_dataset
 
 	async def extract_video_stream(self, config, senders):
+	# async def extract_video_stream(self, config):
 		print("#### I am extractor VIDEO STREAM function from ExtractorService!")
 		print(config)
 		try:
@@ -109,8 +115,13 @@ class ExtractorService(asab.Service):
 				# Dummy and always select Node=1 now; id=0
 				sel_node_id = 0
 
+				# print(" >>> self.zmq_senders:", await self.zmq_senders, type(self.zmq_senders))
+				print(" >>> senders:", senders, type(senders))
+
 				# First, notify the Object Detection Service to get ready (publish)
+				# node_id = await self.zmq_senders["node"][sel_node_id]["id"]
 				node_id = senders["node"][sel_node_id]["id"]
+				# node_channel = await self.zmq_senders["node"][sel_node_id]["channel"]
 				node_channel = senders["node"][sel_node_id]["channel"]
 				print(" >>>> node_id=", node_id)
 				print(" >>>> node_channel=", node_channel)
@@ -129,8 +140,21 @@ class ExtractorService(asab.Service):
 				print("> >>>>>> START SENDING ZMQ in ts:", t0_zmq)
 				zmq_id = str(self.frame_id) + "-" + str(t0_zmq)
 				# self.sender.send_image(str(self.frame_id), frame)
-				senders["zmq"][sel_node_id].transfer_img(zmq_id, frame)
-				# senders["zmq"][sel_node_id].send_image(zmq_id, frame)
+				# await self.zmq_senders["zmq"][sel_node_id].transfer_img(zmq_id, frame)
+				# while True:
+				# redis_key = node_channel + "-frame"
+				# while redis_get(self.redis.get_rc(), redis_key) is not None:
+				# 	# self.redis.get_rc().delete(redis_key)  # delete after usage
+				# 	try:
+				# 		senders["zmq"][sel_node_id].transfer_img(zmq_id, frame)
+				# 		print(" >>>> Frame-%s SEND." % str(self.frame_id))
+				# 		break
+				# 	except Exception as e:
+				# 		# print("> >>>>> EEEE:", e)
+				# 		pass
+
+				# senders["zmq"][sel_node_id].transfer_img(zmq_id, frame)
+				senders["zmq"][sel_node_id].send_image(zmq_id, frame)
 				t1_zmq = (time.time() - t0_zmq) * 1000
 				print('Latency [Send imagezmq] of frame-%s: (%.5fms)' % (str(self.frame_id), t1_zmq))
 

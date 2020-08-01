@@ -1,8 +1,6 @@
 import asab
 import logging
-import time
 import imagezmq
-from ext_lib.zeromq.zmqimage import ZMQImageServer
 
 ###
 
@@ -26,22 +24,7 @@ class ZMQService(asab.Service):
         print(" ### @ set_configurations ...")
         uri = asab.Config["zmq"]["node_uri"]
         print(" >>>>>>>>>> URI ZMQ=", uri)
-        # channel = asab.Config["zmq"]["node_channel"]
-        # self.zmq_receiver = imagezmq.ImageHub(open_port=uri, REQ_REP=False)
-        self.zmq_receiver = ZMQImageServer(open_port=uri)
-        print(" >>>> self.zmq_receiver:", self.zmq_receiver)
-    #     # Collect available nodes
-    #     node = Node()
-    #     is_success, self.node_info, msg, total = node.get_data()
-    #
-    #     print(" >>>> self.node_info:", self.node_info, type(self.node_info))
-    #     if is_success:
-    #         # Set ZMQ Senders
-    #         for i in range(total):
-    #             url = 'tcp://127.0.0.1:555' + str((i + 1))
-    #             sender = imagezmq.ImageSender(connect_to=url, REQ_REP=False)
-    #             self.zmq_sender.append(sender)
-    #
+        self.zmq_receiver = imagezmq.ImageHub(open_port=uri, REQ_REP=False)
 
     def get_zmq_receiver(self):
         return self.zmq_receiver
