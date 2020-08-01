@@ -69,8 +69,14 @@ class AlgorithmService(asab.Service):
 
     async def detect_object(self, frame):
         print("######### START OBJECT DETECTION")
-        pass
-    
+        try:
+            pred = self.yolo.get_prediction(frame)
+        except Exception as e:
+            print(" >>>> e:", e)
+            pred = None
+            await self.SubscriptionHandler.stop()
+        return pred
+
     async def delete_node_information(self, node_id):
         node = Node()
         node.delete_data_by_id(node_id)

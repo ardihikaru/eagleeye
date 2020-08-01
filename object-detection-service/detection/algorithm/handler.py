@@ -85,7 +85,7 @@ class YOLOv3Handler(MyRedis):
                 # TODO: To save latency into ElasticSearchDB (Future work)
 
                 # Start performing object detection
-                await self.AlgorithmService.detect_object(img)
+                pred = await self.AlgorithmService.detect_object(img)
 
                 # print(" >>>> DISINI >>>> ", is_success, img.shape)
                 # break

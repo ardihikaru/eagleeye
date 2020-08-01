@@ -18,6 +18,7 @@ class YOLOv3(YOLOFunctions):
 
     def _reformat_conf(self, conf_section):
         conf = dict(conf_section)
+        conf["agnostic_nms"] = bool(int(conf["agnostic_nms"]))
         conf["half"] = bool(int(conf["half"]))
         conf["save_txt"] = bool(int(conf["save_txt"]))
         conf["dump_raw_img"] = bool(int(conf["dump_raw_img"]))
@@ -54,57 +55,59 @@ class YOLOv3(YOLOFunctions):
 
         self._get_names_colors()
 
-    def detect(self, raw_img, frame_id):
-        print("\n[%s] Starting YOLOv3 for frame-%s" % (get_current_time(), frame_id))
-
-        # DO THE DETECTION HERE!
-        self._save_results(raw_img, frame_id, is_raw=True)
-
+    def __img2yoloimg(self, image):
         # Padded resize
-        image4yolo = letterbox(raw_img, new_shape=self.img_size)[0]
+        image4yolo = letterbox(image, new_shape=self.img_size)[0]
 
         # Convert
         image4yolo = image4yolo[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
         image4yolo = np.ascontiguousarray(image4yolo, dtype=np.float16 if self.half else np.float32)  # uint8 to fp16/fp32
         image4yolo /= 255.0  # 0 - 255 to 0.0 - 1.0
 
-        # Start processing image
-        print("[%s] Received frame-%d" % (get_current_time(), int(frame_id)))
-        self._process_detection(image4yolo, raw_img, frame_id)
+        return image4yolo
 
-    def _process_detection(self, image4yolo, raw_img, this_frame_id):
+    def get_prediction(self, frame, is_yolo_format=True):
+        if not is_yolo_format:
+            frame = self.__img2yoloimg(frame)
 
         # Get detections
+        pred = None
         ts_det = time.time()
-        img_torch = torch.from_numpy(image4yolo) #.to(self.device)
+        img_torch = torch.from_numpy(frame) #.to(self.device)
         image4yolo = img_torch.to(self.device)
         if image4yolo.ndimension() == 3:
             image4yolo = image4yolo.unsqueeze(0)
         try:
-            self.pred = self.model(image4yolo)[0]
+            pred = self.model(image4yolo)[0]
         except Exception as e:
             print("~~ EEROR: ", e)
         t_inference = (time.time() - ts_det) * 1000  # to ms
 
         # Latency: Inference
-        print('[%s] DONE Inference of frame-%s (%.3f ms)' % (get_current_time(), str(this_frame_id), t_inference))
+        print('[%s] Inference time (%.3f ms)' % (get_current_time(), t_inference))
 
         # Default: Disabled
-        if self.conf["half"]:
-            self.pred = self.pred.float()
+        # if self.conf["half"]:
+        #     pred = pred.float()
 
         # Apply NMS: Non-Maximum Suppression
-        # ts_nms = time.time()
+        ts_nms = time.time()
         # to Removes detections with lower object confidence score than 'conf_thres'
-        self.pred = non_max_suppression(self.pred, self.conf["conf_thres"], self.conf["iou_thres"],
-                                        classes=self.conf["classes"],
+        pred = non_max_suppression(pred, self.conf["conf_thres"], self.conf["iou_thres"],
+                                        # classes=self.conf["classes"],
+                                        classes=None,
                                         agnostic=self.conf["agnostic_nms"])
-        # print('\n # Total Non-Maximum Suppression (NMS) time: (%.3fs)' % (time.time() - ts_nms))
+        print('\n # Total Non-Maximum Suppression (NMS) time: (%.3f ms)' % ((time.time() - ts_nms)*1000))
 
+        self.test_print_bbox(pred)
+
+        return pred
         # Apply Classifier: Default DISABLED
-        if self.classify:
-            self.pred = apply_classifier(self.pred, self.modelc, image4yolo, raw_img)
+        # if self.classify:
+        #     self.pred = apply_classifier(self.pred, self.modelc, image4yolo, raw_img)
 
+    def test_print_bbox(self, pred):
+        print(" @@@ test_print_bbox ...")
         # Process detections
         '''
         p = path
@@ -113,18 +116,91 @@ class YOLOv3(YOLOFunctions):
         '''
 
         try:
-            for i, det in enumerate(self.pred):  # detections per image
-                if det is not None and len(det):
+            for i, det in enumerate(pred):  # detections per image
+                print(" ######### i & det:", i, det)
+                # if det is not None and len(det):
                     # Rescale boxes from img_size to im0 size
-                    det[:, :4] = scale_coords(image4yolo.shape[2:], det[:, :4], raw_img.shape).round()
+                    # det[:, :4] = scale_coords(image4yolo.shape[2:], det[:, :4], raw_img.shape).round()
 
                     # Export results: Raw image OR BBox image OR Crop image OR BBox txt
                     # if self.opt.dump_raw_img or self.opt.dump_bbox_img or self.opt.dump_crop_img or self.opt.save_txt:
-                    if self.conf["cv_out"]:
-                        self._manage_detection_results(det, raw_img, this_frame_id)
+                    # if self.conf["cv_out"]:
+                    #     self._manage_detection_results(det, raw_img, this_frame_id)
 
         except Exception as e:
             print("ERROR Plotting: ", e)
+    #
+    # def detect(self, raw_img, frame_id):
+    #     print("\n[%s] Starting YOLOv3 for frame-%s" % (get_current_time(), frame_id))
+    #
+    #     # DO THE DETECTION HERE!
+    #     self._save_results(raw_img, frame_id, is_raw=True)
+    #
+    #     # Padded resize
+    #     image4yolo = letterbox(raw_img, new_shape=self.img_size)[0]
+    #
+    #     # Convert
+    #     image4yolo = image4yolo[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
+    #     image4yolo = np.ascontiguousarray(image4yolo, dtype=np.float16 if self.half else np.float32)  # uint8 to fp16/fp32
+    #     image4yolo /= 255.0  # 0 - 255 to 0.0 - 1.0
+    #
+    #     # Start processing image
+    #     print("[%s] Received frame-%d" % (get_current_time(), int(frame_id)))
+    #     self._process_detection(image4yolo, raw_img, frame_id)
+    #
+    # def _process_detection(self, image4yolo, raw_img, this_frame_id):
+    #
+    #     # Get detections
+    #     ts_det = time.time()
+    #     img_torch = torch.from_numpy(image4yolo) #.to(self.device)
+    #     image4yolo = img_torch.to(self.device)
+    #     if image4yolo.ndimension() == 3:
+    #         image4yolo = image4yolo.unsqueeze(0)
+    #     try:
+    #         self.pred = self.model(image4yolo)[0]
+    #     except Exception as e:
+    #         print("~~ EEROR: ", e)
+    #     t_inference = (time.time() - ts_det) * 1000  # to ms
+    #
+    #     # Latency: Inference
+    #     print('[%s] DONE Inference of frame-%s (%.3f ms)' % (get_current_time(), str(this_frame_id), t_inference))
+    #
+    #     # Default: Disabled
+    #     if self.conf["half"]:
+    #         self.pred = self.pred.float()
+    #
+    #     # Apply NMS: Non-Maximum Suppression
+    #     # ts_nms = time.time()
+    #     # to Removes detections with lower object confidence score than 'conf_thres'
+    #     self.pred = non_max_suppression(self.pred, self.conf["conf_thres"], self.conf["iou_thres"],
+    #                                     classes=self.conf["classes"],
+    #                                     agnostic=self.conf["agnostic_nms"])
+    #     # print('\n # Total Non-Maximum Suppression (NMS) time: (%.3fs)' % (time.time() - ts_nms))
+    #
+    #     # Apply Classifier: Default DISABLED
+    #     if self.classify:
+    #         self.pred = apply_classifier(self.pred, self.modelc, image4yolo, raw_img)
+    #
+    #     # Process detections
+    #     '''
+    #     p = path
+    #     s = string for printing
+    #     im0 = image (matrix)
+    #     '''
+    #
+    #     try:
+    #         for i, det in enumerate(self.pred):  # detections per image
+    #             if det is not None and len(det):
+    #                 # Rescale boxes from img_size to im0 size
+    #                 det[:, :4] = scale_coords(image4yolo.shape[2:], det[:, :4], raw_img.shape).round()
+    #
+    #                 # Export results: Raw image OR BBox image OR Crop image OR BBox txt
+    #                 # if self.opt.dump_raw_img or self.opt.dump_bbox_img or self.opt.dump_crop_img or self.opt.save_txt:
+    #                 if self.conf["cv_out"]:
+    #                     self._manage_detection_results(det, raw_img, this_frame_id)
+    #
+    #     except Exception as e:
+    #         print("ERROR Plotting: ", e)
 
     def _manage_detection_results(self, det, raw_img, this_frame_id):
         """

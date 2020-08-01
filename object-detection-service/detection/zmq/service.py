@@ -21,9 +21,7 @@ class ZMQService(asab.Service):
 
     # TODO: We need to have a dynamic configuration; This is still static and called ONCE
     async def set_configurations(self, node_name, node_id):  # node_name is the port suffix!
-        print(" ### @ set_configurations ...")
         uri = asab.Config["zmq"]["node_uri"]
-        print(" >>>>>>>>>> URI ZMQ=", uri)
         self.zmq_receiver = imagezmq.ImageHub(open_port=uri, REQ_REP=False)
 
     def get_zmq_receiver(self):
