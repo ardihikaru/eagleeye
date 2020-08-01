@@ -42,7 +42,7 @@ class YOLOv3Handler(MyRedis):
         print("## # Set ZMQ Receiver (& Sender) configuration ##")
         await self.AlgorithmService.set_zmq_configurations(self.node_name, self.node_id)
 
-    async def _stop(self):
+    async def stop(self):
         print("\n[%s] Object Detection Service is going to stop" % get_current_time())
         
         # Delete Node
@@ -98,4 +98,4 @@ class YOLOv3Handler(MyRedis):
 
         print("\n[%s] YOLOv3Handler stopped listening to [Scheduler Service]" % get_current_time())
         # Call stop function since it no longers listening
-        await self._stop()
+        await self.stop()

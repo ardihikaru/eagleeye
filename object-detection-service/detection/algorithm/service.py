@@ -2,6 +2,7 @@ import asab
 import logging
 from .handler import YOLOv3Handler
 from detection.controllers.node.node import Node
+from detection.algorithm.soa.yolo_v3.app import YOLOv3
 
 ###
 
@@ -26,10 +27,22 @@ class AlgorithmService(asab.Service):
         # of ServiceAPIModule
         self.ZMQService = None
 
+        # Build YOLO config
+        # TODO: To dynamically read the YOLO Version, if not found, Forced to close the Service!
+        self.yolo = None
+
     async def start_subscription(self):
+        await self._configure_object_detection()
         await self.SubscriptionHandler.set_configuration()
         await self.SubscriptionHandler.set_deployment_status()
         await self.SubscriptionHandler.start()
+
+    async def _configure_object_detection(self):
+        try:
+            self.yolo = YOLOv3(asab.Config["objdet:yolo"])
+        except Exception as e:
+            print(" >>>> e:", e)
+            await self.SubscriptionHandler.stop()
 
     async def set_zmq_configurations(self, node_name, node_id):
         await self.ZMQService.set_configurations(node_name, node_id)

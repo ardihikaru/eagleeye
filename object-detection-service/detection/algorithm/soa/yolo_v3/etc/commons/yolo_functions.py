@@ -1,21 +1,27 @@
 from detection.algorithm.soa.yolo_v3.components.utils.utils import torch2numpy, get_current_time
 from detection.algorithm.soa.yolo_v3.etc.commons.opencv_helpers import crop_image, np_xyxy2xywh, save_txt
+from detection.algorithm.soa.yolo_v3.ABC import ABC
 import cv2
 from datetime import datetime
 import os
 
 
-class YOLOFunctions:
-    def __init__(self, opt):
-        self.opt = opt
+class YOLOFunctions(ABC):
+    def __init__(self, conf):
+        super().__init__(conf)
+        self.conf = conf
         self.__create_output_path()
 
     def __create_output_path(self):
         new_folder_name = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
-        self.raw_img_path = self.opt.output + "images_txt/" + new_folder_name + "/raw/"
-        self.bbox_img_path = self.opt.output + "images_txt/" + new_folder_name + "/bbox/"
-        self.crop_img_path = self.opt.output + "images_txt/" + new_folder_name + "/crop/"
-        self.txt_bbox_path = self.opt.output + "images_txt/" + new_folder_name + "/txt/"
+        self.raw_img_path = self.conf["output"] + "images_txt/" + new_folder_name + "/raw/"
+        self.bbox_img_path = self.conf["output"] + "images_txt/" + new_folder_name + "/bbox/"
+        self.crop_img_path = self.conf["output"] + "images_txt/" + new_folder_name + "/crop/"
+        self.txt_bbox_path = self.conf["output"] + "images_txt/" + new_folder_name + "/txt/"
+        # self.raw_img_path = self.opt.output + "images_txt/" + new_folder_name + "/raw/"
+        # self.bbox_img_path = self.opt.output + "images_txt/" + new_folder_name + "/bbox/"
+        # self.crop_img_path = self.opt.output + "images_txt/" + new_folder_name + "/crop/"
+        # self.txt_bbox_path = self.opt.output + "images_txt/" + new_folder_name + "/txt/"
 
         # Make directories of out it
         os.makedirs(self.raw_img_path)
@@ -25,7 +31,7 @@ class YOLOFunctions:
 
     def _save_cropped_img(self, xyxy, im0, idx, cls, frame_id, ext):
         try:
-            if self.opt.dump_crop_img:
+            if self.conf["dump_crop_img"]:
                 numpy_xyxy = torch2numpy(xyxy, int)
                 xywh = np_xyxy2xywh(numpy_xyxy)
                 crop_save_path = self.crop_img_path + "frame-%s_[cls=%s][idx=%s]%s" % (
@@ -35,12 +41,12 @@ class YOLOFunctions:
             print("\n[%s] Unable to perform crop image in frame-%s" % (get_current_time(), str(frame_id)))
 
     def _save_results(self, img, frame_id, is_raw=False):
-        if self.opt.dump_bbox_img:
+        if self.conf["dump_bbox_img"]:
             if is_raw:
                 print(" --- masuk IS RAW ...")
                 frame_save_path = self.raw_img_path + "frame-%s.jpg" % str(frame_id)
                 print(" --- RAW frame_save_path:", frame_save_path)
-                if self.opt.dump_raw_img:
+                if self.conf["dump_raw_img"]:
                     cv2.imwrite(frame_save_path, img)
             else:
                 print(" --- masuk IS NOT RAW ...")
@@ -51,7 +57,7 @@ class YOLOFunctions:
     def _safety_store_txt(self, xyxy, frame_id, cls, conf_score):
         try:
             txt_save_path = self.txt_bbox_path + "frame-%s" % str(frame_id)
-            if self.opt.save_txt:
-                save_txt(txt_save_path, self.opt.txt_format, bbox_xyxy=xyxy, cls=cls, conf=conf_score)
+            if self.conf["save_txt"]:
+                save_txt(txt_save_path, self.conf["txt_format"], bbox_xyxy=xyxy, cls=cls, conf=conf_score)
         except:
             print("\n[%s] Unable to perform crop image in frame-%s" % (get_current_time(), str(frame_id)))

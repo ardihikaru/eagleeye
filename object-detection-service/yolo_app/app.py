@@ -1,7 +1,7 @@
-from yolo_app.extra_modules.input_reader import InputReader
+from detection.algorithm.soa.yolo_v3.extra_modules.input_reader import InputReader
 import time
-from yolo_app.components.utils.utils import get_current_time
-from yolo_app.detection_algorithms.yolo_v3 import YOLOv3 as YOLO
+from detection.algorithm.soa.yolo_v3.components.utils.utils import get_current_time
+from detection.algorithm.soa.yolo_v3.detection_algorithms.yolo_v3 import YOLOv3 as YOLO
 import cv2 as cv
 
 

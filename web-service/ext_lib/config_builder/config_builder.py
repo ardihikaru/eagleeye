@@ -30,19 +30,28 @@ class ConfigBuilder:
 
 	def set_default_yolov3_conf(self, node_id=""):
 		self.config["objdet:yolo"] = {
+			"output": "outputs/",
 			"source_folder_prefix": "out",
 			"file_ext": ".png",
+
+			"dump_raw_img": "0",
+			"dump_bbox_img": "0",
+			"dump_crop_img": "0",
+			"save_txt": "0",
+			"txt_format": "cartucho",
+
 			"half": "0",
 			"img_size": "416",
-			"device": "0",
+			"device": "",
 			"conf_thres": "0.1",
 			"iou_thres": "0.1",
 			"classes": "+",
-			"names": "./common_files/object_detection/yolo/data/coco.names",
-			"cfg": "./common_files/object_detection/yolo/cfg/yolov3.cfg",
-			"weights": "./common_files/object_detection/yolo/weights/yolov3.weights",
+			"names": "../object-detection-service/config_files/yolo/data/coco.names",
+			"cfg": "../object-detection-service/config_files/yolo/cfg/yolov3.cfg",
+			"weights": "../object-detection-service/config_files/yolo/weights/yolov3.weights",
+
 			"auto_restart": "1",
-			"enable_cv_out": "1",
+			"cv_out": "1",
 			"window_size_height": "1920",
 			"window_size_width": "1080"
 		}

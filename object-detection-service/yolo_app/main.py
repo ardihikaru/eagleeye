@@ -1,6 +1,6 @@
 from __future__ import division
 import argparse
-from yolo_app.app import YOLOApp
+from detection.algorithm.soa.yolo_v3.app import YOLOApp
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -25,15 +25,15 @@ if __name__ == "__main__":
     parser.add_argument('--save-txt', action='store_true', help='save results to *.txt')
     parser.add_argument('--classes', nargs='+', type=int, help='filter by class')
     parser.add_argument('--agnostic-nms', action='store_true', help='class-agnostic NMS')
-    parser.add_argument('--names', type=str, default='./yolo_app/components/data/coco.names', help='*.names path')
+    parser.add_argument('--names', type=str, default='./detection.algorithm.soa.yolo_v3/components/data/coco.names', help='*.names path')
 
     # Load YOLO config file
-    parser.add_argument('--cfg', type=str, default='./yolo_app/components/cfg/yolov3.cfg', help='*.cfg path')
-    # parser.add_argument('--cfg', type=str, default='./yolo_app/components/cfg/yolov3-tiny.cfg', help='*.cfg path')
+    parser.add_argument('--cfg', type=str, default='./detection.algorithm.soa.yolo_v3/components/cfg/yolov3.cfg', help='*.cfg path')
+    # parser.add_argument('--cfg', type=str, default='./detection.algorithm.soa.yolo_v3/components/cfg/yolov3-tiny.cfg', help='*.cfg path')
 
     # Load weights
-    parser.add_argument('--weights', type=str, default='./yolo_app/components/weights/yolov3.weights',
-    # parser.add_argument('--weights', type=str, default='./yolo_app/components/weights/yolov3-tiny.weights',
+    parser.add_argument('--weights', type=str, default='./detection.algorithm.soa.yolo_v3/components/weights/yolov3.weights',
+    # parser.add_argument('--weights', type=str, default='./detection.algorithm.soa.yolo_v3/components/weights/yolov3-tiny.weights',
                         help='path to weights file')
 
     # To define input source type: "folder" or "stream"; The default is "stream"

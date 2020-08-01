@@ -7,33 +7,37 @@ from detection.algorithm.soa.yolo_v3.etc.commons.yolo_functions import YOLOFunct
 
 
 class YOLOv3(YOLOFunctions):
-    def __init__(self, opt):
-        super().__init__(opt)
-        self.opt = opt
-        self.classify = False
+    def __init__(self, conf):
+        conf = self._reformat_conf(conf)
+        super().__init__(conf)
+        self.conf = conf
+        self.__initialize_configurations()
+
+        # Set related parameters
         self.total_proc_frames = 0
 
-        self.vid_path, self.vid_writer = None, None
+    def _reformat_conf(self, conf_section):
+        conf = dict(conf_section)
+        conf["half"] = bool(int(conf["half"]))
+        conf["save_txt"] = bool(int(conf["save_txt"]))
+        conf["dump_raw_img"] = bool(int(conf["dump_raw_img"]))
+        conf["dump_bbox_img"] = bool(int(conf["dump_bbox_img"]))
+        conf["dump_crop_img"] = bool(int(conf["dump_crop_img"]))
+        conf["auto_restart"] = bool(int(conf["auto_restart"]))
+        conf["cv_out"] = bool(int(conf["cv_out"]))
 
-        # (320, 192) or (416, 256) or (608, 352) for (height, width)
-        self.img_size = (320, 192) if ONNX_EXPORT else opt.img_size
+        conf["img_size"] = int(conf["img_size"])
+        conf["window_size_height"] = int(conf["window_size_height"])
+        conf["window_size_width"] = int(conf["window_size_width"])
 
-        self.out, self.source, self.weights, self.half, self.view_img, self.save_txt = opt.output, opt.source, opt.weights, opt.half, opt.view_img, opt.save_txt
-        self.webcam = self.source == '0' or self.source.startswith('rtsp') or self.source.startswith('http') or self.source.endswith('.txt')
-
-        # Initialize model
-        self.model = Darknet(opt.cfg, self.img_size)
-        self.mbbox = None # Merge Bounding Box
-
-        # Initialize device configuration
-        self.device = torch_utils.select_device(device='cpu' if ONNX_EXPORT else opt.device)
-
-        self.__initialize_configurations()
+        conf["conf_thres"] = float(conf["conf_thres"])
+        conf["iou_thres"] = float(conf["window_size_width"])
+        return conf
 
     def __initialize_configurations(self):
         print("\n[%s] Initialize YOLO Configuration" % get_current_time())
         t0_load_weight = time.time()
-        self.__load_weight()
+        self._load_weight()
         t_load_weight = time.time() - t0_load_weight
         print(".. Load `weight` in (%.3fs)" % t_load_weight)
 
@@ -41,14 +45,14 @@ class YOLOv3(YOLOFunctions):
         print('Latency [Load `weight`]: (%.5fs)' % t_load_weight)
 
         t0_load_eval = time.time()
-        self.__eval_model()
+        self._eval_model()
         t_load_eval_model = time.time() - t0_load_eval
         print(".. Load function `eval_model` in (%.3fs)" % t_load_eval_model)
 
         # Latency: Execute Evaluation Model
         print('Latency [Load `Eval Model`]: (%.5fs)' % t_load_eval_model)
 
-        self.__get_names_colors()
+        self._get_names_colors()
 
     def detect(self, raw_img, frame_id):
         print("\n[%s] Starting YOLOv3 for frame-%s" % (get_current_time(), frame_id))
@@ -86,15 +90,15 @@ class YOLOv3(YOLOFunctions):
         print('[%s] DONE Inference of frame-%s (%.3f ms)' % (get_current_time(), str(this_frame_id), t_inference))
 
         # Default: Disabled
-        if self.opt.half:
+        if self.conf["half"]:
             self.pred = self.pred.float()
 
         # Apply NMS: Non-Maximum Suppression
         # ts_nms = time.time()
         # to Removes detections with lower object confidence score than 'conf_thres'
-        self.pred = non_max_suppression(self.pred, self.opt.conf_thres, self.opt.iou_thres,
-                                        classes=self.opt.classes,
-                                        agnostic=self.opt.agnostic_nms)
+        self.pred = non_max_suppression(self.pred, self.conf["conf_thres"], self.conf["iou_thres"],
+                                        classes=self.conf["classes"],
+                                        agnostic=self.conf["agnostic_nms"])
         # print('\n # Total Non-Maximum Suppression (NMS) time: (%.3fs)' % (time.time() - ts_nms))
 
         # Apply Classifier: Default DISABLED
@@ -116,7 +120,7 @@ class YOLOv3(YOLOFunctions):
 
                     # Export results: Raw image OR BBox image OR Crop image OR BBox txt
                     # if self.opt.dump_raw_img or self.opt.dump_bbox_img or self.opt.dump_crop_img or self.opt.save_txt:
-                    if self.opt.cv_out:
+                    if self.conf["cv_out"]:
                         self._manage_detection_results(det, raw_img, this_frame_id)
 
         except Exception as e:
@@ -144,7 +148,7 @@ class YOLOv3(YOLOFunctions):
 
             # Save cropped files
             self._save_cropped_img(xyxy, original_img, idx_detected, self.names[int(cls)], this_frame_id,
-                                   self.opt.file_ext)
+                                   self.conf["file_ext"])
             # Save bbox information
             self._safety_store_txt(xyxy, this_frame_id, self.names[int(cls)], str(round(float(conf), 2)))
 
@@ -159,63 +163,3 @@ class YOLOv3(YOLOFunctions):
 
         # Save BBox image
         self._save_results(raw_img, this_frame_id)
-
-    def __load_weight(self):
-        # Load weights
-        attempt_download(self.weights)
-        if self.weights.endswith('.pt'):  # pytorch format
-            self.model.load_state_dict(torch.load(self.weights, map_location=self.device)['model'])
-        else:  # darknet format
-            load_darknet_weights(self.model, self.weights)
-
-        # Fuse Conv2d + BatchNorm2d layers
-        # model.fuse()
-
-    def __second_stage_classifier(self):
-        # Second-stage classifier
-        if self.classify:
-            self.modelc = torch_utils.load_classifier(name='resnet101', n=2)  # initialize
-            self.modelc.load_state_dict(torch.load('weights/resnet101.pt', map_location=self.device)['model'])  # load weights
-            self.modelc.to(self.device).eval()
-
-    def __eval_model(self):
-        # Eval mode
-        self.model.to(self.device).eval()
-
-    # Optional
-    def __export_mode(self):
-        # Export mode
-        if ONNX_EXPORT:
-            img = torch.zeros((1, 3) + self.img_size)  # (1, 3, 320, 192)
-            torch.onnx.export(self.model, img, 'weights/export.onnx', verbose=False, opset_version=10)
-
-            # Validate exported model
-            import onnx
-            model = onnx.load('weights/export.onnx')  # Load the ONNX model
-            onnx.checker.check_model(model)  # Check that the IR is well formed
-            print(onnx.helper.printable_graph(model.graph))  # Print a human readable representation of the graph
-            return
-
-    def __half_precision(self):
-        # Half precision
-        self.half = self.half and self.device.type != 'cpu'  # half precision only supported on CUDA
-        if self.half:
-            self.model.half()
-
-    def __set_data_loader(self):
-        # Set Dataloader
-        self.vid_path, self.vid_writer = None, None
-        if self.webcam:
-            self.view_img = True
-            self.save_img = True
-            # self.save_img = False
-            torch.backends.cudnn.benchmark = True  # set True to speed up constant image size inference
-            self.dataset = LoadStreams(self.source, img_size=self.img_size, half=self.half)
-        else:
-            self.save_img = True
-            self.dataset = LoadImages(self.source, img_size=self.img_size, half=self.half)
-
-    def __get_names_colors(self):
-        # Get names and colors
-        self.names = load_classes(self.opt.names)
-        self.colors = [[random.randint(0, 255) for _ in range(3)] for _ in range(len(self.names))]
