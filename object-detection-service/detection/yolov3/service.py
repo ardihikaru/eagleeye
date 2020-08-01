@@ -31,15 +31,9 @@ class YOLOv3Service(asab.Service):
         await self.SubscriptionHandler.set_deployment_status()
         await self.SubscriptionHandler.start()
 
-    # TODO: To implement the coding!
     async def set_zmq_configurations(self, node_name, node_id):
         await self.ZMQService.set_configurations(node_name, node_id)
-        # node = Node()
-        # node.update_data_by_id(node_id, {
-        #     "pid": pid,
-        #     "channel": "node-" + node_id
-        # })
-        
+
     # TODO: To tag each captured image and identify the sender (DroneID)
     async def get_img(self):
         try:
