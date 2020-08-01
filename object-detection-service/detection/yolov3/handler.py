@@ -71,7 +71,6 @@ class YOLOv3Handler(MyRedis):
                 import time
                 print(">> > > > >> >START Receiving ZMQ in OBJDET @ ts:", time.time())
 
-                # TODO: if the image_info's key `active`=False, BREAK the Pub/sub listener!
                 if not image_info["active"]:
                     break
 
