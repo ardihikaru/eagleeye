@@ -1,6 +1,7 @@
 import asab.storage
 import asab.web.session
 from detection.zmq import ZMQModule
+from detection.resizer import ResizerModule
 from detection.candidate_selection import CandidateSelectionModule
 from detection.persistence_validation import PersistenceValidationModule
 from detection.algorithm import DetectionAlgorithmModule
@@ -21,6 +22,7 @@ class ObjectDetectionService(asab.Application):
 
 		# Add modules
 		self.add_module(ZMQModule)
+		self.add_module(ResizerModule)
 		self.add_module(CandidateSelectionModule)
 		self.add_module(PersistenceValidationModule)
 		self.add_module(DetectionAlgorithmModule)

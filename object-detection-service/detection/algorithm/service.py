@@ -21,6 +21,7 @@ class DetectionAlgorithmService(asab.Service):
         super().__init__(app, service_name)
         self.app = app
         self.SubscriptionHandler = YOLOv3Handler(app)
+        self.ResizerService = app.get_service("detection.ResizerService")
 
         # Extractor service may not exist at this point
         # This variable will be set up in the init time
@@ -75,8 +76,14 @@ class DetectionAlgorithmService(asab.Service):
     async def detect_object(self, frame):
         print("######### START OBJECT DETECTION")
         try:
-            # pred = self.yolo.get_prediction(frame)
-            bbox_data = self.yolo.get_bbox_data(frame, False)
+            # Perform conversion first!
+            resized_frame = await self.ResizerService.cpu_convert_to_padded_size(frame)
+            # TODO: To add GPU-based downsample function
+            # resized_frame = await self.ResizerService.gpu_convert_to_padded_size(frame)
+
+            # Perform object detection
+            bbox_data = self.yolo.get_bbox_data(resized_frame)
+            # bbox_data = self.yolo.get_bbox_data(frame, False)
         except Exception as e:
             print(" >>>> GET BBox e:", e)
             bbox_data = None
