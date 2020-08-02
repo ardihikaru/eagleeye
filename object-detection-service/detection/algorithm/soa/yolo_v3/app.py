@@ -94,12 +94,18 @@ class YOLOv3(YOLOFunctions):
         ts_nms = time.time()
         # to Removes detections with lower object confidence score than 'conf_thres'
         pred = non_max_suppression(pred, self.conf["conf_thres"], self.conf["iou_thres"],
-                                        # classes=self.conf["classes"],
                                         classes=None,
                                         agnostic=self.conf["agnostic_nms"])
         print('\n # Total Non-Maximum Suppression (NMS) time: (%.3f ms)' % ((time.time() - ts_nms)*1000))
 
         self.test_print_bbox(pred)
+
+        print("######### TYPE pred:", type(pred))
+        import simplejson as json
+        t0_dump = time.time()
+        dump = json.dumps(pred)
+        print('\n # Total DUMP Data time: (%.3f ms)' % ((time.time() - t0_dump)*1000))
+
 
         return pred
         # Apply Classifier: Default DISABLED

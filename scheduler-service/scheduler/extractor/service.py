@@ -131,24 +131,23 @@ class ExtractorService(asab.Service):
 				print('[%s] Latency for Publishing FRAME NOTIFICATION into Object Detection Service (%.3f ms)' % (
 				get_current_time(), t1_publish))
 
-				# Sending image data through ZMQ (TCP connection)
-				# self.ZMQService.send_this_image(senders["zmq"][sel_node_id], self.frame_id, frame)
+				if bool(int(asab.Config["stream:config"]["convert_img"])):
+					# Sending image data through ZMQ (TCP connection)
+					self.ZMQService.send_this_image(senders["zmq"][sel_node_id], self.frame_id, frame)
+				else:
+					# TODO: In this case, Candidate Selection Algorithm will not work!!!!!
+					# Convert the yolo input images; Here it converts from FullHD into <img_size> (padded size)
+					if bool(int(asab.Config["stream:config"]["convert_img"])):
+						yolo_frame = await self.ResizerService.cpu_convert_to_padded_size(frame)
+					else:
+						# NOT IMPLEMENTED YET!!!!
+						# TODO: To add GPU-based downsample function
+						yolo_frame = await self.ResizerService.gpu_convert_to_padded_size(frame)
+					print("--- YOLO success:", self.frame_id, success, yolo_frame.shape)
 
-				# Convert the yolo input images; Here it converts from FullHD into <img_size> (padded size)
-				# TODO: To add GPU-based downsample function
-				yolo_frame = await self.ResizerService.cpu_convert_to_padded_size(frame)
-				# yolo_frame = await self.ResizerService.gpu_convert_to_padded_size(frame)
-				print("--- YOLO success:", self.frame_id, success, yolo_frame.shape)
-
-				# # CHECKING: how is the latency if we send converted version?
-				# # Sending image data through ZMQ (TCP connection)
-				self.ZMQService.send_this_image(senders["zmq"][sel_node_id], self.frame_id, yolo_frame)
-				# t0_zmq = time.time()
-				# zmq_id = str(self.frame_id) + "-" + str(t0_zmq)
-				# # self.sender.send_image(str(self.frame_id), frame)
-				# senders["zmq"][sel_node_id].send_image(zmq_id, yolo_frame)
-				# t1_zmq = (time.time() - t0_zmq) * 1000
-				# print('Latency [Send imagezmq YOLO Img] of frame-%s: (%.5fms)' % (str(self.frame_id), t1_zmq))
+					# CHECKING: how is the latency if we send converted version?
+					# Sending image data through ZMQ (TCP connection)
+					self.ZMQService.send_this_image(senders["zmq"][sel_node_id], self.frame_id, yolo_frame)
 
 				print()
 
