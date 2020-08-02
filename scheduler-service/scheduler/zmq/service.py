@@ -3,6 +3,7 @@ import logging
 import imagezmq
 import time
 from scheduler.controllers.node.node import Node
+from ext_lib.utils import get_current_time
 
 ###
 
@@ -22,21 +23,21 @@ class ZMQService(asab.Service):
 
     # TODO: We need to have a dynamic configuration; This is still static and called ONCE
     async def set_configurations(self):
-        print(" >>>>> @ ZMQ Sender: set_configurations")
+        # print(" >>>>> @ ZMQ Sender: set_configurations")
         # Build ZMQ Senders
         node = Node()
         is_success, self.node_info, msg, total = node.get_data()
 
-        print(" >>>> self.node_info:", self.node_info, type(self.node_info))
+        # print(" >>>> self.node_info:", self.node_info, type(self.node_info))
         if is_success:
             # Set ZMQ Senders
             for i in range(total):
                 uri = 'tcp://127.0.0.1:555' + str(self.node_info[i]["name"])
-                print(" >>>> uri:", uri)
+                # print(" >>>> uri:", uri)
                 sender = imagezmq.ImageSender(connect_to=uri, REQ_REP=False)
                 self.zmq_sender.append(sender)
         else:
-            print(" >>>> Force to exit, since No Node are available!")
+            print("\n[%s] Forced to exit, since No Node are available!" % get_current_time())
             exit()
 
     def get_senders(self):
@@ -47,7 +48,7 @@ class ZMQService(asab.Service):
 
     def send_this_image(self, sender, frame_id, frame):
         t0_zmq = time.time()
-        print("> >>>>>> START SENDING ZMQ in ts:", t0_zmq)
+        # print("> >>>>>> START SENDING ZMQ in ts:", t0_zmq)
         zmq_id = str(frame_id) + "-" + str(t0_zmq)
         sender.send_image(zmq_id, frame)
         t1_zmq = (time.time() - t0_zmq) * 1000

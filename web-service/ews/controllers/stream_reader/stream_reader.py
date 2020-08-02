@@ -18,7 +18,7 @@ class StreamReader:
 
     def read(self, request_json):
         # Validate input
-        print(request_json)
+        # print(request_json)
         t0_validator = time.time()
         config = request_to_config(request_json)
         t1_validator = (time.time() - t0_validator) * 1000
@@ -26,7 +26,7 @@ class StreamReader:
 
         # send data into Scheduler service through the pub/sub
         t0_publish = time.time()
-        print("# send data into Scheduler service through the pub/sub")
+        # print("# send data into Scheduler service through the pub/sub")
         config["timestamp"] = time.time()  # To verify the communication latency
         dump_request = json.dumps(config)
         pub(self.redis.get_rc(), asab.Config["pubsub:channel"]["scheduler"], dump_request)

@@ -5,6 +5,7 @@ from ext_lib.utils import get_current_time, pubsub_to_json
 from ext_lib.redis.translator import redis_get
 import os
 from concurrent.futures import ThreadPoolExecutor
+import time
 
 ###
 
@@ -49,7 +50,7 @@ class YOLOv3Handler(MyRedis):
         await self.DetectionAlgorithmService.update_node_information(self.node_id, self.pid)
 
         # Set ZMQ Receiver (& Sender) configuration
-        print("## # Set ZMQ Receiver (& Sender) configuration ##")
+        # print("## # Set ZMQ Receiver (& Sender) configuration ##")
         await self.DetectionAlgorithmService.set_zmq_configurations(self.node_name, self.node_id)
 
     async def stop(self):
@@ -77,24 +78,23 @@ class YOLOv3Handler(MyRedis):
             else:
                 # TODO: To tag the corresponding drone_id to identify where the image came from (Future work)
                 image_info = pubsub_to_json(item["data"])
-                print(" >>> image_info:", image_info)
+                # print(" >>> image_info:", image_info)
 
-                import time
-                print(">> > > > >> >START Receiving ZMQ in OBJDET @ ts:", time.time(), redis_get(self.rc, channel))
+                # print(">> > > > >> >START Receiving ZMQ in OBJDET @ ts:", time.time(), redis_get(self.rc, channel))
 
                 # if not image_info["active"]:
                 if redis_get(self.rc, channel) is not None:
                     self.rc.delete(channel)
-                    print(">>>>>>>>>>>>>>>> ####### STOPPING COY ....")
+                    print("\n[%s] Forced to exit the Object Detection Service" % get_current_time())
                     await self.stop()
                     break
 
                 # TODO: To start TCP Connection and be ready to capture the image from [Scheduler Service]
                 # TODO: To have a tag as the image identifier, i.e. DroneID
                 is_success, frame_id, t0_zmq, img = await self.DetectionAlgorithmService.get_img()
-                print(">>>> RECEIVED DATA:", is_success, frame_id, t0_zmq, img.shape)
+                # print(">>>> RECEIVED DATA:", is_success, frame_id, t0_zmq, img.shape)
                 t1_zmq = (time.time() - t0_zmq) * 1000
-                print('\n #### [%s] Latency for Receiving Image ZMQ (%.3f ms)' % (get_current_time(), t1_zmq))
+                print('\n[%s] Latency for Receiving Image ZMQ (%.3f ms)' % (get_current_time(), t1_zmq))
                 # TODO: To save latency into ElasticSearchDB (Future work)
 
                 # Start performing object detection
@@ -109,8 +109,8 @@ class YOLOv3Handler(MyRedis):
                     t0_cs = time.time()
                     mbbox_data = await self.CandidateSelectionService.calc_mbbox(bbox_data, det, names, h, w, c)
                     t1_cs = (time.time() - t0_cs) * 1000
-                    print('\n #### [%s] Latency of Candidate Selection Algo. (%.3f ms)' % (get_current_time(), t1_cs))
-                    print(" >>>>> mbbox_data:", mbbox_data)
+                    print('\n[%s] Latency of Candidate Selection Algo. (%.3f ms)' % (get_current_time(), t1_cs))
+                    # print(" >>>>> mbbox_data:", mbbox_data)
 
                     # Performing Persistence Validation Algorithm, if enabled
                     if self.pv_enabled and len(mbbox_data) > 0:
@@ -127,17 +127,19 @@ class YOLOv3Handler(MyRedis):
                                                                                          self.period_pih_candidates)
                         await self._maintaince_period_pih_cand()
                         t1_pv = (time.time() - t0_pv) * 1000
-                        print('\n #### [%s] Latency of Persistence Detection Algorithm (%.3f ms)' %
+                        print('\n[%s] Latency of Persistence Detection Algorithm (%.3f ms)' %
                               (get_current_time(), t1_pv))
-                        print("########### label, det_status:", label, det_status)
                     else:
                         # Set default label, in case PV algorithm is DISABLED
                         label = asab.Config["bbox_config"]["pih_label"]
                         det_status = label + " object FOUND"
 
+                    print("\n[%s]Frame-%s label=[%s], det_status=[%s]" %
+                          (get_current_time(), str(frame_id), label, det_status))
+
                 # If enable visualizer, send the bbox into the Visualizer Service
                 if self.cv_out:
-                    print("**** SENDING BBox INTO Visualizer Service!")
+                    print("\n[%s] SENDING BBox INTO Visualizer Service!" % get_current_time())
 
         print("\n[%s] YOLOv3Handler stopped listening to [Scheduler Service]" % get_current_time())
         # Call stop function since it no longers listening

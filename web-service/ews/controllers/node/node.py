@@ -33,7 +33,7 @@ class Node(MyRedis):
 
     def _spawn_node(self, pool_name, node_data):
         # Make config file according to this file
-        print(" #### node_data:", node_data)
+        # print(" #### node_data:", node_data)
         builder = ConfigBuilder()
         builder.set_config_path("./../object-detection-service/etc/detection.conf")
         builder.set_default_redis_conf()
@@ -67,7 +67,7 @@ class Node(MyRedis):
 
         # send data into Scheduler service through the pub/sub
         t0_publish = time.time()
-        print("# send data into Scheduler service through the pub/sub")
+        # print("# send data into Scheduler service through the pub/sub")
         dump_request = json.dumps(node_data)
         pub(self.get_rc(), asab.Config["pubsub:channel"]["node"], dump_request)
         t1_publish = (time.time() - t0_publish) * 1000
@@ -85,9 +85,9 @@ class Node(MyRedis):
             }
             self.executor.submit(self._spawn_node, **kwargs)
         except:
-            print("Somehow we unable to Start the Thread of NodeGenerator")
+            print("\n[%s] Somehow we unable to Start the Thread of NodeGenerator" % get_current_time())
         t1_thread = (time.time() - t0_thread) * 1000
-        print('\n #### [%s] Latency for Start threading (%.3f ms)' % (get_current_time(), t1_thread))
+        print('\n[%s] Latency for Start threading (%.3f ms)' % (get_current_time(), t1_thread))
 
         # TODO: Save the latency into ElasticSearchDB for the real-time monitoring
 

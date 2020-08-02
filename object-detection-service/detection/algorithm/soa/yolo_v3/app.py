@@ -42,7 +42,7 @@ class YOLOv3(YOLOFunctions):
         t0_load_weight = time.time()
         self._load_weight()
         t_load_weight = time.time() - t0_load_weight
-        print(".. Load `weight` in (%.3fs)" % t_load_weight)
+        # print(".. Load `weight` in (%.3fs)" % t_load_weight)
 
         # Latency: Load YOLOv3 Weight
         print('Latency [Load `weight`]: (%.5fs)' % t_load_weight)
@@ -50,7 +50,7 @@ class YOLOv3(YOLOFunctions):
         t0_load_eval = time.time()
         self._eval_model()
         t_load_eval_model = time.time() - t0_load_eval
-        print(".. Load function `eval_model` in (%.3fs)" % t_load_eval_model)
+        # print(".. Load function `eval_model` in (%.3fs)" % t_load_eval_model)
 
         # Latency: Execute Evaluation Model
         print('Latency [Load `Eval Model`]: (%.5fs)' % t_load_eval_model)
@@ -134,7 +134,7 @@ class YOLOv3(YOLOFunctions):
 
     # def _extract_detection_results(self, det, raw_img, this_frame_id):
     def _extract_detection_results(self, det):
-        print("@@@@ _extract_detection_results....")
+        # print("@@@@ _extract_detection_results....")
         """ A function to do optional actions: Save cropped file, bbox in txt, bbox images """
         # t0_copy_image = time.time()
         # original_img = raw_img.copy()

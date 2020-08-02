@@ -54,7 +54,7 @@ class ExtractorService(asab.Service):
 
 			try:
 				success, frame = True, im0s
-				print("--- success:", self.frame_id, success, frame.shape)
+				# print("--- success:", self.frame_id, success, frame.shape)
 				# if self._detection_handler(ret, frame, received_frame_id):
 				#     break
 
@@ -108,22 +108,22 @@ class ExtractorService(asab.Service):
 			while await self._streaming():
 				self.frame_id += 1
 				success, frame = await self._read_frame()
-				print("\n --- success:", self.frame_id, success, frame.shape)
+				# print("\n --- success:", self.frame_id, success, frame.shape)
 
 				# TODO: To implement scheduler here and find which node will be selected
 				# Dummy and always select Node=1 now; id=0
 				sel_node_id = 0
 
-				print(" >>> senders:", senders, type(senders))
+				# print(" >>> senders:", senders, type(senders))
 
 				# First, notify the Object Detection Service to get ready (publish)
 				node_id = senders["node"][sel_node_id]["id"]
 				node_channel = senders["node"][sel_node_id]["channel"]
-				print(" >>>> node_id=", node_id)
-				print(" >>>> node_channel=", node_channel)
+				# print(" >>>> node_id=", node_id)
+				# print(" >>>> node_channel=", node_channel)
 				# send data into Scheduler service through the pub/sub
 				t0_publish = time.time()
-				print("# send data into Scheduler service through the pub/sub")
+				# print("# send data into Scheduler service through the pub/sub")
 				dump_request = json.dumps({"active": True, "frame": "ini frame data coy", "ts": time.time()})
 				pub(self.redis.get_rc(), node_channel, dump_request)
 				t1_publish = (time.time() - t0_publish) * 1000
@@ -152,7 +152,7 @@ class ExtractorService(asab.Service):
 				print()
 
 		except Exception as e:
-			print(" ---- >> e:", e)
+			# print(" ---- >> e:", e)
 			return False
 			# TODO: To have further actions, i.e. restart connection (work for both Video file / Streaming
 			# TODO: When reloaded, we need to clean up: RedisDB and any other storage related to this action
