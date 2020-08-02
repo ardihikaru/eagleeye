@@ -12,6 +12,8 @@ class ConfigModel(Document):
     algorithm = StringField(required=True)
     scalable = BooleanField(required=True)
     stream = BooleanField(required=True)
+    candidate_selection = BooleanField(required=True, default=True)
+    persistance_validation = BooleanField(required=True, default=True)
     created_at = DateTimeField(default=datetime.datetime.now)
     updated_at = DateTimeField(default=datetime.datetime.now)
 
