@@ -28,7 +28,15 @@ class ConfigBuilder:
 			"mongodb_uri": "mongodb://localhost:27017"
 		}
 
-	def set_default_yolov3_conf(self, node_id=""):
+	def set_default_yolov3_conf(self, cand_sel=False, pers_val=False):
+		if cand_sel:
+			cand_sel = "1"
+		else:
+			cand_sel = "0"
+		if pers_val:
+			pers_val = "1"
+		else:
+			pers_val = "0"
 		self.config["objdet:yolo"] = {
 			"output": "outputs/",
 			"source_folder_prefix": "out",
@@ -50,6 +58,10 @@ class ConfigBuilder:
 			"names": "../object-detection-service/config_files/yolo/data/coco.names",
 			"cfg": "../object-detection-service/config_files/yolo/cfg/yolov3.cfg",
 			"weights": "../object-detection-service/config_files/yolo/weights/yolov3.weights",
+
+			# Extra algorithms in EageleEYE
+			"candidate_selection": cand_sel,
+			"persistance_validation": pers_val,
 
 			"auto_restart": "1",
 			"cv_out": "1",

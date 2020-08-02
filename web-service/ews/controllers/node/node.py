@@ -33,12 +33,18 @@ class Node(MyRedis):
 
     def _spawn_node(self, pool_name, node_data):
         # Make config file according to this file
+        print(" #### node_data:", node_data)
         builder = ConfigBuilder()
         builder.set_config_path("./../object-detection-service/etc/detection.conf")
         builder.set_default_redis_conf()
         builder.set_default_mongodb_conf()
         builder.set_default_pubsub_channel_conf(node_id=str(node_data["id"]))
-        builder.set_default_yolov3_conf()
+        builder.set_default_yolov3_conf(
+            # cand_sel=True,
+            # pers_val=True
+            cand_sel=node_data["candidate_selection"],
+            pers_val=node_data["persistance_validation"]
+        )
         builder.set_custom_conf("node", node_data)
         builder.set_custom_conf("thread", {"num_executor": "1"})
         # TODO: We need a function to dynamically set the Node URI
@@ -77,9 +83,15 @@ class Node(MyRedis):
 
         # TODO: Save the latency into ElasticSearchDB for the real-time monitoring
 
-
     def register(self, node_data):
         msg = "Registration of a new Node is success."
+
+        # Validate
+        if "candidate_selection" not in node_data:
+            node_data["candidate_selection"] = False
+        if "persistance_validation" not in node_data:
+            node_data["persistance_validation"] = False
+
         #  inserting
         is_success, inserted_data, msg = insert_new_data(NodeModel, node_data, msg)
 
