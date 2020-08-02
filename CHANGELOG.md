@@ -1,3 +1,92 @@
+## 3.0-EEv1.5-Single-Node (August 03, 2020)
+  - Merge branch 'feature/EagleEYEv1.5/YOLOv3' into develop
+  - Remove unused services
+  - Remove console printings
+  - Implemented Persistence Validation Algorithm
+  - Implemented Candidate Selection Algorithm
+  - Added Resizer Module into Object Detection Service
+  - Bug fixed
+  - Bug fixed
+  - Change variable name
+  - Bug fix: Unable to stop Object Detection service when performing detection
+  - Bug fix: Unable to run Object Detection Service
+  - Reformat `persistance_validation` and `cadidate_selection` into Boolean
+  - Added Field `persistance_validation` and `cadidate_selection` in the nodes collection instead!
+  - Added Field `persistance_validation` and `cadidate_selection` in the Configs collection
+  - Code Refactoring: Object Detection Service received raw images and collect BBox info each
+  - Scheduler Service will send the original image instead of the padded version
+  - Tested YOLOv3 detection
+  - Added YOLOv3 class and test loading the class
+  - Removed useless while loop
+  - Code refactoring: Change YOLOv3 Module and Service into `Algorithm`
+  - TODO Done: To implement the coding!
+  - Clean code
+  - Code refactoring: Use ZMQService inside the ExtractorService instead; Clean code
+  - TODO Done: if the image_info's key `active`=False, BREAK the Pub/sub listener!
+  - To show latency of sending image through ZMQ
+  - bug fix: Sending numpy array to Object Detection Service
+  - On going work: tested
+  - On going work: Sending image via ZMQ
+  - updates: - Added feature to send image through ZMQ - Added publish mechanism before sending image through ZMQ
+  - Delete unused codes
+  - Implemented schema: When deleting a node, also destroying the Object Detection Service
+  - Update `channel` and `pid` once object detection deployed
+  - Added node information in the deployed object detection service
+  - automatically add/update *.conf file when deploying a new objdet service
+  - renamed class and file name
+  - Added config builder class
+  - Rename the class name
+  - Add a new field `pid`
+  - Merge branch 'feature/EagleEYEv1.5/YOLOv3' of github.com:ardihikaru/eagleeye into feature/EagleEYEv1.5/YOLOv3
+  - added new service: Persistance Validation Service (code skeleton)
+  - added new service: Candidate Selection Service (code skeleton)
+  - Code refactoring
+  - Bug fix: Once no images can be captured, exit the subscription
+  - Fix comment
+  - Add a condition. Trigger the action once it succeed adding a new node
+  - Example to spawn thread and kill it
+  - Add default (dummy) yolo's configuration setup
+  - Added sample actions
+  - Added sample script runner
+  - Removed unused codes
+  - Added a simple object detection service based on ASAB Framework
+  - Added a service to downsample image
+  - Updated req
+  - Code refactor; Added comments
+  - Added input folder (set of images) handler
+  - Added video stream handler
+  - updated requirement file
+  - updated requirement file
+  - updated requirement file
+  - Added a service to distinguish the type of source data: Video stream or Folder
+  - Added API: DELETE /api/stream/live/{_id}
+  - Added API: PUT /api/stream/live/{_id}
+  - Added API: GET /api/stream/live/{_id}
+  - Tested API: GET and PUT /api/nodes/{_id}
+  - Added & Tested API: DELETE /api/nodes and DELETE /api/nodes/{_id}
+  - Added API: GET /api/nodes; bug fixed POST /api/nodes
+  - Added API: POST /api/nodes
+  - updates: - Added API: Add new video stream (only one stream allowed) - Added API: Get available video stream - Added service: Scheduler-service - Tested fuctionality: Publishing request data into Scheduler-service - Added & Tested Func.: Subcribing request data from Web-service
+  - added requirement file
+  - ignored .idea/ in the new services' directory
+  - Added `object-detection-service` and `scheduler-service`
+  - re-testing the API: POST /api/stream/live
+  - added thread-based insert into MongoDB
+  - doing research on subprocess
+  - removed optional data
+  - renamed API /api/stream into /api/stream/live; added /api/stream/folder
+  - updated conf file; updated re file
+  - Merge branch 'feature/EagleEYEv1.5/asab-framework' into develop
+  - added code skeleton for API: POST /api/stream
+  - updates: - added requirement file into the web-service - code refactoring - testing auth and login endpoints
+  - ignore venv inside /web-service
+  - Moved away old codes; added web-service code's boilerplate
+  - Merge pull request #2 from ardihikaru/feature/research/save-img-to-sharedmemory
+  - bugfix: added mising sample file
+  - Merge pull request #1 from ardihikaru/feature/research/save-img-to-sharedmemory
+  - added research on sharedmemory; bug fixed; update req file
+  - Merge branch 'release-2.0.3-mobileheroes2020' into develop
+
 ## 2.0.3-mobileheroes2020 (June 11, 2020)
   - Merge branch 'feature/ads-integration' into develop
   - added results for mobileheroes2020 figures
