@@ -26,8 +26,8 @@ class YOLOv3(YOLOFunctions):
         conf["auto_restart"] = bool(int(conf["auto_restart"]))
         conf["cv_out"] = bool(int(conf["cv_out"]))
 
-        conf["candidate_selection"] = bool(int(conf["candidate_selection"]))
-        conf["persistance_validation"] = bool(int(conf["persistance_validation"]))
+        # conf["candidate_selection"] = bool(int(conf["candidate_selection"]))
+        # conf["Persistence_validation"] = bool(int(conf["Persistence_validation"]))
 
         conf["img_size"] = int(conf["img_size"])
         conf["window_size_height"] = int(conf["window_size_height"])

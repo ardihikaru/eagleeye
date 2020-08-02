@@ -28,15 +28,16 @@ class ConfigBuilder:
 			"mongodb_uri": "mongodb://localhost:27017"
 		}
 
-	def set_default_yolov3_conf(self, cand_sel=False, pers_val=False):
-		if cand_sel:
-			cand_sel = "1"
-		else:
-			cand_sel = "0"
-		if pers_val:
-			pers_val = "1"
-		else:
-			pers_val = "0"
+	# def set_default_yolov3_conf(self, cand_sel=False, pers_val=False):
+	def set_default_yolov3_conf(self):
+		# if cand_sel:
+		# 	cand_sel = "1"
+		# else:
+		# 	cand_sel = "0"
+		# if pers_val:
+		# 	pers_val = "1"
+		# else:
+		# 	pers_val = "0"
 		self.config["objdet:yolo"] = {
 			"output": "outputs/",
 			"source_folder_prefix": "out",
@@ -60,8 +61,8 @@ class ConfigBuilder:
 			"weights": "../object-detection-service/config_files/yolo/weights/yolov3.weights",
 
 			# Extra algorithms in EageleEYE
-			"candidate_selection": cand_sel,
-			"persistance_validation": pers_val,
+			# "candidate_selection": cand_sel,
+			# "persistence_validation": pers_val,
 
 			"auto_restart": "1",
 			"cv_out": "1",
@@ -71,6 +72,23 @@ class ConfigBuilder:
 
 	def set_custom_conf(self, key, items):
 		self.config[key] = items
+
+		# to convert any Boolean into String `1` or `0`
+		for skey, sval in self.config[key].items():
+			print(" >>> self.config[key][skey] :", self.config[key][skey], type(self.config[key][skey]))
+			if isinstance(self.config[key][skey], bool):
+				if self.config[key][skey]:
+					print(" >>> PERBARUI value coi")
+					self.config[key][skey] = "1"
+				else:
+					self.config[key][skey] = "0"
+
+			if self.config[key][skey] == "True" or self.config[key][skey] == "False":
+				if self.config[key][skey] == "True":
+					self.config[key][skey] = "1"
+				else:
+					self.config[key][skey] = "0"
+			print(">>> NEW VAL: ", self.config[key][skey])
 
 	def set_config_path(self, path):
 		self.conf_path = path

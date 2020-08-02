@@ -41,7 +41,7 @@ class DetectionAlgorithmService(asab.Service):
         try:
             self.yolo = YOLOv3(asab.Config["objdet:yolo"])
         except Exception as e:
-            print(" >>>> e:", e)
+            print(" >>>> YOLOv3 e:", e)
             await self.SubscriptionHandler.stop()
 
     async def set_zmq_configurations(self, node_name, node_id):
@@ -71,12 +71,12 @@ class DetectionAlgorithmService(asab.Service):
         print("######### START OBJECT DETECTION")
         try:
             # pred = self.yolo.get_prediction(frame)
-            pred = self.yolo.get_bbox_data(frame, False)
+            bbox_data = self.yolo.get_bbox_data(frame, False)
         except Exception as e:
-            print(" >>>> e:", e)
-            pred = None
+            print(" >>>> GET BBox e:", e)
+            bbox_data = None
             await self.SubscriptionHandler.stop()
-        return pred
+        return bbox_data
 
     async def delete_node_information(self, node_id):
         node = Node()

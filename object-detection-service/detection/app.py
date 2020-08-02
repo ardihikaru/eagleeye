@@ -1,6 +1,8 @@
 import asab.storage
 import asab.web.session
 from detection.zmq import ZMQModule
+from detection.candidate_selection import CandidateSelectionModule
+from detection.persistence_validation import PersistenceValidationModule
 from detection.algorithm import DetectionAlgorithmModule
 from ext_lib.utils import get_current_time
 from mongoengine import connect
@@ -19,6 +21,8 @@ class ObjectDetectionService(asab.Application):
 
 		# Add modules
 		self.add_module(ZMQModule)
+		self.add_module(CandidateSelectionModule)
+		self.add_module(PersistenceValidationModule)
 		self.add_module(DetectionAlgorithmModule)
 
 		# Initialize reader service

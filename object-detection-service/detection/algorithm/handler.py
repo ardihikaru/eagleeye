@@ -18,6 +18,8 @@ class YOLOv3Handler(MyRedis):
     def __init__(self, app):
         super().__init__(asab.Config)
         self.DetectionAlgorithmService = app.get_service("detection.DetectionAlgorithmService")
+        self.CandidateSelectionService = app.get_service("detection.CandidateSelectionService")
+        self.PersistenceValidationService = app.get_service("detection.PersistenceValidationService")
         self.executor = ThreadPoolExecutor(int(asab.Config["thread"]["num_executor"]))
 
         # Default None
@@ -25,15 +27,17 @@ class YOLOv3Handler(MyRedis):
         self.node_id = asab.Config["node"]["id"]
         self.pid = os.getpid()
 
+        # Extra Module params
+        self.cs_enabled = bool(int(asab.Config["node"]["candidate_selection"]))
+        self.pv_enabled = bool(int(asab.Config["node"]["Persistence_validation"]))
+        self.cv_out = bool(int(asab.Config["objdet:yolo"]["cv_out"]))
+
     async def set_configuration(self):
         # Initialize YOLOv3 configuration
         print("\n[%s] Initialize YOLOv3 configuration" % get_current_time())
 
     async def set_deployment_status(self):
-        """
-            To change Field `pid` from -1 into this process's PID
-        Returns: None
-        """
+        """ To change Field `pid` from -1 into this process's PID """
         print("\n[%s] Updating PID information" % get_current_time())
 
         # Update Node information: `channel` and `pid`
@@ -45,9 +49,9 @@ class YOLOv3Handler(MyRedis):
 
     async def stop(self):
         print("\n[%s] Object Detection Service is going to stop" % get_current_time())
-        
+
         # Delete Node
-        await self.DetectionAlgorithmService.delete_node_information(self.node_id)
+        await self.DetectionAlgorithmService.delete_node_information(asab.Config["node"]["id"])
 
         # exit the Object Detection Service
         exit()
@@ -90,16 +94,24 @@ class YOLOv3Handler(MyRedis):
                 # TODO: To save latency into ElasticSearchDB (Future work)
 
                 # Start performing object detection
-                pred = await self.DetectionAlgorithmService.detect_object(img)
+                bbox_data = await self.DetectionAlgorithmService.detect_object(img)
 
-                # print(" >>>> DISINI >>>> ", is_success, img.shape)
-                # break
+                try:
+                    # Performing Candidate Selection Algorithm, if enabled
+                    if self.cs_enabled:
+                        print("***** Performing Candidate Selection Algorithm")
+                        mbbox_data = await self.CandidateSelectionService.calc_mbbox(bbox_data)
 
-                # try:
-                #     _, self.raw_image = self.frame_receiver.recv_image()
-                #     print(" --- `Frame Data` has been successfully received: -- self.drone_id=", self.drone_id)
-                # except Exception as e:
-                #     print("\t\tRetrieve frame-%d ERROR:" % self.frame_id, e)
+                        # Performing Persistence Validation Algorithm, if enabled
+                        if self.pv_enabled:
+                            print("***** Performing Persistence Validation Algorithm")
+                            mbbox_data = await self.PersistenceValidationService.predict_mbbox(mbbox_data)
+                except Exception as e:
+                    print(" *** WAOW e:", e)
+
+                # If enable visualizer, send the bbox into the Visualizer Service
+                if self.cv_out:
+                    print("**** SENDING BBox INTO Visualizer Service!")
 
         print("\n[%s] YOLOv3Handler stopped listening to [Scheduler Service]" % get_current_time())
         # Call stop function since it no longers listening

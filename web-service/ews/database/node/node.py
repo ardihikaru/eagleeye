@@ -14,7 +14,7 @@ class NodeModel(Document):
     idle = BooleanField(default=True)
     pid = IntField(default=-1)
     candidate_selection = BooleanField(required=True, default=True)
-    persistance_validation = BooleanField(required=True, default=True)
+    persistence_validation = BooleanField(required=True, default=True)
     created_at = DateTimeField(default=datetime.datetime.now)
     updated_at = DateTimeField(default=datetime.datetime.now)
 
