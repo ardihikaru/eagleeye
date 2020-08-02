@@ -75,15 +75,15 @@ def del_data_by_id(db_model, _id, rc):
         # channel = "node-" + _id + "-killer"
         channel = "node-" + _id
         # send data into Scheduler service through the pub/sub
-        t0_publish = time.time()
+        t0_notification = time.time()
         # dump_request = json.dumps({"active": False})
         # pub(rc, channel, dump_request)
         # Use redis key-value instead of pub/sub!
         redis_set(rc, channel, True)
-        t1_publish = (time.time() - t0_publish) * 1000
+        t1_notification = (time.time() - t0_notification) * 1000
         # TODO: Saving latency for scheduler:producer:destroy
         print('[%s] Latency to send a notification to destroy Object Detection Service (%.3f ms)' %
-              (get_current_time(), t1_publish))
+              (get_current_time(), t1_notification))
 
     except Exception as e:
         return False, str(e)
