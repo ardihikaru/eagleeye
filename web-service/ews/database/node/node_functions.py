@@ -8,6 +8,7 @@ from datetime import datetime
 from ext_lib.redis.translator import pub
 import time
 import simplejson as json
+from ext_lib.redis.translator import redis_set
 
 
 def insert_new_data(db_model, new_data, msg):
@@ -75,8 +76,10 @@ def del_data_by_id(db_model, _id, rc):
         channel = "node-" + _id
         # send data into Scheduler service through the pub/sub
         t0_publish = time.time()
-        dump_request = json.dumps({"active": False})
-        pub(rc, channel, dump_request)
+        # dump_request = json.dumps({"active": False})
+        # pub(rc, channel, dump_request)
+        # Use redis key-value instead of pub/sub!
+        redis_set(rc, channel, True)
         t1_publish = (time.time() - t0_publish) * 1000
         # TODO: Saving latency for scheduler:producer:destroy
         print('[%s] Latency to send a notification to destroy Object Detection Service (%.3f ms)' %

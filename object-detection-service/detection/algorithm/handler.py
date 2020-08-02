@@ -2,6 +2,7 @@ import asab
 import logging
 from ext_lib.redis.my_redis import MyRedis
 from ext_lib.utils import get_current_time, pubsub_to_json
+from ext_lib.redis.translator import redis_get
 import os
 from concurrent.futures import ThreadPoolExecutor
 
@@ -69,9 +70,11 @@ class YOLOv3Handler(MyRedis):
                 print(" >>> image_info:", image_info)
 
                 import time
-                print(">> > > > >> >START Receiving ZMQ in OBJDET @ ts:", time.time())
+                print(">> > > > >> >START Receiving ZMQ in OBJDET @ ts:", time.time(), redis_get(self.rc, channel))
 
-                if not image_info["active"]:
+                # if not image_info["active"]:
+                if redis_get(self.rc, channel) is not None:
+                    self.rc.delete(channel)
                     print(">>>>>>>>>>>>>>>> ####### STOPPING COY ....")
                     await self.stop()
                     break
