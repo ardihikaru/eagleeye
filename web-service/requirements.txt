@@ -1,0 +1,11 @@
+asab
+mongoengine
+aiohttp_jwt
+aiohttp_middlewares
+aiohttp_route_decorator
+werkzeug
+simplejson
+redis
+motor
+imagezmq
+window_slider
