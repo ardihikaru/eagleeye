@@ -18,10 +18,6 @@ class YOLOFunctions(ABC):
         self.bbox_img_path = self.conf["output"] + "images_txt/" + new_folder_name + "/bbox/"
         self.crop_img_path = self.conf["output"] + "images_txt/" + new_folder_name + "/crop/"
         self.txt_bbox_path = self.conf["output"] + "images_txt/" + new_folder_name + "/txt/"
-        # self.raw_img_path = self.opt.output + "images_txt/" + new_folder_name + "/raw/"
-        # self.bbox_img_path = self.opt.output + "images_txt/" + new_folder_name + "/bbox/"
-        # self.crop_img_path = self.opt.output + "images_txt/" + new_folder_name + "/crop/"
-        # self.txt_bbox_path = self.opt.output + "images_txt/" + new_folder_name + "/txt/"
 
         # Make directories of out it
         os.makedirs(self.raw_img_path)

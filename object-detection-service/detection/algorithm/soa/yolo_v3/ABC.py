@@ -56,19 +56,6 @@ class ABC:
         if self.half:
             self.model.half()
 
-    # def __set_data_loader(self):
-    #     # Set Dataloader
-    #     self.vid_path, self.vid_writer = None, None
-    #     if self.webcam:
-    #         self.view_img = True
-    #         self.save_img = True
-    #         # self.save_img = False
-    #         torch.backends.cudnn.benchmark = True  # set True to speed up constant image size inference
-    #         self.dataset = LoadStreams(self.source, img_size=self.img_size, half=self.half)
-    #     else:
-    #         self.save_img = True
-    #         self.dataset = LoadImages(self.source, img_size=self.img_size, half=self.half)
-
     def _get_names_colors(self):
         # Get names and colors
         self.names = load_classes(self.conf["names"])

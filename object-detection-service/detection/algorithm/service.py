@@ -70,7 +70,8 @@ class AlgorithmService(asab.Service):
     async def detect_object(self, frame):
         print("######### START OBJECT DETECTION")
         try:
-            pred = self.yolo.get_prediction(frame)
+            # pred = self.yolo.get_prediction(frame)
+            pred = self.yolo.get_bbox_data(frame, False)
         except Exception as e:
             print(" >>>> e:", e)
             pred = None

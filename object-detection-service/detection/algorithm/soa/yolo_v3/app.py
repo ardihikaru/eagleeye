@@ -1,4 +1,3 @@
-from detection.algorithm.soa.yolo_v3.components.models import *  # set ONNX_EXPORT in models.py
 from detection.algorithm.soa.yolo_v3.components.utils.datasets import *
 from detection.algorithm.soa.yolo_v3.components.utils.utils import *
 from detection.algorithm.soa.yolo_v3.etc.commons.opencv_helpers import *
@@ -56,24 +55,31 @@ class YOLOv3(YOLOFunctions):
         self._get_names_colors()
 
     def __img2yoloimg(self, image):
+        print("### ALWAYS DOING IMG CONVERTION HERE!!!!!")
+        t0_preproc = time.time()
         # Padded resize
         image4yolo = letterbox(image, new_shape=self.img_size)[0]
 
         # Convert
         image4yolo = image4yolo[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
-        image4yolo = np.ascontiguousarray(image4yolo, dtype=np.float16 if self.half else np.float32)  # uint8 to fp16/fp32
+        image4yolo = np.ascontiguousarray(image4yolo,
+                                          dtype=np.float16 if self.conf["half"] else np.float32)  # uint8 to fp16/fp32
         image4yolo /= 255.0  # 0 - 255 to 0.0 - 1.0
+        t1_preproc = (time.time() - t0_preproc) * 1000  # to ms
+        print('[%s] Pre-processing time (%.3f ms)' % (get_current_time(), t1_preproc))
+        # TODO: To capture the latency of the PRE-Processing
 
         return image4yolo
 
-    def get_prediction(self, frame, is_yolo_format=True):
+    def get_bbox_data(self, img, is_yolo_format=True):
+        padded_img = img
         if not is_yolo_format:
-            frame = self.__img2yoloimg(frame)
+            padded_img = self.__img2yoloimg(img)
 
         # Get detections
         pred = None
-        ts_det = time.time()
-        img_torch = torch.from_numpy(frame) #.to(self.device)
+        t0_det = time.time()
+        img_torch = torch.from_numpy(padded_img)
         image4yolo = img_torch.to(self.device)
         if image4yolo.ndimension() == 3:
             image4yolo = image4yolo.unsqueeze(0)
@@ -81,10 +87,10 @@ class YOLOv3(YOLOFunctions):
             pred = self.model(image4yolo)[0]
         except Exception as e:
             print("~~ EEROR: ", e)
-        t_inference = (time.time() - ts_det) * 1000  # to ms
+        t1_inference = (time.time() - t0_det) * 1000  # to ms
 
         # Latency: Inference
-        print('[%s] Inference time (%.3f ms)' % (get_current_time(), t_inference))
+        print('[%s] Inference time (%.3f ms)' % (get_current_time(), t1_inference))
 
         # Default: Disabled
         # if self.conf["half"]:
@@ -94,47 +100,95 @@ class YOLOv3(YOLOFunctions):
         ts_nms = time.time()
         # to Removes detections with lower object confidence score than 'conf_thres'
         pred = non_max_suppression(pred, self.conf["conf_thres"], self.conf["iou_thres"],
-                                        classes=None,
-                                        agnostic=self.conf["agnostic_nms"])
-        print('\n # Total Non-Maximum Suppression (NMS) time: (%.3f ms)' % ((time.time() - ts_nms)*1000))
+                                   classes=None,
+                                   agnostic=self.conf["agnostic_nms"])
+        t1_nms = ((time.time() - ts_nms) * 1000)
+        print('\n # Total Non-Maximum Suppression (NMS) time: (%.3f ms)' % t1_nms)
 
-        self.test_print_bbox(pred)
+        # Get detection
+        t0_get_detection = time.time()
+        bbox_data = None
+        for i, det in enumerate(pred):  # detections per image
+            if det is not None and len(det):  # run ONCE
+                # Rescale boxes from img_size to raw_img size
+                det[:, :4] = scale_coords(image4yolo.shape[2:], det[:, :4], img.shape).round()
 
-        print("######### TYPE pred:", type(pred))
-        import simplejson as json
-        t0_dump = time.time()
-        dump = json.dumps(pred)
-        print('\n # Total DUMP Data time: (%.3f ms)' % ((time.time() - t0_dump)*1000))
+                # Extracts detection results
+                bbox_data = self._extract_detection_results(det)
+                print(" >>>>> bbox_data =", bbox_data)
+        t1_get_detection = ((time.time() - t0_get_detection) * 1000)
+        print('\n # Get Detection time: (%.3f ms)' % t1_get_detection)
+        # TODO: To capture the latency of the POST-Processing
 
-
-        return pred
+        return bbox_data
+        # return pred
         # Apply Classifier: Default DISABLED
         # if self.classify:
         #     self.pred = apply_classifier(self.pred, self.modelc, image4yolo, raw_img)
 
-    def test_print_bbox(self, pred):
-        print(" @@@ test_print_bbox ...")
-        # Process detections
-        '''
-        p = path
-        s = string for printing
-        im0 = image (matrix)
-        '''
+    # def _extract_detection_results(self, det, raw_img, this_frame_id):
+    def _extract_detection_results(self, det):
+        """
+            A function to do optional actions: Save cropped file, bbox in txt, bbox images
+        """
+        # t0_copy_image = time.time()
+        # original_img = raw_img.copy()
+        # t1_copy_image = (time.time() - t0_copy_image) * 1000  # to ms
+        # print('[%s] Latency of copying image data of frame-%s (%.3f ms)' % (get_current_time(), str(this_frame_id),
+        #                                                                     t1_copy_image))
 
-        try:
-            for i, det in enumerate(pred):  # detections per image
-                print(" ######### i & det:", i, det)
-                # if det is not None and len(det):
-                    # Rescale boxes from img_size to im0 size
-                    # det[:, :4] = scale_coords(image4yolo.shape[2:], det[:, :4], raw_img.shape).round()
+        # TODO: We can do the parallel computation to enhance the performance further!
+        # Draw BBox information into images
+        idx_detected = 0
+        bbox_data = []
+        for *xyxy, conf, cls in det:
+            numpy_xyxy = get_det_xyxy(xyxy)
+            this_label = '%s %.2f' % (self.names[int(cls)], conf)
+            this_color = self.colors[int(cls)]
+            idx_detected += 1
 
-                    # Export results: Raw image OR BBox image OR Crop image OR BBox txt
-                    # if self.opt.dump_raw_img or self.opt.dump_bbox_img or self.opt.dump_crop_img or self.opt.save_txt:
-                    # if self.conf["cv_out"]:
-                    #     self._manage_detection_results(det, raw_img, this_frame_id)
+            # Save cropped files
+            # self._save_cropped_img(xyxy, raw_img, idx_detected, self.names[int(cls)], this_frame_id,
+            #                        self.conf["file_ext"])
+            # Save bbox information
+            # self._safety_store_txt(xyxy, this_frame_id, self.names[int(cls)], str(round(float(conf), 2)))
 
-        except Exception as e:
-            print("ERROR Plotting: ", e)
+            this_bbox = {
+                "obj_idx": idx_detected,
+                "xyxy": [str(val) for val in numpy_xyxy],
+                "label": this_label,
+                "color": [str(color) for color in this_color]
+            }
+            bbox_data.append(this_bbox)
+            # plot_one_box(xyxy, raw_img, label=this_label, color=this_color)
+        return bbox_data
+        # Save BBox image
+        # self._save_results(raw_img, this_frame_id)
+
+    # def test_print_bbox(self, pred):
+    #     print(" @@@ test_print_bbox ...")
+    #     # Process detections
+    #     '''
+    #     p = path
+    #     s = string for printing
+    #     im0 = image (matrix)
+    #     '''
+    #
+    #     try:
+    #         for i, det in enumerate(pred):  # detections per image
+    #             print(" ######### i & det:", i, det)
+    #             # if det is not None and len(det):
+    #             # Rescale boxes from img_size to im0 size
+    #             # det[:, :4] = scale_coords(image4yolo.shape[2:], det[:, :4], raw_img.shape).round()
+    #
+    #             # Export results: Raw image OR BBox image OR Crop image OR BBox txt
+    #             # if self.opt.dump_raw_img or self.opt.dump_bbox_img or self.opt.dump_crop_img or self.opt.save_txt:
+    #             # if self.conf["cv_out"]:
+    #             #     self._manage_detection_results(det, raw_img, this_frame_id)
+    #
+    #     except Exception as e:
+    #         print("ERROR Plotting: ", e)
+
     #
     # def detect(self, raw_img, frame_id):
     #     print("\n[%s] Starting YOLOv3 for frame-%s" % (get_current_time(), frame_id))
@@ -207,41 +261,3 @@ class YOLOv3(YOLOFunctions):
     #
     #     except Exception as e:
     #         print("ERROR Plotting: ", e)
-
-    def _manage_detection_results(self, det, raw_img, this_frame_id):
-        """
-            A function to do optional actions: Save cropped file, bbox in txt, bbox images
-        """
-        t0_copy_image = time.time()
-        original_img = raw_img.copy()
-        t1_copy_image = (time.time() - t0_copy_image) * 1000  # to ms
-        print('[%s] Latency of copying image data of frame-%s (%.3f ms)' % (get_current_time(), str(this_frame_id),
-                                                                            t1_copy_image))
-
-        # TODO: We can do the parallel computation to enhance the performance further!
-        # Draw BBox information into images
-        idx_detected = 0
-        bbox_data = []
-        for *xyxy, conf, cls in det:
-            numpy_xyxy = get_det_xyxy(xyxy)
-            this_label = '%s %.2f' % (self.names[int(cls)], conf)
-            this_color = self.colors[int(cls)]
-            idx_detected += 1
-
-            # Save cropped files
-            self._save_cropped_img(xyxy, original_img, idx_detected, self.names[int(cls)], this_frame_id,
-                                   self.conf["file_ext"])
-            # Save bbox information
-            self._safety_store_txt(xyxy, this_frame_id, self.names[int(cls)], str(round(float(conf), 2)))
-
-            this_bbox = {
-                "obj_idx": idx_detected,
-                "xyxy": [str(val) for val in numpy_xyxy],
-                "label": this_label,
-                "color": [str(color) for color in this_color]
-            }
-            bbox_data.append(this_bbox)
-            plot_one_box(xyxy, raw_img, label=this_label, color=this_color)
-
-        # Save BBox image
-        self._save_results(raw_img, this_frame_id)
