@@ -1,1 +1,1 @@
-from .module import AlgorithmModule
+from .module import DetectionAlgorithmModule

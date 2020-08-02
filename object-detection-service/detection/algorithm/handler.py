@@ -16,7 +16,7 @@ class YOLOv3Handler(MyRedis):
 
     def __init__(self, app):
         super().__init__(asab.Config)
-        self.AlgorithmService = app.get_service("detection.AlgorithmService")
+        self.DetectionAlgorithmService = app.get_service("detection.DetectionAlgorithmService")
         self.executor = ThreadPoolExecutor(int(asab.Config["thread"]["num_executor"]))
 
         # Default None
@@ -36,17 +36,17 @@ class YOLOv3Handler(MyRedis):
         print("\n[%s] Updating PID information" % get_current_time())
 
         # Update Node information: `channel` and `pid`
-        await self.AlgorithmService.update_node_information(self.node_id, self.pid)
+        await self.DetectionAlgorithmService.update_node_information(self.node_id, self.pid)
 
         # Set ZMQ Receiver (& Sender) configuration
         print("## # Set ZMQ Receiver (& Sender) configuration ##")
-        await self.AlgorithmService.set_zmq_configurations(self.node_name, self.node_id)
+        await self.DetectionAlgorithmService.set_zmq_configurations(self.node_name, self.node_id)
 
     async def stop(self):
         print("\n[%s] Object Detection Service is going to stop" % get_current_time())
         
         # Delete Node
-        await self.AlgorithmService.delete_node_information(self.node_id)
+        await self.DetectionAlgorithmService.delete_node_information(self.node_id)
 
         # exit the Object Detection Service
         exit()
@@ -72,20 +72,22 @@ class YOLOv3Handler(MyRedis):
                 print(">> > > > >> >START Receiving ZMQ in OBJDET @ ts:", time.time())
 
                 if not image_info["active"]:
+                    print(">>>>>>>>>>>>>>>> ####### STOPPING COY ....")
+                    await self.stop()
                     break
 
                 # TODO: To start TCP Connection and be ready to capture the image from [Scheduler Service]
                 print(" ###### I AM DOING SOMETHING HERE")
                 # while True:
                 # TODO: To have a tag as the image identifier, i.e. DroneID
-                is_success, frame_id, t0_zmq, img = await self.AlgorithmService.get_img()
+                is_success, frame_id, t0_zmq, img = await self.DetectionAlgorithmService.get_img()
                 print(">>>> RECEIVED DATA:", is_success, frame_id, t0_zmq, img.shape)
                 t1_zmq = (time.time() - t0_zmq) * 1000
                 print('\n #### [%s] Latency for Receiving Image ZMQ (%.3f ms)' % (get_current_time(), t1_zmq))
                 # TODO: To save latency into ElasticSearchDB (Future work)
 
                 # Start performing object detection
-                pred = await self.AlgorithmService.detect_object(img)
+                pred = await self.DetectionAlgorithmService.detect_object(img)
 
                 # print(" >>>> DISINI >>>> ", is_success, img.shape)
                 # break

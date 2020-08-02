@@ -119,6 +119,7 @@ class YOLOv3(YOLOFunctions):
                 # Extracts detection results
                 bbox_data = self._extract_detection_results(det)
                 print(" >>>>> bbox_data =", bbox_data)
+                break
         t1_get_detection = ((time.time() - t0_get_detection) * 1000)
         print('\n # Get Detection time: (%.3f ms)' % t1_get_detection)
         # TODO: To capture the latency of the POST-Processing

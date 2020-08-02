@@ -12,12 +12,12 @@ L = logging.getLogger(__name__)
 ###
 
 
-class AlgorithmService(asab.Service):
+class DetectionAlgorithmService(asab.Service):
     """
         Object Detection algorithm based on YOLOv3
     """
 
-    def __init__(self, app, service_name="detection.AlgorithmService"):
+    def __init__(self, app, service_name="detection.DetectionAlgorithmService"):
         super().__init__(app, service_name)
         self.app = app
         self.SubscriptionHandler = YOLOv3Handler(app)

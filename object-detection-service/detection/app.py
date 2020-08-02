@@ -1,14 +1,13 @@
 import asab.storage
 import asab.web.session
 from detection.zmq import ZMQModule
-from detection.algorithm import AlgorithmModule
+from detection.algorithm import DetectionAlgorithmModule
 from ext_lib.utils import get_current_time
 from mongoengine import connect
 
 
 class ObjectDetectionService(asab.Application):
 
-	# def __init__(self, opt):
 	def __init__(self):
 		super().__init__()
 
@@ -20,26 +19,16 @@ class ObjectDetectionService(asab.Application):
 
 		# Add modules
 		self.add_module(ZMQModule)
-		self.add_module(AlgorithmModule)
+		self.add_module(DetectionAlgorithmModule)
 
 		# Initialize reader service
-		self.AlgorithmService = self.get_service("detection.AlgorithmService")
+		self.DetectionAlgorithmService = self.get_service("detection.DetectionAlgorithmService")
 
 	async def initialize(self):
 		print("\n[%s] Object Detection Service is running!" % get_current_time())
 
-		# Testing lah
-		# storage = self.get_service("asab.StorageService")
-		# coll = await storage.collection("Users")
-		# cursor = coll.find({})
-		# print("Result of list")
-		# while await cursor.fetch_next:
-		# 	obj = cursor.next_object()
-		# 	print(obj)
-
 		# Start subscription
-		# await self.AlgorithmService.start_subscription()
 		try:
-			await self.AlgorithmService.start_subscription()
+			await self.DetectionAlgorithmService.start_subscription()
 		except:
 			print("\n[%s] This Object Detection Service has successfully stopped." % get_current_time())
