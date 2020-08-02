@@ -52,7 +52,6 @@ class YOLOv3Handler(MyRedis):
 
         # Delete Node
         # await self.DetectionAlgorithmService.delete_node_information(asab.Config["node"]["id"])
-        print("**** node_id:", self.node_id)
         await self.DetectionAlgorithmService.delete_node_information(self.node_id)
 
         # exit the Object Detection Service
@@ -94,12 +93,19 @@ class YOLOv3Handler(MyRedis):
                 # TODO: To save latency into ElasticSearchDB (Future work)
 
                 # Start performing object detection
-                bbox_data = await self.DetectionAlgorithmService.detect_object(img)
+                bbox_data, det, names = await self.DetectionAlgorithmService.detect_object(img)
+
+                # Get img information
+                h, w, c = img.shape
 
                 # Performing Candidate Selection Algorithm, if enabled
-                if self.cs_enabled:
+                if self.cs_enabled and det is not None:
                     print("***** Performing Candidate Selection Algorithm")
-                    mbbox_data = await self.CandidateSelectionService.calc_mbbox(bbox_data)
+                    t0_cs = time.time()
+                    mbbox_data = await self.CandidateSelectionService.calc_mbbox(bbox_data, det, names, h, w, c)
+                    t1_cs = (time.time() - t0_cs) * 1000
+                    print('\n #### [%s] Latency of Candidate Selection Algorithm (%.3f ms)' % (get_current_time(), t1_cs))
+                    print(" >>>>> mbbox_data:", mbbox_data)
 
                     # Performing Persistence Validation Algorithm, if enabled
                     if self.pv_enabled:

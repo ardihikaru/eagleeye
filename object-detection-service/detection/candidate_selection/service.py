@@ -1,7 +1,7 @@
 import asab
 import logging
-from detection.candidate_selection.cs_v1 import CSv1
-from detection.candidate_selection.cs_v2 import CSv2
+from detection.candidate_selection.cs_v1.cs_v1 import CSv1  # TODO: Not yet re-implemented!
+from detection.candidate_selection.cs_v2.cs_v2 import CSv2
 
 ###
 
@@ -18,5 +18,8 @@ class CandidateSelectionService(asab.Service):
         super().__init__(app, service_name)
         self.cs = CSv2()
 
-    async def calc_mbbox(self, bbox_data):
-        return self.cs.get_mbbox(bbox_data)
+    async def calc_mbbox(self, bbox_data, det, names, h, w, c):
+        print(">>>> @ calc_mbbox:", h, w, c)
+        self.cs.initialize(det, names, h, w, c)
+        self.cs.run()
+        return self.cs.get_detected_mbbox()

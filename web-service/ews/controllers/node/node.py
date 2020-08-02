@@ -40,14 +40,17 @@ class Node(MyRedis):
         builder.set_default_mongodb_conf()
         builder.set_default_pubsub_channel_conf(node_id=str(node_data["id"]))
         builder.set_default_yolov3_conf()
-        # builder.set_default_yolov3_conf(
-        #     # cand_sel=True,
-        #     # pers_val=True
-        #     cand_sel=node_data["candidate_selection"],
-        #     pers_val=node_data["persistence_validation"]
-        # )
         builder.set_custom_conf("node", node_data)
         builder.set_custom_conf("thread", {"num_executor": "1"})
+        builder.set_custom_conf("bbox_config",
+                                {
+                                    "pih_label_cand": "PiH",
+                                    "pih_label": "PiH",
+                                    "pih_color": "[198, 50, 13]",  # PiH bbox color: Blue
+                                    "person_color": "[191, 96, 165]",  # Person bbox color: Purple
+                                    "flag_color": "[100, 188, 70]"  # Flag bbox color: Green
+                                }
+        )
         # TODO: We need a function to dynamically set the Node URI
         builder.set_custom_conf("zmq", {
             "node_uri": "tcp://127.0.0.1:555" + str(node_data["name"]),  # TODO: Need to be dynamic!

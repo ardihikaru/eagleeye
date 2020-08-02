@@ -75,6 +75,7 @@ class DetectionAlgorithmService(asab.Service):
 
     async def detect_object(self, frame):
         print("######### START OBJECT DETECTION")
+        bbox_data, det, names = None, None, None
         try:
             # Perform conversion first!
             resized_frame = await self.ResizerService.cpu_convert_to_padded_size(frame)
@@ -82,13 +83,12 @@ class DetectionAlgorithmService(asab.Service):
             # resized_frame = await self.ResizerService.gpu_convert_to_padded_size(frame)
 
             # Perform object detection
-            bbox_data = self.yolo.get_bbox_data(resized_frame)
+            bbox_data, det, names = self.yolo.get_detection_results(resized_frame)
             # bbox_data = self.yolo.get_bbox_data(frame, False)
         except Exception as e:
             print(" >>>> GET BBox e:", e)
-            bbox_data = None
             await self.SubscriptionHandler.stop()
-        return bbox_data
+        return bbox_data, det, names
 
     async def delete_node_information(self, node_id):
         node = Node()

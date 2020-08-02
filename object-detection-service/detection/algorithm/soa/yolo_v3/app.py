@@ -73,7 +73,7 @@ class YOLOv3(YOLOFunctions):
 
         return image4yolo
 
-    def get_bbox_data(self, img, is_yolo_format=True):
+    def get_detection_results(self, img, is_yolo_format=True):
         padded_img = img
         if not is_yolo_format:
             padded_img = self.__img2yoloimg(img)
@@ -110,6 +110,7 @@ class YOLOv3(YOLOFunctions):
         # Get detection
         t0_get_detection = time.time()
         bbox_data = None
+        det = None
         for i, det in enumerate(pred):  # detections per image
             if det is not None and len(det):  # run ONCE
                 # Rescale boxes from img_size to raw_img size
@@ -117,13 +118,15 @@ class YOLOv3(YOLOFunctions):
 
                 # Extracts detection results
                 bbox_data = self._extract_detection_results(det)
-                print(" >>>>> bbox_data =", bbox_data)
+                # print(" >>>>> bbox_data =", bbox_data)
                 break
         t1_get_detection = ((time.time() - t0_get_detection) * 1000)
         print('\n # Get Detection time: (%.3f ms)' % t1_get_detection)
         # TODO: To capture the latency of the POST-Processing
 
-        return bbox_data
+        names = load_classes(self.conf["names"])
+
+        return bbox_data, det, names
         # return pred
         # Apply Classifier: Default DISABLED
         # if self.classify:
@@ -131,9 +134,8 @@ class YOLOv3(YOLOFunctions):
 
     # def _extract_detection_results(self, det, raw_img, this_frame_id):
     def _extract_detection_results(self, det):
-        """
-            A function to do optional actions: Save cropped file, bbox in txt, bbox images
-        """
+        print("@@@@ _extract_detection_results....")
+        """ A function to do optional actions: Save cropped file, bbox in txt, bbox images """
         # t0_copy_image = time.time()
         # original_img = raw_img.copy()
         # t1_copy_image = (time.time() - t0_copy_image) * 1000  # to ms
