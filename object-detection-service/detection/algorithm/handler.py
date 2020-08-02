@@ -19,7 +19,7 @@ class YOLOv3Handler(MyRedis):
         super().__init__(asab.Config)
         self.DetectionAlgorithmService = app.get_service("detection.DetectionAlgorithmService")
         self.CandidateSelectionService = app.get_service("detection.CandidateSelectionService")
-        self.PersistenceValidationService = app.get_service("detection.PersistenceValidationService")
+        self.PersValService = app.get_service("detection.PersistenceValidationService")
         self.executor = ThreadPoolExecutor(int(asab.Config["thread"]["num_executor"]))
 
         # Default None
@@ -31,6 +31,11 @@ class YOLOv3Handler(MyRedis):
         self.cs_enabled = bool(int(asab.Config["node"]["candidate_selection"]))
         self.pv_enabled = bool(int(asab.Config["node"]["Persistence_validation"]))
         self.cv_out = bool(int(asab.Config["objdet:yolo"]["cv_out"]))
+
+        # PiH Persistence Validation params
+        self.total_pih_candidates = 0
+        self.persistence_window = int(asab.Config["persistence_detection"]["persistence_window"])
+        self.period_pih_candidates = []
 
     async def set_configuration(self):
         # Initialize YOLOv3 configuration
@@ -104,13 +109,31 @@ class YOLOv3Handler(MyRedis):
                     t0_cs = time.time()
                     mbbox_data = await self.CandidateSelectionService.calc_mbbox(bbox_data, det, names, h, w, c)
                     t1_cs = (time.time() - t0_cs) * 1000
-                    print('\n #### [%s] Latency of Candidate Selection Algorithm (%.3f ms)' % (get_current_time(), t1_cs))
+                    print('\n #### [%s] Latency of Candidate Selection Algo. (%.3f ms)' % (get_current_time(), t1_cs))
                     print(" >>>>> mbbox_data:", mbbox_data)
 
                     # Performing Persistence Validation Algorithm, if enabled
-                    if self.pv_enabled:
+                    if self.pv_enabled and len(mbbox_data) > 0:
                         print("***** Performing Persistence Validation Algorithm")
-                        mbbox_data = await self.PersistenceValidationService.predict_mbbox(mbbox_data)
+
+                        # Increment PiH candidates
+                        self.total_pih_candidates += 1
+                        self.period_pih_candidates.append(int(frame_id))
+
+                        # mbbox_data_pv = await self.PersValService.predict_mbbox(mbbox_data)
+                        t0_pv = time.time()
+                        label, det_status = await self.PersValService.validate_mbbox(frame_id,
+                                                                                         self.total_pih_candidates,
+                                                                                         self.period_pih_candidates)
+                        await self._maintaince_period_pih_cand()
+                        t1_pv = (time.time() - t0_pv) * 1000
+                        print('\n #### [%s] Latency of Persistence Detection Algorithm (%.3f ms)' %
+                              (get_current_time(), t1_pv))
+                        print("########### label, det_status:", label, det_status)
+                    else:
+                        # Set default label, in case PV algorithm is DISABLED
+                        label = asab.Config["bbox_config"]["pih_label"]
+                        det_status = label + " object FOUND"
 
                 # If enable visualizer, send the bbox into the Visualizer Service
                 if self.cv_out:
@@ -119,3 +142,7 @@ class YOLOv3Handler(MyRedis):
         print("\n[%s] YOLOv3Handler stopped listening to [Scheduler Service]" % get_current_time())
         # Call stop function since it no longers listening
         await self.stop()
+
+    async def _maintaince_period_pih_cand(self):
+        if len(self.period_pih_candidates) > self.persistence_window:
+            self.period_pih_candidates.pop(0)

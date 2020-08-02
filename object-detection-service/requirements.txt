@@ -4,6 +4,7 @@ opencv-python
 motor
 simplejson
 mongoengine
+window_slider
 
 Cython
 matplotlib

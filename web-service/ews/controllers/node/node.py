@@ -56,6 +56,10 @@ class Node(MyRedis):
             "node_uri": "tcp://127.0.0.1:555" + str(node_data["name"]),  # TODO: Need to be dynamic!
             "node_channel": "node-" + str(node_data["id"]) + "-zmq"
         })
+        builder.set_custom_conf("persistence_detection", {
+            "persistence_window": 10,
+            "tolerance_limit_percentage": 0.3
+        })
         builder.create_config()
 
         # TODO: Once orchestrated with k8s, we no longer use Popen to Deploy each node (Future work)

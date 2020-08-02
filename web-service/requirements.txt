@@ -8,3 +8,4 @@ simplejson
 redis
 motor
 imagezmq
+window_slider

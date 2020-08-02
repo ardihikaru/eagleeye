@@ -18,5 +18,7 @@ class PersistenceValidationService(asab.Service):
         super().__init__(app, service_name)
         self.pv = PVv1()
 
-    async def predict_mbbox(self, mbbox_data):
-        return self.pv.get_mbbox_pv(mbbox_data)
+    async def validate_mbbox(self, frame_id, total_pih_candidates, period_pih_candidates):
+        self.pv.initialize(frame_id, total_pih_candidates, period_pih_candidates)
+        self.pv.run()
+        return self.pv.get_label(), self.pv.get_det_status()
