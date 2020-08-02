@@ -51,7 +51,9 @@ class YOLOv3Handler(MyRedis):
         print("\n[%s] Object Detection Service is going to stop" % get_current_time())
 
         # Delete Node
-        await self.DetectionAlgorithmService.delete_node_information(asab.Config["node"]["id"])
+        # await self.DetectionAlgorithmService.delete_node_information(asab.Config["node"]["id"])
+        print("**** node_id:", self.node_id)
+        await self.DetectionAlgorithmService.delete_node_information(self.node_id)
 
         # exit the Object Detection Service
         exit()
@@ -84,8 +86,6 @@ class YOLOv3Handler(MyRedis):
                     break
 
                 # TODO: To start TCP Connection and be ready to capture the image from [Scheduler Service]
-                print(" ###### I AM DOING SOMETHING HERE")
-                # while True:
                 # TODO: To have a tag as the image identifier, i.e. DroneID
                 is_success, frame_id, t0_zmq, img = await self.DetectionAlgorithmService.get_img()
                 print(">>>> RECEIVED DATA:", is_success, frame_id, t0_zmq, img.shape)
@@ -96,18 +96,15 @@ class YOLOv3Handler(MyRedis):
                 # Start performing object detection
                 bbox_data = await self.DetectionAlgorithmService.detect_object(img)
 
-                try:
-                    # Performing Candidate Selection Algorithm, if enabled
-                    if self.cs_enabled:
-                        print("***** Performing Candidate Selection Algorithm")
-                        mbbox_data = await self.CandidateSelectionService.calc_mbbox(bbox_data)
+                # Performing Candidate Selection Algorithm, if enabled
+                if self.cs_enabled:
+                    print("***** Performing Candidate Selection Algorithm")
+                    mbbox_data = await self.CandidateSelectionService.calc_mbbox(bbox_data)
 
-                        # Performing Persistence Validation Algorithm, if enabled
-                        if self.pv_enabled:
-                            print("***** Performing Persistence Validation Algorithm")
-                            mbbox_data = await self.PersistenceValidationService.predict_mbbox(mbbox_data)
-                except Exception as e:
-                    print(" *** WAOW e:", e)
+                    # Performing Persistence Validation Algorithm, if enabled
+                    if self.pv_enabled:
+                        print("***** Performing Persistence Validation Algorithm")
+                        mbbox_data = await self.PersistenceValidationService.predict_mbbox(mbbox_data)
 
                 # If enable visualizer, send the bbox into the Visualizer Service
                 if self.cv_out:

@@ -58,7 +58,6 @@ class YOLOv3(YOLOFunctions):
         self._get_names_colors()
 
     def __img2yoloimg(self, image):
-        print("### ALWAYS DOING IMG CONVERTION HERE!!!!!")
         t0_preproc = time.time()
         # Padded resize
         image4yolo = letterbox(image, new_shape=self.img_size)[0]

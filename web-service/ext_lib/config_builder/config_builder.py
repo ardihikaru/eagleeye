@@ -75,10 +75,8 @@ class ConfigBuilder:
 
 		# to convert any Boolean into String `1` or `0`
 		for skey, sval in self.config[key].items():
-			print(" >>> self.config[key][skey] :", self.config[key][skey], type(self.config[key][skey]))
 			if isinstance(self.config[key][skey], bool):
 				if self.config[key][skey]:
-					print(" >>> PERBARUI value coi")
 					self.config[key][skey] = "1"
 				else:
 					self.config[key][skey] = "0"
@@ -88,7 +86,6 @@ class ConfigBuilder:
 					self.config[key][skey] = "1"
 				else:
 					self.config[key][skey] = "0"
-			print(">>> NEW VAL: ", self.config[key][skey])
 
 	def set_config_path(self, path):
 		self.conf_path = path

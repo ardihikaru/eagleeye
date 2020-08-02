@@ -32,17 +32,22 @@ class DetectionAlgorithmService(asab.Service):
         self.yolo = None
 
     async def start_subscription(self):
-        await self._configure_object_detection()
-        await self.SubscriptionHandler.set_configuration()
-        await self.SubscriptionHandler.set_deployment_status()
-        await self.SubscriptionHandler.start()
+        try:
+            await self._configure_object_detection()
+            await self.SubscriptionHandler.set_configuration()
+            await self.SubscriptionHandler.set_deployment_status()
+            await self.SubscriptionHandler.start()
+        except Exception as e:
+            print(" >>>> start_subscription e:", e)
+            await self.SubscriptionHandler.stop()
 
     async def _configure_object_detection(self):
-        try:
-            self.yolo = YOLOv3(asab.Config["objdet:yolo"])
-        except Exception as e:
-            print(" >>>> YOLOv3 e:", e)
-            await self.SubscriptionHandler.stop()
+        self.yolo = YOLOv3(asab.Config["objdet:yolo"])
+        # try:
+        #
+        # except Exception as e:
+        #     print(" >>>> YOLOv3 e:", e)
+        #     await self.SubscriptionHandler.stop()
 
     async def set_zmq_configurations(self, node_name, node_id):
         await self.ZMQService.set_configurations(node_name, node_id)
