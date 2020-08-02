@@ -4,6 +4,8 @@ aiohttp_jwt
 aiohttp_middlewares
 aiohttp_route_decorator
 werkzeug
-opencv-python
 simplejson
 redis
+motor
+imagezmq
+window_slider

@@ -7,6 +7,9 @@ from datetime import datetime, timedelta
 import aiohttp
 import cv2
 import numpy as np
+import string
+import random
+import configparser
 
 
 def mongo_list_to_dict(mongo_resp):
@@ -184,3 +187,10 @@ def letterbox(img, new_shape=(416, 416), color=(128, 128, 128),
     img = cv2.copyMakeBorder(img, top, bottom, left, right, cv2.BORDER_CONSTANT, value=color)  # add border
     return img, ratio, (dw, dh)
 
+
+def get_current_time():
+    return datetime.now().strftime("%H:%M:%S")
+
+
+def get_random_str(k=5):
+    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=k))
