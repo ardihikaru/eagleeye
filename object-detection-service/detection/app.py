@@ -14,6 +14,9 @@ class ObjectDetectionService(asab.Application):
 	def __init__(self):
 		super().__init__()
 
+		# Set node alias
+		self.node_alias = "NODE-%s" % asab.Config["node"]["name"]
+
 		# Connect Database
 		connect('eagleeyeDB')
 
@@ -31,10 +34,11 @@ class ObjectDetectionService(asab.Application):
 		self.DetectionAlgorithmService = self.get_service("detection.DetectionAlgorithmService")
 
 	async def initialize(self):
-		print("\n[%s] Object Detection Service is running!" % get_current_time())
+		print("\n[%s][%s] Object Detection Service is running!" % (get_current_time(), self.node_alias))
 
 		# Start subscription
 		try:
 			await self.DetectionAlgorithmService.start_subscription()
 		except:
-			print("\n[%s] This Object Detection Service has successfully stopped." % get_current_time())
+			print("\n[%s][%s] This Object Detection Service has successfully stopped." %
+				  (get_current_time(), self.node_alias))

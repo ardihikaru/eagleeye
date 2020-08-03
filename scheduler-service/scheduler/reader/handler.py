@@ -59,15 +59,9 @@ class ReaderHandler(MyRedis):
 
                 print("Once data collected, try extracting data..")
                 if config["stream"]:
-                    # await self.ExtractorService.extract_video_stream(config, await self.ZMQService.get_senders())
-                    # await self.ExtractorService.extract_video_stream(config, self.ZMQService.get_senders())
                     await self.ExtractorService.extract_video_stream(config)
-                    # await self.ExtractorService.extract_video_stream(config)
                 else:
-                    # await self.ExtractorService.extract_folder(config, await self.ZMQService.get_senders())
-                    # await self.ExtractorService.extract_folder(config, self.ZMQService.get_senders())
                     await self.ExtractorService.extract_folder(config)
-                    # await self.ExtractorService.extract_folder(config)
                 print("## No images can be captured for the time being.")
 
                 # TODO: To restart; This should be moved away in extract_video_stream() and extract_folder()

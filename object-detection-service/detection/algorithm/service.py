@@ -23,6 +23,8 @@ class DetectionAlgorithmService(asab.Service):
         self.SubscriptionHandler = YOLOv3Handler(app)
         self.ResizerService = app.get_service("detection.ResizerService")
 
+        self.node_alias = "NODE-%s" % asab.Config["node"]["name"]
+
         # Extractor service may not exist at this point
         # This variable will be set up in the init time
         # of ServiceAPIModule
@@ -84,7 +86,7 @@ class DetectionAlgorithmService(asab.Service):
             await self.SubscriptionHandler.stop()
 
     async def detect_object(self, frame):
-        print("######### START OBJECT DETECTION")
+        print("####[%s]##### START OBJECT DETECTION" % self.node_alias)
         bbox_data, det, names = None, None, None
         try:
             # Perform conversion first!
