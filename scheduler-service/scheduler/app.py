@@ -1,4 +1,5 @@
 import asab.web.session
+from scheduler.scheduling_policy import SchedulingPolicyModule
 from scheduler.zmq import ZMQModule
 from scheduler.resizer import ResizerModule
 from scheduler.extractor import ExtractorModule
@@ -16,6 +17,7 @@ class SchedulerService(asab.Application):
 		connect('eagleeyeDB')
 		
 		# Add reader module
+		self.add_module(SchedulingPolicyModule)
 		self.add_module(ZMQModule)
 		self.add_module(ResizerModule)
 		self.add_module(ExtractorModule)
