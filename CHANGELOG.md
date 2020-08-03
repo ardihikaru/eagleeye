@@ -1,3 +1,9 @@
+## 3.2-EEv1.5-Multiple-Nodes (August 04, 2020)
+  - Merge branch 'feature/EagleEYEv1.5/scheduling-policy' into develop
+  - testied: Scheduling Policy Service
+  - added new module: Scheduling Policy Module
+  - Merge branch 'release-3.1-EEv1.5-Single-Node' into develop
+
 ## release-3.1-EEv1.5-Single-Node (August 04, 2020)
   - Merge branch 'feature/EagleEYEv1.5/YOLOv3' into develop
   - updated requirement file
