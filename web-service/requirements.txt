@@ -9,3 +9,4 @@ redis
 motor
 imagezmq
 window_slider
+requests
