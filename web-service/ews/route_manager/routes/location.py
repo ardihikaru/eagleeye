@@ -1,10 +1,10 @@
 """
-    List of routes for /api/nodes* endpoints
+    List of routes for /api/locations* endpoints
 """
 
 from aiohttp_route_decorator import RouteCollector
 import aiohttp
-from ews.controllers.node.node import Node as DataController
+from ews.controllers.location.location import Location as DataController
 from ext_lib.utils import get_unprocessable_request
 import logging
 
@@ -21,24 +21,25 @@ route = RouteCollector()
 async def index(request):
     """
         Endpoint to:
-         1. POST new node
-            Try: curl http://localhost:8080/api/nodes -X POST -H "Content-Type: application/json"
+         1. POST new location
+            Try: curl http://localhost:8080/api/locations -X POST -H "Content-Type: application/json"
                     -d '{
-                            "name": "Node 1",
-                            "channel": "n1",
-                            "consumer": ""
+                            "name": "Drone 1",
+                            "long": 24.785909,
+                            "lat": 120.999361,
+                            "alt": 34.5435
                     }'
-         1. GET all node data
-            Try: curl http://localhost:8080/api/nodes
+         1. GET all locations
+            Try: curl http://localhost:8080/api/locations
 
-         2. DELETE a specific node data (single ID)
-            Try: curl http://localhost:8080/api/nodes -X DELETE -H "Content-Type: application/json"
+         2. DELETE a specific location (single ID)
+            Try: curl http://localhost:8080/api/locations -X DELETE -H "Content-Type: application/json"
                     -d '{
                             "id": {String}
                     }'
 
-         3. DELETE list of node data (multiple IDs)
-            Try: curl http://localhost:8080/api/nodes -X DELETE -H "Content-Type: application/json"
+         3. DELETE list of locations (multiple IDs)
+            Try: curl http://localhost:8080/api/locations -X DELETE -H "Content-Type: application/json"
                     -d '{
                             "id": [{String}, {String}]
                     }'
@@ -75,12 +76,12 @@ async def index(request):
 async def index_by(request):
     """
         Endpoint to:
-         1. GET node by id
-            Try: curl http://localhost:8080/api/nodes/{_id}
-         2. DELETE node by id
-            Try: curl http://localhost:8080/api/nodes/{_id} -X DELETE
-         3. PUT (Edit) node by id
-            Try: curl http://localhost:8080/api/nodes/{_id}
+         1. GET location by id
+            Try: curl http://localhost:8080/api/locations/{_id}
+         2. DELETE location by id
+            Try: curl http://localhost:8080/api/locations/{_id} -X DELETE
+         3. PUT (Edit) location by id
+            Try: curl http://localhost:8080/api/locations/{_id}
                     -X POST -H "Content-Type: application/json" -d '{"name":"Node 2"}'
     """
 

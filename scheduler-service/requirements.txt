@@ -5,3 +5,4 @@ mongoengine
 imutils
 simplejson
 imagezmq
+requests

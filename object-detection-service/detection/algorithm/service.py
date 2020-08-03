@@ -1,8 +1,8 @@
 import asab
 import logging
 from .handler import YOLOv3Handler
-from detection.controllers.node.node import Node
 from detection.algorithm.soa.yolo_v3.app import YOLOv3
+import requests
 
 ###
 
@@ -32,6 +32,9 @@ class DetectionAlgorithmService(asab.Service):
         # TODO: To dynamically read the YOLO Version, if not found, Forced to close the Service!
         self.yolo = None
 
+        # Get node information
+        self.node_api_uri = asab.Config["eagleeye:api"]["node"]
+
     async def start_subscription(self):
         try:
             await self._configure_object_detection()
@@ -44,11 +47,6 @@ class DetectionAlgorithmService(asab.Service):
 
     async def _configure_object_detection(self):
         self.yolo = YOLOv3(asab.Config["objdet:yolo"])
-        # try:
-        #
-        # except Exception as e:
-        #     print(" >>>> YOLOv3 e:", e)
-        #     await self.SubscriptionHandler.stop()
 
     async def set_zmq_configurations(self, node_name, node_id):
         await self.ZMQService.set_configurations(node_name, node_id)
@@ -67,11 +65,23 @@ class DetectionAlgorithmService(asab.Service):
             return False, None, None, None
 
     async def update_node_information(self, node_id, pid):
-        node = Node()
-        node.update_data_by_id(node_id, {
+        update_uri = self.node_api_uri + "/" + node_id
+
+        # defining a params dict for the parameters to be sent to the API
+        request_json = {
             "pid": pid,
             "channel": "node-" + node_id
-        })
+        }
+        headers = {"Content-Type": "application/json"}
+
+        # sending get request and saving the response as response object
+        req = requests.put(url=update_uri, json=request_json, headers=headers)
+
+        # extracting data in json format
+        resp = req.json()
+
+        if "status" in resp and resp["status"] != 200:
+            await self.SubscriptionHandler.stop()
 
     async def detect_object(self, frame):
         print("######### START OBJECT DETECTION")
@@ -91,5 +101,9 @@ class DetectionAlgorithmService(asab.Service):
         return bbox_data, det, names
 
     async def delete_node_information(self, node_id):
-        node = Node()
-        node.delete_data_by_id(node_id)
+        delete_uri = self.node_api_uri + "/" + node_id
+        req = requests.delete(url=delete_uri)
+        resp = req.json()
+
+        if "status" in resp and resp["status"] != 200:
+            await self.SubscriptionHandler.stop()

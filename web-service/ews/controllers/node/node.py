@@ -40,6 +40,14 @@ class Node(MyRedis):
         builder.set_default_mongodb_conf()
         # builder.set_default_pubsub_channel_conf(node_id=str(node_data["id"]))
         builder.set_default_yolov3_conf()
+
+        # Add extra information to the accessable API
+        root_api = asab.Config["eagleeye:api"]["api_uri"]
+        builder.set_custom_conf("eagleeye:api",
+                                {
+                                    "node": root_api + "nodes"
+                                })
+
         builder.set_custom_conf("node", node_data)
         builder.set_custom_conf("thread", {"num_executor": "1"})
         builder.set_custom_conf("bbox_config",
@@ -49,8 +57,7 @@ class Node(MyRedis):
                                     "pih_color": "[198, 50, 13]",  # PiH bbox color: Blue
                                     "person_color": "[191, 96, 165]",  # Person bbox color: Purple
                                     "flag_color": "[100, 188, 70]"  # Flag bbox color: Green
-                                }
-        )
+                                })
         # TODO: We need a function to dynamically set the Node URI
         builder.set_custom_conf("zmq", {
             "node_uri": "tcp://127.0.0.1:555" + str(node_data["name"]),  # TODO: Need to be dynamic!
@@ -131,7 +138,7 @@ class Node(MyRedis):
         if is_success:
             msg = "Collecting data success."
 
-        return get_json_template(is_success, users, msg, total_records)
+        return get_json_template(is_success, users, total_records, msg)
 
     def bulk_delete_data_by_id(self, json_data):
         if "id" in json_data:
