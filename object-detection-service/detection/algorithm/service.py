@@ -3,7 +3,6 @@ import logging
 from .handler import YOLOv3Handler
 from detection.algorithm.soa.yolo_v3.app import YOLOv3
 import requests
-import simplejson as json
 
 ###
 
@@ -48,11 +47,6 @@ class DetectionAlgorithmService(asab.Service):
 
     async def _configure_object_detection(self):
         self.yolo = YOLOv3(asab.Config["objdet:yolo"])
-        # try:
-        #
-        # except Exception as e:
-        #     print(" >>>> YOLOv3 e:", e)
-        #     await self.SubscriptionHandler.stop()
 
     async def set_zmq_configurations(self, node_name, node_id):
         await self.ZMQService.set_configurations(node_name, node_id)
