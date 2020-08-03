@@ -2,8 +2,8 @@ import asab
 import logging
 import imagezmq
 import time
-from scheduler.controllers.node.node import Node
 from ext_lib.utils import get_current_time
+import requests 
 
 ###
 
@@ -20,20 +20,24 @@ class ZMQService(asab.Service):
         super().__init__(app, service_name)
         self.zmq_sender = []
         self.node_info = []
+        self.node_api_uri = asab.Config["eagleeye:api"]["node"]
 
     # TODO: We need to have a dynamic configuration; This is still static and called ONCE
     async def set_configurations(self):
-        # print(" >>>>> @ ZMQ Sender: set_configurations")
-        # Build ZMQ Senders
-        node = Node()
-        is_success, self.node_info, msg, total = node.get_data()
+        # sending get request and saving the response as response object
+        req = requests.get(url=self.node_api_uri)
 
-        # print(" >>>> self.node_info:", self.node_info, type(self.node_info))
+        # extracting data in json format
+        data = req.json()
+
+        is_success = data["success"]
+        self.node_info = data["data"]
+        total = int(data["total"])
+
         if is_success:
-            # Set ZMQ Senders
+            # Builds ZMQ Senders
             for i in range(total):
                 uri = 'tcp://127.0.0.1:555' + str(self.node_info[i]["name"])
-                # print(" >>>> uri:", uri)
                 sender = imagezmq.ImageSender(connect_to=uri, REQ_REP=False)
                 self.zmq_sender.append(sender)
         else:

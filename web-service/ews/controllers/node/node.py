@@ -131,7 +131,7 @@ class Node(MyRedis):
         if is_success:
             msg = "Collecting data success."
 
-        return get_json_template(is_success, users, msg, total_records)
+        return get_json_template(is_success, users, total_records, msg)
 
     def bulk_delete_data_by_id(self, json_data):
         if "id" in json_data:
