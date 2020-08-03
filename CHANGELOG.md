@@ -1,3 +1,16 @@
+## release-3.1-EEv1.5-Single-Node (August 04, 2020)
+  - Merge branch 'feature/EagleEYEv1.5/YOLOv3' into develop
+  - updated requirement file
+  - Merge branch 'feature/EagleEYEv1.5/YOLOv3' into develop
+  - Added new API: [POST, GET, PUT, DELETE] of /api/locations and /api/locations/{_id}
+  - Removed unused codes
+  - Object Detection Service call RestAPI of EagleEYE Web Service directly
+  - Added eagleeye:api into the configuration to the Object Detection Service
+  - Bug fixed: GET /api/Nodes; Scheduler Service sends request directly into EagleEYE Web Service
+  - Merge branch 'feature/EagleEYEv1.5/YOLOv3' into develop
+  - updated requirement file; deleted unused codes
+  - Merge branch 'release-3.0-EEv1.5-Single-Node' into develop
+
 ## 3.0-EEv1.5-Single-Node (August 03, 2020)
   - Merge branch 'feature/EagleEYEv1.5/YOLOv3' into develop
   - Remove unused services
