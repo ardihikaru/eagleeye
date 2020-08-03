@@ -1,8 +1,8 @@
 import asab
 import logging
 from .handler import YOLOv3Handler
-from detection.controllers.node.node import Node
 from detection.algorithm.soa.yolo_v3.app import YOLOv3
+import requests
 
 ###
 
@@ -31,6 +31,9 @@ class DetectionAlgorithmService(asab.Service):
         # Build YOLO config
         # TODO: To dynamically read the YOLO Version, if not found, Forced to close the Service!
         self.yolo = None
+
+        # Get node information
+        self.node_api_uri = asab.Config["eagleeye:api"]["node"]
 
     async def start_subscription(self):
         try:
@@ -67,11 +70,29 @@ class DetectionAlgorithmService(asab.Service):
             return False, None, None, None
 
     async def update_node_information(self, node_id, pid):
-        node = Node()
-        node.update_data_by_id(node_id, {
+        # defining a params dict for the parameters to be sent to the API
+        request_json = {
             "pid": pid,
             "channel": "node-" + node_id
-        })
+        }
+
+        # sending get request and saving the response as response object
+        req = requests.put(url=self.node_api_uri, json=request_json)
+
+        # extracting data in json format
+        data = req.json()
+
+        print(" >>>> data:", data)
+
+        # is_success = data["success"]
+        # self.node_info = data["data"]
+        # total = int(data["total"])
+
+        # node = Node()
+        # node.update_data_by_id(node_id, {
+        #     "pid": pid,
+        #     "channel": "node-" + node_id
+        # })
 
     async def detect_object(self, frame):
         print("######### START OBJECT DETECTION")

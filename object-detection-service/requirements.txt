@@ -5,6 +5,7 @@ motor
 simplejson
 mongoengine
 window_slider
+requests
 
 Cython
 matplotlib
