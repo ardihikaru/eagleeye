@@ -21,12 +21,12 @@ class ConfigBuilder:
 			"mongodb_uri": "mongodb://localhost:27017"
 		}
 
-	def set_default_pubsub_channel_conf(self, node_id=""):
-		self.config["pubsub:channel"] = {
-			"scheduler": "scheduler",
-			"node": "node-"+node_id,
-			"mongodb_uri": "mongodb://localhost:27017"
-		}
+	# def set_default_pubsub_channel_conf(self, node_id=""):
+	# 	self.config["pubsub:channel"] = {
+	# 		"scheduler": "scheduler",
+	# 		"node": "node-"+node_id
+	# 		# "mongodb_uri": "mongodb://localhost:27017"
+	# 	}
 
 	# def set_default_yolov3_conf(self, cand_sel=False, pers_val=False):
 	def set_default_yolov3_conf(self):

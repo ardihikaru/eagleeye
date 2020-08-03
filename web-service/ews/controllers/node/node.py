@@ -38,7 +38,7 @@ class Node(MyRedis):
         builder.set_config_path("./../object-detection-service/etc/detection.conf")
         builder.set_default_redis_conf()
         builder.set_default_mongodb_conf()
-        builder.set_default_pubsub_channel_conf(node_id=str(node_data["id"]))
+        # builder.set_default_pubsub_channel_conf(node_id=str(node_data["id"]))
         builder.set_default_yolov3_conf()
         builder.set_custom_conf("node", node_data)
         builder.set_custom_conf("thread", {"num_executor": "1"})
