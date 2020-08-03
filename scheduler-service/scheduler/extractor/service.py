@@ -23,8 +23,8 @@ class ExtractorService(asab.Service):
 	def __init__(self, app, service_name="scheduler.ExtractorService"):
 		super().__init__(app, service_name)
 		self.ResizerService = app.get_service("scheduler.ResizerService")
-
 		self.ZMQService = app.get_service("scheduler.ZMQService")
+		self.SchPolicyService = app.get_service("scheduler.SchedulingPolicyService")
 
 		# start pub/sub
 		self.redis = MyRedis(asab.Config)
@@ -110,9 +110,11 @@ class ExtractorService(asab.Service):
 				success, frame = await self._read_frame()
 				# print("\n --- success:", self.frame_id, success, frame.shape)
 
+				# Perform scheduling based on Round-Robin fasion (Default)
+				sel_node_id = await self.SchPolicyService.schedule()
 				# TODO: To implement scheduler here and find which node will be selected
 				# Dummy and always select Node=1 now; id=0
-				sel_node_id = 0
+				# sel_node_id = 0
 
 				# print(" >>> senders:", senders, type(senders))
 
