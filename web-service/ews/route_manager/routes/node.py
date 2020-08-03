@@ -48,7 +48,7 @@ async def index(request):
         try:
             json_data = await request.json()
             resp = DataController().register(json_data)
-        except:
+        except Exception as e:
             # return get_unprocessable_request()
             # Log the error
             L.error("Invalid request: {}".format(e))

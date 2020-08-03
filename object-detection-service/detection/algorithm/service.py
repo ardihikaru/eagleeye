@@ -3,6 +3,7 @@ import logging
 from .handler import YOLOv3Handler
 from detection.algorithm.soa.yolo_v3.app import YOLOv3
 import requests
+import simplejson as json
 
 ###
 
@@ -70,29 +71,23 @@ class DetectionAlgorithmService(asab.Service):
             return False, None, None, None
 
     async def update_node_information(self, node_id, pid):
+        update_uri = self.node_api_uri + "/" + node_id
+
         # defining a params dict for the parameters to be sent to the API
         request_json = {
             "pid": pid,
             "channel": "node-" + node_id
         }
+        headers = {"Content-Type": "application/json"}
 
         # sending get request and saving the response as response object
-        req = requests.put(url=self.node_api_uri, json=request_json)
+        req = requests.put(url=update_uri, json=request_json, headers=headers)
 
         # extracting data in json format
-        data = req.json()
+        resp = req.json()
 
-        print(" >>>> data:", data)
-
-        # is_success = data["success"]
-        # self.node_info = data["data"]
-        # total = int(data["total"])
-
-        # node = Node()
-        # node.update_data_by_id(node_id, {
-        #     "pid": pid,
-        #     "channel": "node-" + node_id
-        # })
+        if "status" in resp and resp["status"] != 200:
+            await self.SubscriptionHandler.stop()
 
     async def detect_object(self, frame):
         print("######### START OBJECT DETECTION")
@@ -112,5 +107,9 @@ class DetectionAlgorithmService(asab.Service):
         return bbox_data, det, names
 
     async def delete_node_information(self, node_id):
-        node = Node()
-        node.delete_data_by_id(node_id)
+        delete_uri = self.node_api_uri + "/" + node_id
+        req = requests.delete(url=delete_uri)
+        resp = req.json()
+
+        if "status" in resp and resp["status"] != 200:
+            await self.SubscriptionHandler.stop()

@@ -42,7 +42,7 @@ class Node(MyRedis):
         builder.set_default_yolov3_conf()
 
         # Add extra information to the accessable API
-        root_api = asab.Config["eagleeye:api"]["listen"] + "/api/"
+        root_api = asab.Config["eagleeye:api"]["api_uri"]
         builder.set_custom_conf("eagleeye:api",
                                 {
                                     "node": root_api + "nodes"
