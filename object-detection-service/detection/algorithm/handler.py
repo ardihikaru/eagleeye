@@ -27,6 +27,7 @@ class YOLOv3Handler(MyRedis):
         self.node_name = int(asab.Config["node"]["name"])  # Should be an integer and unique, i.e. 1, 2, 3 ...
         self.node_id = asab.Config["node"]["id"]
         self.pid = os.getpid()
+        self.node_alias = "NODE-%s" % asab.Config["node"]["name"]
 
         # Extra Module params
         self.cs_enabled = bool(int(asab.Config["node"]["candidate_selection"]))
@@ -40,11 +41,11 @@ class YOLOv3Handler(MyRedis):
 
     async def set_configuration(self):
         # Initialize YOLOv3 configuration
-        print("\n[%s] Initialize YOLOv3 configuration" % get_current_time())
+        print("\n[%s][%s] Initialize YOLOv3 configuration" % (get_current_time(), self.node_alias))
 
     async def set_deployment_status(self):
         """ To change Field `pid` from -1 into this process's PID """
-        print("\n[%s] Updating PID information" % get_current_time())
+        print("\n[%s][%s] Updating PID information" % (get_current_time(), self.node_alias))
 
         # Update Node information: `channel` and `pid`
         await self.DetectionAlgorithmService.update_node_information(self.node_id, self.pid)
@@ -54,7 +55,7 @@ class YOLOv3Handler(MyRedis):
         await self.DetectionAlgorithmService.set_zmq_configurations(self.node_name, self.node_id)
 
     async def stop(self):
-        print("\n[%s] Object Detection Service is going to stop" % get_current_time())
+        print("\n[%s][%s] Object Detection Service is going to stop" % (get_current_time(), self.node_alias))
 
         # Delete Node
         # await self.DetectionAlgorithmService.delete_node_information(asab.Config["node"]["id"])
@@ -65,8 +66,8 @@ class YOLOv3Handler(MyRedis):
 
     async def start(self):
         channel = "node-" + self.node_id
-        print("\n[%s] YOLOv3Handler try to subsscribe to channel `%s` from [Scheduler Service]" %
-              (get_current_time(), channel))
+        print("\n[%s][%s] YOLOv3Handler try to subsscribe to channel `%s` from [Scheduler Service]" %
+              (get_current_time(), self.node_alias, channel))
 
         # set ZMQ Frame Receiver
 
@@ -74,7 +75,8 @@ class YOLOv3Handler(MyRedis):
         consumer.subscribe([channel])
         for item in consumer.listen():
             if isinstance(item["data"], int):
-                print("\n[%s] YOLOv3Handler start listening to [Scheduler Service]" % get_current_time())
+                print("\n[%s][%s] YOLOv3Handler start listening to [Scheduler Service]" %
+                      (get_current_time(), self.node_alias))
             else:
                 # TODO: To tag the corresponding drone_id to identify where the image came from (Future work)
                 image_info = pubsub_to_json(item["data"])
@@ -85,7 +87,8 @@ class YOLOv3Handler(MyRedis):
                 # if not image_info["active"]:
                 if redis_get(self.rc, channel) is not None:
                     self.rc.delete(channel)
-                    print("\n[%s] Forced to exit the Object Detection Service" % get_current_time())
+                    print("\n[%s][%s] Forced to exit the Object Detection Service" %
+                          (get_current_time(), self.node_alias))
                     await self.stop()
                     break
 
@@ -105,7 +108,7 @@ class YOLOv3Handler(MyRedis):
 
                 # Performing Candidate Selection Algorithm, if enabled
                 if self.cs_enabled and det is not None:
-                    print("***** Performing Candidate Selection Algorithm")
+                    print("***** [%s] Performing Candidate Selection Algorithm" % self.node_alias)
                     t0_cs = time.time()
                     mbbox_data = await self.CandidateSelectionService.calc_mbbox(bbox_data, det, names, h, w, c)
                     t1_cs = (time.time() - t0_cs) * 1000
@@ -114,7 +117,7 @@ class YOLOv3Handler(MyRedis):
 
                     # Performing Persistence Validation Algorithm, if enabled
                     if self.pv_enabled and len(mbbox_data) > 0:
-                        print("***** Performing Persistence Validation Algorithm")
+                        print("***** [%s] Performing Persistence Validation Algorithm" % self.node_alias)
 
                         # Increment PiH candidates
                         self.total_pih_candidates += 1
@@ -134,14 +137,15 @@ class YOLOv3Handler(MyRedis):
                         label = asab.Config["bbox_config"]["pih_label"]
                         det_status = label + " object FOUND"
 
-                    print("\n[%s]Frame-%s label=[%s], det_status=[%s]" %
-                          (get_current_time(), str(frame_id), label, det_status))
+                    print("\n[%s][%s]Frame-%s label=[%s], det_status=[%s]" %
+                          (get_current_time(), self.node_alias, str(frame_id), label, det_status))
 
                 # If enable visualizer, send the bbox into the Visualizer Service
                 if self.cv_out:
-                    print("\n[%s] SENDING BBox INTO Visualizer Service!" % get_current_time())
+                    print("\n[%s][%s] SENDING BBox INTO Visualizer Service!" % (get_current_time(), self.node_alias))
 
-        print("\n[%s] YOLOv3Handler stopped listening to [Scheduler Service]" % get_current_time())
+        print("\n[%s][%s] YOLOv3Handler stopped listening to [Scheduler Service]" %
+              (get_current_time(), self.node_alias))
         # Call stop function since it no longers listening
         await self.stop()
 

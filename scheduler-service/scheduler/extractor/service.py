@@ -111,7 +111,7 @@ class ExtractorService(asab.Service):
 				# print("\n --- success:", self.frame_id, success, frame.shape)
 
 				# Perform scheduling based on Round-Robin fasion (Default)
-				sel_node_id = await self.SchPolicyService.schedule()
+				sel_node_id = await self.SchPolicyService.schedule(max_node=len(senders["node"]))
 				# TODO: To implement scheduler here and find which node will be selected
 				# Dummy and always select Node=1 now; id=0
 				# sel_node_id = 0

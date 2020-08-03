@@ -39,5 +39,5 @@ class SchedulingPolicyService(asab.Service):
         print(" >>>> NOW self.selected_node_id:", self.selected_node_id)
         print("I am using Round-Robin")
         self.selected_node_id += 1
-        if self.selected_node_id > self.max_node:
+        if self.selected_node_id >= self.max_node:
             self.selected_node_id = 0  # Reset
