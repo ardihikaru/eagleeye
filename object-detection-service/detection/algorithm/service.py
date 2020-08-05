@@ -108,7 +108,7 @@ class DetectionAlgorithmService(asab.Service):
                 "section": "Pre-processing",
                 "latency": pre_proc_lat
             }
-            # Storing latency data: Pre-processing
+            # Submit and store latency data: Pre-processing
             if not await self.LatCollectorService.store_latency_data_thread(preproc_latency_data):
                 await self.SubscriptionHandler.stop()
             t1_preproc = (time.time() - t0_preproc) * 1000
