@@ -99,7 +99,7 @@ class DetectionAlgorithmService(asab.Service):
             # TODO: To add GPU-based downsample function
             # resized_frame = await self.ResizerService.gpu_convert_to_padded_size(frame)
 
-            # build latency data
+            # build latency data: Pre-processing
             t0_preproc = time.time()
             preproc_latency_data = {
                 "frame_id": int(frame_id),
@@ -115,8 +115,24 @@ class DetectionAlgorithmService(asab.Service):
             print('\n[%s] Proc. Latency of Pre-processing (%.3f ms)' % (get_current_time(), t1_preproc))
 
             # Perform object detection
-            bbox_data, det, names = self.yolo.get_detection_results(resized_frame)
+            bbox_data, det, names, yolo_lat = self.yolo.get_detection_results(resized_frame)
             # bbox_data = self.yolo.get_bbox_data(frame, False)
+
+            # build latency data: YOLO
+            t0_preproc = time.time()
+            preproc_latency_data = {
+                "frame_id": int(frame_id),
+                "category": "Object Detection",
+                "algorithm": "YOLOv3",
+                "section": "YOLO",
+                "latency": yolo_lat
+            }
+            # Submit and store latency data: YOLO
+            if not await self.LatCollectorService.store_latency_data_thread(preproc_latency_data):
+                await self.SubscriptionHandler.stop()
+            t1_preproc = (time.time() - t0_preproc) * 1000
+            print('\n[%s] Proc. Latency of YOLO (%.3f ms)' % (get_current_time(), t1_preproc))
+
         except Exception as e:
             print(" >>>> GET BBox e:", e)
             await self.SubscriptionHandler.stop()
