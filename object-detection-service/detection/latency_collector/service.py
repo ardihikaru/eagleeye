@@ -34,6 +34,8 @@ class LatencyCollectorService(asab.Service):
         # extracting data in json format
         resp = req.json()
 
+        # TODO: To store into ElasticSearchDB
+
         if "status" in resp and resp["status"] != 200:
             return False
 
