@@ -101,7 +101,7 @@ class YOLOv3Handler(MyRedis):
                 # TODO: To save latency into ElasticSearchDB (Future work)
 
                 # Start performing object detection
-                bbox_data, det, names = await self.DetectionAlgorithmService.detect_object(img)
+                bbox_data, det, names = await self.DetectionAlgorithmService.detect_object(frame_id, img)
 
                 # Get img information
                 h, w, c = img.shape

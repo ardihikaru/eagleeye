@@ -89,7 +89,7 @@ class DetectionAlgorithmService(asab.Service):
         if "status" in resp and resp["status"] != 200:
             await self.SubscriptionHandler.stop()
 
-    async def detect_object(self, frame):
+    async def detect_object(self, frame_id, frame):
         print("####[%s]##### START OBJECT DETECTION" % self.node_alias)
         bbox_data, det, names = None, None, None
         try:
@@ -101,6 +101,7 @@ class DetectionAlgorithmService(asab.Service):
 
             # build latency data
             latency_data = {
+                "frame_id": int(frame_id),
                 "category": "Object Detection",
                 "algorithm": "YOLOv3",
                 "section": "Pre-processing",
