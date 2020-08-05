@@ -28,8 +28,6 @@ class LatencyCollectorService(asab.Service):
 
     # async def store_latency_data(self, latency_data):
     def _store_latency_data(self, latency_data):
-        print("#### I am store_latency_data function from ResizerService!")
-        
         # sending get request and saving the response as response object
         req = requests.post(url=self.node_api_uri, json=latency_data, headers=self.headers)
 
