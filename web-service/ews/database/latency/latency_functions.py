@@ -19,8 +19,6 @@ def insert_new_data(db_model, new_data, msg):
         return False, None, str(e)
 
     new_data["id"] = str(inserted_data.id)
-    new_data["created_at"] = inserted_data.created_at.strftime("%Y-%m-%d, %H:%M:%S")
-    new_data["updated_at"] = inserted_data.updated_at.strftime("%Y-%m-%d, %H:%M:%S")
 
     if len(new_data) > 0:
         return True, new_data, msg
@@ -68,20 +66,6 @@ def del_data_by_id(db_model, _id, rc):
     try:
         db_model.objects.get(id=_id).delete()
 
-        # once successfully created, try sending information into Object Detection Service
-        # channel = "node-" + _id + "-killer"
-        channel = "node-" + _id
-        # send data into Scheduler service through the pub/sub
-        t0_notification = time.time()
-        # dump_request = json.dumps({"active": False})
-        # pub(rc, channel, dump_request)
-        # Use redis key-value instead of pub/sub!
-        redis_set(rc, channel, True)
-        t1_notification = (time.time() - t0_notification) * 1000
-        # TODO: Saving latency for scheduler:producer:destroy
-        print('[%s] Latency to send a notification to destroy Object Detection Service (%.3f ms)' %
-              (get_current_time(), t1_notification))
-
     except Exception as e:
         return False, str(e)
 
@@ -96,6 +80,5 @@ def upd_data_by_id(db_model, _id, new_data):
         return False, None, str(e)
 
     new_data["id"] = _id
-    new_data["updated_at"] = datetime.now().strftime("%Y-%m-%d, %H:%M:%S")
 
     return True, new_data, None

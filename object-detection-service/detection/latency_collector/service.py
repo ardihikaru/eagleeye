@@ -1,6 +1,8 @@
 import asab
 import logging
 import requests
+from concurrent.futures import ThreadPoolExecutor
+from ext_lib.utils import get_current_time
 
 ###
 
@@ -22,7 +24,10 @@ class LatencyCollectorService(asab.Service):
         self.node_api_uri = asab.Config["eagleeye:api"]["latency"]
         self.headers = {"Content-Type": "application/json"}
 
-    async def store_latency_data(self, latency_data):
+        self.executor = ThreadPoolExecutor(int(asab.Config["thread"]["num_executor"]))
+
+    # async def store_latency_data(self, latency_data):
+    def _store_latency_data(self, latency_data):
         print("#### I am store_latency_data function from ResizerService!")
         
         # sending get request and saving the response as response object
@@ -32,6 +37,18 @@ class LatencyCollectorService(asab.Service):
         resp = req.json()
 
         if "status" in resp and resp["status"] != 200:
+            return False
+
+        return True
+
+    async def store_latency_data_thread(self, latency_data):
+        try:
+            kwargs = {
+                "latency_data": latency_data
+            }
+            self.executor.submit(self._store_latency_data, **kwargs)
+        except:
+            print("\n[%s] Somehow we unable to Store latency data." % get_current_time())
             return False
 
         return True
