@@ -100,20 +100,17 @@ class DetectionAlgorithmService(asab.Service):
             # resized_frame = await self.ResizerService.gpu_convert_to_padded_size(frame)
 
             # build latency data
-            latency_data = {
+            t0_preproc = time.time()
+            preproc_latency_data = {
                 "frame_id": int(frame_id),
                 "category": "Object Detection",
                 "algorithm": "YOLOv3",
                 "section": "Pre-processing",
                 "latency": pre_proc_lat
             }
-
-            t0_preproc = time.time()
             # Storing latency data: Pre-processing
-            # if not await self.LatCollectorService.store_latency_data(latency_data):
-            if not await self.LatCollectorService.store_latency_data_thread(latency_data):
+            if not await self.LatCollectorService.store_latency_data_thread(preproc_latency_data):
                 await self.SubscriptionHandler.stop()
-
             t1_preproc = (time.time() - t0_preproc) * 1000
             print('\n[%s] Proc. Latency of Pre-processing (%.3f ms)' % (get_current_time(), t1_preproc))
 
