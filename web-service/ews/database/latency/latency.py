@@ -12,7 +12,6 @@ class LatencyModel(Document):
     algorithm = StringField(required=True)
     section = StringField(required=True)
     latency = FloatField(required=True)
-    timestamp = FloatField(required=True)
     created_at = DateTimeField(default=datetime.datetime.now)
     updated_at = DateTimeField(default=datetime.datetime.now)
 
