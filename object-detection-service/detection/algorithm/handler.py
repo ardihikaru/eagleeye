@@ -112,10 +112,10 @@ class YOLOv3Handler(MyRedis):
                 bbox_data, det, names, pre_proc_lat, yolo_lat = await self.DetectionAlgorithmService.detect_object(img)
 
                 # build & submit latency data: Pre-processing
-                await self._save_latency(frame_id, pre_proc_lat, "N/A", "Pre-processing")
+                await self._save_latency(frame_id, pre_proc_lat, "N/A", "preproc_det", "Pre-processing")
 
                 # build & submit latency data: YOLO
-                await self._save_latency(frame_id, yolo_lat, image_info["algorithm"], "Object Detection")
+                await self._save_latency(frame_id, yolo_lat, image_info["algorithm"], "detection", "Object Detection")
 
                 # Get img information
                 h, w, c = img.shape
@@ -130,7 +130,8 @@ class YOLOv3Handler(MyRedis):
                     # print(" >>>>> mbbox_data:", mbbox_data)
 
                     # build & submit latency data: PiH Candidate Selection
-                    await self._save_latency(frame_id, t1_cs, "PiH Candidate Selection", "Extra Pipeline")
+                    await self._save_latency(frame_id, t1_cs, "PiH Candidate Selection", "candidate_selection",
+                                             "Extra Pipeline")
 
                     # Performing Persistence Validation Algorithm, if enabled
                     if self.pv_enabled and len(mbbox_data) > 0:
@@ -143,15 +144,16 @@ class YOLOv3Handler(MyRedis):
                         # mbbox_data_pv = await self.PersValService.predict_mbbox(mbbox_data)
                         t0_pv = time.time()
                         label, det_status = await self.PersValService.validate_mbbox(frame_id,
-                                                                                         self.total_pih_candidates,
-                                                                                         self.period_pih_candidates)
+                                                                                     self.total_pih_candidates,
+                                                                                     self.period_pih_candidates)
                         await self._maintaince_period_pih_cand()
                         t1_pv = (time.time() - t0_pv) * 1000
                         print('\n[%s] Latency of Persistence Detection Algorithm (%.3f ms)' %
                               (get_current_time(), t1_pv))
 
                         # build & submit latency data: PiH Persistence Validation
-                        await self._save_latency(frame_id, t1_pv, "PiH Persistence Validation", "Extra Pipeline")
+                        await self._save_latency(frame_id, t1_pv, "PiH Persistence Validation", "persistence_validation",
+                                                 "Extra Pipeline")
                     else:
                         # Set default label, in case PV algorithm is DISABLED
                         label = asab.Config["bbox_config"]["pih_label"]
