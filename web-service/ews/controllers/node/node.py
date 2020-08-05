@@ -157,8 +157,8 @@ class Node(MyRedis):
             return get_unprocessable_request_json()
 
     def delete_data_by_id_one(self, _id):
-        _, _ = del_data_by_id(NodeModel, _id, self.rc)
-        return get_json_template(True, {}, -1, "OK")
+        is_success, msg = del_data_by_id(NodeModel, _id, self.rc)
+        return get_json_template(is_success, {}, -1, msg)
 
     def update_data_by_id(self, _id, json_data):
         is_success, user_data, msg = upd_data_by_id(NodeModel, _id, new_data=json_data)
