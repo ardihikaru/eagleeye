@@ -72,11 +72,11 @@ class YOLOv3Handler(MyRedis):
               (get_current_time(), self.node_alias, channel))
 
         # set params to store tmp latency data
-        latency = {
-            "preproc": [],
-            "yolo": [],
-            "cand_selection": []
-        }
+        # latency = {
+        #     "preproc": [],
+        #     "yolo": [],
+        #     "cand_selection": []
+        # }
 
         consumer = self.rc.pubsub()
         consumer.subscribe([channel])
