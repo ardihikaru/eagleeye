@@ -21,7 +21,7 @@ route = RouteCollector()
 async def latency(request):
     """
         Endpoint to:
-         1. POST new location
+         1. POST new latency
             Try: curl http://localhost:8080/api/latency -X POST -H "Content-Type: application/json"
                     -d '{
                             "category": "Object Detection",
@@ -42,7 +42,7 @@ async def latency(request):
          1. GET all latency
             Try: curl http://localhost:8080/api/latency
 
-         2. DELETE a specific location (single ID)
+         2. DELETE a specific latency (single ID)
             Try: curl http://localhost:8080/api/latency -X DELETE -H "Content-Type: application/json"
                     -d '{
                             "id": {String}
@@ -87,12 +87,12 @@ async def latency_by(request):
     """
         Endpoint to:
          1. GET latency by id
-            Try: curl http://localhost:8080/api/{_id}
+            Try: curl http://localhost:8080/api/latency/{_id}
          2. DELETE latency by id
-            Try: curl http://localhost:8080/api/{_id} -X DELETE
+            Try: curl http://localhost:8080/api/latency/{_id} -X DELETE
          3. PUT (Edit) latency by id
-            Try: curl http://localhost:8080/api/{_id}
-                    -X POST -H "Content-Type: application/json" -d '{"name":"Node 2"}'
+            Try: curl http://localhost:8080/api/latency/{_id}
+                    -X POST -H "Content-Type: application/json" -d '{"category":"Category new"}'
     """
 
 
