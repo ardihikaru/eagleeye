@@ -1,6 +1,5 @@
 import asab
 import logging
-import time
 import requests
 
 ###
@@ -33,6 +32,6 @@ class LatencyCollectorService(asab.Service):
         resp = req.json()
 
         if "status" in resp and resp["status"] != 200:
-            await self.SubscriptionHandler.stop()
+            return False
 
         return True
