@@ -3,6 +3,8 @@ import logging
 from .handler import YOLOv3Handler
 from detection.algorithm.soa.yolo_v3.app import YOLOv3
 import requests
+import time
+from ext_lib.utils import get_current_time
 
 ###
 
@@ -22,6 +24,8 @@ class DetectionAlgorithmService(asab.Service):
         self.app = app
         self.SubscriptionHandler = YOLOv3Handler(app)
         self.ResizerService = app.get_service("detection.ResizerService")
+
+        self.LatCollectorService = app.get_service("detection.LatencyCollectorService")
 
         self.node_alias = "NODE-%s" % asab.Config["node"]["name"]
 
@@ -90,9 +94,21 @@ class DetectionAlgorithmService(asab.Service):
         bbox_data, det, names = None, None, None
         try:
             # Perform conversion first!
-            resized_frame = await self.ResizerService.cpu_convert_to_padded_size(frame)
+            # resized_frame = await self.ResizerService.cpu_convert_to_padded_size(frame)
+            resized_frame, pre_proc_lat = await self.ResizerService.cpu_convert_to_padded_size(frame)
             # TODO: To add GPU-based downsample function
             # resized_frame = await self.ResizerService.gpu_convert_to_padded_size(frame)
+
+            t0_preproc = time.time()
+            # Storing latency data: Pre-processing
+            self.LatCollectorService.store_latency_data({
+                "category": "Object Detection",
+                "algorithm": "YOLOv3",
+                "section": "Pre-processing",
+                "latency": pre_proc_lat
+            })
+            t1_preproc = (time.time() - t0_preproc) * 1000
+            print('\n[%s] Proc. Latency of Pre-processing (%.3f ms)' % (get_current_time(), t1_preproc))
 
             # Perform object detection
             bbox_data, det, names = self.yolo.get_detection_results(resized_frame)

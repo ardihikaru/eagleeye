@@ -45,7 +45,8 @@ class Node(MyRedis):
         root_api = asab.Config["eagleeye:api"]["api_uri"]
         builder.set_custom_conf("eagleeye:api",
                                 {
-                                    "node": root_api + "nodes"
+                                    "node": root_api + "nodes",
+                                    "latency": root_api + "latency"
                                 })
 
         builder.set_custom_conf("node", node_data)
