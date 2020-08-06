@@ -97,19 +97,15 @@ class ExtractorService(asab.Service):
 
 		return ordered_dataset
 
-	def _save_e2e_lat(self, lat_key, frame_id, t0):
-		redis_set(self.redis.get_rc(), lat_key, {
-			"frame_id": frame_id,
-			"t0": t0
-		}, expired=2)  # set expired in 2 second
+	def _save_e2e_lat(self, lat_key, t0):
+		redis_set(self.redis.get_rc(), lat_key, t0, expired=30)  # set expired in 30 second
 
 	def _exec_e2e_latency_collector(self, t0_e2e_lat, node_id, frame_id):
 		t0_thread = time.time()
 		try:
 			kwargs = {
 				# TODO: To add DroneID as the key as well (Future work)
-				"lat_key": node_id + "-%s-" % str(frame_id) + "-e2e-latency",
-				"frame_id": frame_id,
+				"lat_key": node_id + "-%s" % str(frame_id) + "-e2e-latency",
 				"t0": t0_e2e_lat
 			}
 			self.executor.submit(self._save_e2e_lat, **kwargs)
