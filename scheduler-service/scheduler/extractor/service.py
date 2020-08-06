@@ -113,7 +113,7 @@ class ExtractorService(asab.Service):
 			}
 			self.executor.submit(self._save_e2e_lat, **kwargs)
 		except:
-			print("\n[%s] Somehow we unable to Start the Thread of e3e Latency Collector" % get_current_time())
+			print("\n[%s] Somehow we unable to Start the Thread of e2e Latency Collector" % get_current_time())
 		t1_thread = (time.time() - t0_thread) * 1000
 		print('\n[%s] Latency for Start threading (%.3f ms)' % (get_current_time(), t1_thread))
 
