@@ -98,15 +98,10 @@ class ExtractorService(asab.Service):
 		return ordered_dataset
 
 	def _save_e2e_lat(self, lat_key, frame_id, t0):
-		# dump_json = json.dumps({
-		# 	"frame_id": frame_id,
-		# 	"t0": t0
-		# })
-		# redis_set(self.redis.get_rc(), lat_key, dump_json)
 		redis_set(self.redis.get_rc(), lat_key, {
 			"frame_id": frame_id,
 			"t0": t0
-		})
+		}, expired=2)  # set expired in 2 second
 
 	def _exec_e2e_latency_collector(self, t0_e2e_lat, node_id, frame_id):
 		t0_thread = time.time()
