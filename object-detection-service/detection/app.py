@@ -1,5 +1,6 @@
 import asab.storage
 import asab.web.session
+from detection.latency_collector import LatencyCollectorModule
 from detection.zmq import ZMQModule
 from detection.resizer import ResizerModule
 from detection.candidate_selection import CandidateSelectionModule
@@ -24,6 +25,7 @@ class ObjectDetectionService(asab.Application):
 		self.add_module(asab.storage.Module)
 
 		# Add modules
+		self.add_module(LatencyCollectorModule)
 		self.add_module(ZMQModule)
 		self.add_module(ResizerModule)
 		self.add_module(CandidateSelectionModule)

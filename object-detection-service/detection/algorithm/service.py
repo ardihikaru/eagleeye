@@ -3,6 +3,8 @@ import logging
 from .handler import YOLOv3Handler
 from detection.algorithm.soa.yolo_v3.app import YOLOv3
 import requests
+import time
+from ext_lib.utils import get_current_time
 
 ###
 
@@ -87,20 +89,52 @@ class DetectionAlgorithmService(asab.Service):
 
     async def detect_object(self, frame):
         print("####[%s]##### START OBJECT DETECTION" % self.node_alias)
-        bbox_data, det, names = None, None, None
+        bbox_data, det, names, pre_proc_lat, yolo_lat = None, None, None, None, None
         try:
             # Perform conversion first!
-            resized_frame = await self.ResizerService.cpu_convert_to_padded_size(frame)
+            # resized_frame = await self.ResizerService.cpu_convert_to_padded_size(frame)
+            resized_frame, pre_proc_lat = await self.ResizerService.cpu_convert_to_padded_size(frame)
             # TODO: To add GPU-based downsample function
             # resized_frame = await self.ResizerService.gpu_convert_to_padded_size(frame)
 
+            # # build latency data: Pre-processing
+            # t0_preproc = time.time()
+            # preproc_latency_data = {
+            #     "frame_id": int(frame_id),
+            #     "category": "Object Detection",
+            #     "algorithm": algorithm,
+            #     "section": "Pre-processing",
+            #     "latency": pre_proc_lat
+            # }
+            # # Submit and store latency data: Pre-processing
+            # if not await self.LatCollectorService.store_latency_data_thread(preproc_latency_data):
+            #     await self.SubscriptionHandler.stop()
+            # t1_preproc = (time.time() - t0_preproc) * 1000
+            # print('\n[%s] Proc. Latency of Pre-processing (%.3f ms)' % (get_current_time(), t1_preproc))
+
             # Perform object detection
-            bbox_data, det, names = self.yolo.get_detection_results(resized_frame)
+            bbox_data, det, names, yolo_lat = self.yolo.get_detection_results(resized_frame)
             # bbox_data = self.yolo.get_bbox_data(frame, False)
+
+            # # build latency data: YOLO
+            # t0_preproc = time.time()
+            # preproc_latency_data = {
+            #     "frame_id": int(frame_id),
+            #     "category": "Object Detection",
+            #     "algorithm": algorithm,
+            #     "section": "YOLO",
+            #     "latency": yolo_lat
+            # }
+            # # Submit and store latency data: YOLO
+            # if not await self.LatCollectorService.store_latency_data_thread(preproc_latency_data):
+            #     await self.SubscriptionHandler.stop()
+            # t1_preproc = (time.time() - t0_preproc) * 1000
+            # print('\n[%s] Proc. Latency of YOLO (%.3f ms)' % (get_current_time(), t1_preproc))
+
         except Exception as e:
             print(" >>>> GET BBox e:", e)
             await self.SubscriptionHandler.stop()
-        return bbox_data, det, names
+        return bbox_data, det, names, pre_proc_lat, yolo_lat
 
     async def delete_node_information(self, node_id):
         delete_uri = self.node_api_uri + "/" + node_id

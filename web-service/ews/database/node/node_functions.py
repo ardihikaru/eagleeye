@@ -5,9 +5,7 @@
 from mongoengine import DoesNotExist, NotUniqueError, Q, ValidationError
 from ext_lib.utils import mongo_list_to_dict, mongo_dict_to_dict, pop_if_any, get_current_time
 from datetime import datetime
-from ext_lib.redis.translator import pub
 import time
-import simplejson as json
 from ext_lib.redis.translator import redis_set
 
 
@@ -88,7 +86,7 @@ def del_data_by_id(db_model, _id, rc):
     except Exception as e:
         return False, str(e)
 
-    return True, None
+    return True, "OK"
 
 
 def upd_data_by_id(db_model, _id, new_data):

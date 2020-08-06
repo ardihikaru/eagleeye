@@ -23,6 +23,8 @@ class YOLOv3Handler(MyRedis):
         self.PersValService = app.get_service("detection.PersistenceValidationService")
         self.executor = ThreadPoolExecutor(int(asab.Config["thread"]["num_executor"]))
 
+        self.LatCollectorService = app.get_service("detection.LatencyCollectorService")
+
         # Default None
         self.node_name = int(asab.Config["node"]["name"])  # Should be an integer and unique, i.e. 1, 2, 3 ...
         self.node_id = asab.Config["node"]["id"]
@@ -69,7 +71,12 @@ class YOLOv3Handler(MyRedis):
         print("\n[%s][%s] YOLOv3Handler try to subsscribe to channel `%s` from [Scheduler Service]" %
               (get_current_time(), self.node_alias, channel))
 
-        # set ZMQ Frame Receiver
+        # set params to store tmp latency data
+        # latency = {
+        #     "preproc": [],
+        #     "yolo": [],
+        #     "cand_selection": []
+        # }
 
         consumer = self.rc.pubsub()
         consumer.subscribe([channel])
@@ -94,6 +101,7 @@ class YOLOv3Handler(MyRedis):
 
                 # TODO: To start TCP Connection and be ready to capture the image from [Scheduler Service]
                 # TODO: To have a tag as the image identifier, i.e. DroneID
+                # TODO: To add a timeout, if no response found after a `timeout` time, ignore this (Future work)
                 is_success, frame_id, t0_zmq, img = await self.DetectionAlgorithmService.get_img()
                 # print(">>>> RECEIVED DATA:", is_success, frame_id, t0_zmq, img.shape)
                 t1_zmq = (time.time() - t0_zmq) * 1000
@@ -101,7 +109,13 @@ class YOLOv3Handler(MyRedis):
                 # TODO: To save latency into ElasticSearchDB (Future work)
 
                 # Start performing object detection
-                bbox_data, det, names = await self.DetectionAlgorithmService.detect_object(img)
+                bbox_data, det, names, pre_proc_lat, yolo_lat = await self.DetectionAlgorithmService.detect_object(img)
+
+                # build & submit latency data: Pre-processing
+                await self._save_latency(frame_id, pre_proc_lat, "N/A", "preproc_det", "Pre-processing")
+
+                # build & submit latency data: YOLO
+                await self._save_latency(frame_id, yolo_lat, image_info["algorithm"], "detection", "Object Detection")
 
                 # Get img information
                 h, w, c = img.shape
@@ -115,6 +129,10 @@ class YOLOv3Handler(MyRedis):
                     print('\n[%s] Latency of Candidate Selection Algo. (%.3f ms)' % (get_current_time(), t1_cs))
                     # print(" >>>>> mbbox_data:", mbbox_data)
 
+                    # build & submit latency data: PiH Candidate Selection
+                    await self._save_latency(frame_id, t1_cs, "PiH Candidate Selection", "candidate_selection",
+                                             "Extra Pipeline")
+
                     # Performing Persistence Validation Algorithm, if enabled
                     if self.pv_enabled and len(mbbox_data) > 0:
                         print("***** [%s] Performing Persistence Validation Algorithm" % self.node_alias)
@@ -126,12 +144,16 @@ class YOLOv3Handler(MyRedis):
                         # mbbox_data_pv = await self.PersValService.predict_mbbox(mbbox_data)
                         t0_pv = time.time()
                         label, det_status = await self.PersValService.validate_mbbox(frame_id,
-                                                                                         self.total_pih_candidates,
-                                                                                         self.period_pih_candidates)
+                                                                                     self.total_pih_candidates,
+                                                                                     self.period_pih_candidates)
                         await self._maintaince_period_pih_cand()
                         t1_pv = (time.time() - t0_pv) * 1000
                         print('\n[%s] Latency of Persistence Detection Algorithm (%.3f ms)' %
                               (get_current_time(), t1_pv))
+
+                        # build & submit latency data: PiH Persistence Validation
+                        await self._save_latency(frame_id, t1_pv, "PiH Persistence Validation", "persistence_validation",
+                                                 "Extra Pipeline")
                     else:
                         # Set default label, in case PV algorithm is DISABLED
                         label = asab.Config["bbox_config"]["pih_label"]
@@ -148,6 +170,21 @@ class YOLOv3Handler(MyRedis):
               (get_current_time(), self.node_alias))
         # Call stop function since it no longers listening
         await self.stop()
+
+    async def _save_latency(self, frame_id, latency, algorithm="[?]", section="[?]", cat="Object Detection"):
+        t0_preproc = time.time()
+        preproc_latency_data = {
+            "frame_id": int(frame_id),
+            "category": cat,
+            "algorithm": algorithm,
+            "section": section,
+            "latency": latency
+        }
+        # Submit and store latency data: Pre-processing
+        if not await self.LatCollectorService.store_latency_data_thread(preproc_latency_data):
+            await self.stop()
+        t1_preproc = (time.time() - t0_preproc) * 1000
+        print('\n[%s] Proc. Latency of %s (%.3f ms)' % (get_current_time(), section, t1_preproc))
 
     async def _maintaince_period_pih_cand(self):
         if len(self.period_pih_candidates) > self.persistence_window:
