@@ -78,6 +78,9 @@ class YOLOv3Handler(MyRedis):
         #     "cand_selection": []
         # }
 
+        # bug fix: invalid e2e latency due to detection issue with CPU
+        # t_start = None
+
         consumer = self.rc.pubsub()
         consumer.subscribe([channel])
         for item in consumer.listen():
@@ -167,16 +170,23 @@ class YOLOv3Handler(MyRedis):
                     print("\n[%s][%s] SENDING BBox INTO Visualizer Service!" % (get_current_time(), self.node_alias))
 
                 # Capture and store e2e latency
-                await self._store_e2e_latency(str(frame_id))
+                t1_e2e_latency = time.time()
+                # if t_start is None:
+                #     t_start = time.time()
+                # else:
+                #     t1_e2e_latency = t1_e2e_latency - t_start
+                #     t_start = t1_e2e_latency
+                await self._store_e2e_latency(str(frame_id), t1_e2e_latency)
 
         print("\n[%s][%s] YOLOv3Handler stopped listening to [Scheduler Service]" %
               (get_current_time(), self.node_alias))
         # Call stop function since it no longers listening
         await self.stop()
 
-    async def _store_e2e_latency(self, frame_id):
+    async def _store_e2e_latency(self, frame_id, t1_e2e_latency):
         t0_e2e_latency = await self._get_t0_e2e_latency(frame_id)
-        t1_e2e_latency = (time.time() - t0_e2e_latency) * 1000
+        # t1_e2e_latency = (time.time() - t0_e2e_latency) * 1000
+        t1_e2e_latency = (t1_e2e_latency - t0_e2e_latency) * 1000
         print('[%s] E2E Latency of frame-%s (%.3f ms)' % (get_current_time(), frame_id, t1_e2e_latency))
         # TODO: TO save latency into ElasticSearchDB
 
