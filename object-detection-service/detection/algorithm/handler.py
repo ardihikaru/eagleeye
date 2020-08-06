@@ -104,7 +104,7 @@ class YOLOv3Handler(MyRedis):
                 # TODO: To add a timeout, if no response found after a `timeout` time, ignore this (Future work)
                 is_success, frame_id, t0_zmq, img = await self.DetectionAlgorithmService.get_img()
                 # print(">>>> RECEIVED DATA:", is_success, frame_id, t0_zmq, img.shape)
-                t1_zmq = (time.time() - t0_zmq) * 1000
+                t1_zmq = (time.time() - t0_zmq) * 1000  # TODO: This is still INVALID! it got mixed up with Det latency!
                 print('\n[%s] Latency for Receiving Image ZMQ (%.3f ms)' % (get_current_time(), t1_zmq))
                 # TODO: To save latency into ElasticSearchDB (Future work)
 
@@ -165,6 +165,8 @@ class YOLOv3Handler(MyRedis):
                 # If enable visualizer, send the bbox into the Visualizer Service
                 if self.cv_out:
                     print("\n[%s][%s] SENDING BBox INTO Visualizer Service!" % (get_current_time(), self.node_alias))
+
+                # Capture e2e latency
 
         print("\n[%s][%s] YOLOv3Handler stopped listening to [Scheduler Service]" %
               (get_current_time(), self.node_alias))

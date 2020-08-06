@@ -107,7 +107,8 @@ class ExtractorService(asab.Service):
 		t0_thread = time.time()
 		try:
 			kwargs = {
-				"lat_key": node_id + "-e2e-latency",
+				# TODO: To add DroneID as the key as well (Future work)
+				"lat_key": node_id + "-%s-" % str(frame_id) + "-e2e-latency",
 				"frame_id": frame_id,
 				"t0": t0_e2e_lat
 			}
