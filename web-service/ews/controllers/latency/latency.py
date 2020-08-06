@@ -4,7 +4,7 @@
 
 from ext_lib.utils import json_load_str, get_json_template, get_unprocessable_request_json
 from ews.database.latency.latency import LatencyModel
-from ews.database.latency.latency_functions import get_all_data, \
+from ews.database.latency.latency_functions import get_all_data, get_data_by_section, \
     del_data_by_id, upd_data_by_id, get_data_by_id, insert_new_data
 import asab
 from ext_lib.redis.my_redis import MyRedis
@@ -82,3 +82,7 @@ class Latency(MyRedis):
     def get_data_by_id(self, userid):
         is_success, user_data, msg = get_data_by_id(LatencyModel, userid)
         return get_json_template(is_success, user_data, -1, msg)
+
+    def get_data_by_section(self, section):
+        is_success, data = get_data_by_section(LatencyModel, section)
+        return get_json_template(is_success, data, -1, "")
