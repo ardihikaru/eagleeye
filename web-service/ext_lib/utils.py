@@ -192,5 +192,19 @@ def get_current_time():
     return datetime.now().strftime("%H:%M:%S")
 
 
+def get_current_datetime(is_folder=False):
+    if is_folder:
+        return datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+    else:
+        return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+
 def get_random_str(k=5):
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k=k))
+
+
+def int_to_tuple(Ks):
+    lst = []
+    for i in range(Ks):
+        lst.append((i+1))
+    return tuple(lst)

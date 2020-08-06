@@ -126,7 +126,7 @@ class ExtractorService(asab.Service):
 				# send data into Scheduler service through the pub/sub
 				t0_publish = time.time()
 				# print("# send data into Scheduler service through the pub/sub")
-				dump_request = json.dumps({"active": True, "frame": "ini frame data coy", "ts": time.time()})
+				dump_request = json.dumps({"active": True, "algorithm": config["algorithm"], "ts": time.time()})
 				pub(self.redis.get_rc(), node_channel, dump_request)
 				t1_publish = (time.time() - t0_publish) * 1000
 				# TODO: Saving latency for scheduler:producer:notification:image

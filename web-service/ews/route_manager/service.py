@@ -6,6 +6,8 @@ from ews.route_manager.routes import user as route_user
 from ews.route_manager.routes import stream_reader as route_stream_reader
 from ews.route_manager.routes import node as route_node
 from ews.route_manager.routes import location as route_location
+from ews.route_manager.routes import latency as route_latency
+from ews.route_manager.routes import plot as route_plot
 from aiohttp_jwt import JWTMiddleware
 from ext_lib.database_blacklist.blacklist_helpers import is_token_revoked
 from ext_lib.redis.my_redis import MyRedis
@@ -34,13 +36,16 @@ class RouteManagerModule(asab.Service):
         self.ServiceAPIWebContainer = asab.web.WebContainer(web_svc, 'eagleeye:api')
 
         # Enable CORS to CORS middleware
-        self.ServiceAPIWebContainer.WebApp.middlewares.append(cors_middleware(origins=(asab.Config["clients"]["source_ip"],)))
+        self.ServiceAPIWebContainer.WebApp.middlewares.append(cors_middleware(origins=(asab.Config["clients"]
+                                                                                       ["source_ip"],)))
 
         route_auth.route.add_to_router(self.ServiceAPIWebContainer.WebApp.router, prefix='/api/auth')
         route_user.route.add_to_router(self.ServiceAPIWebContainer.WebApp.router, prefix='/api/users')
         route_stream_reader.route.add_to_router(self.ServiceAPIWebContainer.WebApp.router, prefix='/api/stream')
         route_node.route.add_to_router(self.ServiceAPIWebContainer.WebApp.router, prefix='/api/nodes')
         route_location.route.add_to_router(self.ServiceAPIWebContainer.WebApp.router, prefix='/api/locations')
+        route_latency.route.add_to_router(self.ServiceAPIWebContainer.WebApp.router, prefix='/api/latency')
+        route_plot.route.add_to_router(self.ServiceAPIWebContainer.WebApp.router, prefix='/api/plot')
 
         # Enable exception to JSON exception middleware
         self.ServiceAPIWebContainer.WebApp.middlewares.append(asab.web.rest.JsonExceptionMiddleware)
