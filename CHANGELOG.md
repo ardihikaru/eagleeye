@@ -1,3 +1,29 @@
+## 3.4.1-stable (八月 07, 2020)
+  - Add experimental results
+  - try other method (2): calculate e2e latency
+  - Indent issue
+  - Bug fix: export graph data error
+  - Bug fix: increment invalid
+  - try other method: kill process ID
+  - kill process ID
+  - Typo
+  - Comment unused lib (FYI: it only compatible with python v3.8++)
+  - - fix issue: unable to save some latency data - change inference size from `416` into `608` - change used weight into `TW-01.weights`
+  - Wrong conditions
+  - Merge branch 'release-3.4-EEv1.5-graph-eval'
+  - Merge branch 'release-3.3-EEv1.5-graph-eval'
+  - Merge branch 'release-3.2-EEv1.5-Multiple-Nodes'
+  - Merge branch 'feature/EagleEYEv1.5/scheduling-policy'
+  - Merge branch 'release-3.1-EEv1.5-Single-Node'
+  - Merge branch 'release-3.0-EEv1.5-Single-Node'
+  - Merge branch 'release-2.0.3-mobileheroes2020'
+  - Merge branch 'release-2.0.2-video-demo'
+  - Merge branch 'release-2.0.1'
+  - Merge branch 'release-2.0'
+  - Merge branch 'release-1.2'
+  - Merge branch 'release-1.1'
+  - Merge branch 'release-1.0'
+
 ## 3.4-EEv1.5-graph-eval (八月 07, 2020)
   - Merge branch 'feature/EagleEYEv1.5/graph-evaluation' into develop
   - Add and implemented plot API: to plot node latency comparison
