@@ -39,3 +39,26 @@ async def plot(request):
             return aiohttp.web.HTTPBadRequest()
 
         return aiohttp.web.json_response(resp)
+
+@route('/latency/detection/csv', methods=['POST'])
+async def plot(request):
+    """
+        Endpoint to:
+         1. POST new plot
+            Try: curl http://localhost:8080/api/plot/latency/detection/csv -X POST -H "Content-Type: application/json"
+                    -d '{
+                            "section": ["preproc_det", "detection", "candidate_selection"]
+                        }'
+    """
+
+    if request.method == 'POST':
+        try:
+            json_data = await request.json()
+            resp = DataController().export_det_latency(json_data)
+        except Exception as e:
+            # return get_unprocessable_request()
+            # Log the error
+            L.error("Invalid request: {}".format(e))
+            return aiohttp.web.HTTPBadRequest()
+
+        return aiohttp.web.json_response(resp)

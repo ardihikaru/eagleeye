@@ -208,3 +208,7 @@ def int_to_tuple(Ks):
     for i in range(Ks):
         lst.append((i+1))
     return tuple(lst)
+
+
+def save_to_csv(file_path, data):
+    np.savetxt(file_path, data, delimiter=',')

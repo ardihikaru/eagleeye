@@ -9,21 +9,18 @@ from ews.controllers.latency.latency import Latency
 from ext_lib.utils import int_to_tuple, get_current_datetime
 import matplotlib.pyplot as plt
 import numpy as np
-import csv
 from os import path
 import os
+from ext_lib.utils import save_to_csv
 
 
 class Plot(MyRedis):
     def __init__(self):
         super().__init__(asab.Config)
         self.latency = Latency()
-        self.save_dir = asab.Config["plot"]["root_path"] + get_current_datetime(is_folder=True) + "/"
+        self.save_graph_dir = asab.Config["export"]["graph_path"] + get_current_datetime(is_folder=True) + "/"
+        self.save_csv_dir = asab.Config["export"]["csv_path"] + get_current_datetime(is_folder=True) + "/"
         self.color = ["blue", "orange", "green", "purple"]
-
-        # Create folder if not yet exist
-        if not path.exists(self.save_dir):
-            os.mkdir(self.save_dir)
 
     def _gen_latency_graph_list(self, latency_data, summary, num_data):
         # Define number of iteration (K)
@@ -52,8 +49,8 @@ class Plot(MyRedis):
         plt.legend()
 
         # Save plot result
-        fig.savefig(self.save_dir + 'proc_lat_pih_candidate_.png', dpi=fig.dpi)
-        fig.savefig(self.save_dir + 'proc_lat_pih_candidate_.pdf', dpi=fig.dpi)
+        fig.savefig(self.save_graph_dir + 'proc_lat_pih_candidate_.png', dpi=fig.dpi)
+        fig.savefig(self.save_graph_dir + 'proc_lat_pih_candidate_.pdf', dpi=fig.dpi)
         print("saved file into:", 'proc_lat_pih_candidate_.pdf (And .png)')
 
     def _gen_latency_graph(self, latency_title, latency_data, summary, num_data):
@@ -81,8 +78,8 @@ class Plot(MyRedis):
         plt.legend()
 
         # Save plot result
-        fig.savefig(self.save_dir + 'proc_lat_%s.png' % latency_title, dpi=fig.dpi)
-        fig.savefig(self.save_dir + 'proc_lat_%s_.pdf' % latency_title, dpi=fig.dpi)
+        fig.savefig(self.save_graph_dir + 'proc_lat_%s.png' % latency_title, dpi=fig.dpi)
+        fig.savefig(self.save_graph_dir + 'proc_lat_%s_.pdf' % latency_title, dpi=fig.dpi)
         print("saved file into:", 'proc_lat_%s_.pdf (And .png)' % latency_title)
 
     def _get_summary_latency(self, latency):
@@ -101,7 +98,9 @@ class Plot(MyRedis):
 
     # TODO: To add try-catch handler
     def plot_det_latency(self, plot_data):
-        print(" >>> plot_data:", plot_data)
+        # Create folder if not yet exist
+        if not path.exists(self.save_graph_dir):
+            os.mkdir(self.save_graph_dir)
 
         # Collect latency data
         latency, num_data = {}, 0
@@ -120,7 +119,6 @@ class Plot(MyRedis):
             i = -1
             for section, lat in latency.items():
                 i += 0
-                # self._gen_latency_graph(section, lat, summary[section], num_data)
                 self._gen_latency_graph(plot_data["name"][i], lat, summary[section], num_data)
         except Exception as e:
             print(" >>> ERROR: ", str(e))
@@ -128,28 +126,17 @@ class Plot(MyRedis):
         latency["summary"] = summary
         return get_json_template(response=True, results=latency, total=-1, message="OK")
 
-    # TODO: To add try-catch handler
-    def plot_e2e_latency(self, plot_data):
-        print(" >>> plot_data:", plot_data)
+    def export_det_latency(self, latency_data):
+        # Create folder if not yet exist
+        if not path.exists(self.save_csv_dir):
+            os.mkdir(self.save_csv_dir)
 
-        # Collect latency data
-        # latency, num_data = {}, 0
-        # num_data = 0
-        tmp_lat_data = self.latency.get_data_by_section(plot_data["section"])["data"]
-        # Reformat latency data
-        latency_e2e = [data["latency"] for data in tmp_lat_data]
-        num_data = len(tmp_lat_data)
+        for section in latency_data["section"]:
+            data = self.latency.get_data_by_section(section)["data"]
+            latency = []
+            for lat in data:
+                latency.append(lat["latency"])
+            csv_path = self.save_csv_dir + '%s_%s_n=%s.csv' % (section, latency_data["name"], str(len(latency)))
+            save_to_csv(csv_path, latency)
 
-        # Collect summary data: MIN, MAX, and AVERAGE
-        summary = self._get_summary_latency(latency)
-        print(" >>> TYPE. summary", type(summary), summary)
-
-        # Generate graph
-        try:
-            for section, lat in latency.items():
-                self._gen_latency_graph(section, lat, summary[section], num_data)
-        except Exception as e:
-            print(" >>> ERROR: ", str(e))
-
-        latency["summary"] = summary
-        return get_json_template(response=True, results=latency, total=-1, message="OK")
+        return get_json_template(response=True, results={}, total=-1, message="OK")
