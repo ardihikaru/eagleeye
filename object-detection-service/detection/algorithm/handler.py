@@ -237,7 +237,7 @@ class YOLOv3Handler(MyRedis):
 
         # build & submit latency data: E2E Latency
         await self._save_latency(frame_id, t1_e2e_latency, "N/A", "e2e_latency", "End-to-End",
-                                 node_id=self.node_id, node_name=self.node_name)
+                                 node_id=self.node_id, node_name=str(self.node_name))
 
     # TODO: To implement timeout!!!!!
     async def _get_t0_e2e_latency(self, frame_id):
@@ -253,7 +253,7 @@ class YOLOv3Handler(MyRedis):
         return redis_get(self.rc, e2e_lat_key)
 
     async def _save_latency(self, frame_id, latency, algorithm="[?]", section="[?]", cat="Object Detection",
-                            node_id=None, node_name=None):
+                            node_id="-", node_name="-"):
         t0_preproc = time.time()
         preproc_latency_data = {
             "frame_id": int(frame_id),
