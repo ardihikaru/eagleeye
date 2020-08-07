@@ -5,7 +5,7 @@ old_codes/data/coco/
 old_codes/output/*
 old_codes/hasil
 data
-outputs/
+output/
 
 # Ignore editors
 .idea/
