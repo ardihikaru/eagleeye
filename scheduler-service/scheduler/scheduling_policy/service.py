@@ -5,7 +5,7 @@ import time
 from ext_lib.utils import get_current_time
 import requests
 import numpy as np
-from multiprocessing import shared_memory
+# from multiprocessing import shared_memory
 from ext_lib.redis.my_redis import MyRedis
 from ext_lib.redis.translator import redis_get, redis_set
 

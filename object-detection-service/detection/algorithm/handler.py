@@ -6,7 +6,7 @@ from ext_lib.redis.translator import redis_get, redis_set
 import os
 from concurrent.futures import ThreadPoolExecutor
 import time
-from multiprocessing import shared_memory
+# from multiprocessing import shared_memory
 import numpy as np
 
 ###
