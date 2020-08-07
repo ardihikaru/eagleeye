@@ -221,7 +221,7 @@ class YOLOv3Handler(MyRedis):
                 #     t_start = t1_e2e_latency
                 await self._store_e2e_latency(str(frame_id), t1_e2e_latency)
 
-            print("\n[%s] Node-%s is ready to serve again." % (get_current_time(), self.node_name))
+            print("\n[%s] Node-%s is ready to serve." % (get_current_time(), self.node_name))
 
         print("\n[%s][%s] YOLOv3Handler stopped listening to [Scheduler Service]" %
               (get_current_time(), self.node_alias))
@@ -236,7 +236,8 @@ class YOLOv3Handler(MyRedis):
         # TODO: TO save latency into ElasticSearchDB
 
         # build & submit latency data: E2E Latency
-        await self._save_latency(frame_id, t1_e2e_latency, "N/A", "e2e_latency", "End-to-End")
+        await self._save_latency(frame_id, t1_e2e_latency, "N/A", "e2e_latency", "End-to-End",
+                                 node_id=self.node_id, node_name=self.node_name)
 
     # TODO: To implement timeout!!!!!
     async def _get_t0_e2e_latency(self, frame_id):
@@ -251,14 +252,17 @@ class YOLOv3Handler(MyRedis):
 
         return redis_get(self.rc, e2e_lat_key)
 
-    async def _save_latency(self, frame_id, latency, algorithm="[?]", section="[?]", cat="Object Detection"):
+    async def _save_latency(self, frame_id, latency, algorithm="[?]", section="[?]", cat="Object Detection",
+                            node_id=None, node_name=None):
         t0_preproc = time.time()
         preproc_latency_data = {
             "frame_id": int(frame_id),
             "category": cat,
             "algorithm": algorithm,
             "section": section,
-            "latency": latency
+            "latency": latency,
+            "node_id": node_id,
+            "node_name": node_name
         }
         # Submit and store latency data: Pre-processing
         if not await self.LatCollectorService.store_latency_data_thread(preproc_latency_data):
