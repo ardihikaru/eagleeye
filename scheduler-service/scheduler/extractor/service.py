@@ -165,13 +165,13 @@ class ExtractorService(asab.Service):
 				print('[%s] Latency for Publishing FRAME NOTIFICATION into Object Detection Service (%.3f ms)' % (
 				get_current_time(), t1_publish))
 
-				if bool(int(asab.Config["stream:config"]["convert_img"])):
+				if not bool(int(asab.Config["stream:config"]["convert_img"])):
 					# Sending image data through ZMQ (TCP connection)
 					self.ZMQService.send_this_image(senders["zmq"][sel_node_id], self.frame_id, frame)
 				else:
 					# TODO: In this case, Candidate Selection Algorithm will not work!!!!!
 					# Convert the yolo input images; Here it converts from FullHD into <img_size> (padded size)
-					if bool(int(asab.Config["stream:config"]["convert_img"])):
+					if not bool(int(asab.Config["stream:config"]["gpu_converter"])):
 						yolo_frame = await self.ResizerService.cpu_convert_to_padded_size(frame)
 					else:
 						# NOT IMPLEMENTED YET!!!!

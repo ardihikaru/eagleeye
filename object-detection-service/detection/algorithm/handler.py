@@ -6,8 +6,9 @@ from ext_lib.redis.translator import redis_get, redis_set
 import os
 from concurrent.futures import ThreadPoolExecutor
 import time
-from multiprocessing import shared_memory
+# from multiprocessing import shared_memory
 import numpy as np
+import signal
 
 ###
 
@@ -82,6 +83,11 @@ class YOLOv3Handler(MyRedis):
         # await self.DetectionAlgorithmService.delete_node_information(asab.Config["node"]["id"])
         await self.DetectionAlgorithmService.delete_node_information(self.node_id)
 
+        # Kill PID !!!
+        os.kill(self.pid, 9)
+        # os.kill(self.pid, signal.SIGTERM)  # or signal.SIGKILL
+        # os.killpg(os.getpgid(os.getpid()), signal.SIGTERM)  # Send the signal to all the process groups
+
         # exit the Object Detection Service
         exit()
 
@@ -151,6 +157,9 @@ class YOLOv3Handler(MyRedis):
                 print('\n[%s] Latency for Receiving Image ZMQ (%.3f ms)' % (get_current_time(), t1_zmq))
                 # TODO: To save latency into ElasticSearchDB (Future work)
 
+                # BUG FIX: Start t0 e2e frame from here (later on, PLUS with `t1_zmq` latency)
+                t0_e2e_latency = time.time()
+
                 # Start performing object detection
                 bbox_data, det, names, pre_proc_lat, yolo_lat = await self.DetectionAlgorithmService.detect_object(img)
 
@@ -213,7 +222,8 @@ class YOLOv3Handler(MyRedis):
                 redis_set(self.rc, redis_key, True)
 
                 # Capture and store e2e latency
-                t1_e2e_latency = time.time()
+                t1_e2e_latency = (time.time() - t0_e2e_latency) * 1000
+                t1_e2e_latency = t1_e2e_latency + t1_zmq
                 # if t_start is None:
                 #     t_start = time.time()
                 # else:
@@ -229,15 +239,15 @@ class YOLOv3Handler(MyRedis):
         await self.stop()
 
     async def _store_e2e_latency(self, frame_id, t1_e2e_latency):
-        t0_e2e_latency = await self._get_t0_e2e_latency(frame_id)
+        # t0_e2e_latency = await self._get_t0_e2e_latency(frame_id)  # BUG Calculation here!
         # t1_e2e_latency = (time.time() - t0_e2e_latency) * 1000
-        t1_e2e_latency = (t1_e2e_latency - t0_e2e_latency) * 1000
+        # t1_e2e_latency = (t1_e2e_latency - t0_e2e_latency) * 1000
         print('[%s] E2E Latency of frame-%s (%.3f ms)' % (get_current_time(), frame_id, t1_e2e_latency))
         # TODO: TO save latency into ElasticSearchDB
 
         # build & submit latency data: E2E Latency
         await self._save_latency(frame_id, t1_e2e_latency, "N/A", "e2e_latency", "End-to-End",
-                                 node_id=self.node_id, node_name=self.node_name)
+                                 node_id=self.node_id, node_name=str(self.node_name))
 
     # TODO: To implement timeout!!!!!
     async def _get_t0_e2e_latency(self, frame_id):
@@ -253,7 +263,7 @@ class YOLOv3Handler(MyRedis):
         return redis_get(self.rc, e2e_lat_key)
 
     async def _save_latency(self, frame_id, latency, algorithm="[?]", section="[?]", cat="Object Detection",
-                            node_id=None, node_name=None):
+                            node_id="-", node_name="-"):
         t0_preproc = time.time()
         preproc_latency_data = {
             "frame_id": int(frame_id),
