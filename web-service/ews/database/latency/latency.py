@@ -15,4 +15,4 @@ class LatencyModel(Document):
     section = StringField(required=True)
     latency = FloatField(required=True)
     node_id = StringField(default="-")
-    node_name = IntField(default="-")
+    node_name = StringField(default="-")

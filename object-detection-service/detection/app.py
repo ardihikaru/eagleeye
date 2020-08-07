@@ -42,5 +42,4 @@ class ObjectDetectionService(asab.Application):
 		try:
 			await self.DetectionAlgorithmService.start_subscription()
 		except:
-			print("\n[%s][%s] This Object Detection Service has successfully stopped." %
-				  (get_current_time(), self.node_alias))
+			print("\n[%s][%s] This Object Detection Service has successfully stopped." % (get_current_time(), self.node_alias))

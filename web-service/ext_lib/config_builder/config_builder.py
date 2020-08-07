@@ -51,7 +51,8 @@ class ConfigBuilder:
 
 			"agnostic_nms": "1",
 			"half": "0",
-			"img_size": "416",
+			# "img_size": "416",
+			"img_size": "608",
 			"device": "",
 			"conf_thres": "0.1",
 			"iou_thres": "0.1",
@@ -60,7 +61,9 @@ class ConfigBuilder:
 			"cfg": "../object-detection-service/config_files/yolo/cfg/yolo-obj-v5.cfg",
 			# "cfg": "../object-detection-service/config_files/yolo/cfg/yolov3.cfg",
 			# "weights": "../object-detection-service/config_files/yolo/weights/yolov3.weights",
-			"weights": "../object-detection-service/config_files/yolo/weights/TM-06.weights",
+			# "weights": "../object-detection-service/config_files/yolo/weights/TM-06.weights",
+			"weights": "../object-detection-service/config_files/yolo/weights/TW-01.weights",
+
 
 			# Extra algorithms in EageleEYE
 			# "candidate_selection": cand_sel,

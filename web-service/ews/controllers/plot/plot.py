@@ -115,7 +115,7 @@ class Plot(MyRedis):
         try:
             i = -1
             for section, lat in latency.items():
-                i += 0
+                i += 1
                 self._gen_latency_graph(plot_data["name"][i], lat, summary[section], num_data)
         except Exception as e:
             print(" >>> ERROR: ", str(e))
