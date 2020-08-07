@@ -136,7 +136,10 @@ class ExtractorService(asab.Service):
 				t0_e2e_lat = time.time()
 
 				# Perform scheduling based on Round-Robin fasion (Default)
-				sel_node_id = await self.SchPolicyService.schedule(max_node=len(senders["node"]))
+				try:
+					sel_node_id = await self.SchPolicyService.schedule(max_node=len(senders["node"]))
+				except Exception as e:
+					print(">>>> ERRROR:", e)
 				# TODO: To implement scheduler here and find which node will be selected
 				# Dummy and always select Node=1 now; id=0
 				# sel_node_id = 0

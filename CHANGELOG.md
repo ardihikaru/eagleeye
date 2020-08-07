@@ -1,3 +1,27 @@
+## 3.3-EEv1.5-graph-eval (八月 06, 2020)
+  - Merge branch 'feature/EagleEYEv1.5/graph-evaluation' into develop
+  - Implement plot feature
+  - Update section and category naming
+  - Add API: POST /api/latency/detection (dummy)
+  - comment unused codes (to be considered as future work)
+  - Add TODO
+  - Code refactoring; store PiH Candidate Selection latency
+  - Store YOLO latency
+  - Naming convension
+  - Naming convension
+  - Added frame_id to tag each latency data (in Object Detection Service)
+  - Added frame_id to tag each latency data
+  - Bug fixed: delete unknown fields; remove unused codes
+  - Bug fixed: returns False if response is not OK
+  - Remove unused fields
+  - Remove unused field
+  - Store latency data: YOLO Pre-processing
+  - Reformat
+  - Bug fix: DELETE /api/node always returns OK
+  - Bug fix: DELETE /api/location always returns OK
+  - Add new APIs: [POST, GET, DELETE] /api/latency; Add new APIs: [GET, PUT, DELETE] /api/latency/{_id}
+  - Merge branch 'release-3.2-EEv1.5-Multiple-Nodes' into develop
+
 ## 3.2-EEv1.5-Multiple-Nodes (August 04, 2020)
   - Merge branch 'feature/EagleEYEv1.5/scheduling-policy' into develop
   - testied: Scheduling Policy Service

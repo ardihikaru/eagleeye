@@ -2,10 +2,12 @@ import asab
 import logging
 from ext_lib.redis.my_redis import MyRedis
 from ext_lib.utils import get_current_time, pubsub_to_json
-from ext_lib.redis.translator import redis_get
+from ext_lib.redis.translator import redis_get, redis_set
 import os
 from concurrent.futures import ThreadPoolExecutor
 import time
+from multiprocessing import shared_memory
+import numpy as np
 
 ###
 
@@ -30,6 +32,8 @@ class YOLOv3Handler(MyRedis):
         self.node_id = asab.Config["node"]["id"]
         self.pid = os.getpid()
         self.node_alias = "NODE-%s" % asab.Config["node"]["name"]
+        self.node_info = self._gen_node_info()
+        self.node_info_list = self._dict2list(self.node_info)
 
         # Extra Module params
         self.cs_enabled = bool(int(asab.Config["node"]["candidate_selection"]))
@@ -40,6 +44,21 @@ class YOLOv3Handler(MyRedis):
         self.total_pih_candidates = 0
         self.persistence_window = int(asab.Config["persistence_detection"]["persistence_window"])
         self.period_pih_candidates = []
+
+    def _dict2list(self, dict_data):
+        list_data = []
+        for key, value in dict_data.items():
+            tmp_list = [key, value]
+            list_data.append(tmp_list)
+
+        return np.asarray(list_data)
+
+    def _gen_node_info(self):
+        return {
+            "id": asab.Config["node"]["name"],
+            "name": int(asab.Config["node"]["name"]),
+            "idle": asab.Config["node"]["idle"]
+        }
 
     async def set_configuration(self):
         # Initialize YOLOv3 configuration
@@ -66,6 +85,11 @@ class YOLOv3Handler(MyRedis):
         # exit the Object Detection Service
         exit()
 
+    def _set_idle_status(self, shm_nodes, snode_id, status):
+        for i in range(len(shm_nodes[snode_id])):
+            if shm_nodes[0][i][0] == "idle":
+                shm_nodes[0][i][1] = status
+
     async def start(self):
         channel = "node-" + self.node_id
         print("\n[%s][%s] YOLOv3Handler try to subsscribe to channel `%s` from [Scheduler Service]" %
@@ -81,6 +105,10 @@ class YOLOv3Handler(MyRedis):
         # bug fix: invalid e2e latency due to detection issue with CPU
         # t_start = None
 
+        # Set default value of shm node
+        # shm_node = None
+        redis_key = self.node_id + "_status"
+
         consumer = self.rc.pubsub()
         consumer.subscribe([channel])
         for item in consumer.listen():
@@ -92,6 +120,18 @@ class YOLOv3Handler(MyRedis):
                 image_info = pubsub_to_json(item["data"])
                 # print(" >>> image_info:", image_info)
 
+                # # assign shm value: ONCE only
+                # if shm_node is None:
+                #     print("### MULAI ASSIGN SHM")
+                #     # try:
+                #     #     shm = shared_memory.SharedMemory(name=self.node_id)
+                #     #     # shm_node = shared_memory.SharedMemory(name=self.node_id)
+                #     #     shm_node = np.ndarray(self.node_info_list.shape, dtype=np.string, buffer=shm.buf)
+                #     #     print(">>>>>> shm_node:", )
+                #     # except Exception as e:
+                #     #     print(">>>>>> e:", e)
+                
+                # print("********* shm_node:", shm_node)
                 # print(">> > > > >> >START Receiving ZMQ in OBJDET @ ts:", time.time(), redis_get(self.rc, channel))
 
                 # if not image_info["active"]:
@@ -168,6 +208,9 @@ class YOLOv3Handler(MyRedis):
                 # If enable visualizer, send the bbox into the Visualizer Service
                 if self.cv_out:
                     print("\n[%s][%s] SENDING BBox INTO Visualizer Service!" % (get_current_time(), self.node_alias))
+
+                # Set this node as available again
+                redis_set(self.rc, redis_key, True)
 
                 # Capture and store e2e latency
                 t1_e2e_latency = time.time()
