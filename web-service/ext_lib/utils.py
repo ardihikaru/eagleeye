@@ -10,6 +10,7 @@ import numpy as np
 import string
 import random
 import configparser
+import csv
 
 
 def mongo_list_to_dict(mongo_resp):
@@ -212,3 +213,9 @@ def int_to_tuple(Ks):
 
 def save_to_csv(file_path, data):
     np.savetxt(file_path, data, delimiter=',')
+
+
+def read_csv(file_path):
+    with open(file_path, 'r') as f:
+        reader = csv.reader(f)
+        return [float(line[0]) for line in list(reader)]

@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from os import path
 import os
-from ext_lib.utils import save_to_csv
+from ext_lib.utils import save_to_csv, read_csv
 
 
 class Plot(MyRedis):
@@ -22,42 +22,40 @@ class Plot(MyRedis):
         self.save_csv_dir = asab.Config["export"]["csv_path"] + get_current_datetime(is_folder=True) + "/"
         self.color = ["blue", "orange", "green", "purple"]
 
-    def _gen_latency_graph_list(self, latency_data, summary, num_data):
+    def _gen_latency_graph_list(self, latency_title, latency_data, avg_data, num_data):
         # Define number of iteration (K)
-        K = num_data
-        ks = int_to_tuple(K)  # used to plot the results
+        ks = int_to_tuple(int(num_data))  # used to plot the results
 
         # Set plot configuration
         fig = plt.figure()
-        title = "Proc. Latency PiH Candidate"
-        plt.title(title)
+        plt.title(latency_title)
 
         # Plot latency data
-        for section, latency in latency_data.items():
-            plt.plot(ks, latency, label=section)
-
-            # print(">> Section=%s; MIN=%s; MAX=%s; AVG=%s" % (section, str(min_val[section]), str(max_val[section]),
-            #                                                  str(avg_val[section])))
+        num_nodes = []
+        for num_node, latency in latency_data.items():
+            node_str = "node" if int(num_node) == 1 else "nodes"
+            plt.plot(ks, latency, label="%s %s" % (num_node, node_str))
+            num_nodes.append(num_node)
 
         # Plot Min, Max, and Average
-        # color = ["blue", "orange", "green"]
-        # for i in range(len(latency_data)):
-        #     plt.axhline(mean_worker1, color='blue', linestyle='dashed', linewidth=1)
+        for i in range(len(avg_data)):
+            node_str = "node" if int(num_nodes[i]) == 1 else "nodes"
+            plt.axhline(avg_data[i], color=self.color[i], linestyle='dashed', linewidth=1,
+                        label="AVG(%s %s) (%.2f ms)" % (num_nodes[i], node_str, avg_data[i]))
 
         plt.xlabel('Frame ID')
         plt.ylabel('Latency (ms)')
         plt.legend()
 
         # Save plot result
-        fig.savefig(self.save_graph_dir + 'proc_lat_pih_candidate_.png', dpi=fig.dpi)
-        fig.savefig(self.save_graph_dir + 'proc_lat_pih_candidate_.pdf', dpi=fig.dpi)
-        print("saved file into:", 'proc_lat_pih_candidate_.pdf (And .png)')
+        fig.savefig(self.save_graph_dir + 'proc_lat_%s.png' % latency_title, dpi=fig.dpi)
+        fig.savefig(self.save_graph_dir + 'proc_lat_%s.pdf' % latency_title, dpi=fig.dpi)
+        print("saved file into:", 'proc_lat_%s.pdf (And .png)' % latency_title)
 
     def _gen_latency_graph(self, latency_title, latency_data, summary, num_data):
         print(" >>> latency_data:", latency_data)
         # Define number of iteration (K)
-        K = num_data
-        ks = int_to_tuple(K)  # used to plot the results
+        ks = int_to_tuple(num_data)  # used to plot the results
 
         # Set plot configuration
         fig = plt.figure()
@@ -79,8 +77,8 @@ class Plot(MyRedis):
 
         # Save plot result
         fig.savefig(self.save_graph_dir + 'proc_lat_%s.png' % latency_title, dpi=fig.dpi)
-        fig.savefig(self.save_graph_dir + 'proc_lat_%s_.pdf' % latency_title, dpi=fig.dpi)
-        print("saved file into:", 'proc_lat_%s_.pdf (And .png)' % latency_title)
+        fig.savefig(self.save_graph_dir + 'proc_lat_%s.pdf' % latency_title, dpi=fig.dpi)
+        print("saved file into:", 'proc_lat_%s.pdf (And .png)' % latency_title)
 
     def _get_summary_latency(self, latency):
         # Set min, max, and avg params
@@ -112,7 +110,6 @@ class Plot(MyRedis):
 
         # Collect summary data: MIN, MAX, and AVERAGE
         summary = self._get_summary_latency(latency)
-        print(" >>> TYPE. summary", type(summary), summary)
 
         # Generate graph
         try:
@@ -138,5 +135,47 @@ class Plot(MyRedis):
                 latency.append(lat["latency"])
             csv_path = self.save_csv_dir + '%s_%s_n=%s.csv' % (section, latency_data["name"], str(len(latency)))
             save_to_csv(csv_path, latency)
+
+        return get_json_template(response=True, results={}, total=-1, message="OK")
+
+    def _list2batchlist(self, list_data, batch_size, num_node):
+        np_data = np.asarray(list_data)
+
+        if num_node == 6:
+            batch = np.mean(np_data.reshape(-1, num_node), axis=1)
+        elif num_node == 3:
+            batch = np.mean(np_data.reshape(-1, num_node), axis=1)
+            batch = np.sum(batch.reshape(-1, 2), axis=1)
+        elif num_node == 1:
+            batch = np.sum(np_data.reshape(-1, batch_size), axis=1)
+        else:
+            batch = np_data
+
+        return batch
+
+    def plot_node_latency(self, config):
+        # Create folder if not yet exist
+        if not path.exists(self.save_graph_dir):
+            os.mkdir(self.save_graph_dir)
+        try:
+            latency_data = []
+            avg_data = []
+            batch_data = {}
+            for node in config["node_info"]:
+                # load csv file into a local variable
+                lat = read_csv(node["path"])
+                lat = lat[:config["max_data"]]
+                latency_data.append(lat)
+
+                # convert into batch_list
+                batch = self._list2batchlist(lat, config["batch_size"], node["num_node"])
+                avg_data.append(np.mean(batch))
+                batch_data[str(node["num_node"])] = batch
+
+            max_plot_data = int(config["max_data"] / 6)
+            self._gen_latency_graph_list("Node comparison", batch_data, avg_data, max_plot_data)
+
+        except Exception as e:
+            return get_json_template(response=False, results={}, total=-1, message=str(e))
 
         return get_json_template(response=True, results={}, total=-1, message="OK")
