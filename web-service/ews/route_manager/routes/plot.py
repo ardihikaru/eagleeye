@@ -47,7 +47,8 @@ async def plot(request):
          1. POST new plot
             Try: curl http://localhost:8080/api/plot/latency/detection/csv -X POST -H "Content-Type: application/json"
                     -d '{
-                            "section": ["preproc_det", "detection", "candidate_selection"]
+                            "name": "worker=1"
+                            "section": ["e2e_latency"]
                         }'
     """
 
