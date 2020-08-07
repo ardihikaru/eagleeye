@@ -84,7 +84,9 @@ class YOLOv3Handler(MyRedis):
         await self.DetectionAlgorithmService.delete_node_information(self.node_id)
 
         # Kill PID !!!
-        os.kill(self.pid, signal.SIGTERM)  # or signal.SIGKILL
+        os.kill(self.pid, 9)
+        # os.kill(self.pid, signal.SIGTERM)  # or signal.SIGKILL
+        # os.killpg(os.getpgid(os.getpid()), signal.SIGTERM)  # Send the signal to all the process groups
 
         # exit the Object Detection Service
         exit()
