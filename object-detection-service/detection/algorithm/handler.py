@@ -157,6 +157,9 @@ class YOLOv3Handler(MyRedis):
                 print('\n[%s] Latency for Receiving Image ZMQ (%.3f ms)' % (get_current_time(), t1_zmq))
                 # TODO: To save latency into ElasticSearchDB (Future work)
 
+                # BUG FIX: Start t0 e2e frame from here (later on, PLUS with `t1_zmq` latency)
+                t0_e2e_latency = time.time()
+
                 # Start performing object detection
                 bbox_data, det, names, pre_proc_lat, yolo_lat = await self.DetectionAlgorithmService.detect_object(img)
 
@@ -219,7 +222,8 @@ class YOLOv3Handler(MyRedis):
                 redis_set(self.rc, redis_key, True)
 
                 # Capture and store e2e latency
-                t1_e2e_latency = time.time()
+                t1_e2e_latency = (time.time() - t0_e2e_latency) * 1000
+                t1_e2e_latency = t1_e2e_latency + t1_zmq
                 # if t_start is None:
                 #     t_start = time.time()
                 # else:
@@ -235,9 +239,9 @@ class YOLOv3Handler(MyRedis):
         await self.stop()
 
     async def _store_e2e_latency(self, frame_id, t1_e2e_latency):
-        t0_e2e_latency = await self._get_t0_e2e_latency(frame_id)
+        # t0_e2e_latency = await self._get_t0_e2e_latency(frame_id)  # BUG Calculation here!
         # t1_e2e_latency = (time.time() - t0_e2e_latency) * 1000
-        t1_e2e_latency = (t1_e2e_latency - t0_e2e_latency) * 1000
+        # t1_e2e_latency = (t1_e2e_latency - t0_e2e_latency) * 1000
         print('[%s] E2E Latency of frame-%s (%.3f ms)' % (get_current_time(), frame_id, t1_e2e_latency))
         # TODO: TO save latency into ElasticSearchDB
 
