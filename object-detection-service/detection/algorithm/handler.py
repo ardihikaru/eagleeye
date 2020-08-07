@@ -8,6 +8,7 @@ from concurrent.futures import ThreadPoolExecutor
 import time
 # from multiprocessing import shared_memory
 import numpy as np
+import signal
 
 ###
 
@@ -81,6 +82,9 @@ class YOLOv3Handler(MyRedis):
         # Delete Node
         # await self.DetectionAlgorithmService.delete_node_information(asab.Config["node"]["id"])
         await self.DetectionAlgorithmService.delete_node_information(self.node_id)
+
+        # Kill PID !!!
+        os.kill(self.pid, signal.SIGTERM)  # or signal.SIGKILL
 
         # exit the Object Detection Service
         exit()
