@@ -1,3 +1,23 @@
+## 3.4-EEv1.5-graph-eval (八月 07, 2020)
+  - Merge branch 'feature/EagleEYEv1.5/graph-evaluation' into develop
+  - Add and implemented plot API: to plot node latency comparison
+  - Update comment
+  - Add new API to ecport latency data into CSV
+  - Add new fields: `node_id` and `node_name`
+  - Test new scheduling policy
+  - Add log info to notify that the node is available again
+  - Merge branch 'develop' into feature/EagleEYEv1.5/graph-evaluation
+  - implement scheduler waiting policy
+  - added available nodes in shm
+  - Merge branch 'feature/EagleEYEv1.5/graph-evaluation' into develop
+  - testing
+  - capture and store e2e latency
+  - rename redisDB key
+  - Edit typo
+  - Set redisDB key=`<node_id>-e2e-latency` expiration time into 2 seconds
+  - Store e2e latency into redisDB with key=`<node_id>-e2e-latency`
+  - Merge branch 'release-3.3-EEv1.5-graph-eval' into develop
+
 ## 3.3-EEv1.5-graph-eval (八月 06, 2020)
   - Merge branch 'feature/EagleEYEv1.5/graph-evaluation' into develop
   - Implement plot feature
