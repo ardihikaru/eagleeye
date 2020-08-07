@@ -50,6 +50,9 @@ class ZMQService(asab.Service):
             "node": self.node_info
         }
 
+    def get_available_nodes(self):
+        return self.node_info
+
     def send_this_image(self, sender, frame_id, frame):
         t0_zmq = time.time()
         # print("> >>>>>> START SENDING ZMQ in ts:", t0_zmq)
