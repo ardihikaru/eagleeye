@@ -14,3 +14,5 @@ class LatencyModel(Document):
     algorithm = StringField(required=True)
     section = StringField(required=True)
     latency = FloatField(required=True)
+    node_id = StringField(default="-")
+    node_name = IntField(default="-")

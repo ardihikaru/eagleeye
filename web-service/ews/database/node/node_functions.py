@@ -20,6 +20,7 @@ def insert_new_data(db_model, new_data, msg):
         return False, None, str(e)
 
     new_data["id"] = str(inserted_data.id)
+    new_data["idle"] = inserted_data.idle
     new_data["created_at"] = inserted_data.created_at.strftime("%Y-%m-%d, %H:%M:%S")
     new_data["updated_at"] = inserted_data.updated_at.strftime("%Y-%m-%d, %H:%M:%S")
 

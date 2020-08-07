@@ -116,6 +116,7 @@ class Node(MyRedis):
         if is_success:
             # TODO: Once spwaned, Field `pid` should be updated.
             node_data["id"] = inserted_data["id"]
+            node_data["idle"] = inserted_data["idle"]
             self._node_generator(node_data)
 
         return get_json_template(response=is_success, results=inserted_data, total=-1, message=msg)
