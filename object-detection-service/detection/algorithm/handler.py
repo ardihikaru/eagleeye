@@ -221,6 +221,8 @@ class YOLOv3Handler(MyRedis):
                 #     t_start = t1_e2e_latency
                 await self._store_e2e_latency(str(frame_id), t1_e2e_latency)
 
+            print("\n[%s] Node-%s is ready to serve again." % (get_current_time(), self.node_id))
+
         print("\n[%s][%s] YOLOv3Handler stopped listening to [Scheduler Service]" %
               (get_current_time(), self.node_alias))
         # Call stop function since it no longers listening
