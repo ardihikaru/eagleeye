@@ -139,7 +139,7 @@ class SchedulingPolicyService(asab.Service):
         t0_wait_node = time.time()
         await self._wait_until_ready(self.selected_node_id)
         t1_wait_node = time.time() - t0_wait_node
-        print('\nLatency [Waiting node to be ready] in: (%.5fs)' % (t1_wait_node * 1000))
+        print('\nLatency [Waiting node to be ready] in: (%.5f ms)' % (t1_wait_node * 1000))
 
         # Set selected node as busy (idle=False); "0" == False
         # self.avail_nodes[self.selected_node_id]["idle"] = "0"
