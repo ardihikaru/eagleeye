@@ -117,6 +117,35 @@ class Plot(MyRedis):
 
         # Generate graph
         try:
+            i = -1
+            for section, lat in latency.items():
+                i += 0
+                # self._gen_latency_graph(section, lat, summary[section], num_data)
+                self._gen_latency_graph(plot_data["name"][i], lat, summary[section], num_data)
+        except Exception as e:
+            print(" >>> ERROR: ", str(e))
+
+        latency["summary"] = summary
+        return get_json_template(response=True, results=latency, total=-1, message="OK")
+
+    # TODO: To add try-catch handler
+    def plot_e2e_latency(self, plot_data):
+        print(" >>> plot_data:", plot_data)
+
+        # Collect latency data
+        # latency, num_data = {}, 0
+        # num_data = 0
+        tmp_lat_data = self.latency.get_data_by_section(plot_data["section"])["data"]
+        # Reformat latency data
+        latency_e2e = [data["latency"] for data in tmp_lat_data]
+        num_data = len(tmp_lat_data)
+
+        # Collect summary data: MIN, MAX, and AVERAGE
+        summary = self._get_summary_latency(latency)
+        print(" >>> TYPE. summary", type(summary), summary)
+
+        # Generate graph
+        try:
             for section, lat in latency.items():
                 self._gen_latency_graph(section, lat, summary[section], num_data)
         except Exception as e:

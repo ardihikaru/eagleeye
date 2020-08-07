@@ -21,14 +21,11 @@ async def plot(request):
     """
         Endpoint to:
          1. POST new plot
-            Try: curl http://localhost:8080/api/plot -X POST -H "Content-Type: application/json"
+            Try: curl http://localhost:8080/api/plot/latency/detection -X POST -H "Content-Type: application/json"
                     -d '{
-                            "category": "Object Detection",
-                            "algorithm": "YOLOv3",
-                            "section": "Pre-processing",
-                            "latency": 24.785909,
-                            "timestamp": 1596609696.1005852
-                    }'
+                            "name": ["detection"],
+                            "section": ["preproc_det", "detection", "candidate_selection"]
+                        }'
     """
 
     if request.method == 'POST':
