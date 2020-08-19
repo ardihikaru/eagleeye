@@ -41,6 +41,8 @@ class ExtractorService(asab.Service):
 
 		self.executor = ThreadPoolExecutor(int(asab.Config["thread"]["num_executor"]))
 
+		self.LatCollectorService = app.get_service("scheduler.LatencyCollectorService")
+
 	# async def extract_folder(self, config, senders):
 	async def extract_folder(self, config):
 		print("#### I am extractor FOLDER function from ExtractorService!")
@@ -113,8 +115,22 @@ class ExtractorService(asab.Service):
 			print("\n[%s] Somehow we unable to Start the Thread of e2e Latency Collector" % get_current_time())
 		t1_thread = (time.time() - t0_thread) * 1000
 		print('\n[%s] Latency for Start threading (%.3f ms)' % (get_current_time(), t1_thread))
+		# TODO: Save the latency into ElasticSearchDB for the real-time monitoring
 
-	# TODO: Save the latency into ElasticSearchDB for the real-time monitoring
+	async def _save_latency(self, frame_id, latency, algorithm="[?]", section="[?]", cat="Object Detection",
+							node_id="-", node_name="-"):
+		preproc_latency_data = {
+			"frame_id": int(frame_id),
+			"category": cat,
+			"algorithm": algorithm,
+			"section": section,
+			"latency": latency,
+			"node_id": node_id,
+			"node_name": node_name
+		}
+		# Submit and store latency data: Pre-processing
+		if not await self.LatCollectorService.store_latency_data_thread(preproc_latency_data):
+			print("[%s]\nUps, it failed to save the latency data (Scheduling latency)" % get_current_time())
 
 	# async def extract_video_stream(self, config, senders):
 	async def extract_video_stream(self, config):
@@ -136,19 +152,28 @@ class ExtractorService(asab.Service):
 				t0_e2e_lat = time.time()
 
 				# Perform scheduling based on Round-Robin fasion (Default)
+				t0_sched_lat = time.time()
 				try:
 					sel_node_id = await self.SchPolicyService.schedule(max_node=len(senders["node"]))
 				except Exception as e:
 					print(">>>> ERRROR:", e)
+				t1_sched_lat = (time.time() - t0_sched_lat) * 1000
 				# TODO: To implement scheduler here and find which node will be selected
-				# Dummy and always select Node=1 now; id=0
-				# sel_node_id = 0
 
 				# print(" >>> senders:", senders, type(senders))
 
 				# First, notify the Object Detection Service to get ready (publish)
 				node_id = senders["node"][sel_node_id]["id"]
 				node_channel = senders["node"][sel_node_id]["channel"]
+				node_name = senders["node"][sel_node_id]["name"]
+
+				# Save Scheduling latency
+				await self._save_latency(
+					self.frame_id, t1_sched_lat, "Round-Robin", "preproc_det", "Scheduling", node_id, node_name
+				)
+				print('\n[%s] Proc. Latency of %s for frame-%s (%.3f ms)' % (
+					get_current_time(), "scheduling", str(self.frame_id), t1_sched_lat)
+				)
 
 				# Save e2e latency
 				self._exec_e2e_latency_collector(t0_e2e_lat, node_id, self.frame_id)
