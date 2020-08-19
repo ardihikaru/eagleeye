@@ -25,8 +25,6 @@ class EagleEYEWebService(asab.Application):
 		db["Nodes"].drop()
 		db["Latency"].drop()
 		db["Configs"].drop()
-		# db.connection.drop_database('Nodes')
-		# db.connection.drop_database('Latency')
 
 		# Web module/service
 		self.add_module(asab.web.Module)
