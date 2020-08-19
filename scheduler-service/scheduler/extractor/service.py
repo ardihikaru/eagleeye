@@ -169,7 +169,7 @@ class ExtractorService(asab.Service):
 
 				# Save Scheduling latency
 				await self._save_latency(
-					self.frame_id, t1_sched_lat, "Round-Robin", "preproc_det", "Scheduling", node_id, node_name
+					self.frame_id, t1_sched_lat, "Round-Robin", "scheduling", "Scheduling", node_id, node_name
 				)
 				print('\n[%s] Proc. Latency of %s for frame-%s (%.3f ms)' % (
 					get_current_time(), "scheduling", str(self.frame_id), t1_sched_lat)
