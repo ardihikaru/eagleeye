@@ -23,7 +23,7 @@ class EagleEYEWebService(asab.Application):
 		# Drop Collection: `Configs`, `Nodes` and `Latency`
 		db = _get_db()
 		db["Nodes"].drop()
-		# db["Latency"].drop()
+		db["Latency"].drop()
 		db["Configs"].drop()
 
 		# Web module/service

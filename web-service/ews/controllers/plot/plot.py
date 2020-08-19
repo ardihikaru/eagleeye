@@ -101,7 +101,6 @@ class Plot(MyRedis):
         if not path.exists(self.save_graph_dir):
             os.mkdir(self.save_graph_dir)
 
-        print(" -- plot_data:", plot_data)
         # Collect latency data
         latency, num_data = {}, 0
         for section in plot_data["section"]:
@@ -109,9 +108,6 @@ class Plot(MyRedis):
             # Reformat latency data
             latency[section] = [data["latency"] for data in tmp_lat_data]
             num_data = len(tmp_lat_data)
-
-            print(" --- tmp_lat_data:", tmp_lat_data)
-            print(" --- num_data:", num_data)
 
         # Collect summary data: MIN, MAX, and AVERAGE
         summary = self._get_summary_latency(latency)
