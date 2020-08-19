@@ -164,8 +164,19 @@ class Plot(MyRedis):
             batch_data = {}
             for node in config["node_info"]:
                 # load csv file into a local variable
-                lat = read_csv(node["path"])
-                lat = lat[:config["max_data"]]
+                lat_det = read_csv(node["det_path"])
+                lat_det = lat_det[:config["max_data"]]
+                lat_sch = read_csv(node["sch_path"])
+                lat_sch = lat_sch[:config["max_data"]]
+
+                # Check, if it will include the Scheduling latency or not?
+                is_add_sch = False if "include_scheduling" not in config else config["include_scheduling"]
+                lat = []
+                if is_add_sch:
+                    for i in range(config["max_data"]):
+                        lat.append((lat_det[i] + lat_sch[i]))
+                else:
+                    lat = lat_det
                 latency_data.append(lat)
 
                 # convert into batch_list
