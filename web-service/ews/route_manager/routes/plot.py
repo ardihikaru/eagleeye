@@ -47,7 +47,7 @@ async def plot(request):
          1. POST new plot
             Try: curl http://localhost:8080/api/plot/latency/detection/csv -X POST -H "Content-Type: application/json"
                     -d '{
-                            "name": "worker=1"
+                            "name": "worker=1",
                             "section": ["e2e_latency"]
                         }'
     """
@@ -68,7 +68,7 @@ async def plot(request):
 async def plot(request):
     """
         Endpoint to:
-         1. GET node latency comparison plot
+         1. Collect node latency comparison plot
             Try: curl http://localhost:8080/api/plot/latency/nodes -X POST -H "Content-Type: application/json"
                     -d '{
                             "node_info": [

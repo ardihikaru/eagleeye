@@ -8,7 +8,7 @@ from ews.database.node.node_functions import get_all_data, \
     del_data_by_id, upd_data_by_id, get_data_by_id, insert_new_data
 import asab
 from ext_lib.redis.my_redis import MyRedis
-from ext_lib.redis.translator import pub
+from ext_lib.redis.translator import pub, redis_get, redis_set
 from multidict import MultiDictProxy
 from subprocess import Popen
 import time
@@ -99,8 +99,27 @@ class Node(MyRedis):
 
         # TODO: Save the latency into ElasticSearchDB for the real-time monitoring
 
+    def _generate_node_id(self):
+        # get last ID
+        key = "generated_node_id"
+        node_id = redis_get(self.rc, key)
+        if node_id is None:
+            node_id = 0
+
+        # generate new node_id
+        new_node_id = node_id + 1
+
+        # Set new node ID (assume that the node will not fail)
+        redis_set(self.rc, key, new_node_id)
+
+        return new_node_id
+
     def register(self, node_data):
         msg = "Registration of a new Node is success."
+
+        # Check if no `node_id` is defined, then use automatic generation
+        if "name" not in node_data or node_data["name"] == "":
+            node_data["name"] = str(self._generate_node_id())
 
         # Validate
         if "candidate_selection" not in node_data:

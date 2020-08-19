@@ -1,11 +1,8 @@
 import asab
 import logging
-import imagezmq
 import time
 from ext_lib.utils import get_current_time
-import requests
 import numpy as np
-# from multiprocessing import shared_memory
 from ext_lib.redis.my_redis import MyRedis
 from ext_lib.redis.translator import redis_get, redis_set
 
@@ -26,10 +23,8 @@ class SchedulingPolicyService(asab.Service):
         self.max_node = 1
         # self.avail_nodes = {}
         self.avail_nodes = []
-
         self.rd = MyRedis(asab.Config)
-
-        print(" >>>> DEFAULT self.selected_node_id:", self.selected_node_id)
+        # print(" >>>> DEFAULT self.selected_node_id:", self.selected_node_id)
 
     def _dict2list(self, dict_data):
         list_data = []
@@ -138,8 +133,8 @@ class SchedulingPolicyService(asab.Service):
         # print("#### ***** check the status of selected node_id:")
         t0_wait_node = time.time()
         await self._wait_until_ready(self.selected_node_id)
-        t1_wait_node = time.time() - t0_wait_node
-        print('\nLatency [Waiting node to be ready] in: (%.5f ms)' % (t1_wait_node * 1000))
+        t1_wait_node = (time.time() - t0_wait_node) * 1000
+        print('\nLatency [Waiting node to be ready] in: (%.5f ms)' % t1_wait_node)
 
         # Set selected node as busy (idle=False); "0" == False
         # self.avail_nodes[self.selected_node_id]["idle"] = "0"

@@ -22,7 +22,7 @@ class Plot(MyRedis):
         self.save_csv_dir = asab.Config["export"]["csv_path"] + get_current_datetime(is_folder=True) + "/"
         self.color = ["blue", "orange", "green", "purple"]
 
-    def _gen_latency_graph_list(self, latency_title, latency_data, avg_data, num_data):
+    def _gen_latency_graph_list(self, latency_title, latency_data, avg_data, num_data, xlabel, ylabel="Latency (ms)"):
         # Define number of iteration (K)
         ks = int_to_tuple(int(num_data))  # used to plot the results
 
@@ -43,8 +43,8 @@ class Plot(MyRedis):
             plt.axhline(avg_data[i], color=self.color[i], linestyle='dashed', linewidth=1,
                         label="AVG(%s %s) (%.2f ms)" % (num_nodes[i], node_str, avg_data[i]))
 
-        plt.xlabel('Frame ID')
-        plt.ylabel('Latency (ms)')
+        plt.xlabel(xlabel)
+        plt.ylabel(ylabel)
         plt.legend()
 
         # Save plot result
@@ -52,8 +52,9 @@ class Plot(MyRedis):
         fig.savefig(self.save_graph_dir + 'proc_lat_%s.pdf' % latency_title, dpi=fig.dpi)
         print("saved file into:", 'proc_lat_%s.pdf (And .png)' % latency_title)
 
-    def _gen_latency_graph(self, latency_title, latency_data, summary, num_data):
-        print(" >>> latency_data:", latency_data)
+    def _gen_latency_graph(self, latency_title, latency_data, summary,
+                           num_data, xlabel="Frame ID", ylabel="Latency (ms)"):
+        # print(" >>> latency_data:", latency_data)
         # Define number of iteration (K)
         ks = int_to_tuple(num_data)  # used to plot the results
 
@@ -71,8 +72,8 @@ class Plot(MyRedis):
             i += 1
             plt.axhline(val, color=self.color[i], linestyle='dashed', label=sum_str+" (%s ms)" % str(val), linewidth=1)
 
-        plt.xlabel('Frame ID')
-        plt.ylabel('Latency (ms)')
+        plt.xlabel(xlabel)
+        plt.ylabel(ylabel)
         plt.legend()
 
         # Save plot result
@@ -163,8 +164,19 @@ class Plot(MyRedis):
             batch_data = {}
             for node in config["node_info"]:
                 # load csv file into a local variable
-                lat = read_csv(node["path"])
-                lat = lat[:config["max_data"]]
+                lat_det = read_csv(node["det_path"])
+                lat_det = lat_det[:config["max_data"]]
+                lat_sch = read_csv(node["sch_path"])
+                lat_sch = lat_sch[:config["max_data"]]
+
+                # Check, if it will include the Scheduling latency or not?
+                is_add_sch = False if "include_scheduling" not in config else config["include_scheduling"]
+                lat = []
+                if is_add_sch:
+                    for i in range(config["max_data"]):
+                        lat.append((lat_det[i] + lat_sch[i]))
+                else:
+                    lat = lat_det
                 latency_data.append(lat)
 
                 # convert into batch_list
@@ -173,7 +185,9 @@ class Plot(MyRedis):
                 batch_data[str(node["num_node"])] = batch
 
             max_plot_data = int(config["max_data"] / 6)
-            self._gen_latency_graph_list("Node comparison", batch_data, avg_data, max_plot_data)
+            xlabel = "Batch"
+            ylabel = "Latency (ms)"
+            self._gen_latency_graph_list("Node comparison", batch_data, avg_data, max_plot_data, xlabel, ylabel)
 
         except Exception as e:
             return get_json_template(response=False, results={}, total=-1, message=str(e))
