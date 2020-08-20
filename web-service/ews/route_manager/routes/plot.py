@@ -101,3 +101,18 @@ async def plot(request):
             return aiohttp.web.HTTPBadRequest()
 
         return aiohttp.web.json_response(resp)
+
+
+@route('/latency/scheduling', methods=['POST'])
+async def plot(request):
+    if request.method == 'POST':
+        try:
+            json_data = await request.json()
+            resp = DataController().plot_scheduling_latency(json_data)
+        except Exception as e:
+            # return get_unprocessable_request()
+            # Log the error
+            L.error("Invalid request: {}".format(e))
+            return aiohttp.web.HTTPBadRequest()
+
+        return aiohttp.web.json_response(resp)
