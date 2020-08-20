@@ -6,6 +6,7 @@ simplejson
 mongoengine
 window_slider
 requests
+imagezmq
 
 Cython
 matplotlib

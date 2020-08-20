@@ -70,8 +70,14 @@ class Node(MyRedis):
         })
         builder.create_config()
 
+        # [2020-08-19] Bug: For some reason, auto-deployment with a subprocess creates two issues:
+        # 1. It cannot be killed with os.kill()
+        # 2. The spawned Object-Detection-Service has a very limited resouces (i.e. assigned with 1 core ONLY.
+        #    it resulted that more Object-Detection-Service running in parallel, higher the inference latency
+        #    (i.e. For 1 worker = 10~20ms each; While for 6 worker = 100~120ms each; IT IS WEIRD!!)
+        # Current solution: Run the Object-Detection-Service manually in the terminal
         # TODO: Once orchestrated with k8s, we no longer use Popen to Deploy each node (Future work)
-        process = Popen('python ./../object-detection-service/detection.py -c ./../object-detection-service/etc/detection.conf', shell=True)
+        # process = Popen('python ./../object-detection-service/detection.py -c ./../object-detection-service/etc/detection.conf', shell=True)
 
         # send data into Scheduler service through the pub/sub
         t0_publish = time.time()
@@ -136,6 +142,8 @@ class Node(MyRedis):
             # TODO: Once spwaned, Field `pid` should be updated.
             node_data["id"] = inserted_data["id"]
             node_data["idle"] = inserted_data["idle"]
+
+            # Spawn a new Object-Detection-Service
             self._node_generator(node_data)
 
         return get_json_template(response=is_success, results=inserted_data, total=-1, message=msg)
