@@ -14,4 +14,5 @@ requests
 matplotlib
 opencv-python
 scipy
+seaborn
 requests
