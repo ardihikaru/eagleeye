@@ -22,7 +22,8 @@ class Plot(MyRedis):
         self.save_csv_dir = asab.Config["export"]["csv_path"] + get_current_datetime(is_folder=True) + "/"
         self.color = ["blue", "orange", "green", "purple"]
 
-    def _gen_latency_graph_list(self, latency_title, latency_data, avg_data, num_data, xlabel, ylabel="Latency (ms)"):
+    def _gen_latency_graph_list(self, latency_title, latency_data, avg_data, num_data, xlabel, ylabel="Latency (ms)",
+                                data_label="node"):
         # Define number of iteration (K)
         ks = int_to_tuple(int(num_data))  # used to plot the results
 
@@ -33,7 +34,8 @@ class Plot(MyRedis):
         # Plot latency data
         num_nodes = []
         for num_node, latency in latency_data.items():
-            node_str = "node" if int(num_node) == 1 else "nodes"
+            # node_str = "node" if int(num_node) == 1 else "nodes"
+            node_str = data_label if int(num_node) == 1 else (data_label + "s")
             plt.plot(ks, latency, label="%s %s" % (num_node, node_str))
             num_nodes.append(num_node)
 
@@ -185,9 +187,11 @@ class Plot(MyRedis):
                 batch_data[str(node["num_node"])] = batch
 
             max_plot_data = int(config["max_data"] / 6)
-            xlabel = "Batch"
+            graph_title = "" if "graph_title" not in config else config["graph_title"]
+            data_label = "Worker" if "data_label" not in config else config["data_label"]
+            xlabel = "Frame Batch ID (%s Frames / Batch)" % str(config["batch_size"])
             ylabel = "Latency (ms)"
-            self._gen_latency_graph_list("Node comparison", batch_data, avg_data, max_plot_data, xlabel, ylabel)
+            self._gen_latency_graph_list(graph_title, batch_data, avg_data, max_plot_data, xlabel, ylabel, data_label)
 
         except Exception as e:
             return get_json_template(response=False, results={}, total=-1, message=str(e))
