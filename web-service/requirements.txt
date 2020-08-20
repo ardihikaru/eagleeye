@@ -1,3 +1,4 @@
+wheel
 asab
 mongoengine
 aiohttp_jwt
@@ -13,3 +14,4 @@ requests
 matplotlib
 opencv-python
 scipy
+requests
