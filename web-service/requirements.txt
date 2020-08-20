@@ -10,3 +10,6 @@ motor
 imagezmq
 window_slider
 requests
+matplotlib
+opencv-python
+scipy
