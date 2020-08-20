@@ -1,3 +1,34 @@
+## 3.5-stable (八月 20, 2020)
+  - Merge branch 'feature/EagleEYEv1.5/graph-journal' into develop
+  - Add grid to the plot; Enable latex plot format
+  - Remove unused codes
+  - Add scheduling performance metric API and the graph results
+  - Add node comparison graph with 50 and 99 batches
+  - Bug fix experimental data: scheduling latency data
+  - Merge branch 'feature/EagleEYEv1.5/graph-journal' of github.com:ardihikaru/eagleeye into feature/EagleEYEv1.5/graph-journal
+  - Update new experimental data: scheduling latency
+  - Add dynamic graph parameters
+  - Update wrong naming
+  - Added new experimental data
+  - Added new experimental data
+  - Add `imagezmq`
+  - Disable Object-Detection-Service auto generation; add note for the detail
+  - Add a standalone plotter
+  - Add missing requirements
+  - Add missing requirements
+  - Add experimental results
+  - Merge pull request #3 from ardihikaru/feature/EagleEYEv1.5/graph-e2e
+  - Test exporting and plotting latency data
+  - Remove unused comments
+  - Auto-generate node_id
+  - Add more optional json input to enable or disable additional scheduling latency into the performance metrics
+  - Add more optional parameters: xlabel and ylabel
+  - Update comments
+  - Add latency data collector module in the Scheduler Service
+  - Merge branch 'bugfix/3.4-gpu-implementation-issue' into develop
+  - Merge branch 'bugfix/3.4-gpu-implementation-issue' into develop
+  - Merge branch 'release-3.4-EEv1.5-graph-eval' into develop
+
 ## 3.4.1-stable (八月 07, 2020)
   - Add experimental results
   - try other method (2): calculate e2e latency

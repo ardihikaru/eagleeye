@@ -1,3 +1,4 @@
+wheel
 asab
 mongoengine
 aiohttp_jwt
@@ -9,4 +10,9 @@ redis
 motor
 imagezmq
 window_slider
+requests
+matplotlib
+opencv-python
+scipy
+seaborn
 requests

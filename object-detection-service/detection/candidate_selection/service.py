@@ -19,7 +19,6 @@ class CandidateSelectionService(asab.Service):
         self.cs = CSv2()
 
     async def calc_mbbox(self, bbox_data, det, names, h, w, c):
-        print(">>>> @ calc_mbbox:", h, w, c)
         self.cs.initialize(det, names, h, w, c)
         self.cs.run()
         return self.cs.get_detected_mbbox()

@@ -47,7 +47,7 @@ async def plot(request):
          1. POST new plot
             Try: curl http://localhost:8080/api/plot/latency/detection/csv -X POST -H "Content-Type: application/json"
                     -d '{
-                            "name": "worker=1"
+                            "name": "worker=1",
                             "section": ["e2e_latency"]
                         }'
     """
@@ -68,7 +68,7 @@ async def plot(request):
 async def plot(request):
     """
         Endpoint to:
-         1. GET node latency comparison plot
+         1. Collect node latency comparison plot
             Try: curl http://localhost:8080/api/plot/latency/nodes -X POST -H "Content-Type: application/json"
                     -d '{
                             "node_info": [
@@ -94,6 +94,21 @@ async def plot(request):
         try:
             json_data = await request.json()
             resp = DataController().plot_node_latency(json_data)
+        except Exception as e:
+            # return get_unprocessable_request()
+            # Log the error
+            L.error("Invalid request: {}".format(e))
+            return aiohttp.web.HTTPBadRequest()
+
+        return aiohttp.web.json_response(resp)
+
+
+@route('/latency/scheduling', methods=['POST'])
+async def plot(request):
+    if request.method == 'POST':
+        try:
+            json_data = await request.json()
+            resp = DataController().plot_scheduling_latency(json_data)
         except Exception as e:
             # return get_unprocessable_request()
             # Log the error
