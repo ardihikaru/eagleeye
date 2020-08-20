@@ -206,30 +206,17 @@ class Plot(MyRedis):
         if not path.exists(self.save_graph_dir):
             os.mkdir(self.save_graph_dir)
         try:
-            # latency_data = []
             avg_data = []
-            # batch_data = {}
             latency_data = {}
             for node in config["node_info"]:
                 # load csv file into a local variable
                 lat_sch = read_csv(node["sch_path"])
                 lat_sch = lat_sch[:config["max_data"]]
 
-                print(" -- LEN lat_sch:", len(lat_sch))
-
-                # latency_data.append(lat_sch)
-
-                # convert into batch_list
-                # batch = self._list2batchlist(lat_sch, config["batch_size"], node["num_node"])
                 avg_data.append(np.mean(lat_sch))
-                # batch_data[str(node["num_node"])] = batch
                 latency_data[str(node["num_node"])] = lat_sch
 
-            print(" -- latency_data:", latency_data)
-
-            # max_plot_data = int(config["max_data"] / 6)
             max_plot_data = config["max_data"]
-            print(" -- max_plot_data:", max_plot_data)
 
             graph_title = "" if "graph_title" not in config else config["graph_title"]
             data_label = "Worker" if "data_label" not in config else config["data_label"]
