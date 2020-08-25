@@ -7,8 +7,8 @@
 # TODO: Add GPU-Enabled image
 
 #FROM python:3.8.5-alpine3.12
-#FROM anibali/pytorch:1.5.0-cuda10.2
-FROM python:3.7-alpine3.8
+FROM anibali/pytorch:1.5.0-cuda10.2
+#FROM python:3.7-alpine3.8
 MAINTAINER NCTU Team (mfardiansyah.eed08g@nctu.edu.tw)
 
 # http://bugs.python.org/issue19846
@@ -16,84 +16,54 @@ MAINTAINER NCTU Team (mfardiansyah.eed08g@nctu.edu.tw)
 ENV LANG C.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 
-#SOFTWARE PACKAGES
-ENV PACKAGES="\
-    dumb-init \
-    musl \
-    libc6-compat \
-    linux-headers \
-    build-base \
-    bash \
-    git \
-    ca-certificates \
-    freetype \
-    libgfortran \
-    libgcc \
-    libstdc++ \
-    openblas \
-    tcl \
-    tk \
-    libssl1.0 \
-    "
-
-# PYTHON DATA SCIENCE PACKAGES
-ENV PYTHON_PACKAGES="\
-    numpy \
-    matplotlib \
-    scipy \
-    scikit-learn \
-    pandas \
-    nltk \
-    "
-
-RUN apk add --no-cache --virtual build-dependencies python3 \
-    && apk add --virtual build-runtime \
-    build-base python3-dev openblas-dev freetype-dev pkgconfig gfortran \
-    && ln -s /usr/include/locale.h /usr/include/xlocale.h \
-    && python3 -m ensurepip \
-    && rm -r /usr/lib/python*/ensurepip \
-    && pip3 install --upgrade pip setuptools \
-    && ln -sf /usr/bin/python3 /usr/bin/python \
-    && ln -sf pip3 /usr/bin/pip \
-    && rm -r /root/.cache \
-    && pip install --no-cache-dir $PYTHON_PACKAGES \
-    && apk del build-runtime \
-    && apk add --no-cache --virtual build-dependencies $PACKAGES \
-    && rm -rf /var/cache/apk/*
-
-#RUN apk add --no-cache ca-certificates
+#RUN apt add --no-cache ca-certificates
 #RUN set -ex \
-#    && apk update \
-#    && apk upgrade
+#    && apt update \
+#    && apt upgrade
+
+RUN sudo apt-get update
+RUN sudo apt install software-properties-common
+#RUN sudo apt-get upgrade
 
 # Upgrade pip3
-RUN pip3 install --upgrade pip
+#RUN pip3 install --upgrade pip
 
-RUN set -ex \
-	&& apk add --virtual .buildenv python3-dev gcc musl-dev git
+#RUN set -ex \
+#	&& apt add --virtual .buildenv python3-dev gcc musl-dev git
+
+RUN sudo apt-get install -y libprotobuf-dev protobuf-compiler
+RUN sudo apt-get install gcc musl-dev git -y
+RUN sudo apt-get install -y libgl1-mesa-dev
+#RUN sudo apt-get install python3.8-dev gcc musl-dev git python3-pip -y
+
+#RUN pip3 install --upgrade pip
 
 COPY requirements.txt /tmp/requirements.txt
 
 # install other requirements
-RUN pip3 install Cython
-RUN pip3 install scikit-build
-RUN pip3 install cmake
+RUN pip install Cython
+RUN pip install scikit-build
+RUN pip install cmake
 
-RUN set -ex \
-	&& pip3 install -r /tmp/requirements.txt
+#RUN set -ex \
+#	&& pip3 install -r /tmp/requirements.txt
+
+RUN pip install -r /tmp/requirements.txt
 
 # Remove build environment
-RUN apk del .buildenv
+#RUN apt del .buildenv
 
 
 # Folder structure
 RUN set -ex \
-	&& mkdir /conf \
-	&& touch /conf/ecrapi.conf
+	&& sudo mkdir /conf \
+	&& sudo touch /conf/ews.conf
 
 
 # Application
 COPY ews /app/ews
+COPY ext_lib /app/ext_lib
+COPY misc /app/misc
 COPY ./ews.py /app
 
 
