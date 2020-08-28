@@ -27,8 +27,8 @@ RUN pip install -r /tmp/requirements.txt
 
 # Folder structure
 RUN set -ex \
-	&& sudo mkdir /conf \
-	&& sudo touch /conf/ews.conf
+	&& mkdir /conf \
+	&& touch /conf/ews.conf
 
 # Application
 COPY ews /app/ews
