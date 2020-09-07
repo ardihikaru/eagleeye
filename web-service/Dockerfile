@@ -4,7 +4,6 @@
 # Install Docker Nvidia 2.0: https://cnvrg.io/how-to-setup-docker-and-nvidia-docker-2-0-on-ubuntu-18-04/
 
 # TODO: Add latex dependency: docker pull thomasweise/docker-texlive-full
-# TODO: Add GPU-Enabled image
 
 FROM 5g-dive/eagleeye/nvidia-gpu-opencv:1.0
 MAINTAINER NCTU Team (mfardiansyah.eed08g@nctu.edu.tw)
@@ -14,14 +13,10 @@ MAINTAINER NCTU Team (mfardiansyah.eed08g@nctu.edu.tw)
 ENV LANG C.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 
-#RUN pip3 install --upgrade pip
-
 COPY requirements-no-cv.txt /tmp/requirements.txt
 
 # install other requirements
 RUN pip3 install Cython
-#RUN pip install scikit-build
-#RUN pip install cmake
 
 RUN pip3 install -r /tmp/requirements.txt
 
