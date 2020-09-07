@@ -44,7 +44,7 @@ EXPOSE 8080
 # Version
 ARG VERSION=latest
 RUN set -ex \
-  && echo "${VERSION}" > /app/VERSION
+  && echo "${VERSION}" > /app/VERSION \
   && mkdir log \
   && touch /log/ows.log
 
