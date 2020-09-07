@@ -73,7 +73,7 @@ ARG VERSION=latest
 RUN set -ex \
   && echo "${VERSION}" > /app/VERSION
   && mkdir log \
-	&& touch /log/ows.log
+  && touch /log/ows.log
 
 WORKDIR /app
 CMD ["/usr/bin/python3", "./ews.py", "-c", "/conf/ews.conf"]
