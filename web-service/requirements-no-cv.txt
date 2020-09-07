@@ -15,4 +15,3 @@ scipy
 seaborn
 requests
 window-slider
-opencv-python
