@@ -60,8 +60,10 @@ class Node(MyRedis):
                                     "flag_color": "[100, 188, 70]"  # Flag bbox color: Green
                                 })
         # TODO: We need a function to dynamically set the Node URI
+        zmq_uri = asab.Config["zmq"]["dual_det_recvr"]
         builder.set_custom_conf("zmq", {
-            "node_uri": "tcp://127.0.0.1:555" + str(node_data["name"]),  # TODO: Need to be dynamic!
+            # "node_uri": "tcp://127.0.0.1:555" + str(node_data["name"]),  # TODO: Need to be dynamic!
+            "node_uri": "tcp://%s:555" % zmq_uri + str(node_data["name"]),  # TODO: Need to be dynamic!
             "node_channel": "node-" + str(node_data["id"]) + "-zmq"
         })
         builder.set_custom_conf("persistence_detection", {
