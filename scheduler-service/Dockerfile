@@ -29,9 +29,6 @@ COPY scheduler /app/scheduler
 COPY ext_lib /app/ext_lib
 COPY ./scheduler.py /app
 
-# Expose port
-EXPOSE 8080
-
 # Version
 ARG VERSION=latest
 RUN set -ex \
