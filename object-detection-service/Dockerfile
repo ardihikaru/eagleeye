@@ -31,9 +31,6 @@ COPY misc /app/misc
 COPY outputs /app/outputs
 COPY ./detection.py /app
 
-# Expose port
-EXPOSE 8080
-
 # Version
 ARG VERSION=latest
 RUN set -ex \
