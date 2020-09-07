@@ -57,6 +57,7 @@ RUN pip3 install -r /tmp/requirements.txt
 RUN set -ex \
 	&& mkdir /conf \
 	&& touch /conf/ews.conf
+	&& touch /conf/site.conf
 
 # Application
 COPY ews /app/ews
