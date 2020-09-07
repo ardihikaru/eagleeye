@@ -51,7 +51,7 @@ COPY requirements.txt /tmp/requirements-no-cv.txt
 RUN pip3 install Cython
 
 # install req file
-RUN pip3 install -r /tmp/requirements.txt
+RUN pip3 install -r /tmp/requirements-no-cv.txt
 
 # Folder structure
 RUN set -ex \
