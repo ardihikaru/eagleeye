@@ -14,7 +14,7 @@ class EagleEYEWebService(asab.Application):
 		super().__init__()
 
 		# Connect Database
-		connect('eagleeyeDB')
+		connect('eagleeyeDB', host=asab.Config["asab:storage"]["mongodb_host"])
 
 		# Delete all keys in redis as the application runs
 		redis = MyRedis(asab.Config)
