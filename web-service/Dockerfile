@@ -28,7 +28,7 @@ RUN pip3 install -r /tmp/requirements.txt
 # Folder structure
 RUN set -ex \
 	&& mkdir /conf \
-	&& touch /conf/ews.conf
+	&& touch /conf/ews.conf \
 	&& touch /conf/site.conf
 
 # Application
