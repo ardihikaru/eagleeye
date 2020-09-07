@@ -6,7 +6,7 @@
 # TODO: Add latex dependency: docker pull thomasweise/docker-texlive-full
 # TODO: Add GPU-Enabled image
 
-FROM 5g-dive/eagleeye/nvidia-gpu-opencv:1.1
+FROM 5g-dive/eagleeye/nvidia-gpu-opencv:1.0
 MAINTAINER NCTU Team (mfardiansyah.eed08g@nctu.edu.tw)
 
 # http://bugs.python.org/issue19846
