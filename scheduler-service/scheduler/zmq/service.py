@@ -34,10 +34,14 @@ class ZMQService(asab.Service):
         self.node_info = data["data"]
         total = int(data["total"])
 
+        zmq_uri = asab.Config["zmq"]["sender2detection"]
+        L.info("ZMQ URI: %s" % zmq_uri)
+
         if is_success:
             # Builds ZMQ Senders
             for i in range(total):
-                uri = 'tcp://127.0.0.1:555' + str(self.node_info[i]["name"])
+                # uri = 'tcp://127.0.0.1:555' + str(self.node_info[i]["name"])
+                uri = 'tcp://%s:555' % zmq_uri + str(self.node_info[i]["name"])
                 sender = imagezmq.ImageSender(connect_to=uri, REQ_REP=False)
                 self.zmq_sender.append(sender)
         else:
