@@ -45,13 +45,13 @@ RUN pip3 install scikit-build
 RUN pip3 install opencv-contrib-python-headless
 
 # Get the requirement file
-COPY requirements.txt /tmp/requirements-no-cv.txt
+COPY requirements-no-cv.txt /tmp/requirements.txt
 
 # install other requirements
 RUN pip3 install Cython
 
 # install req file
-RUN pip3 install -r /tmp/requirements-no-cv.txt
+RUN pip3 install -r /tmp/requirements.txt
 
 # Folder structure
 RUN set -ex \
