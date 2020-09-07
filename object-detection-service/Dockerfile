@@ -26,6 +26,7 @@ RUN set -ex \
 
 # Application
 COPY detection /app/detection
+COPY config_files /app/config_files
 COPY ext_lib /app/ext_lib
 COPY misc /app/misc
 COPY outputs /app/outputs
