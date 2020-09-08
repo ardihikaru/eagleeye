@@ -18,11 +18,12 @@ COPY ext_lib /app/ext_lib
 COPY outputs /app/outputs
 COPY ./detection.py /app
 
-# Version
+# Version, log, and config_iles
 ARG VERSION=latest
 RUN set -ex \
   && echo "${VERSION}" > /app/VERSION \
   && mkdir log \
+  && mkdir config_files \
   && touch /log/ows.log
 
 WORKDIR /app
