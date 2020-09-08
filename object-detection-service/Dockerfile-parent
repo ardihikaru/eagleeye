@@ -25,4 +25,4 @@ RUN set -ex \
 	&& touch /conf/site.conf
 
 # Application
-COPY config_files /app/config_files
+# COPY config_files /app/config_files
