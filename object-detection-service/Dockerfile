@@ -3,7 +3,8 @@
 # Misc:
 # Install Docker Nvidia 2.0: https://cnvrg.io/how-to-setup-docker-and-nvidia-docker-2-0-on-ubuntu-18-04/
 
-FROM 5g-dive/eagleeye/nvidia-gpu-opencv:1.0
+#FROM 5g-dive/eagleeye/nvidia-gpu-opencv:1.0
+FROM 5g-dive/eagleeye/dual-object-detection-service-head:1.0
 MAINTAINER NCTU Team (mfardiansyah.eed08g@nctu.edu.tw)
 
 # http://bugs.python.org/issue19846
@@ -11,22 +12,8 @@ MAINTAINER NCTU Team (mfardiansyah.eed08g@nctu.edu.tw)
 ENV LANG C.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 
-COPY requirements-no-cv.txt /tmp/requirements.txt
-
-# install other requirements
-RUN pip3 install Cython
-
-RUN pip3 install -r /tmp/requirements.txt
-
-# Folder structure
-RUN set -ex \
-	&& mkdir /conf \
-	&& touch /conf/detection.conf \
-	&& touch /conf/site.conf
-
 # Application
 COPY detection /app/detection
-COPY config_files /app/config_files
 COPY ext_lib /app/ext_lib
 COPY outputs /app/outputs
 COPY ./detection.py /app
