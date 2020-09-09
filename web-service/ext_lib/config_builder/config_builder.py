@@ -1,3 +1,4 @@
+import asab
 import configparser
 
 
@@ -57,12 +58,15 @@ class ConfigBuilder:
 			"conf_thres": "0.1",
 			"iou_thres": "0.1",
 			# "classes": "+",
-			"names": "../object-detection-service/config_files/yolo/data/coco.names",
-			"cfg": "../object-detection-service/config_files/yolo/cfg/yolo-obj-v5.cfg",
+			# "names": "../object-detection-service/config_files/yolo/data/coco.names",
+			"names": asab.Config["objdet:yolo"]["names"],
+			"cfg": asab.Config["objdet:yolo"]["cfg"],
+			"weights": asab.Config["objdet:yolo"]["weights"],
+			# "cfg": "../object-detection-service/config_files/yolo/cfg/yolo-obj-v5.cfg",
 			# "cfg": "../object-detection-service/config_files/yolo/cfg/yolov3.cfg",
 			# "weights": "../object-detection-service/config_files/yolo/weights/yolov3.weights",
 			# "weights": "../object-detection-service/config_files/yolo/weights/TM-06.weights",
-			"weights": "../object-detection-service/config_files/yolo/weights/TW-01.weights",
+			# "weights": "../object-detection-service/config_files/yolo/weights/TW-01.weights",
 
 
 			# Extra algorithms in EageleEYE
