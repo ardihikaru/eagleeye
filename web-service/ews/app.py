@@ -6,7 +6,14 @@ from ews.route_manager import RouteManagerModule
 from ext_lib.redis.my_redis import MyRedis
 from mongoengine import connect
 from mongoengine.connection import _get_db
+import logging
 
+###
+
+L = logging.getLogger(__name__)
+
+
+###
 
 class EagleEYEWebService(asab.Application):
 
@@ -32,3 +39,4 @@ class EagleEYEWebService(asab.Application):
 
 	async def initialize(self):
 		print("EagleEYE Web Service is running!")
+		L.info("[LOG] EagleEYE Web Service is running!")
