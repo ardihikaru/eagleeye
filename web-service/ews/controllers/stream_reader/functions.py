@@ -70,9 +70,9 @@ def threaded_insertion(pool_name, request_json):
 	print(" \n @@@@ threaded_task_scheduler-%s" % pool_name)
 
 	t0_saving_mongo = time.time()
-	print("> >>>> request_json:", request_json)
+	# print("> >>>> request_json:", request_json)
 	is_success, config_data, msg = insert_new_data(ConfigModel, request_json)
-	print(" >>>> ", is_success, config_data, msg)
+	# print(" >>>> ", is_success, config_data, msg)
 	t1_saving_mongo = (time.time() - t0_saving_mongo) * 1000
 	print('[%s] Latency for Saving data into MongoDB (%.3f ms)' % (get_current_time(), t1_saving_mongo))
 

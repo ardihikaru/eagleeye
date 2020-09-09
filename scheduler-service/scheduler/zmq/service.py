@@ -34,7 +34,7 @@ class ZMQService(asab.Service):
         self.node_info = data["data"]
         total = int(data["total"])
 
-        zmq_uri = asab.Config["zmq"]["sender2detection"]
+        zmq_uri = asab.Config["zmq"]["sender_uri"]
         L.info("ZMQ URI: %s" % zmq_uri)
 
         if is_success:

@@ -130,7 +130,7 @@ class SchedulingPolicyService(asab.Service):
         if self.selected_node_id >= self.max_node:
             self.selected_node_id = 0  # Reset
 
-        # print("#### ***** check the status of selected node_id:")
+        print("#### ***** check the status of selected node_id:")
         t0_wait_node = time.time()
         await self._wait_until_ready(self.selected_node_id)
         t1_wait_node = (time.time() - t0_wait_node) * 1000
