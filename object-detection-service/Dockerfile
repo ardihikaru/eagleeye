@@ -1,5 +1,5 @@
 # How to build: docker build -t 5g-dive/eagleeye/dual-object-detection-service:1.0 .
-# How to run: docker run --name dual-det -d --link mongodb:mongo --link redis:redis --link scheduler --link ews -v /home/s010132/devel/eagleeye/object-detection-service/etc/detection.conf:/conf/detection.conf -v /home/s010132/devel/eagleeye/object-detection-service/etc/site.conf:/conf/site.conf -v /home/s010132/devel/eagleeye/object-detection-service/config_files:/app/config_files 5g-dive/eagleeye/dual-object-detection-service:1.0
+# How to run: docker run --name dual-det -d --link mongodb:mongo --link redis:redis --link scheduler --link ews -v /home/s010132/devel/eagleeye/object-detection-service/etc/detection.conf:/conf/detection.conf -v /home/s010132/devel/eagleeye/site_conf_files/object-detection-service/site.conf:/conf/site.conf -v /home/s010132/devel/eagleeye/object-detection-service/config_files:/app/config_files 5g-dive/eagleeye/dual-object-detection-service:1.0
 
 # Misc:
 # Install Docker Nvidia 2.0: https://cnvrg.io/how-to-setup-docker-and-nvidia-docker-2-0-on-ubuntu-18-04/
