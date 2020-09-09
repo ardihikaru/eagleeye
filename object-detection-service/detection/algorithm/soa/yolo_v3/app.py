@@ -3,6 +3,14 @@ from detection.algorithm.soa.yolo_v3.components.utils.utils import *
 from detection.algorithm.soa.yolo_v3.etc.commons.opencv_helpers import *
 from detection.algorithm.soa.yolo_v3.components.utils.utils import get_current_time
 from detection.algorithm.soa.yolo_v3.etc.commons.yolo_functions import YOLOFunctions
+import logging
+
+###
+
+L = logging.getLogger(__name__)
+
+
+###
 
 
 class YOLOv3(YOLOFunctions):
@@ -38,14 +46,16 @@ class YOLOv3(YOLOFunctions):
         return conf
 
     def __initialize_configurations(self):
-        print("\n[%s] Initialize YOLO Configuration" % get_current_time())
+        # print("\n[%s] Initialize YOLO Configuration" % get_current_time())
+        L.warning("\n[%s] Initialize YOLO Configuration" % get_current_time())
         t0_load_weight = time.time()
         self._load_weight()
         t_load_weight = time.time() - t0_load_weight
         # print(".. Load `weight` in (%.3fs)" % t_load_weight)
 
         # Latency: Load YOLOv3 Weight
-        print('Latency [Load `weight`]: (%.5fs)' % t_load_weight)
+        # print('Latency [Load `weight`]: (%.5fs)' % t_load_weight)
+        L.warning('Latency [Load `weight`]: (%.5fs)' % t_load_weight)
 
         t0_load_eval = time.time()
         self._eval_model()
@@ -53,7 +63,8 @@ class YOLOv3(YOLOFunctions):
         # print(".. Load function `eval_model` in (%.3fs)" % t_load_eval_model)
 
         # Latency: Execute Evaluation Model
-        print('Latency [Load `Eval Model`]: (%.5fs)' % t_load_eval_model)
+        # print('Latency [Load `Eval Model`]: (%.5fs)' % t_load_eval_model)
+        L.warning('Latency [Load `Eval Model`]: (%.5fs)' % t_load_eval_model)
 
         self._get_names_colors()
 
@@ -68,7 +79,8 @@ class YOLOv3(YOLOFunctions):
                                           dtype=np.float16 if self.conf["half"] else np.float32)  # uint8 to fp16/fp32
         image4yolo /= 255.0  # 0 - 255 to 0.0 - 1.0
         t1_preproc = (time.time() - t0_preproc) * 1000  # to ms
-        print('[%s] Pre-processing time (%.3f ms)' % (get_current_time(), t1_preproc))
+        # print('[%s] Pre-processing time (%.3f ms)' % (get_current_time(), t1_preproc))
+        L.warning('[%s] Pre-processing time (%.3f ms)' % (get_current_time(), t1_preproc))
         # TODO: To capture the latency of the PRE-Processing
 
         return image4yolo
@@ -88,11 +100,13 @@ class YOLOv3(YOLOFunctions):
         try:
             pred = self.model(image4yolo)[0]
         except Exception as e:
-            print("~~ EEROR: ", e)
+            # print("~~ EEROR: ", e)
+            L.error("[ERROR]: %s" % str(e))
         t1_inference = (time.time() - t0_det) * 1000  # to ms
 
         # Latency: Inference
-        print('[%s] Inference time (%.3f ms)' % (get_current_time(), t1_inference))
+        # print('[%s] Inference time (%.3f ms)' % (get_current_time(), t1_inference))
+        L.warning('[%s] Inference time (%.3f ms)' % (get_current_time(), t1_inference))
 
         # Default: Disabled
         # if self.conf["half"]:
@@ -105,7 +119,8 @@ class YOLOv3(YOLOFunctions):
                                    classes=None,
                                    agnostic=self.conf["agnostic_nms"])
         t1_nms = ((time.time() - t0_nms) * 1000)
-        print('\n # Total Non-Maximum Suppression (NMS) time: (%.3f ms)' % t1_nms)
+        # print('\n # Total Non-Maximum Suppression (NMS) time: (%.3f ms)' % t1_nms)
+        L.warning('\n # Total Non-Maximum Suppression (NMS) time: (%.3f ms)' % t1_nms)
 
         # Get detection
         t0_get_detection = time.time()
@@ -121,7 +136,8 @@ class YOLOv3(YOLOFunctions):
                 # print(" >>>>> bbox_data =", bbox_data)
                 break
         t1_get_detection = ((time.time() - t0_get_detection) * 1000)
-        print('\n # Get Detection time: (%.3f ms)' % t1_get_detection)
+        # print('\n # Get Detection time: (%.3f ms)' % t1_get_detection)
+        L.warning('\n # Get Detection time: (%.3f ms)' % t1_get_detection)
         # TODO: To capture the latency of the POST-Processing
 
         names = load_classes(self.conf["names"])

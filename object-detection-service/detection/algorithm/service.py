@@ -46,7 +46,8 @@ class DetectionAlgorithmService(asab.Service):
             await self.SubscriptionHandler.set_deployment_status()
             await self.SubscriptionHandler.start()
         except Exception as e:
-            print(" >>>> start_subscription e:", e)
+            # print(" >>>> start_subscription e:", e)
+            L.error("[ERROR] start_subscription: %s" % str(e))
             await self.SubscriptionHandler.stop()
 
     async def _configure_object_detection(self):
@@ -65,7 +66,8 @@ class DetectionAlgorithmService(asab.Service):
             return True, frame_id, t0, image
 
         except Exception as e:
-            print("\tERROR:", e)
+            # print("\tERROR:", e)
+            L.error("[ERROR]: %s" % str(e))
             return False, None, None, None
 
     async def update_node_information(self, node_id, pid):
@@ -88,7 +90,8 @@ class DetectionAlgorithmService(asab.Service):
             await self.SubscriptionHandler.stop()
 
     async def detect_object(self, frame):
-        print("####[%s]##### START OBJECT DETECTION" % self.node_alias)
+        # print("####[%s]##### START OBJECT DETECTION" % self.node_alias)
+        L.warning("####[%s]##### START OBJECT DETECTION" % self.node_alias)
         bbox_data, det, names, pre_proc_lat, yolo_lat = None, None, None, None, None
         try:
             # Perform conversion first!
@@ -132,7 +135,8 @@ class DetectionAlgorithmService(asab.Service):
             # print('\n[%s] Proc. Latency of YOLO (%.3f ms)' % (get_current_time(), t1_preproc))
 
         except Exception as e:
-            print(" >>>> GET BBox e:", e)
+            # print(" >>>> GET BBox e:", e)
+            L.error("[ERROR]: %s" % str(e))
             await self.SubscriptionHandler.stop()
         return bbox_data, det, names, pre_proc_lat, yolo_lat
 

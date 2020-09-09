@@ -45,7 +45,8 @@ class ZMQService(asab.Service):
                 sender = imagezmq.ImageSender(connect_to=uri, REQ_REP=False)
                 self.zmq_sender.append(sender)
         else:
-            print("\n[%s] Forced to exit, since No Node are available!" % get_current_time())
+            # print("\n[%s] Forced to exit, since No Node are available!" % get_current_time())
+            L.warning("\n[%s] Forced to exit, since No Node are available!" % get_current_time())
             exit()
 
     def get_senders(self):
@@ -63,7 +64,8 @@ class ZMQService(asab.Service):
         zmq_id = str(frame_id) + "-" + str(t0_zmq)
         sender.send_image(zmq_id, frame)
         t1_zmq = (time.time() - t0_zmq) * 1000
-        print('Latency [Send imagezmq] of frame-%s: (%.5fms)' % (str(frame_id), t1_zmq))
+        # print('Latency [Send imagezmq] of frame-%s: (%.5fms)' % (str(frame_id), t1_zmq))
+        L.warning('Latency [Send imagezmq] of frame-%s: (%.5fms)' % (str(frame_id), t1_zmq))
         # TODO: Saving latency for scheduler:latency:sending_image_zmq
 
 
