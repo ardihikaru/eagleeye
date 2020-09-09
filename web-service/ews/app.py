@@ -38,5 +38,4 @@ class EagleEYEWebService(asab.Application):
 		self.add_module(RouteManagerModule)
 
 	async def initialize(self):
-		print("EagleEYE Web Service is running!")
-		L.info("[LOG] EagleEYE Web Service is running!")
+		L.warning("[warning] EagleEYE Web Service is running!")
