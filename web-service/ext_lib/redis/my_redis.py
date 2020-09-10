@@ -11,11 +11,8 @@ class MyRedis:
         self._set_rc(config)
 
     def _set_rc(self, config):
-        print(">> pass:", config["redis"]["password"])
-        print(">>>LEN:", len(config["redis"]["password"]))
         if not config["redis"]["password"]:
             # has no password
-            print(">>> NO PASSWORD")
             self.rc = StrictRedis(
                 host=config["redis"]["hostname"],
                 port=config["redis"]["port"],
