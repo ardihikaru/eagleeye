@@ -24,7 +24,6 @@ ARG VERSION=latest
 RUN set -ex \
   && echo "${VERSION}" > /app/VERSION \
   && mkdir log \
-  && mkdir config_files \
   && touch /log/ows.log
 
 WORKDIR /app
