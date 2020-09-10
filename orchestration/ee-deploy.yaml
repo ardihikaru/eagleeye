@@ -1,5 +1,5 @@
 # Name: Test Deployment for OWS Web Service Application
-# Date: 09/09/2020
+# Date: 09/10/2020
 # Details: Multiple pod deployment w/ K8S
 
 # Redis
@@ -141,6 +141,8 @@ spec:
       containers:
         - name: scheduler
           image: 5g-dive/eagleeye/scheduler-service:1.0
+          ports:
+            - containerPort: 5551
           volumeMounts:
             - name: ee-scheduler-cfg
               mountPath: /conf/site.conf
@@ -148,6 +150,49 @@ spec:
             - name: ee-scheduler-cfg
               mountPath: /conf/scheduler.conf
               subPath: scheduler.conf
+
+---
+# Detection
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: detection-deploy
+  labels:
+    name: detection-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: detection-deploy
+  template:
+    metadata:
+      name: detection-deploy
+      labels:
+        name: detection-deploy
+    spec:
+      volumes:
+        - name: ee-detection-cfg
+          configMap:
+            name: ee-detection-cfg
+        - name: vol-detection-conf
+          emptyDir: {}
+        - name: vol-detection-model
+          hostPath:
+            path: /home/s010132/devel/eagleeye/object-detection-service/config_files
+            type: Directory
+      containers:
+        - name: detection
+          image: 5g-dive/eagleeye/dual-object-detection-service:1.0
+          volumeMounts:
+            - name: ee-detection-cfg
+              mountPath: /conf/site.conf
+              subPath: site.conf
+            - name: ee-detection-cfg
+              mountPath: /conf/detection.conf
+              subPath: detection.conf
+            - name: vol-detection-model
+              mountPath: /app/config_files
+
 ---
 # Redis Service
 apiVersion: v1
@@ -188,4 +233,17 @@ spec:
   - port: 8080
     targetPort: 8080
     nodePort: 31000
+
+---
+# Scheduler Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: scheduler-service
+spec:
+  selector:
+    name: scheduler-deploy
+  ports:
+  - port: 5551
+    targetPort: 5551
 
