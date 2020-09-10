@@ -1,0 +1,124 @@
+# Name: Test Deployment for OWS Web Service Application
+# Date: 09/09/2020
+# Details: Multiple pod deployment w/ K8S
+
+# OWS Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ows-deploy
+  labels:
+    name: ows-deploy
+spec:
+  replicas: 
+  selector:
+    matchLabels:
+      name: ows-deploy
+  template:
+    metadata:
+      name: ows-deploy
+      labels:
+        name: ows-deploy
+    spec:
+      volumes:
+        - name: test-config
+          configMap:
+            name: test-ows-config
+        - name: vol-conf
+          emptyDir: {}
+        - name: vol-log
+          emptyDir: {}
+      containers:
+        - name: ows
+          image: timwilliam/test-ows:1.2
+          ports:
+            - containerPort: 8082
+          volumeMounts:
+            # Mount Empty Dir
+            - name: vol-conf
+              mountPath: /conf/
+            # ConfigMap
+            - name: test-config
+              mountPath: /conf/ows.conf
+              subPath: ows.conf
+          readinessProbe:
+            exec:
+              command:
+                  #- [nc -v -z -w 1 mongo-service 27017 &> /dev/null && echo "Online" || echo "Offline"]
+              - cat
+            initialDelaySeconds: 1
+            periodSeconds: 3
+            failureThreshold: 3
+
+---
+# MongoDB
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-deploy
+  labels:
+    name: mongo-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mongo-deploy
+  template:
+    metadata:
+      name: mongo-deploy
+      labels:
+        name: mongo-deploy
+    spec:
+      volumes:
+        - name: mongo
+          hostPath:
+            path: /home/s010132/devel/eagleeye_tim/orchestration/test-ows/db
+      containers:
+        - name: mongo
+          image: mongo:4.4.0
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - mountPath: /data/db
+              name: mongo
+
+---
+# OWS Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: ows-service
+spec:
+  type: NodePort
+  selector:
+    name: ows-deploy
+  ports:
+  - port: 8082
+    targetPort: 8082
+    nodePort: 30001
+
+---
+# MongoDB Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-service
+spec:
+  selector:
+    name: mongo-deploy
+  ports:
+  - port: 27017
+    targetPort: 27017
+
+---
+# CURL Pod for testing
+apiVersion: v1
+kind: Pod
+metadata:
+    name: curl
+    labels:
+        name: curl
+spec:
+    containers:
+        - name: curl
+          image: khannedy/nginx-curl

@@ -1,0 +1,155 @@
+# Name: Test Deployment for OWS Web Service Application
+# Date: 09/09/2020
+# Details: Multiple pod deployment w/ K8S
+
+# Redis
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-deploy
+  labels:
+    name: redis-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: redis-deploy
+  template:
+    metadata:
+      name: redis-deploy
+      labels:
+        name: redis-deploy
+    spec:
+      volumes:
+        - name: redis
+          hostPath:
+            path: /home/s010132/devel/eagleeye_tim/orchestration/test-dir/redis
+      containers:
+        - name: redis
+          image: 5g-dive/redis:1.0
+          ports:
+            - containerPort: 6379
+          volumeMounts:
+            - mountPath: /data
+              name: redis
+              #lifecycle:
+              #postStart:
+              #exec:
+              #command: ["redis-server", "--appendonly", "yes", "--requirepass", "bismillah"]
+
+---
+# MongoDB
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-deploy
+  labels:
+    name: mongo-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mongo-deploy
+  template:
+    metadata:
+      name: mongo-deploy
+      labels:
+        name: mongo-deploy
+    spec:
+      volumes:
+        - name: mongo
+          hostPath:
+            path: /home/s010132/devel/eagleeye_tim/orchestration/test-dir/mongo
+      containers:
+        - name: mongo
+          image: mongo:4.4.0
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - mountPath: /data/db
+              name: mongo
+
+---
+# EWS
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ews-deploy
+  labels:
+    name: ews-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: ews-deploy
+  template:
+    metadata:
+      name: ews-deploy
+      labels:
+        name: ews-deploy
+    spec:
+      volumes:
+        - name: ee-ews-cfg
+          configMap:
+            name: ee-ews-cfg
+        - name: vol-ews-conf
+          emptyDir: {}
+        - name: vol-site-conf
+          emptyDir: {}
+      containers:
+        - name: ews 
+          image: 5g-dive/eagleeye/web-service:1.0
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+              #- name: vol-ews-conf
+              #mountPath: /conf/
+              # - name: vol-site-conf
+              #mountPath: /conf/
+            - name: ee-ews-cfg
+              mountPath: /conf/ews.conf
+              subPath: ews.conf
+            - name: ee-ews-cfg
+              mountPath: /conf/site.conf
+              subPath: site.conf
+---
+# Redis Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+spec:
+  selector:
+    name: redis-deploy
+  ports:
+  - port: 6379
+    targetPort: 6379
+
+---
+# Mongo Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-service
+spec:
+  selector:
+    name: mongo-deploy
+  ports:
+  - port: 27017
+    targetPort: 27017
+
+---
+# EWS Node Port
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-service
+spec:
+  type: NodePort
+  selector:
+    name: ews-deploy
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 31000
+
