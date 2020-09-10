@@ -8,13 +8,29 @@ from redis import StrictRedis
 
 class MyRedis:
     def __init__(self, config):
-        self.rc = StrictRedis(
-            host=config["redis"]["hostname"],
-            port=config["redis"]["port"],
-            password=config["redis"]["password"],
-            db=config["redis"]["db"],
-            decode_responses=True
-        )
+        self._set_rc(config)
+
+    def _set_rc(self, config):
+        print(">> pass:", config["redis"]["password"])
+        print(">>>LEN:", len(config["redis"]["password"]))
+        if not config["redis"]["password"]:
+            # has no password
+            print(">>> NO PASSWORD")
+            self.rc = StrictRedis(
+                host=config["redis"]["hostname"],
+                port=config["redis"]["port"],
+                db=config["redis"]["db"],
+                decode_responses=True
+            )
+        else:
+            # has password
+            self.rc = StrictRedis(
+                host=config["redis"]["hostname"],
+                port=config["redis"]["port"],
+                password=config["redis"]["password"],
+                db=config["redis"]["db"],
+                decode_responses=True
+            )
 
     def get_rc(self):
         return self.rc
