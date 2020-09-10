@@ -79,6 +79,12 @@ class ConfigBuilder:
 			"window_size_width": "1080"
 		}
 
+	# TODO: To be completed
+	def dual_det_site_config(self):
+		self.config["objdet:yolo"] = {
+			"output": "outputs/"
+		}
+
 	def set_custom_conf(self, key, items):
 		self.config[key] = items
 
