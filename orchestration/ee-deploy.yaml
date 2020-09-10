@@ -138,6 +138,10 @@ spec:
             name: ee-scheduler-cfg
         - name: vol-scheduler-conf
           emptyDir: {}
+        - name: vol-scheduler-data
+          hostPath:
+            path: /home/s010132/devel/eagleeye/data
+            type: Directory
       containers:
         - name: scheduler
           image: 5g-dive/eagleeye/scheduler-service:1.0
@@ -150,6 +154,8 @@ spec:
             - name: ee-scheduler-cfg
               mountPath: /conf/scheduler.conf
               subPath: scheduler.conf
+            - name: vol-scheduler-data
+              mountPath: /app/data
 
 ---
 # Detection
