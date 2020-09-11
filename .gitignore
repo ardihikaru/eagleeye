@@ -1,6 +1,7 @@
 # K8S Deployment
 orchestration/test-dir/
 orchestration/test-ows/
+orchestration-imec/db-dir
 
 # Optional Resources ----------------------------------------------------------------------------------------------
 web-service/common_files/5g-dive/
