@@ -18,11 +18,3 @@ RUN pip3 install Cython
 
 RUN pip3 install -r /tmp/requirements.txt
 
-# Folder structure
-RUN set -ex \
-	&& mkdir /conf \
-	&& touch /conf/detection.conf \
-	&& touch /conf/site.conf
-
-# Application
-# COPY config_files /app/config_files
