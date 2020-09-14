@@ -149,6 +149,7 @@ class ExtractorService(asab.Service):
 			# Reset frame_id
 			self.frame_id = 0
 
+			# print(config)
 			self.cap = await self._set_cap(config)
 
 			while await self._streaming():
@@ -163,6 +164,7 @@ class ExtractorService(asab.Service):
 				t0_sched_lat = time.time()
 				try:
 					sel_node_id = await self.SchPolicyService.schedule(max_node=len(senders["node"]))
+					L.warning("Selected Node idx: %s" % str(sel_node_id))
 				except Exception as e:
 					L.error("[ERROR]: %s" % str(e))
 					# print(">>>> ERRROR:", e)

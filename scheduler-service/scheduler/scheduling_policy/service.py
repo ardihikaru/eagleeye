@@ -133,9 +133,10 @@ class SchedulingPolicyService(asab.Service):
             self.selected_node_id = 0  # Reset
 
         # print("#### ***** check the status of selected node_id:")
-        L.warning("#### ***** check the status of selected node_id:")
+        L.warning("#### ***** checking the status of selected node_id:")
         t0_wait_node = time.time()
         await self._wait_until_ready(self.selected_node_id)
+        # self._wait_until_ready(self.selected_node_id)
         t1_wait_node = (time.time() - t0_wait_node) * 1000
         # print('\nLatency [Waiting node to be ready] in: (%.5f ms)' % t1_wait_node)
         L.warning('\nLatency [Waiting node to be ready] in: (%.5f ms)' % t1_wait_node)
@@ -170,7 +171,9 @@ class SchedulingPolicyService(asab.Service):
         #         return bool(int(key_value[1]))
 
     async def _wait_until_ready(self, snode_id):
+    # def _wait_until_ready(self, snode_id):
         redis_key = self.avail_nodes[snode_id]["redis_key"]
+        # print(">>> redis_key:", redis_key)
         # print("### @@@@ _wait_until_ready ...", redis_get(self.rd.get_rc(), redis_key))
         # while not self.avail_nodes[snode_id]["idle"]:
         # while not self._get_idle_status(self.avail_nodes[snode_id]):

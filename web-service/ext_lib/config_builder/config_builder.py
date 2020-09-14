@@ -11,7 +11,7 @@ class ConfigBuilder:
 		self.config["redis"] = {
 			"hostname": "localhost",
 			"port": "6379",
-			"password": "bismillah",
+			"password": "",
 			"db": "0"
 		}
 
@@ -39,6 +39,7 @@ class ConfigBuilder:
 		# 	pers_val = "1"
 		# else:
 		# 	pers_val = "0"
+
 		self.config["objdet:yolo"] = {
 			"output": "outputs/",
 			"source_folder_prefix": "out",
