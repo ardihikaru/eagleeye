@@ -63,7 +63,9 @@ class Node(MyRedis):
         builder.set_custom_conf("node",
                                 {
                                     "id": node_data["id"],
-                                    "name": node_data["name"]
+                                    "name": node_data["name"],
+                                    "candidate_selection": node_data["candidate_selection"],
+                                    "persistence_validation": node_data["persistence_validation"]
                                 })
 
         # builder.set_custom_conf("thread", {"num_executor": "1"})
