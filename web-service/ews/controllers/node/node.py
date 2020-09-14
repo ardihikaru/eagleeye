@@ -59,26 +59,37 @@ class Node(MyRedis):
                                     "latency": "http://%s:8080/api/%s" % (ews_host, "latency")
                                 })
 
-        builder.set_custom_conf("node", node_data)
-        builder.set_custom_conf("thread", {"num_executor": "1"})
-        builder.set_custom_conf("bbox_config",
+        # builder.set_custom_conf("node", node_data)
+        builder.set_custom_conf("node",
                                 {
-                                    "pih_label_cand": "PiH",
-                                    "pih_label": "PiH",
-                                    "pih_color": "[198, 50, 13]",  # PiH bbox color: Blue
-                                    "person_color": "[191, 96, 165]",  # Person bbox color: Purple
-                                    "flag_color": "[100, 188, 70]"  # Flag bbox color: Green
+                                    "id": node_data["id"],
+                                    "name": node_data["name"]
                                 })
+
+        # builder.set_custom_conf("thread", {"num_executor": "1"})
+
+        # TODO: Should be loaded from DB instead
+        # Set `bbox_config` section
+        # builder.set_custom_conf("bbox_config",
+        #                         {
+        #                             "pih_label_cand": "PiH",
+        #                             "pih_label": "PiH",
+        #                             "pih_color": "[198, 50, 13]",  # PiH bbox color: Blue
+        #                             "person_color": "[191, 96, 165]",  # Person bbox color: Purple
+        #                             "flag_color": "[100, 188, 70]"  # Flag bbox color: Green
+        #                         })
+
         # TODO: We need a function to dynamically set the Node URI
         zmq_uri = asab.Config["zmq"]["sender_uri"]
         builder.set_custom_conf("zmq", {
             "sender_uri": "tcp://%s:555" % zmq_uri + str(node_data["name"]),
         })
 
-        builder.set_custom_conf("persistence_detection", {
-            "persistence_window": 10,
-            "tolerance_limit_percentage": 0.3
-        })
+        # TODO: Should be loaded from DB instead
+        # builder.set_custom_conf("persistence_detection", {
+        #     "persistence_window": 10,
+        #     "tolerance_limit_percentage": 0.3
+        # })
 
         builder.create_config()
 
