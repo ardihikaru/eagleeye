@@ -7,6 +7,11 @@ old_codes/hasil
 data
 output/
 
+# Ignore site.conf in each micro-service
+object-detection-service/etc.site.conf
+scheduler-service/etc.site.conf
+web-service/etc.site.conf
+
 # Ignore site.conf files
 object-detection-service/etc/site.conf
 web-service/etc/site.conf
