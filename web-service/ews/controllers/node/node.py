@@ -104,17 +104,17 @@ class Node(MyRedis):
         # TODO: Once orchestrated with k8s, we no longer use Popen to Deploy each node (Future work)
         # process = Popen('python ./../object-detection-service/detection.py -c ./../object-detection-service/etc/detection.conf', shell=True)
 
-        # send data into Scheduler service through the pub/sub
-        t0_publish = time.time()
-        # print("# send data into Scheduler service through the pub/sub")
-        dump_request = json.dumps(node_data)
-        pub(self.get_rc(), asab.Config["pubsub:channel"]["node"], dump_request)
-        t1_publish = (time.time() - t0_publish) * 1000
-        # TODO: Saving latency for scheduler:producer
-        # print('[%s] Latency for Publishing data into Object Detection Service (%.3f ms)' %
-        #       (get_current_time(), t1_publish))
-        L.warning('[%s] Latency for Publishing data into Object Detection Service (%.3f ms)' %
-                  (get_current_time(), t1_publish))
+        # # send data into Scheduler service through the pub/sub
+        # t0_publish = time.time()
+        # # print("# send data into Scheduler service through the pub/sub")
+        # dump_request = json.dumps(node_data)
+        # pub(self.get_rc(), asab.Config["pubsub:channel"]["node"], dump_request)
+        # t1_publish = (time.time() - t0_publish) * 1000
+        # # TODO: Saving latency for scheduler:producer
+        # # print('[%s] Latency for Publishing data into Object Detection Service (%.3f ms)' %
+        # #       (get_current_time(), t1_publish))
+        # L.warning('[%s] Latency for Publishing data into Object Detection Service (%.3f ms)' %
+        #           (get_current_time(), t1_publish))
 
     def _node_generator(self, node_data):
         t0_thread = time.time()
@@ -148,6 +148,17 @@ class Node(MyRedis):
 
         return new_node_id
 
+    def _update_available_nodes(self, is_add=True):
+        # Get total nodes
+        total_nodes = redis_get(self.rc, asab.Config["redis"]["total_worker_key"])
+        if is_add:
+            total_nodes += 1
+        else:
+            total_nodes -= 1
+
+        # Store new value
+        redis_set(self.rc, asab.Config["redis"]["total_worker_key"], total_nodes)
+
     def register(self, node_data):
         msg = "Registration of a new Node is success."
 
@@ -167,7 +178,13 @@ class Node(MyRedis):
         # TODO: When inserting a new Node succeed, it should spawn an Object Detection module.
         # TODO: To spawn YOLOv3 Module
         if is_success:
-            # TODO: Once spwaned, Field `pid` should be updated.
+            # Update `node-channel`
+            new_node_info = {"channel": "node-%s" % inserted_data["id"]}
+            self.update_data_by_id(inserted_data["id"], new_node_info)
+
+            # Update total available nodes
+            self._update_available_nodes()
+
             node_data["id"] = inserted_data["id"]
             node_data["idle"] = inserted_data["idle"]
 
@@ -215,6 +232,12 @@ class Node(MyRedis):
 
     def delete_data_by_id_one(self, _id):
         is_success, msg = del_data_by_id(NodeModel, _id, self.rc)
+
+        # Update total available nodes
+        if is_success:
+            # Decrease
+            self._update_available_nodes(is_add=False)
+
         return get_json_template(is_success, {}, -1, msg)
 
     def update_data_by_id(self, _id, json_data):
