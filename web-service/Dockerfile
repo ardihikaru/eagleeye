@@ -1,5 +1,5 @@
 # How to build: docker build -t 5g-dive/eagleeye/web-service:1.0 .
-# How to run: docker run --name ews -d --link mongodb:mongo --link redis:redis -p 8080:8080 -v /home/s010132/devel/eagleeye/web-service/etc/ews.conf:/conf/ews/ews.conf -v /home/s010132/devel/eagleeye/site_conf_files/web-service/site.conf:/conf/ews/site.conf 5g-dive/eagleeye/web-service:1.0
+# How to run: docker run --name ews -d --link mongodb:mongo --link redis:redis -p 8080:8080 -v /home/s010132/devel/eagleeye/web-service/etc/ews.conf:/conf/ews/ews.conf -v /home/s010132/devel/eagleeye/site_conf_files/web-service/site.conf:/conf/ews/site.conf -v /home/s010132/devel/eagleeye/site_conf_files/object-detection-service/site.conf:/conf/dual-det/site.conf 5g-dive/eagleeye/web-service:1.0
 
 # Misc:
 # Install Docker Nvidia 2.0: https://cnvrg.io/how-to-setup-docker-and-nvidia-docker-2-0-on-ubuntu-18-04/
