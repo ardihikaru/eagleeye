@@ -26,9 +26,6 @@ class ObjectDetectionService(asab.Application):
 		# Set node alias
 		self.node_alias = "NODE-%s" % asab.Config["node"]["name"]
 
-		# Connect Database
-		connect('eagleeyeDB')
-
 		# Loading the web service module
 		self.add_module(asab.storage.Module)
 
