@@ -19,7 +19,8 @@ class ConfigBuilder:
 		self.config["asab:storage"] = {
 			"type": "mongodb",
 			"mongodb_database": "eagleeyeDB",
-			"mongodb_uri": "mongodb://localhost:27017"
+			"mongodb_uri": "mongodb://localhost:27017",
+			"mongodb_host": asab.Config["asab:storage"]["mongodb_host"]
 		}
 
 	# def set_default_pubsub_channel_conf(self, node_id=""):
