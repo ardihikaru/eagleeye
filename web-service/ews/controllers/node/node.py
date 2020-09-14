@@ -42,18 +42,21 @@ class Node(MyRedis):
         # Make config file according to this file
         # print(" #### node_data:", node_data)
         builder = ConfigBuilder()
-        builder.set_config_path("./../object-detection-service/etc/detection.conf")
+        # builder.set_config_path("./../object-detection-service/etc/detection.conf")
+        builder.set_config_path(asab.Config["config:builder"]["path"])
+
         builder.set_default_redis_conf()
         builder.set_default_mongodb_conf()
         # builder.set_default_pubsub_channel_conf(node_id=str(node_data["id"]))
         builder.set_default_yolov3_conf()
 
         # Add extra information to the accessable API
-        root_api = asab.Config["eagleeye:api"]["api_uri"]
+        # root_api = asab.Config["eagleeye:api"]["api_uri"]
+        ews_host = asab.Config["eagleeye:api"]["ews_host"]
         builder.set_custom_conf("eagleeye:api",
                                 {
-                                    "node": root_api + "nodes",
-                                    "latency": root_api + "latency"
+                                    "node": "http://%s:8080/api/%s" % (ews_host, "nodes"),
+                                    "latency": "http://%s:8080/api/%s" % (ews_host, "latency")
                                 })
 
         builder.set_custom_conf("node", node_data)
@@ -69,15 +72,14 @@ class Node(MyRedis):
         # TODO: We need a function to dynamically set the Node URI
         zmq_uri = asab.Config["zmq"]["sender_uri"]
         builder.set_custom_conf("zmq", {
-            # "node_uri": "tcp://127.0.0.1:555" + str(node_data["name"]),  # TODO: Need to be dynamic!
-            # "node_uri": "tcp://%s:555" % zmq_uri + str(node_data["name"]),  # TODO: Need to be dynamic!
-            "sender_uri": "tcp://%s:555" % zmq_uri + str(node_data["name"]),  # TODO: Need to be dynamic!
-            # "node_channel": "node-" + str(node_data["id"]) + "-zmq"
+            "sender_uri": "tcp://%s:555" % zmq_uri + str(node_data["name"]),
         })
+
         builder.set_custom_conf("persistence_detection", {
             "persistence_window": 10,
             "tolerance_limit_percentage": 0.3
         })
+
         builder.create_config()
 
         # [2020-08-19] Bug: For some reason, auto-deployment with a subprocess creates two issues:
