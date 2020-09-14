@@ -22,10 +22,6 @@ class SchedulerService(asab.Application):
 	def __init__(self):
 		super().__init__()
 
-		# Connect Database
-		# TODO: need to be removed. it connects via RestAPI anyway!
-		connect('eagleeyeDB')
-		
 		# Add reader module
 		self.add_module(LatencyCollectorModule)
 		self.add_module(SchedulingPolicyModule)
