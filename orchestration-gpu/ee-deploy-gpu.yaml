@@ -1,0 +1,289 @@
+# Name: Test Deployment for EagleEYE on iMEC
+# Date: 09/11/2020
+# Details:
+#   - CPU Based and with Single Worker Node (for Detection)
+
+# Redis
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-deploy
+  labels:
+    name: redis-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: redis-deploy
+  template:
+    metadata:
+      name: redis-deploy
+      labels:
+        name: redis-deploy
+    spec:
+      volumes:
+        - name: redis
+          hostPath:
+            # Update this hostPath setting as necessary !
+            path: /home/s010132/devel/eagleeye_tim/orchestration-imec/db-dir/redis
+      containers:
+        - name: redis
+          image: timwilliam/eagleeye.redis:1.0
+          ports:
+            - containerPort: 6379
+          volumeMounts:
+            - mountPath: /data
+              name: redis
+              #lifecycle:
+              #postStart:
+              #exec:
+              #command: ["redis-server", "--appendonly", "yes", "--requirepass", "bismillah"]
+
+---
+# MongoDB
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-deploy
+  labels:
+    name: mongo-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mongo-deploy
+  template:
+    metadata:
+      name: mongo-deploy
+      labels:
+        name: mongo-deploy
+    spec:
+      volumes:
+        - name: mongo
+          hostPath:
+            # Update this hostPath setting as necessary !
+            path: /home/s010132/devel/eagleeye_tim/orchestration-imec/db-dir/mongo
+      containers:
+        - name: mongo
+          image: mongo:4.4.0
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - mountPath: /data/db
+              name: mongo
+
+---
+# EWS
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ews-deploy
+  labels:
+    name: ews-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: ews-deploy
+  template:
+    metadata:
+      name: ews-deploy
+      labels:
+        name: ews-deploy
+    spec:
+      volumes:
+        - name: ee-ews-cfg
+          configMap:
+            name: ee-ews-cfg
+        - name: vol-ews-conf
+          emptyDir: {}
+        - name: vol-site-conf
+          emptyDir: {}
+      containers:
+        - name: ews 
+          image: timwilliam/eagleeye.webservice:1.0
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+              #- name: vol-ews-conf
+              #mountPath: /conf/
+              # - name: vol-site-conf
+              #mountPath: /conf/
+            - name: ee-ews-cfg
+              mountPath: /conf/ews.conf
+              subPath: ews.conf
+            - name: ee-ews-cfg
+              mountPath: /conf/site.conf
+              subPath: site.conf
+
+---
+# Scheduler
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scheduler-deploy
+  labels:
+    name: scheduler-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: scheduler-deploy
+  template:
+    metadata:
+      name: scheduler-deploy
+      labels:
+        name: scheduler-deploy
+    spec:
+      volumes:
+        - name: ee-scheduler-cfg
+          configMap:
+            name: ee-scheduler-cfg
+        - name: vol-scheduler-conf
+          emptyDir: {}
+        - name: vol-scheduler-data
+          hostPath:
+            # Update this hostPath setting as necessary !
+            path: /home/s010132/devel/eagleeye/data
+            type: Directory
+      containers:
+        - name: scheduler
+          image: timwilliam/eagleeye.scheduler:1.0
+          ports:
+            - containerPort: 5551
+          volumeMounts:
+            - name: ee-scheduler-cfg
+              mountPath: /conf/site.conf
+              subPath: site.conf
+            - name: ee-scheduler-cfg
+              mountPath: /conf/scheduler.conf
+              subPath: scheduler.conf
+            - name: vol-scheduler-data
+              mountPath: /app/data
+
+---
+# Detection
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: detection-deploy
+  labels:
+    name: detection-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: detection-deploy
+  template:
+    metadata:
+      name: detection-deploy
+      labels:
+        name: detection-deploy
+    spec:
+      volumes:
+        - name: ee-detection-cfg
+          configMap:
+            name: ee-detection-cfg
+        - name: vol-detection-conf
+          emptyDir: {}
+        - name: vol-detection-model
+          hostPath:
+            # Update this hostPath setting as necessary !
+            path: /home/s010132/devel/eagleeye/object-detection-service/config_files
+            type: Directory
+      containers:
+        - name: detection
+          image: 5g-dive/eagleeye/dual-object-detection-service:1.0
+          volumeMounts:
+            - name: ee-detection-cfg
+              mountPath: /conf/site.conf
+              subPath: site.conf
+            - name: ee-detection-cfg
+              mountPath: /conf/detection.conf
+              subPath: detection.conf
+            - name: vol-detection-model
+              mountPath: /app/config_files
+
+---
+# Redis Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+spec:
+  selector:
+    name: redis-deploy
+  ports:
+  - port: 6379
+    targetPort: 6379
+
+---
+# Mongo Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-service
+spec:
+  selector:
+    name: mongo-deploy
+  ports:
+  - port: 27017
+    targetPort: 27017
+
+---
+# EWS Node Port
+apiVersion: v1
+kind: Service
+metadata:
+  name: ews-service
+spec:
+  type: NodePort
+  selector:
+    name: ews-deploy
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 31000
+
+---
+# Scheduler Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: scheduler-service
+spec:
+  selector:
+    name: scheduler-deploy
+  ports:
+  - port: 5551
+    targetPort: 5551
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: example-service
+spec:
+  selector:
+      name: scheduler-service
+      name: ews-service
+  type: ExternalName
+  externalName: example.com
+  ports:
+    - port: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: scheduler-stream-service
+spec:
+  selector:
+      name: scheduler-service
+  ports:
+    - name: rtmp
+      protocol: TCP
+      port: 1935
+      targetPort: 1935
+  externalIPs:
+    - 140.113.86.92

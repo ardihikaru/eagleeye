@@ -2,6 +2,7 @@
 orchestration/test-dir/
 orchestration/test-ows/
 orchestration-imec/db-dir
+orchestration-gpu/db-dir
 
 # Optional Resources ----------------------------------------------------------------------------------------------
 web-service/common_files/5g-dive/
