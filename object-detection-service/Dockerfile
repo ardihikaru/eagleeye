@@ -19,6 +19,12 @@ COPY ext_lib /app/ext_lib
 COPY outputs /app/outputs
 COPY ./detection.py /app
 
+# Folder structure
+RUN set -ex \
+	&& mkdir -p /conf/dual-det \
+	&& touch /conf/dual-det/detection.conf \
+	&& touch /conf/dual-det/site.conf
+
 # Version, log, and config_iles
 ARG VERSION=latest
 RUN set -ex \
@@ -27,4 +33,4 @@ RUN set -ex \
   && touch /log/ows.log
 
 WORKDIR /app
-CMD ["/usr/bin/python3", "./detection.py", "-c", "/conf/detection.conf"]
+CMD ["/usr/bin/python3", "./detection.py", "-c", "/conf/dual-det/detection.conf"]

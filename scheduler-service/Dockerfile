@@ -21,9 +21,9 @@ RUN pip3 install -r /tmp/requirements.txt
 
 # Folder structure
 RUN set -ex \
-	&& mkdir /conf \
-	&& touch /conf/scheduler.conf \
-	&& touch /conf/site.conf
+	&& mkdir -p /conf/scheduler \
+	&& touch /conf/scheduler/scheduler.conf \
+	&& touch /conf/scheduler/site.conf
 
 # Application
 COPY scheduler /app/scheduler
@@ -38,4 +38,4 @@ RUN set -ex \
   && touch /log/ows.log
 
 WORKDIR /app
-CMD ["/usr/bin/python3", "./scheduler.py", "-c", "/conf/scheduler.conf"]
+CMD ["/usr/bin/python3", "./scheduler.py", "-c", "/conf/scheduler/scheduler.conf"]
