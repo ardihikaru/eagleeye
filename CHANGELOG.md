@@ -1,3 +1,103 @@
+## 4.0-EEv1.5-dockerization-stable (九月 15, 2020)
+  - Merge pull request #4 from ardihikaru/feature/EagleEYEv2.0/single-docker
+  - Add default total available worker & increase/decrease the value dynamically
+  - Add datetime information
+  - Remove unused output data
+  - Remove unused print & add important print
+  - Add important keys
+  - Update how to `docker run`
+  - Update how to `docker run`
+  - Trim auto-generated config file for dual-det service (site.conf)
+  - Add `output` key
+  - Add `output` key
+  - Update how to `docker run`
+  - Bugfix: remove duplicate section
+  - Move into Dockerfile instead
+  - Bugfix: change site.conf file location
+  - Remove database connection
+  - Remove database connection
+  - Update config builder
+  - Add new default section
+  - Add `mongodb_host` key
+  - Update `general` section and set default values
+  - Bugfix: unable to perform e2e object detection
+  - Ignore site.conf in each micro-service
+  - Remove unused file
+  - add default dual_det_site_config (TBD)
+  - bugfix: add default `name` in the `node` section.
+  - bugfix: wrong L.warning() format
+  - bugfix: fix sender ZMQ uri and host
+  - only consider reading a single image
+  - add sample sender and receiver zeromq
+  - add `/data` into volume
+  - remove unused folder in container
+  - redis without password; update *.conf files
+  - updates: - add example to deploy redis database without password - each micro-service now is deployed with redis (no password)
+  - add `--runtime=nvidia` to enable GPU inside the container
+  - add section node
+  - bugfix: fix values
+  - bugfix: enable detection.conf to include site.conf file
+  - add `objdet:yolo` section
+  - update how to run container
+  - update how to run container
+  - change every console-level printing into log-level printing
+  - updates: - ignore any site.conf files - bugfix: unable to run local deployment
+  - update log
+  - change into warning level logs
+  - add sample log-level print
+  - remove unused console print
+  - refactor site.conf file locations
+  - bugfix: change into `localhost`
+  - bugfix: add linked contaienr
+  - bugfix: change linked contaienr
+  - Add example how to run
+  - Merge branch 'feature/EagleEYEv2.0/single-docker' of github.com:ardihikaru/eagleeye into feature/EagleEYEv2.0/single-docker
+  - create empty `config_files` folder
+  - disable copy. please mount it instead
+  - seperate docker files
+  - bugfix: naming issue
+  - allow broadcast into all network
+  - bugfix: manual definition
+  - bugfix: remove error
+  - update config
+  - update config
+  - Update config
+  - Update name
+  - Add initial zmq information
+  - Add initial zmq information
+  - update dockerfile and site.conf
+  - update mongodb information
+  - Add detailed mongodb information
+  - Add mongo information
+  - Add site.conf file (temp)
+  - Add excluded config file
+  - Remove exposed port
+  - Remove exposed port
+  - Add non-cv req file
+  - Add initial dockerfile
+  - Add initial dockerfile and non-cv req file
+  - remove unused codes
+  - bugfix: add blackslash
+  - bugfix: add blackslash
+  - bugfix: add blackslash
+  - Update build name
+  - Seperate dockerfile
+  - add general config file
+  - bugfix: wrong req file again
+  - bugfix: wrong req file
+  - add backslash
+  - fix tab
+  - bugfix (to be tested): dockerfile
+  - update dockerfile
+  - bugfix: remove sudo
+  - Finalize dockerfile script
+  - finalize Dockerfile script
+  - add update docker image name
+  - add dockerfile for the parent docker image
+  - bug fix & test with GPU enabled
+  - Add dockerfile
+  - Merge branch 'release/3.5-stable' into develop
+
 ## 3.5-stable (八月 20, 2020)
   - Merge branch 'feature/EagleEYEv1.5/graph-journal' into develop
   - Add grid to the plot; Enable latex plot format
