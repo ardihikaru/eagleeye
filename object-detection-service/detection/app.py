@@ -8,6 +8,14 @@ from detection.persistence_validation import PersistenceValidationModule
 from detection.algorithm import DetectionAlgorithmModule
 from ext_lib.utils import get_current_time
 from mongoengine import connect
+import logging
+
+###
+
+L = logging.getLogger(__name__)
+
+
+###
 
 
 class ObjectDetectionService(asab.Application):
@@ -17,9 +25,6 @@ class ObjectDetectionService(asab.Application):
 
 		# Set node alias
 		self.node_alias = "NODE-%s" % asab.Config["node"]["name"]
-
-		# Connect Database
-		connect('eagleeyeDB')
 
 		# Loading the web service module
 		self.add_module(asab.storage.Module)
@@ -36,10 +41,12 @@ class ObjectDetectionService(asab.Application):
 		self.DetectionAlgorithmService = self.get_service("detection.DetectionAlgorithmService")
 
 	async def initialize(self):
-		print("\n[%s][%s] Object Detection Service is running!" % (get_current_time(), self.node_alias))
+		# print("\n[%s][%s] Object Detection Service is running!" % (get_current_time(), self.node_alias))
+		L.warning("\n[%s][%s] Object Detection Service is running!" % (get_current_time(), self.node_alias))
 
 		# Start subscription
 		try:
 			await self.DetectionAlgorithmService.start_subscription()
 		except:
-			print("\n[%s][%s] This Object Detection Service has successfully stopped." % (get_current_time(), self.node_alias))
+			# print("\n[%s][%s] This Object Detection Service has successfully stopped." % (get_current_time(), self.node_alias))
+			L.warning("\n[%s][%s] This Object Detection Service has successfully stopped." % (get_current_time(), self.node_alias))

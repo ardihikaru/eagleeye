@@ -7,6 +7,14 @@ from scheduler.reader import ReaderModule
 from scheduler.latency_collector import LatencyCollectorModule
 from mongoengine import connect
 from ext_lib.utils import get_current_time
+import logging
+
+###
+
+L = logging.getLogger(__name__)
+
+
+###
 
 
 class SchedulerService(asab.Application):
@@ -14,9 +22,6 @@ class SchedulerService(asab.Application):
 	def __init__(self):
 		super().__init__()
 
-		# Connect Database
-		connect('eagleeyeDB')
-		
 		# Add reader module
 		self.add_module(LatencyCollectorModule)
 		self.add_module(SchedulingPolicyModule)
@@ -29,6 +34,7 @@ class SchedulerService(asab.Application):
 		self.ReaderService = self.get_service("scheduler.ReaderService")
 
 	async def initialize(self):
-		print("\n[%s] Scheduler Service is running!" % get_current_time())
+		# print("\n[%s] Scheduler Service is running!" % get_current_time())
+		L.warning("\n[%s] Scheduler Service is running!" % get_current_time())
 		# Start subscription
 		await self.ReaderService.start_subscription()

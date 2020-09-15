@@ -34,14 +34,22 @@ class ZMQService(asab.Service):
         self.node_info = data["data"]
         total = int(data["total"])
 
+        # zmq_uri = asab.Config["zmq"]["sender_uri"]
+        zmq_host = asab.Config["zmq"]["sender_host"]
+        # L.warning("ZMQ URI: %s" % zmq_uri)
+        # L.warning("ZMQ HOST: %s" % zmq_host)
+
         if is_success:
             # Builds ZMQ Senders
             for i in range(total):
-                uri = 'tcp://127.0.0.1:555' + str(self.node_info[i]["name"])
+                # uri = 'tcp://127.0.0.1:555' + str(self.node_info[i]["name"])
+                uri = 'tcp://%s:555' % zmq_host + str(self.node_info[i]["name"])
+                # L.warning(">> This Corrected ZMQ Uri: %s" % uri)
                 sender = imagezmq.ImageSender(connect_to=uri, REQ_REP=False)
                 self.zmq_sender.append(sender)
         else:
-            print("\n[%s] Forced to exit, since No Node are available!" % get_current_time())
+            # print("\n[%s] Forced to exit, since No Node are available!" % get_current_time())
+            L.warning("\n[%s] Forced to exit, since No Node are available!" % get_current_time())
             exit()
 
     def get_senders(self):
@@ -59,7 +67,8 @@ class ZMQService(asab.Service):
         zmq_id = str(frame_id) + "-" + str(t0_zmq)
         sender.send_image(zmq_id, frame)
         t1_zmq = (time.time() - t0_zmq) * 1000
-        print('Latency [Send imagezmq] of frame-%s: (%.5fms)' % (str(frame_id), t1_zmq))
+        # print('Latency [Send imagezmq] of frame-%s: (%.5fms)' % (str(frame_id), t1_zmq))
+        L.warning('Latency [Send imagezmq] of frame-%s: (%.5fms)' % (str(frame_id), t1_zmq))
         # TODO: Saving latency for scheduler:latency:sending_image_zmq
 
 

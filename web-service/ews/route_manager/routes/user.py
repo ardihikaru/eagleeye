@@ -49,7 +49,6 @@ async def index(request):
         return aiohttp.web.json_response(resp)
 
     if request.method == 'GET':
-        print(" --- GET HIT ..")
         params = request.rel_url.query
         resp = DataController().get_users(params)
         return aiohttp.web.json_response(resp)

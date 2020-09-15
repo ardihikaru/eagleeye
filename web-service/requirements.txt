@@ -9,10 +9,10 @@ simplejson
 redis
 motor
 imagezmq
-window_slider
 requests
 matplotlib
-opencv-python
 scipy
 seaborn
 requests
+window-slider
+opencv-python

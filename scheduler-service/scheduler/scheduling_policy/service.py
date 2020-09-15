@@ -95,7 +95,8 @@ class SchedulingPolicyService(asab.Service):
 
         t1_shm = time.time() - t0_shm
         # print('\nLatency [Creating shm variable] in: (%.5f ms)' % (t1_shm * 1000))
-        print('\nLatency [Creating Redis variable] in: (%.5f ms)' % (t1_shm * 1000))
+        # print('\nLatency [Creating Redis variable] in: (%.5f ms)' % (t1_shm * 1000))
+        L.warning('\nLatency [Creating Redis variable] in: (%.5f ms)' % (t1_shm * 1000))
 
         # # Testing stored data
         # for shm_node in self.avail_nodes:
@@ -124,17 +125,21 @@ class SchedulingPolicyService(asab.Service):
 
     async def round_robin(self):
         # print(" >>>> NOW self.selected_node_id:", self.selected_node_id)
-        print("I am using Round-Robin")
+        # print("I am using Round-Robin")
+        L.warning("I am using Round-Robin")
         self.selected_node_id += 1
 
         if self.selected_node_id >= self.max_node:
             self.selected_node_id = 0  # Reset
 
         # print("#### ***** check the status of selected node_id:")
+        L.warning("#### ***** checking the status of selected node_id:")
         t0_wait_node = time.time()
         await self._wait_until_ready(self.selected_node_id)
+        # self._wait_until_ready(self.selected_node_id)
         t1_wait_node = (time.time() - t0_wait_node) * 1000
-        print('\nLatency [Waiting node to be ready] in: (%.5f ms)' % t1_wait_node)
+        # print('\nLatency [Waiting node to be ready] in: (%.5f ms)' % t1_wait_node)
+        L.warning('\nLatency [Waiting node to be ready] in: (%.5f ms)' % t1_wait_node)
 
         # Set selected node as busy (idle=False); "0" == False
         # self.avail_nodes[self.selected_node_id]["idle"] = "0"
@@ -166,7 +171,9 @@ class SchedulingPolicyService(asab.Service):
         #         return bool(int(key_value[1]))
 
     async def _wait_until_ready(self, snode_id):
+    # def _wait_until_ready(self, snode_id):
         redis_key = self.avail_nodes[snode_id]["redis_key"]
+        # print(">>> redis_key:", redis_key)
         # print("### @@@@ _wait_until_ready ...", redis_get(self.rd.get_rc(), redis_key))
         # while not self.avail_nodes[snode_id]["idle"]:
         # while not self._get_idle_status(self.avail_nodes[snode_id]):

@@ -33,7 +33,8 @@ class ReaderHandler(MyRedis):
         # await self.ExtractorService.ZMQService.set_configurations()
         # print(">>>> SET ZMQ CONF FINISH")
 
-        print("\n[%s] ReaderHandler try to consume the published data" % get_current_time())
+        # print("\n[%s] ReaderHandler try to consume the published data" % get_current_time())
+        L.warning("\n[%s] ReaderHandler try to consume the published data" % get_current_time())
 
         # Scheduler-service will ONLY handle a single stream, once it starts, ignore other input stream
         # TODO: To allow capturing multiple video streams (Future work)
@@ -48,22 +49,25 @@ class ReaderHandler(MyRedis):
                 # TODO: To tag the corresponding drone_id to identify where the image came from (Future work)
                 config = pubsub_to_json(item["data"])
 
-                print(" >>> masuk lg nih ..")
+                # print(" >>> masuk lg nih ..")
 
                 # Run ONCE due to the current capability to capture only one video stream
                 # TODO: To allow capturing multiple video streams (Future work)
                 t0_data = config["timestamp"]
                 t1_data = (time.time() - t0_data) * 1000
-                print('\n #### [%s] Latency for Start threading (%.3f ms)' % (get_current_time(), t1_data))
+                # print('\n #### [%s] Latency for Start threading (%.3f ms)' % (get_current_time(), t1_data))
+                L.warning('\n #### [%s] Latency for Start threading (%.3f ms)' % (get_current_time(), t1_data))
                 # TODO: Saving latency for scheduler:consumer
 
-                print("Once data collected, try extracting data..")
+                # print("Once data collected, try extracting data..")
                 if config["stream"]:
                     await self.ExtractorService.extract_video_stream(config)
                 else:
                     await self.ExtractorService.extract_folder(config)
-                print("## No images can be captured for the time being.")
+                # print("## No images can be captured for the time being.")
+                L.warning("## No images can be captured for the time being.")
 
                 # TODO: To restart; This should be moved away in extract_video_stream() and extract_folder()
 
-        print("## System is no longer consuming data")
+        # print("## System is no longer consuming data")
+        L.warning("## System is no longer consuming data")

@@ -9,6 +9,14 @@ import time
 from ext_lib.utils import get_current_time
 from concurrent.futures import ThreadPoolExecutor
 import simplejson as json
+import logging
+
+###
+
+L = logging.getLogger(__name__)
+
+
+###
 
 
 class StreamReader:
@@ -22,7 +30,8 @@ class StreamReader:
         t0_validator = time.time()
         config = request_to_config(request_json)
         t1_validator = (time.time() - t0_validator) * 1000
-        print('[%s] Latency for Request Validation (%.3f ms)' % (get_current_time(), t1_validator))
+        # print('[%s] Latency for Request Validation (%.3f ms)' % (get_current_time(), t1_validator))
+        L.warning('[%s] Latency for Request Validation (%.3f ms)' % (get_current_time(), t1_validator))
 
         # send data into Scheduler service through the pub/sub
         t0_publish = time.time()
@@ -33,10 +42,12 @@ class StreamReader:
         t1_publish = (time.time() - t0_publish) * 1000
         config.pop("timestamp")  # removed, since it is a temporary key
         # TODO: Saving latency for scheduler:producer
-        print('[%s] Latency for Publishing data (%.3f ms)' % (get_current_time(), t1_publish))
+        # print('[%s] Latency for Publishing data (%.3f ms)' % (get_current_time(), t1_publish))
+        L.warning('[%s] Latency for Publishing data (%.3f ms)' % (get_current_time(), t1_publish))
 
         # save input into mongoDB through thread process
-        print("# save input into mongoDB through thread process")
+        # print("# save input into mongoDB through thread process")
+        L.warning("# save input into mongoDB through thread process")
         config_to_mongodb(self.executor, config)
 
         # t0_request_saving = time.time()
