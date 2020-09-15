@@ -28,6 +28,15 @@ from libs.addons.redis.translator import redis_set, redis_get
 from redis import StrictRedis
 import json
 from libs.settings import common_settings
+import logging
+
+###
+
+L = logging.getLogger(__name__)
+
+
+###
+
 
 rc_data = StrictRedis(
             host=common_settings["redis_config"]["hostname"],
@@ -58,7 +67,8 @@ for item in pub_sub.listen():
     # print("data: ", type(data))
     # if "data" in item["data"] == 1:
     if isinstance(item["data"], int):
-        print("lewati ..")
+        # print("lewati ..")
+        pass
     else:
         counter += 1
 
@@ -66,15 +76,13 @@ for item in pub_sub.listen():
             t0 = time.time()
             # t_now = t0
 
-        print(" ... masuk sini @ ", counter)
         try:
-            print(" .... DAPET GAK YAA")
             image_name, image = image_hub.recv_image()
-            print(" ..... DAPET nih..")
 
             # TO DO HERE ...
         except Exception as e:
-            print("ada error ..", e)
+            L.error("[ERROR] receive.py: %s" % str(e))
+            # print("ada error ..", e)
 
         # t0 = time.time()
         # t_recv = t0 - float(image_name)
@@ -86,8 +94,9 @@ for item in pub_sub.listen():
         t_now = time.time()
         t_recv = t_now - t0
 
-        print(">>>>> time t_now=%s vs t0=%s vs t_recv=%s: " % (str(t_now), str(t0), str(t_recv)))
-        print(".. [%d] Received image (1920 x 1080) in (%.7fs)" % (id, t_recv))
+        # print(">>>>> time t_now=%s vs t0=%s vs t_recv=%s: " % (str(t_now), str(t0), str(t_recv)))
+        # print(".. [%d] Received image (1920 x 1080) in (%.7fs)" % (id, t_recv))
+        L.warning(".. [%d] Received image (1920 x 1080) in (%.7fs)" % (id, t_recv))
 
         t0 = t_now
         # if counter > 0:
@@ -122,7 +131,8 @@ for item in pub_sub.listen():
         # redis_set(rc_data, ch_recv_sign, True)
         id += 1
 
-print("Finished listening")
+# print("Finished listening")
+L.warning("Finished listening")
 
     # if int(item["data"]) == 1:
     #     continue

@@ -63,11 +63,13 @@ class YOLOv3Handler(MyRedis):
 
     async def set_configuration(self):
         # Initialize YOLOv3 configuration
-        print("\n[%s][%s] Initialize YOLOv3 configuration" % (get_current_time(), self.node_alias))
+        # print("\n[%s][%s] Initialize YOLOv3 configuration" % (get_current_time(), self.node_alias))
+        L.warning("\n[%s][%s] Initialize YOLOv3 configuration" % (get_current_time(), self.node_alias))
 
     async def set_deployment_status(self):
         """ To change Field `pid` from -1 into this process's PID """
-        print("\n[%s][%s] Updating PID information" % (get_current_time(), self.node_alias))
+        # print("\n[%s][%s] Updating PID information" % (get_current_time(), self.node_alias))
+        L.warning("\n[%s][%s] Updating PID information" % (get_current_time(), self.node_alias))
 
         # Update Node information: `channel` and `pid`
         await self.DetectionAlgorithmService.update_node_information(self.node_id, self.pid)
@@ -77,7 +79,8 @@ class YOLOv3Handler(MyRedis):
         await self.DetectionAlgorithmService.set_zmq_configurations(self.node_name, self.node_id)
 
     async def stop(self):
-        print("\n[%s][%s] Object Detection Service is going to stop" % (get_current_time(), self.node_alias))
+        # print("\n[%s][%s] Object Detection Service is going to stop" % (get_current_time(), self.node_alias))
+        L.warning("\n[%s][%s] Object Detection Service is going to stop" % (get_current_time(), self.node_alias))
 
         # Delete Node
         # await self.DetectionAlgorithmService.delete_node_information(asab.Config["node"]["id"])
@@ -98,7 +101,9 @@ class YOLOv3Handler(MyRedis):
 
     async def start(self):
         channel = "node-" + self.node_id
-        print("\n[%s][%s] YOLOv3Handler try to subsscribe to channel `%s` from [Scheduler Service]" %
+        # print("\n[%s][%s] YOLOv3Handler try to subsscribe to channel `%s` from [Scheduler Service]" %
+        #       (get_current_time(), self.node_alias, channel))
+        L.warning("\n[%s][%s] YOLOv3Handler try to subsscribe to channel `%s` from [Scheduler Service]" %
               (get_current_time(), self.node_alias, channel))
 
         # set params to store tmp latency data
@@ -119,7 +124,9 @@ class YOLOv3Handler(MyRedis):
         consumer.subscribe([channel])
         for item in consumer.listen():
             if isinstance(item["data"], int):
-                print("\n[%s][%s] YOLOv3Handler start listening to [Scheduler Service]" %
+                # print("\n[%s][%s] YOLOv3Handler start listening to [Scheduler Service]" %
+                #       (get_current_time(), self.node_alias))
+                L.warning("\n[%s][%s] YOLOv3Handler start listening to [Scheduler Service]" %
                       (get_current_time(), self.node_alias))
             else:
                 # TODO: To tag the corresponding drone_id to identify where the image came from (Future work)
@@ -143,7 +150,9 @@ class YOLOv3Handler(MyRedis):
                 # if not image_info["active"]:
                 if redis_get(self.rc, channel) is not None:
                     self.rc.delete(channel)
-                    print("\n[%s][%s] Forced to exit the Object Detection Service" %
+                    # print("\n[%s][%s] Forced to exit the Object Detection Service" %
+                    #       (get_current_time(), self.node_alias))
+                    L.warning("\n[%s][%s] Forced to exit the Object Detection Service" %
                           (get_current_time(), self.node_alias))
                     await self.stop()
                     break
@@ -154,7 +163,8 @@ class YOLOv3Handler(MyRedis):
                 is_success, frame_id, t0_zmq, img = await self.DetectionAlgorithmService.get_img()
                 # print(">>>> RECEIVED DATA:", is_success, frame_id, t0_zmq, img.shape)
                 t1_zmq = (time.time() - t0_zmq) * 1000  # TODO: This is still INVALID! it got mixed up with Det latency!
-                print('\n[%s] Latency for Receiving Image ZMQ (%.3f ms)' % (get_current_time(), t1_zmq))
+                # print('\n[%s] Latency for Receiving Image ZMQ (%.3f ms)' % (get_current_time(), t1_zmq))
+                L.warning('\n[%s] Latency for Receiving Image ZMQ (%.3f ms)' % (get_current_time(), t1_zmq))
                 # TODO: To save latency into ElasticSearchDB (Future work)
 
                 # BUG FIX: Start t0 e2e frame from here (later on, PLUS with `t1_zmq` latency)
@@ -174,11 +184,13 @@ class YOLOv3Handler(MyRedis):
 
                 # Performing Candidate Selection Algorithm, if enabled
                 if self.cs_enabled and det is not None:
-                    print("***** [%s] Performing Candidate Selection Algorithm" % self.node_alias)
+                    # print("***** [%s] Performing Candidate Selection Algorithm" % self.node_alias)
+                    L.warning("***** [%s] Performing Candidate Selection Algorithm" % self.node_alias)
                     t0_cs = time.time()
                     mbbox_data = await self.CandidateSelectionService.calc_mbbox(bbox_data, det, names, h, w, c)
                     t1_cs = (time.time() - t0_cs) * 1000
-                    print('\n[%s] Latency of Candidate Selection Algo. (%.3f ms)' % (get_current_time(), t1_cs))
+                    # print('\n[%s] Latency of Candidate Selection Algo. (%.3f ms)' % (get_current_time(), t1_cs))
+                    L.warning('\n[%s] Latency of Candidate Selection Algo. (%.3f ms)' % (get_current_time(), t1_cs))
                     # print(" >>>>> mbbox_data:", mbbox_data)
 
                     # build & submit latency data: PiH Candidate Selection
@@ -187,7 +199,8 @@ class YOLOv3Handler(MyRedis):
 
                     # Performing Persistence Validation Algorithm, if enabled
                     if self.pv_enabled and len(mbbox_data) > 0:
-                        print("***** [%s] Performing Persistence Validation Algorithm" % self.node_alias)
+                        # print("***** [%s] Performing Persistence Validation Algorithm" % self.node_alias)
+                        L.warning("***** [%s] Performing Persistence Validation Algorithm" % self.node_alias)
 
                         # Increment PiH candidates
                         self.total_pih_candidates += 1
@@ -200,7 +213,9 @@ class YOLOv3Handler(MyRedis):
                                                                                      self.period_pih_candidates)
                         await self._maintaince_period_pih_cand()
                         t1_pv = (time.time() - t0_pv) * 1000
-                        print('\n[%s] Latency of Persistence Detection Algorithm (%.3f ms)' %
+                        # print('\n[%s] Latency of Persistence Detection Algorithm (%.3f ms)' %
+                        #       (get_current_time(), t1_pv))
+                        L.warning('\n[%s] Latency of Persistence Detection Algorithm (%.3f ms)' %
                               (get_current_time(), t1_pv))
 
                         # build & submit latency data: PiH Persistence Validation
@@ -211,12 +226,15 @@ class YOLOv3Handler(MyRedis):
                         label = asab.Config["bbox_config"]["pih_label"]
                         det_status = label + " object FOUND"
 
-                    print("\n[%s][%s]Frame-%s label=[%s], det_status=[%s]" %
-                          (get_current_time(), self.node_alias, str(frame_id), label, det_status))
+                    # print("\n[%s][%s]Frame-%s label=[%s], det_status=[%s]" %
+                    #       (get_current_time(), self.node_alias, str(frame_id), label, det_status))
+                    L.warning("\n[%s][%s]Frame-%s label=[%s], det_status=[%s]" %
+                              (get_current_time(), self.node_alias, str(frame_id), label, det_status))
 
                 # If enable visualizer, send the bbox into the Visualizer Service
                 if self.cv_out:
-                    print("\n[%s][%s] SENDING BBox INTO Visualizer Service!" % (get_current_time(), self.node_alias))
+                    # print("\n[%s][%s] SENDING BBox INTO Visualizer Service!" % (get_current_time(), self.node_alias))
+                    L.warning("\n[%s][%s] SENDING BBox INTO Visualizer Service!" % (get_current_time(), self.node_alias))
 
                 # Set this node as available again
                 redis_set(self.rc, redis_key, True)
@@ -231,9 +249,12 @@ class YOLOv3Handler(MyRedis):
                 #     t_start = t1_e2e_latency
                 await self._store_e2e_latency(str(frame_id), t1_e2e_latency)
 
-            print("\n[%s] Node-%s is ready to serve." % (get_current_time(), self.node_name))
+            # print("\n[%s] Node-%s is ready to serve." % (get_current_time(), self.node_name))
+            L.warning("\n[%s] Node-%s is ready to serve." % (get_current_time(), self.node_name))
 
-        print("\n[%s][%s] YOLOv3Handler stopped listening to [Scheduler Service]" %
+        # print("\n[%s][%s] YOLOv3Handler stopped listening to [Scheduler Service]" %
+        #       (get_current_time(), self.node_alias))
+        L.warning("\n[%s][%s] YOLOv3Handler stopped listening to [Scheduler Service]" %
               (get_current_time(), self.node_alias))
         # Call stop function since it no longers listening
         await self.stop()
@@ -242,7 +263,8 @@ class YOLOv3Handler(MyRedis):
         # t0_e2e_latency = await self._get_t0_e2e_latency(frame_id)  # BUG Calculation here!
         # t1_e2e_latency = (time.time() - t0_e2e_latency) * 1000
         # t1_e2e_latency = (t1_e2e_latency - t0_e2e_latency) * 1000
-        print('[%s] E2E Latency of frame-%s (%.3f ms)' % (get_current_time(), frame_id, t1_e2e_latency))
+        # print('[%s] E2E Latency of frame-%s (%.3f ms)' % (get_current_time(), frame_id, t1_e2e_latency))
+        L.warning('[%s] E2E Latency of frame-%s (%.3f ms)' % (get_current_time(), frame_id, t1_e2e_latency))
         # TODO: TO save latency into ElasticSearchDB
 
         # build & submit latency data: E2E Latency
@@ -258,7 +280,8 @@ class YOLOv3Handler(MyRedis):
         while redis_get(self.rc, e2e_lat_key) is None:
             continue
         t1_e2e_waiting = (time.time() - t0_e2e_waiting) * 1000
-        print('\n[%s] Latency for waiting redis key e2e latency (%.3f ms)' % (get_current_time(), t1_e2e_waiting))
+        # print('\n[%s] Latency for waiting redis key e2e latency (%.3f ms)' % (get_current_time(), t1_e2e_waiting))
+        L.warning('\n[%s] Latency for waiting redis key e2e latency (%.3f ms)' % (get_current_time(), t1_e2e_waiting))
 
         return redis_get(self.rc, e2e_lat_key)
 
@@ -278,7 +301,8 @@ class YOLOv3Handler(MyRedis):
         if not await self.LatCollectorService.store_latency_data_thread(preproc_latency_data):
             await self.stop()
         t1_preproc = (time.time() - t0_preproc) * 1000
-        print('\n[%s] Proc. Latency of %s (%.3f ms)' % (get_current_time(), section, t1_preproc))
+        # print('\n[%s] Proc. Latency of %s (%.3f ms)' % (get_current_time(), section, t1_preproc))
+        L.warning('\n[%s] Proc. Latency of %s (%.3f ms)' % (get_current_time(), section, t1_preproc))
 
     async def _maintaince_period_pih_cand(self):
         if len(self.period_pih_candidates) > self.persistence_window:

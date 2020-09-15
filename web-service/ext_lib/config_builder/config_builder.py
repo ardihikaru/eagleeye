@@ -1,3 +1,4 @@
+import asab
 import configparser
 
 
@@ -8,71 +9,55 @@ class ConfigBuilder:
 
 	def set_default_redis_conf(self):
 		self.config["redis"] = {
-			"hostname": "localhost",
-			"port": "6379",
-			"password": "bismillah",
-			"db": "0"
+			"hostname": asab.Config["redis"]["hostname"],
+			# "port": "6379",
+			"password": asab.Config["redis"]["password"],
+			# "db": "0"
 		}
 
 	def set_default_mongodb_conf(self):
 		self.config["asab:storage"] = {
-			"type": "mongodb",
-			"mongodb_database": "eagleeyeDB",
-			"mongodb_uri": "mongodb://localhost:27017"
+			# "type": "mongodb",
+			# "mongodb_database": "eagleeyeDB",
+			"mongodb_uri": "mongodb://%s:27017" % asab.Config["asab:storage"]["mongodb_host"],
+			"mongodb_host": asab.Config["asab:storage"]["mongodb_host"]
 		}
 
-	# def set_default_pubsub_channel_conf(self, node_id=""):
-	# 	self.config["pubsub:channel"] = {
-	# 		"scheduler": "scheduler",
-	# 		"node": "node-"+node_id
-	# 		# "mongodb_uri": "mongodb://localhost:27017"
-	# 	}
-
-	# def set_default_yolov3_conf(self, cand_sel=False, pers_val=False):
 	def set_default_yolov3_conf(self):
-		# if cand_sel:
-		# 	cand_sel = "1"
-		# else:
-		# 	cand_sel = "0"
-		# if pers_val:
-		# 	pers_val = "1"
-		# else:
-		# 	pers_val = "0"
 		self.config["objdet:yolo"] = {
-			"output": "outputs/",
-			"source_folder_prefix": "out",
-			"file_ext": ".png",
+			# "output": "outputs/",
+			"output": asab.Config["objdet:yolo"]["output"],
+			# "source_folder_prefix": "out",
+			# "file_ext": ".png",
 
-			"dump_raw_img": "0",
-			"dump_bbox_img": "0",
-			"dump_crop_img": "0",
-			"save_txt": "0",
-			"txt_format": "cartucho",
+			# "dump_raw_img": "0",
+			# "dump_bbox_img": "0",
+			# "dump_crop_img": "0",
+			# "save_txt": "0",
+			# "txt_format": "cartucho",
 
-			"agnostic_nms": "1",
-			"half": "0",
-			# "img_size": "416",
-			"img_size": "608",
-			"device": "",
-			"conf_thres": "0.1",
-			"iou_thres": "0.1",
+			# "agnostic_nms": "1",
+			# "half": "0",
+			# "img_size": "608",
+			# "device": "",
+			# "conf_thres": "0.1",
+
+			# # It is not used
+			# "iou_thres": "0.1",
 			# "classes": "+",
-			"names": "../object-detection-service/config_files/yolo/data/coco.names",
-			"cfg": "../object-detection-service/config_files/yolo/cfg/yolo-obj-v5.cfg",
-			# "cfg": "../object-detection-service/config_files/yolo/cfg/yolov3.cfg",
-			# "weights": "../object-detection-service/config_files/yolo/weights/yolov3.weights",
-			# "weights": "../object-detection-service/config_files/yolo/weights/TM-06.weights",
-			"weights": "../object-detection-service/config_files/yolo/weights/TW-01.weights",
 
+			"names": asab.Config["objdet:yolo"]["names"],
+			"cfg": asab.Config["objdet:yolo"]["cfg"],
+			"weights": asab.Config["objdet:yolo"]["weights"],
 
 			# Extra algorithms in EageleEYE
 			# "candidate_selection": cand_sel,
 			# "persistence_validation": pers_val,
 
-			"auto_restart": "1",
-			"cv_out": "1",
-			"window_size_height": "1920",
-			"window_size_width": "1080"
+			# "auto_restart": "1",
+			# "cv_out": "1",
+			# "window_size_height": "1920",
+			# "window_size_width": "1080"
 		}
 
 	def set_custom_conf(self, key, items):

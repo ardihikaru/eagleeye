@@ -1,0 +1,7 @@
+asab
+redis
+mongoengine
+imutils
+simplejson
+imagezmq
+requests

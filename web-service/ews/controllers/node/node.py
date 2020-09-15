@@ -18,7 +18,14 @@ from concurrent.futures import ThreadPoolExecutor
 import os
 import signal
 import simplejson as json
+import logging
 
+###
+
+L = logging.getLogger(__name__)
+
+
+###
 
 class Node(MyRedis):
     def __init__(self):
@@ -35,39 +42,57 @@ class Node(MyRedis):
         # Make config file according to this file
         # print(" #### node_data:", node_data)
         builder = ConfigBuilder()
-        builder.set_config_path("./../object-detection-service/etc/detection.conf")
+        # builder.set_config_path("./../object-detection-service/etc/detection.conf")
+        builder.set_config_path(asab.Config["config:builder"]["path"])
+
         builder.set_default_redis_conf()
         builder.set_default_mongodb_conf()
         # builder.set_default_pubsub_channel_conf(node_id=str(node_data["id"]))
         builder.set_default_yolov3_conf()
 
         # Add extra information to the accessable API
-        root_api = asab.Config["eagleeye:api"]["api_uri"]
+        # root_api = asab.Config["eagleeye:api"]["api_uri"]
+        ews_host = asab.Config["eagleeye:api"]["ews_host"]
         builder.set_custom_conf("eagleeye:api",
                                 {
-                                    "node": root_api + "nodes",
-                                    "latency": root_api + "latency"
+                                    "node": "http://%s:8080/api/%s" % (ews_host, "nodes"),
+                                    "latency": "http://%s:8080/api/%s" % (ews_host, "latency")
                                 })
 
-        builder.set_custom_conf("node", node_data)
-        builder.set_custom_conf("thread", {"num_executor": "1"})
-        builder.set_custom_conf("bbox_config",
+        # builder.set_custom_conf("node", node_data)
+        builder.set_custom_conf("node",
                                 {
-                                    "pih_label_cand": "PiH",
-                                    "pih_label": "PiH",
-                                    "pih_color": "[198, 50, 13]",  # PiH bbox color: Blue
-                                    "person_color": "[191, 96, 165]",  # Person bbox color: Purple
-                                    "flag_color": "[100, 188, 70]"  # Flag bbox color: Green
+                                    "id": node_data["id"],
+                                    "name": node_data["name"],
+                                    "candidate_selection": node_data["candidate_selection"],
+                                    "persistence_validation": node_data["persistence_validation"]
                                 })
+
+        # builder.set_custom_conf("thread", {"num_executor": "1"})
+
+        # TODO: Should be loaded from DB instead
+        # Set `bbox_config` section
+        # builder.set_custom_conf("bbox_config",
+        #                         {
+        #                             "pih_label_cand": "PiH",
+        #                             "pih_label": "PiH",
+        #                             "pih_color": "[198, 50, 13]",  # PiH bbox color: Blue
+        #                             "person_color": "[191, 96, 165]",  # Person bbox color: Purple
+        #                             "flag_color": "[100, 188, 70]"  # Flag bbox color: Green
+        #                         })
+
         # TODO: We need a function to dynamically set the Node URI
+        zmq_uri = asab.Config["zmq"]["sender_uri"]
         builder.set_custom_conf("zmq", {
-            "node_uri": "tcp://127.0.0.1:555" + str(node_data["name"]),  # TODO: Need to be dynamic!
-            "node_channel": "node-" + str(node_data["id"]) + "-zmq"
+            "sender_uri": "tcp://%s:555" % zmq_uri + str(node_data["name"]),
         })
-        builder.set_custom_conf("persistence_detection", {
-            "persistence_window": 10,
-            "tolerance_limit_percentage": 0.3
-        })
+
+        # TODO: Should be loaded from DB instead
+        # builder.set_custom_conf("persistence_detection", {
+        #     "persistence_window": 10,
+        #     "tolerance_limit_percentage": 0.3
+        # })
+
         builder.create_config()
 
         # [2020-08-19] Bug: For some reason, auto-deployment with a subprocess creates two issues:
@@ -79,15 +104,17 @@ class Node(MyRedis):
         # TODO: Once orchestrated with k8s, we no longer use Popen to Deploy each node (Future work)
         # process = Popen('python ./../object-detection-service/detection.py -c ./../object-detection-service/etc/detection.conf', shell=True)
 
-        # send data into Scheduler service through the pub/sub
-        t0_publish = time.time()
-        # print("# send data into Scheduler service through the pub/sub")
-        dump_request = json.dumps(node_data)
-        pub(self.get_rc(), asab.Config["pubsub:channel"]["node"], dump_request)
-        t1_publish = (time.time() - t0_publish) * 1000
-        # TODO: Saving latency for scheduler:producer
-        print('[%s] Latency for Publishing data into Object Detection Service (%.3f ms)' %
-              (get_current_time(), t1_publish))
+        # # send data into Scheduler service through the pub/sub
+        # t0_publish = time.time()
+        # # print("# send data into Scheduler service through the pub/sub")
+        # dump_request = json.dumps(node_data)
+        # pub(self.get_rc(), asab.Config["pubsub:channel"]["node"], dump_request)
+        # t1_publish = (time.time() - t0_publish) * 1000
+        # # TODO: Saving latency for scheduler:producer
+        # # print('[%s] Latency for Publishing data into Object Detection Service (%.3f ms)' %
+        # #       (get_current_time(), t1_publish))
+        # L.warning('[%s] Latency for Publishing data into Object Detection Service (%.3f ms)' %
+        #           (get_current_time(), t1_publish))
 
     def _node_generator(self, node_data):
         t0_thread = time.time()
@@ -101,7 +128,8 @@ class Node(MyRedis):
         except:
             print("\n[%s] Somehow we unable to Start the Thread of NodeGenerator" % get_current_time())
         t1_thread = (time.time() - t0_thread) * 1000
-        print('\n[%s] Latency for Start threading (%.3f ms)' % (get_current_time(), t1_thread))
+        # print('\n[%s] Latency for Start threading (%.3f ms)' % (get_current_time(), t1_thread))
+        L.warning('\n[%s] Latency for Start threading (%.3f ms)' % (get_current_time(), t1_thread))
 
         # TODO: Save the latency into ElasticSearchDB for the real-time monitoring
 
@@ -119,6 +147,17 @@ class Node(MyRedis):
         redis_set(self.rc, key, new_node_id)
 
         return new_node_id
+
+    def _update_available_nodes(self, is_add=True):
+        # Get total nodes
+        total_nodes = redis_get(self.rc, asab.Config["redis"]["total_worker_key"])
+        if is_add:
+            total_nodes += 1
+        else:
+            total_nodes -= 1
+
+        # Store new value
+        redis_set(self.rc, asab.Config["redis"]["total_worker_key"], total_nodes)
 
     def register(self, node_data):
         msg = "Registration of a new Node is success."
@@ -139,7 +178,13 @@ class Node(MyRedis):
         # TODO: When inserting a new Node succeed, it should spawn an Object Detection module.
         # TODO: To spawn YOLOv3 Module
         if is_success:
-            # TODO: Once spwaned, Field `pid` should be updated.
+            # Update `node-channel`
+            new_node_info = {"channel": "node-%s" % inserted_data["id"]}
+            self.update_data_by_id(inserted_data["id"], new_node_info)
+
+            # Update total available nodes
+            self._update_available_nodes()
+
             node_data["id"] = inserted_data["id"]
             node_data["idle"] = inserted_data["idle"]
 
@@ -187,6 +232,12 @@ class Node(MyRedis):
 
     def delete_data_by_id_one(self, _id):
         is_success, msg = del_data_by_id(NodeModel, _id, self.rc)
+
+        # Update total available nodes
+        if is_success:
+            # Decrease
+            self._update_available_nodes(is_add=False)
+
         return get_json_template(is_success, {}, -1, msg)
 
     def update_data_by_id(self, _id, json_data):

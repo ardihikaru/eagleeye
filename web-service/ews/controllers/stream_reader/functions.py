@@ -61,26 +61,30 @@ def config_to_mongodb(executor, request_json):
 	except:
 		print("Somehow we unable to Start the Thread of TaskScheduler")
 	t1_thread = (time.time() - t0_thread) * 1000
-	print('\n #### [%s] Latency for Start threading (%.3f ms)' % (get_current_time(), t1_thread))
+	# print('\n #### [%s] Latency for Start threading (%.3f ms)' % (get_current_time(), t1_thread))
+	L.warning('\n #### [%s] Latency for Start threading (%.3f ms)' % (get_current_time(), t1_thread))
 
 	# TODO: Save the latency into ElasticSearchDB for the real-time monitoring
 
 
 def threaded_insertion(pool_name, request_json):
-	print(" \n @@@@ threaded_task_scheduler-%s" % pool_name)
+	# print(" \n @@@@ threaded_task_scheduler-%s" % pool_name)
+	L.warning(" \n @@@@ threaded_task_scheduler-%s" % pool_name)
 
 	t0_saving_mongo = time.time()
-	print("> >>>> request_json:", request_json)
+	# print("> >>>> request_json:", request_json)
 	is_success, config_data, msg = insert_new_data(ConfigModel, request_json)
-	print(" >>>> ", is_success, config_data, msg)
+	# print(" >>>> ", is_success, config_data, msg)
 	t1_saving_mongo = (time.time() - t0_saving_mongo) * 1000
-	print('[%s] Latency for Saving data into MongoDB (%.3f ms)' % (get_current_time(), t1_saving_mongo))
+	# print('[%s] Latency for Saving data into MongoDB (%.3f ms)' % (get_current_time(), t1_saving_mongo))
+	L.warning('[%s] Latency for Saving data into MongoDB (%.3f ms)' % (get_current_time(), t1_saving_mongo))
 
 	# This is an optional; ONLY for testing purpose! Comment this part later please
 	t0_deleting_mongo = time.time()
 	_, _ = del_data_by_id(ConfigModel, config_data["id"])
 	t1_deleting_mongo = (time.time() - t0_deleting_mongo) * 1000
-	print('[%s] Latency for Deleting data into MongoDB (%.3f ms)' % (get_current_time(), t1_deleting_mongo))
+	# print('[%s] Latency for Deleting data into MongoDB (%.3f ms)' % (get_current_time(), t1_deleting_mongo))
+	L.warning('[%s] Latency for Deleting data into MongoDB (%.3f ms)' % (get_current_time(), t1_deleting_mongo))
 	# time.sleep(5)
 	# print(" -- coming back after sleeping in 5 secs ..")
 

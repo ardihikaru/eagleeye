@@ -4,9 +4,17 @@ import asab.web.rest
 import asab.web.session
 from ews.route_manager import RouteManagerModule
 from ext_lib.redis.my_redis import MyRedis
+from ext_lib.redis.translator import redis_set
 from mongoengine import connect
 from mongoengine.connection import _get_db
+import logging
 
+###
+
+L = logging.getLogger(__name__)
+
+
+###
 
 class EagleEYEWebService(asab.Application):
 
@@ -14,11 +22,14 @@ class EagleEYEWebService(asab.Application):
 		super().__init__()
 
 		# Connect Database
-		connect('eagleeyeDB')
+		connect('eagleeyeDB', host=asab.Config["asab:storage"]["mongodb_host"])
 
 		# Delete all keys in redis as the application runs
 		redis = MyRedis(asab.Config)
 		redis.delete_all_keys()
+
+		# Add initial total active worker nodes
+		redis_set(redis.get_rc(), asab.Config["redis"]["total_worker_key"], 0)
 
 		# Drop Collection: `Configs`, `Nodes` and `Latency`
 		db = _get_db()
@@ -31,4 +42,4 @@ class EagleEYEWebService(asab.Application):
 		self.add_module(RouteManagerModule)
 
 	async def initialize(self):
-		print("EagleEYE Web Service is running!")
+		L.warning("EagleEYE Web Service is running!")

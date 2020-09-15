@@ -25,7 +25,8 @@ class ResizerService(asab.Service):
         self.half = int(asab.Config["objdet:yolo"]["half"])
 
     async def cpu_convert_to_padded_size(self, img):
-        print("#### I am a CPU-based resizer function from ResizerService!")
+        # print("#### I am a CPU-based resizer function from ResizerService!")
+        L.warning("#### I am a CPU-based resizer function from ResizerService!")
 
         # Padded resize
         t0_padded = time.time()
@@ -46,6 +47,7 @@ class ResizerService(asab.Service):
         return img4yolo
 
     async def gpu_convert_to_padded_size(self, img):
-        print("#### I am a GPU-based resizer function from ResizerService!")
+        # print("#### I am a GPU-based resizer function from ResizerService!")
+        L.warning("#### I am a GPU-based resizer function from ResizerService!")
 
         return img
