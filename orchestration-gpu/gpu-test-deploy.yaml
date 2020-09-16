@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: gpu-pod
+spec:
+  restartPolicy: OnFailure
+  containers:
+    - name: k8s-gpu-test
+      image: chrstnhntschl/gpu_burn:latest
+      resources:
+        limits:
+          nvidia.com/gpu: 1

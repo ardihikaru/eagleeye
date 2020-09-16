@@ -1,5 +1,5 @@
 # Script: Generate the necessary ConfigMap file for K8S
-# Date  : 09/11/2020
+# Date  : 09/16/2020
 # Author: Tim William
 
 #!/bin/bash
@@ -14,3 +14,5 @@ kubectl create configmap ee-ews-cfg --from-file ./config/ews/ews.conf --from-fil
 kubectl create configmap ee-scheduler-cfg --from-file ./config/scheduler/scheduler.conf --from-file ./config/scheduler/site.conf
 # 3. ee-detection-cfg
 kubectl create configmap ee-detection-cfg --from-file ./config/detection/detection.conf --from-file ./config/detection/site.conf
+# 4. ee-ews-dual-det-cfg
+kubectl create configmap ee-ews-dual-det-cfg --from-file ./config/ews-dual-det/site.conf

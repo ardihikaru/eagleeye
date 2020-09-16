@@ -95,6 +95,9 @@ spec:
         - name: ee-ews-cfg
           configMap:
             name: ee-ews-cfg
+        - name: ee-ews-dual-det-cfg
+          configMap:
+            name: ee-ews-dual-det-cfg
         - name: vol-ews-conf
           emptyDir: {}
         - name: vol-site-conf
@@ -110,10 +113,13 @@ spec:
               # - name: vol-site-conf
               #mountPath: /conf/
             - name: ee-ews-cfg
-              mountPath: /conf/ews.conf
+              mountPath: /conf/ews/ews.conf
               subPath: ews.conf
             - name: ee-ews-cfg
-              mountPath: /conf/site.conf
+              mountPath: /conf/ews/site.conf
+              subPath: site.conf
+            - name: ee-ews-dual-det-cfg
+              mountPath: /conf/dual-det/site.conf
               subPath: site.conf
 
 ---
@@ -153,10 +159,10 @@ spec:
             - containerPort: 5551
           volumeMounts:
             - name: ee-scheduler-cfg
-              mountPath: /conf/site.conf
+              mountPath: /conf/scheduler/site.conf
               subPath: site.conf
             - name: ee-scheduler-cfg
-              mountPath: /conf/scheduler.conf
+              mountPath: /conf/scheduler/scheduler.conf
               subPath: scheduler.conf
             - name: vol-scheduler-data
               mountPath: /app/data
@@ -196,13 +202,15 @@ spec:
           image: 5g-dive/eagleeye/dual-object-detection-service:1.0
           volumeMounts:
             - name: ee-detection-cfg
-              mountPath: /conf/site.conf
+              mountPath: /conf/dual-det/site.conf
               subPath: site.conf
             - name: ee-detection-cfg
-              mountPath: /conf/detection.conf
+              mountPath: /conf/dual-det/detection.conf
               subPath: detection.conf
             - name: vol-detection-model
               mountPath: /app/config_files
+              #ports:
+              #- containerPort: 5551
 
 ---
 # Redis Service
@@ -264,9 +272,9 @@ kind: Service
 metadata:
   name: example-service
 spec:
-  selector:
-      name: scheduler-service
-      name: ews-service
+  #selector:
+  #name: scheduler-service
+  #name: ews-service
   type: ExternalName
   externalName: example.com
   ports:
@@ -278,8 +286,8 @@ kind: Service
 metadata:
   name: scheduler-stream-service
 spec:
-  selector:
-      name: scheduler-service
+    #selector:
+    #name: scheduler-stream-service
   ports:
     - name: rtmp
       protocol: TCP

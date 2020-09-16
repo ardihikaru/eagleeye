@@ -6,3 +6,4 @@
 kubectl delete configmap ee-ews-cfg
 kubectl delete configmap ee-scheduler-cfg
 kubectl delete configmap ee-detection-cfg
+kubectl delete configmap ee-ews-dual-det-cfg
