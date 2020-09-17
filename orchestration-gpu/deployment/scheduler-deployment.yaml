@@ -1,0 +1,43 @@
+# Scheduler
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scheduler-deploy
+  labels:
+    name: scheduler-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: scheduler-deploy
+  template:
+    metadata:
+      name: scheduler-deploy
+      labels:
+        name: scheduler-deploy
+    spec:
+      volumes:
+        - name: ee-scheduler-cfg
+          configMap:
+            name: ee-scheduler-cfg
+        - name: vol-scheduler-conf
+          emptyDir: {}
+        - name: vol-scheduler-data
+          hostPath:
+            # Update this hostPath setting as necessary !
+            path: /home/s010132/devel/eagleeye/data
+            type: Directory
+      containers:
+        - name: scheduler
+          image: timwilliam/eagleeye.scheduler:1.0
+          ports:
+            - containerPort: 5551
+          volumeMounts:
+            - name: ee-scheduler-cfg
+              mountPath: /conf/scheduler/site.conf
+              subPath: site.conf
+            - name: ee-scheduler-cfg
+              mountPath: /conf/scheduler/scheduler.conf
+              subPath: scheduler.conf
+            - name: vol-scheduler-data
+              mountPath: /app/data

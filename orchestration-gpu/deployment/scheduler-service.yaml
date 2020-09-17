@@ -1,0 +1,11 @@
+# Scheduler Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: scheduler-service
+spec:
+  selector:
+    name: scheduler-deploy
+  ports:
+  - port: 5551
+    targetPort: 5551

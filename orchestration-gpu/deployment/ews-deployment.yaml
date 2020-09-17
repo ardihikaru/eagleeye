@@ -1,0 +1,48 @@
+# EWS
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ews-deploy
+  labels:
+    name: ews-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: ews-deploy
+  template:
+    metadata:
+      name: ews-deploy
+      labels:
+        name: ews-deploy
+    spec:
+      volumes:
+        - name: ee-ews-cfg
+          configMap:
+            name: ee-ews-cfg
+        - name: ee-ews-dual-det-cfg
+          configMap:
+            name: ee-ews-dual-det-cfg
+        - name: vol-ews-conf
+          emptyDir: {}
+        - name: vol-site-conf
+          emptyDir: {}
+      containers:
+        - name: ews 
+          image: timwilliam/eagleeye.webservice:1.0
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+              #- name: vol-ews-conf
+              #mountPath: /conf/
+              # - name: vol-site-conf
+              #mountPath: /conf/
+            - name: ee-ews-cfg
+              mountPath: /conf/ews/ews.conf
+              subPath: ews.conf
+            - name: ee-ews-cfg
+              mountPath: /conf/ews/site.conf
+              subPath: site.conf
+            - name: ee-ews-dual-det-cfg
+              mountPath: /conf/dual-det/site.conf
+              subPath: site.conf
