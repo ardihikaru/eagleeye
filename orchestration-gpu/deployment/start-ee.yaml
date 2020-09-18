@@ -1,0 +1,593 @@
+apiVersion: v1
+data:
+  detection.conf: "[general]\ninclude = /conf/dual-det/site.conf\n[redis]\nhostname
+    = localhost\nport = 6379\npassword = \ndb = 0\n[asab:storage]\ntype = mongodb\nmongodb_database
+    = eagleeyeDB\nmongodb_uri = mongodb://localhost:27017\nmongodb_host = localhost\n[objdet:yolo]\noutput
+    = outputs/\nsource_folder_prefix = out\nfile_ext = .png\ndump_raw_img = 0\ndump_bbox_img
+    = 0\ndump_crop_img = 0\nsave_txt = 0\ntxt_format = cartucho\nagnostic_nms = 1\nhalf
+    = 0\nimg_size = 608\ndevice = \nconf_thres = 0.1\niou_thres = 0.1\nnames = /home/ardi/devel/nctu/IBM-Lab/eagleeye/object-detection-service/config_files/yolo/data/coco.names\ncfg
+    = /home/ardi/devel/nctu/IBM-Lab/eagleeye/object-detection-service/config_files/yolo/cfg/yolo-obj-v5.cfg\nweights
+    = /home/ardi/devel/nctu/IBM-Lab/eagleeye/object-detection-service/config_files/yolo/weights/TW-01.weights\nauto_restart
+    = 1\ncv_out = 1\nwindow_size_height = 1920\nwindow_size_width = 1080\n[eagleeye:api]\nnode
+    = http://localhost:8080/api/nodes\nlatency = http://localhost:8080/api/latency\n[node]\nchannel
+    = \nconsumer = \ncandidate_selection =\npersistence_validation =\nname =\nid =\nidle
+    =\ncreated_at =\nupdated_at =\n[thread]\nnum_executor = 1\n[bbox_config]\npih_label_cand
+    = PiH\npih_label = PiH\npih_color = [198, 50, 13]\nperson_color = [191, 96, 165]\nflag_color
+    = [100, 188, 70]\n[zmq]\nsender_uri = tcp://127.0.0.1:5551\n[persistence_detection]\npersistence_window
+    = 10\ntolerance_limit_percentage = 0.3\n"
+  site.conf: |
+    [redis]
+    hostname = redis-service
+    password =
+    [asab:storage]
+    mongodb_uri = mongodb://mongo-service:27017
+    mongodb_host = mongo-service
+    [objdet:yolo]
+    output = outputs/
+    names = /app/config_files/yolo/data/coco.names
+    cfg = /app/config_files/yolo/cfg/yolo-obj-v5.cfg
+    weights = /app/config_files/yolo/weights/TW-01.weights
+    [eagleeye:api]
+    node = http://ews-service:8080/api/nodes
+    latency = http://ews-service:8080/api/latency
+    [node]
+    id = 5f61adaf413a4c8f1338f877
+    name = 1
+    candidate_selection = 1
+    persistence_validation = 1
+    [zmq]
+    sender_uri = tcp://scheduler-service:5551
+kind: ConfigMap
+metadata:
+  name: detection-configmap
+---
+apiVersion: v1
+data:
+  ews.conf: |
+    [general]
+    include = /conf/ews/site.conf
+
+    [eagleeye:api]
+    listen=0.0.0.0:8080
+    api_uri=http://localhost:8080/api/
+    ews_host=localhost
+
+    [clients]
+    source_ip=http://localhost:3000
+
+    [thread]
+    num_executor=1
+
+    [jwt]
+    secret_key="B1ismiLLa4hH-TYFIFvi6f"
+    algorithm=HS256
+    # expired in 6 hours
+    exp_delta_seconds=21600
+
+    [redis]
+    hostname=localhost
+    port=6379
+    password=
+    db=0
+    total_worker_key=total_worker
+
+    [asab:storage]
+    type = mongodb
+    mongodb_database = eagleeyeDB
+    mongodb_uri = mongodb://localhost:27017
+    mongodb_host = localhost
+
+    [pubsub:channel]
+    scheduler=scheduler
+    node=node
+
+    [pagination]
+    limit=10
+    offset=0
+
+    # output
+    fourcc=mp4v
+    dump_raw_img=0
+    dump_bbox_img=0
+    dump_crop_img=0
+    dump_bbox_txt=0
+    txt_format=cartucho
+    # txt_format=default
+
+    # export results
+    [export]
+    graph_path=../output/graph/
+    csv_path=../output/csv/
+
+    [config:builder]
+    path=./../object-detection-service/etc/site.conf
+
+    [zmq]
+    sender_uri=127.0.0.1
+
+    # This value will be overrided inside site.conf
+    [objdet:yolo]
+    output=outputs/
+    names= /home/ardi/devel/nctu/IBM-Lab/eagleeye/object-detection-service/config_files/yolo/data/coco.names
+    cfg=/home/ardi/devel/nctu/IBM-Lab/eagleeye/object-detection-service/config_files/yolo/cfg/yolo-obj-v5.cfg
+    weights=/home/ardi/devel/nctu/IBM-Lab/eagleeye/object-detection-service/config_files/yolo/weights/TW-01.weights
+  site.conf: |
+    [redis]
+    hostname=redis-service
+    password =
+
+    [asab:storage]
+    type = mongodb
+    mongodb_database = eagleeyeDB
+    mongodb_uri = mongodb://mongo-service:27017
+    mongodb_host = mongo-service
+
+    [zmq]
+    sender_uri=scheduler-service
+
+    # export results
+    [export]
+    graph_path=/home/s010132/devel/eagleeye/output/graph/
+    csv_path=/home/s010132/devel/eagleeye/output/csv/
+
+    [objdet:yolo]
+    names = /app/config_files/yolo/data/coco.names
+    cfg = /app/config_files/yolo/cfg/yolo-obj-v5.cfg
+    weights = /app/config_files/yolo/weights/TW-01.weights
+
+    [eagleeye:api]
+    ews_host=ews-service
+
+    [config:builder]
+    path=/conf/dual-det/site.conf
+kind: ConfigMap
+metadata:
+  name: ews-configmap
+---
+apiVersion: v1
+data:
+  site.conf: "[redis]\nhostname = redis-service\npassword = \n\n[asab:storage]\nmongodb_uri
+    = mongodb://mongo-service:27017\nmongodb_host = mongo-service\n\n[objdet:yolo]\noutput
+    = outputs/\nnames = /app/config_files/yolo/data/coco.names\ncfg = /app/config_files/yolo/cfg/yolo-obj-v5.cfg\nweights
+    = /app/config_files/yolo/weights/TW-01.weights\n\n[eagleeye:api]\nnode = http://ews-service:8080/api/nodes\nlatency
+    = http://ews-service:8080/api/latency\n\n[node]\nid = 5f60cd48107af97bc86570e6\nname
+    = 1\ncandidate_selection = 1\npersistence_validation = 1\n\n[zmq]\nsender_uri
+    = tcp://scheduler-service:5551\n"
+kind: ConfigMap
+metadata:
+  name: ews-dual-det-configmap
+---
+apiVersion: v1
+data:
+  scheduler.conf: |
+    [general]
+    include = /conf/scheduler/site.conf
+
+    [thread]
+    num_executor=1
+
+    [redis]
+    hostname=localhost
+    port=6379
+    password=
+    db=0
+
+    [eagleeye:api]
+    node=http://localhost:8080/api/nodes
+    latency = http://localhost:8080/api/latency
+
+    [pubsub:channel]
+    scheduler=scheduler
+
+    [stream:config]
+    # true (1) or false (0)
+    # FYI: Sometimes, thead-based image extractor might failed, in this case, set this as false (0); default = true (1)
+    thread=1
+    convert_img=0
+    gpu_converter=0
+
+    # thread=0
+
+    [objdet:yolo]
+    # default configuration
+    ## type=bool
+    source_folder_prefix=out
+    file_ext=.png
+    half=0
+    # img_size=416
+    img_size=608
+
+
+    ## type=int
+    device=0
+    conf_thres=0.1
+    iou_thres=0.1
+    classes=+
+    ## type=bool
+    agnostic_nms=1
+    names=./common_files/object_detection/yolo/data/coco.names
+    cfg=./common_files/object_detection/yolo/cfg/yolov3.cfg
+    weights=./common_files/object_detection/yolo/weights/yolov3.weights
+    # Stream reader
+    ## type=bool
+    auto_restart=1
+    # visualizer
+    enable_cv_out=1
+    window_size_height=1920
+    window_size_width=1080
+
+    # output
+    fourcc=mp4v
+    dump_raw_img=0
+    dump_bbox_img=0
+    dump_crop_img=0
+    dump_bbox_txt=0
+    txt_format=cartucho
+    # txt_format=default
+
+    [zmq]
+    # this `sender_uri` is not used at the moment. (I guess)
+    sender_uri=*
+    sender_host=*
+  site.conf: |
+    [redis]
+    hostname=redis-service
+    password =
+
+    [asab:storage]
+    type = mongodb
+    mongodb_database = eagleeyeDB
+    mongodb_uri = mongodb://mongo-service:27017
+    mongodb_host = mongo-service
+
+    [eagleeye:api]
+    node=http://ews-service:8080/api/nodes
+    latency = http://ews-service:8080/api/latency
+
+    [zmq]
+    sender_uri=*
+    sender_host=*
+kind: ConfigMap
+metadata:
+  name: scheduler-configmap
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ews-service
+spec:
+  ports:
+  - nodePort: 31000
+    port: 8080
+    targetPort: 8080
+  selector:
+    name: ews-deploy
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-service
+spec:
+  ports:
+  - port: 27017
+    targetPort: 27017
+  selector:
+    name: mongo-deploy
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+spec:
+  ports:
+  - port: 6379
+    targetPort: 6379
+  selector:
+    name: redis-deploy
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: scheduler-service
+spec:
+  ports:
+  - port: 5551
+    targetPort: 5551
+  selector:
+    name: scheduler-deploy
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: scheduler-stream-service
+spec:
+  externalIPs:
+  - 140.113.86.92
+  ports:
+  - name: rtmp
+    port: 1935
+    protocol: TCP
+    targetPort: 1935
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: detection-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: detection-deploy
+  template:
+    metadata:
+      labels:
+        app: detection-deploy
+    spec:
+      containers:
+      - image: 5g-dive/eagleeye/dual-object-detection-service:1.0
+        imagePullPolicy: IfNotPresent
+        name: detection-deploy
+        ports:
+        - containerPort: 5551
+        volumeMounts:
+        - mountPath: /conf/dual-det
+          name: detection-config
+          readOnly: false
+        - mountPath: /app/config_files
+          name: config-files
+      restartPolicy: Always
+      volumes:
+      - configMap:
+          items:
+          - key: detection.conf
+            path: detection.conf
+          - key: site.conf
+            path: site.conf
+          name: detection-configmap
+        name: detection-config
+      - name: config-files
+        persistentVolumeClaim:
+          claimName: detection-config-volume-claim
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: ews-deploy
+  name: ews-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: ews-deploy
+  template:
+    metadata:
+      labels:
+        name: ews-deploy
+      name: ews-deploy
+    spec:
+      containers:
+      - image: timwilliam/eagleeye.webservice:1.0
+        name: ews
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - mountPath: /conf/ews
+          name: ews-config
+          readOnly: false
+        - mountPath: /conf/dual-det
+          name: ews-dual-det-config
+          readOnly: false
+      volumes:
+      - configMap:
+          items:
+          - key: ews.conf
+            path: ews.conf
+          - key: site.conf
+            path: site.conf
+          name: ews-configmap
+        name: ews-config
+      - configMap:
+          items:
+          - key: site.conf
+            path: site.conf
+          name: ews-dual-det-configmap
+        name: ews-dual-det-config
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: mongo-deploy
+  name: mongo-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mongo-deploy
+  template:
+    metadata:
+      labels:
+        name: mongo-deploy
+      name: mongo-deploy
+    spec:
+      containers:
+      - image: mongo:4.4.0
+        name: mongo
+        ports:
+        - containerPort: 27017
+        volumeMounts:
+        - mountPath: /data/db
+          name: mongo-volume
+      volumes:
+      - name: mongo-volume
+        persistentVolumeClaim:
+          claimName: mongo-volume-claim
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: redis-deploy
+  name: redis-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: redis-deploy
+  template:
+    metadata:
+      labels:
+        name: redis-deploy
+      name: redis-deploy
+    spec:
+      containers:
+      - image: timwilliam/eagleeye.redis:1.0
+        name: redis
+        ports:
+        - containerPort: 6379
+        volumeMounts:
+        - mountPath: /data
+          name: redis-volume
+      volumes:
+      - name: redis-volume
+        persistentVolumeClaim:
+          claimName: redis-volume-claim
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: scheduler-deploy
+  name: scheduler-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: scheduler-deploy
+  template:
+    metadata:
+      labels:
+        name: scheduler-deploy
+      name: scheduler-deploy
+    spec:
+      containers:
+      - image: timwilliam/eagleeye.scheduler:1.0
+        name: scheduler-deploy
+        ports:
+        - containerPort: 5551
+        volumeMounts:
+        - mountPath: /conf/scheduler
+          name: scheduler-config
+          readOnly: false
+        - mountPath: /app/data
+          name: data-files
+      volumes:
+      - configMap:
+          items:
+          - key: scheduler.conf
+            path: scheduler.conf
+          - key: site.conf
+            path: site.conf
+          name: scheduler-configmap
+        name: scheduler-config
+      - name: data-files
+        persistentVolumeClaim:
+          claimName: scheduler-volume-claim
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: detection-config-volume
+spec:
+  accessModes:
+  - ReadOnlyMany
+  capacity:
+    storage: 4Gi
+  hostPath:
+    path: /home/s010132/devel/eagleeye/object-detection-service/config_files
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mongo-volume
+spec:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 4Gi
+  hostPath:
+    path: /home/s010132/devel/eagleeye_tim/orchestration-imec/db-dir/mongo
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: redis-volume
+spec:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 4Gi
+  hostPath:
+    path: /home/s010132/devel/eagleeye_tim/orchestration-imec/db-dir/redis
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: scheduler-volume
+spec:
+  accessModes:
+  - ReadOnlyMany
+  capacity:
+    storage: 10Gi
+  hostPath:
+    path: /home/s010132/devel/eagleeye/data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: detection-config-volume-claim
+spec:
+  accessModes:
+  - ReadOnlyMany
+  resources:
+    requests:
+      storage: 2Gi
+  volumeMode: Filesystem
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongo-volume-claim
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 2Gi
+  volumeMode: Filesystem
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-volume-claim
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 2Gi
+  volumeMode: Filesystem
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: scheduler-volume-claim
+spec:
+  accessModes:
+  - ReadOnlyMany
+  resources:
+    requests:
+      storage: 5Gi
+  volumeMode: Filesystem
