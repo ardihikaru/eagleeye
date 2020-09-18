@@ -17,10 +17,9 @@ spec:
         name: mongo-deploy
     spec:
       volumes:
-        - name: mongo
-          hostPath:
-            # Update this hostPath setting as necessary !
-            path: /home/s010132/devel/eagleeye_tim/orchestration-imec/db-dir/mongo
+        - name: mongo-volume
+          persistentVolumeClaim:
+              claimName: mongo-volume-claim
       containers:
         - name: mongo
           image: mongo:4.4.0
@@ -28,4 +27,4 @@ spec:
             - containerPort: 27017
           volumeMounts:
             - mountPath: /data/db
-              name: mongo
+              name: mongo-volume
