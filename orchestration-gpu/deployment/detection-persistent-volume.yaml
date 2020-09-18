@@ -6,7 +6,8 @@ spec:
   capacity:
     storage: 4Gi
   accessModes:
-  - ReadWriteMany
-  persistentVolumeReclaimPolicy: Retain
-  local:
+    - ReadOnlyMany
+      #persistentVolumeReclaimPolicy: Recycle
+  hostPath:
     path: /home/s010132/devel/eagleeye/object-detection-service/config_files
+

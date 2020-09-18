@@ -4,8 +4,8 @@ metadata:
   name: detection-config-volume-claim
 spec:
   accessModes:
-  - ReadWriteMany
+    - ReadOnlyMany
+  volumeMode: Filesystem
   resources:
     requests:
       storage: 2Gi
-  volumeName: "detection-config-files"

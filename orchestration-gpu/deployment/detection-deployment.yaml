@@ -15,8 +15,8 @@ spec:
     spec:
       containers:
         - name: detection-deploy
-          image: timwilliam/eagleeye.detection:1.0
-          #image: 5g-dive/eagleeye/dual-object-detection-service:1.0
+          #image: timwilliam/eagleeye.detection:1.0
+          image: 5g-dive/eagleeye/dual-object-detection-service:1.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 5551
@@ -24,8 +24,8 @@ spec:
             - name: detection-config
               mountPath: "/conf/dual-det"
               readOnly: false
-            - name: detection-config-files
-              mountPath: /app/config_files
+            - name: config-files
+              mountPath: "/app/config_files"
       volumes:
         - name: detection-config
           configMap:
@@ -37,5 +37,5 @@ spec:
               path: "site.conf"
         - name: config-files
           persistentVolumeClaim:
-            claimName: detection-config-files
+            claimName: detection-config-volume-claim
       restartPolicy: Always
