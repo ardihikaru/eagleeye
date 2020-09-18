@@ -17,19 +17,14 @@ spec:
         name: redis-deploy
     spec:
       volumes:
-        - name: redis
-          hostPath:
-            # Update this hostPath setting as necessary !
-            path: /home/s010132/devel/eagleeye_tim/orchestration-imec/db-dir/redis
+        - name: redis-volume
+          persistentVolumeClaim:
+            claimName: redis-volume-claim
       containers:
         - name: redis
           image: timwilliam/eagleeye.redis:1.0
           ports:
             - containerPort: 6379
           volumeMounts:
-            - mountPath: /data
-              name: redis
-              #lifecycle:
-              #postStart:
-              #exec:
-              #command: ["redis-server", "--appendonly", "yes", "--requirepass", "bismillah"]
+            - name: redis-volume
+              mountPath: /data
