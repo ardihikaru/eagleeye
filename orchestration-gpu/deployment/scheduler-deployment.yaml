@@ -17,27 +17,25 @@ spec:
         name: scheduler-deploy
     spec:
       volumes:
-        - name: ee-scheduler-cfg
+        - name: scheduler-config
           configMap:
-            name: ee-scheduler-cfg
-        - name: vol-scheduler-conf
-          emptyDir: {}
-        - name: vol-scheduler-data
-          hostPath:
-            # Update this hostPath setting as necessary !
-            path: /home/s010132/devel/eagleeye/data
-            type: Directory
+            name: scheduler-configmap
+            items:
+            - key: "scheduler.conf"
+              path: "scheduler.conf"
+            - key: "site.conf"
+              path: "site.conf"
+        - name: data-files
+          persistentVolumeClaim:
+            claimName: scheduler-volume-claim
       containers:
-        - name: scheduler
+        - name: scheduler-deploy
           image: timwilliam/eagleeye.scheduler:1.0
           ports:
             - containerPort: 5551
           volumeMounts:
-            - name: ee-scheduler-cfg
-              mountPath: /conf/scheduler/site.conf
-              subPath: site.conf
-            - name: ee-scheduler-cfg
-              mountPath: /conf/scheduler/scheduler.conf
-              subPath: scheduler.conf
-            - name: vol-scheduler-data
-              mountPath: /app/data
+            - name: scheduler-config
+              mountPath: "/conf/scheduler"
+              readOnly: false
+            - name: data-files
+              mountPath: "/app/data"
