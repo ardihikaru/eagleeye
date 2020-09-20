@@ -38,7 +38,7 @@ class Node(MyRedis):
         self.password_hash = None
         self.executor = ThreadPoolExecutor(int(asab.Config["thread"]["num_executor"]))
 
-    def _spawn_node(self, pool_name, node_data):
+    def _spawn_config_builder(self, pool_name, node_data):
         # Make config file according to this file
         # print(" #### node_data:", node_data)
         builder = ConfigBuilder()
@@ -116,7 +116,7 @@ class Node(MyRedis):
         # L.warning('[%s] Latency for Publishing data into Object Detection Service (%.3f ms)' %
         #           (get_current_time(), t1_publish))
 
-    def _node_generator(self, node_data):
+    def _config_node_generator(self, node_data):
         t0_thread = time.time()
         pool_name = "[THREAD-%s]" % get_random_str()
         try:
@@ -124,7 +124,7 @@ class Node(MyRedis):
                 "pool_name": pool_name,
                 "node_data": node_data
             }
-            self.executor.submit(self._spawn_node, **kwargs)
+            self.executor.submit(self._spawn_config_builder, **kwargs)
         except:
             print("\n[%s] Somehow we unable to Start the Thread of NodeGenerator" % get_current_time())
         t1_thread = (time.time() - t0_thread) * 1000
@@ -163,8 +163,9 @@ class Node(MyRedis):
         msg = "Registration of a new Node is success."
 
         # Check if no `node_id` is defined, then use automatic generation
+        new_node_id = self._generate_node_id()
         if "name" not in node_data or node_data["name"] == "":
-            node_data["name"] = str(self._generate_node_id())
+            node_data["name"] = str(new_node_id)
 
         # Validate
         if "candidate_selection" not in node_data:
@@ -188,8 +189,12 @@ class Node(MyRedis):
             node_data["id"] = inserted_data["id"]
             node_data["idle"] = inserted_data["idle"]
 
-            # Spawn a new Object-Detection-Service
-            self._node_generator(node_data)
+            # Generate a new Object-Detection-Service's site.conf file
+            # self._config_node_generator(node_data)
+
+            # Register this node into redisDB
+            redis_set(self.get_rc(), asab.Config["node"]["redis_id_key"], inserted_data["id"])
+            redis_set(self.get_rc(), asab.Config["node"]["redis_name_key"], new_node_id)
 
         return get_json_template(response=is_success, results=inserted_data, total=-1, message=msg)
 

@@ -8,7 +8,7 @@ from concurrent.futures import ThreadPoolExecutor
 import time
 # from multiprocessing import shared_memory
 import numpy as np
-import signal
+# import signal
 
 ###
 
@@ -28,11 +28,12 @@ class YOLOv3Handler(MyRedis):
 
         self.LatCollectorService = app.get_service("detection.LatencyCollectorService")
 
-        # Default None
-        self.node_name = int(asab.Config["node"]["name"])  # Should be an integer and unique, i.e. 1, 2, 3 ...
-        self.node_id = asab.Config["node"]["id"]
+        # Set node information
+        self.node_name = redis_get(self.rc, asab.Config["node"]["redis_name_key"])
+        self.node_id = redis_get(self.rc, asab.Config["node"]["redis_id_key"])
+
         self.pid = os.getpid()
-        self.node_alias = "NODE-%s" % asab.Config["node"]["name"]
+        self.node_alias = "NODE-%s" % str(self.node_name)
         self.node_info = self._gen_node_info()
         self.node_info_list = self._dict2list(self.node_info)
 
@@ -56,8 +57,8 @@ class YOLOv3Handler(MyRedis):
 
     def _gen_node_info(self):
         return {
-            "id": asab.Config["node"]["name"],
-            "name": int(asab.Config["node"]["name"]),
+            "id": self.node_id,
+            "name": int(self.node_name),
             "idle": asab.Config["node"]["idle"]
         }
 
@@ -83,7 +84,6 @@ class YOLOv3Handler(MyRedis):
         L.warning("\n[%s][%s] Object Detection Service is going to stop" % (get_current_time(), self.node_alias))
 
         # Delete Node
-        # await self.DetectionAlgorithmService.delete_node_information(asab.Config["node"]["id"])
         await self.DetectionAlgorithmService.delete_node_information(self.node_id)
 
         # Kill PID !!!

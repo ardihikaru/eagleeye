@@ -3,6 +3,8 @@ import logging
 from .handler import YOLOv3Handler
 from detection.algorithm.soa.yolo_v3.app import YOLOv3
 import requests
+from ext_lib.redis.my_redis import MyRedis
+from ext_lib.redis.translator import redis_get
 import time
 from ext_lib.utils import get_current_time
 
@@ -25,7 +27,10 @@ class DetectionAlgorithmService(asab.Service):
         self.SubscriptionHandler = YOLOv3Handler(app)
         self.ResizerService = app.get_service("detection.ResizerService")
 
-        self.node_alias = "NODE-%s" % asab.Config["node"]["name"]
+        # Set node alias
+        redis = MyRedis(asab.Config)
+        node_name = redis_get(redis.get_rc(), asab.Config["node"]["redis_name_key"])
+        self.node_alias = "NODE-%s" % str(node_name)
 
         # Extractor service may not exist at this point
         # This variable will be set up in the init time
