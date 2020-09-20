@@ -3,6 +3,7 @@ import asab.web
 import asab.web.rest
 import asab.web.session
 from ews.route_manager import RouteManagerModule
+from ews.aio_rtc import AIORTCModule
 from ext_lib.redis.my_redis import MyRedis
 from ext_lib.redis.translator import redis_set
 from mongoengine import connect
@@ -12,9 +13,10 @@ import logging
 ###
 
 L = logging.getLogger(__name__)
-
+# logging.basicConfig(level=logging.DEBUG)
 
 ###
+
 
 class EagleEYEWebService(asab.Application):
 
@@ -39,6 +41,7 @@ class EagleEYEWebService(asab.Application):
 
 		# Web module/service
 		self.add_module(asab.web.Module)
+		self.add_module(AIORTCModule)
 		self.add_module(RouteManagerModule)
 
 	async def initialize(self):
