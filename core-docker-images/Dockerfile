@@ -37,6 +37,10 @@ RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 1
 RUN apt-get update
 RUN apt-get install -y python3-pip
 RUN apt-get install -y libpython3.7-dev
+
+# Required library for RTC (Web-based video streaming)
+RUN apt-get install -y libavdevice-dev libavfilter-dev libopus-dev libvpx-dev pkg-config
+
 RUN pip3 install scikit-build
 RUN pip3 install opencv-contrib-python-headless
 
