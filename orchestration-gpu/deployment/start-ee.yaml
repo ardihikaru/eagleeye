@@ -31,7 +31,7 @@ data:
     node = http://ews-service:8080/api/nodes
     latency = http://ews-service:8080/api/latency
     [node]
-    id = 5f61adaf413a4c8f1338f877
+    id = 5f6470ee4190dfb95261eb41
     name = 1
     candidate_selection = 1
     persistence_validation = 1
@@ -325,7 +325,7 @@ spec:
         app: detection-deploy
     spec:
       containers:
-      - image: 5g-dive/eagleeye/dual-object-detection-service:1.0
+      - image: timwilliam/eagleeye.detection:1.0
         imagePullPolicy: IfNotPresent
         name: detection-deploy
         ports:
@@ -369,6 +369,7 @@ spec:
     spec:
       containers:
       - image: timwilliam/eagleeye.webservice:1.0
+        imagePullPolicy: IfNotPresent
         name: ews
         ports:
         - containerPort: 8080
@@ -444,6 +445,7 @@ spec:
     spec:
       containers:
       - image: timwilliam/eagleeye.redis:1.0
+        imagePullPolicy: IfNotPresent
         name: redis
         ports:
         - containerPort: 6379
@@ -474,6 +476,7 @@ spec:
     spec:
       containers:
       - image: timwilliam/eagleeye.scheduler:1.0
+        imagePullPolicy: IfNotPresent
         name: scheduler-deploy
         ports:
         - containerPort: 5551

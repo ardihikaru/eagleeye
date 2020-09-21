@@ -146,6 +146,7 @@ spec:
     spec:
       containers:
       - image: timwilliam/eagleeye.webservice:1.0
+        imagePullPolicy: IfNotPresent
         name: ews
         ports:
         - containerPort: 8080

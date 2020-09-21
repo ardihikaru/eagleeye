@@ -135,6 +135,7 @@ spec:
     spec:
       containers:
       - image: timwilliam/eagleeye.scheduler:1.0
+        imagePullPolicy: IfNotPresent
         name: scheduler-deploy
         ports:
         - containerPort: 5551
