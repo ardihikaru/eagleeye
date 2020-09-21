@@ -38,8 +38,8 @@ class YOLOv3Handler(MyRedis):
         self.node_info_list = self._dict2list(self.node_info)
 
         # Extra Module params
-        self.cs_enabled = bool(int(asab.Config["node"]["candidate_selection"]))
-        self.pv_enabled = bool(int(asab.Config["node"]["Persistence_validation"]))
+        self.cs_enabled = redis_get(self.rc, asab.Config["node"]["redis_pcs_key"])
+        self.pv_enabled = redis_get(self.rc, asab.Config["node"]["redis_pv_key"])
         self.cv_out = bool(int(asab.Config["objdet:yolo"]["cv_out"]))
 
         # PiH Persistence Validation params

@@ -199,6 +199,14 @@ class Node(MyRedis):
             # Register this node into redisDB
             redis_set(self.get_rc(), asab.Config["node"]["redis_id_key"], inserted_data["id"])
             redis_set(self.get_rc(), asab.Config["node"]["redis_name_key"], new_node_id)
+            if "candidate_selection" in node_data:
+                redis_set(self.get_rc(), asab.Config["node"]["redis_pcs_key"], node_data["candidate_selection"])
+            else:
+                redis_set(self.get_rc(), asab.Config["node"]["redis_pcs_key"], False)
+            if "persistence_validation" in node_data:
+                redis_set(self.get_rc(), asab.Config["node"]["redis_pv_key"], node_data["persistence_validation"])
+            else:
+                redis_set(self.get_rc(), asab.Config["node"]["redis_pv_key"], False)
 
         return get_json_template(response=is_success, results=inserted_data, total=-1, message=msg)
 
