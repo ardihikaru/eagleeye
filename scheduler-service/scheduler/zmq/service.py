@@ -40,7 +40,8 @@ class ZMQService(asab.Service):
         if is_success:
             # Builds ZMQ Senders
             for i in range(total):
-                uri = 'tcp://%s:555' % zmq_host + str(self.node_info[i]["name"])
+                # uri = 'tcp://%s:555' % zmq_host + str(self.node_info[i]["name"])
+                uri = self._set_zmq_uri(zmq_host, i)
                 L.warning("ZMQ URI: %s" % uri)
                 sender = imagezmq.ImageSender(connect_to=uri, REQ_REP=False)
                 self.zmq_sender.append(sender)
@@ -53,7 +54,10 @@ class ZMQService(asab.Service):
         if asab.Config["orchestration"]["mode"] == "native":
             return 'tcp://%s:555' % zmq_host + str(self.node_info[i]["name"])
         else:
-            return 'tcp://%s-%s:5551' % (zmq_host, str(self.node_info[i]["name"]))
+            return 'tcp://%s-%s:5551' % (
+                asab.Config["zmq"]["recv_host_prefix"],
+                str(self.node_info[i]["name"])
+            )
 
     def get_senders(self):
         return {
