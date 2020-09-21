@@ -34,7 +34,6 @@ class ZMQService(asab.Service):
         self.node_info = data["data"]
         total = int(data["total"])
 
-        # zmq_uri = asab.Config["zmq"]["sender_uri"]
         zmq_host = asab.Config["zmq"]["sender_host"]
 
         if is_success:
@@ -54,10 +53,16 @@ class ZMQService(asab.Service):
         if asab.Config["orchestration"]["mode"] == "native":
             return 'tcp://%s:555' % zmq_host + str(self.node_info[i]["name"])
         else:
-            return 'tcp://%s-%s:5551' % (
-                asab.Config["zmq"]["recv_host_prefix"],
+            # Multiple ports, broadcast network (*)
+            return 'tcp://%s:555%s' % (
+                asab.Config["zmq"]["sender_host"],
                 str(self.node_info[i]["name"])
             )
+            # # Single port, multiple hosts (ERROR)
+            # return 'tcp://%s-%s:5551' % (
+            #     asab.Config["zmq"]["recv_host_prefix"],
+            #     str(self.node_info[i]["name"])
+            # )
 
     def get_senders(self):
         return {
