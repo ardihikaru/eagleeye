@@ -38,10 +38,19 @@ RUN apt-get update
 RUN apt-get install -y python3-pip
 RUN apt-get install -y libpython3.7-dev
 
+# Upgrade PIP (important for aioRTC)
+RUN pip3 install --upgrade pip
 # Required library for RTC (Web-based video streaming)
 RUN apt-get install -y libavdevice-dev libavfilter-dev libopus-dev libvpx-dev pkg-config
 RUN apt-get install -y libsrtp2-dev
+# not listed but needed...
+RUN apt install libopencv-dev -y
 
 RUN pip3 install scikit-build
 RUN pip3 install opencv-contrib-python-headless
+
+# Copy and Install requirement from web-service
+COPY requirements-no-cv.txt /tmp/requirements.txt
+RUN pip3 install Cython
+RUN pip3 install -r /tmp/requirements.txt
 
