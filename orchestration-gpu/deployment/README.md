@@ -118,7 +118,9 @@ Or you can also do `docker load` (*no need to docker login*):
 	- `$ kubectl apply -f start-ee.yaml`
 
 #### Notes
-- At this moment, a successful deployment means that you will be able to see
+- At this moment, a successful deployment means that you will be able to see 4 pods running which is `detection`, `ews`, `redis`, and `mongo`.
+- The `scheduler` pod is not running due to error, we are working on a solution right now.
+- We will update you again with another deployment file that will be able to read an input and produce an output.
 
 #### Kubernetes Features Used
 - Deployment
