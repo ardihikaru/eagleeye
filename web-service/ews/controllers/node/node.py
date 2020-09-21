@@ -162,6 +162,10 @@ class Node(MyRedis):
     def register(self, node_data):
         msg = "Registration of a new Node is success."
 
+        # Set missing default values
+        # if "channel" not in node_data:
+        #     node_data["channel"] = ""
+
         # Check if no `node_id` is defined, then use automatic generation
         new_node_id = self._generate_node_id()
         if "name" not in node_data or node_data["name"] == "":
