@@ -1,0 +1,11 @@
+# Mongo Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-service
+spec:
+  selector:
+    name: mongo-deploy
+  ports:
+  - port: 27017
+    targetPort: 27017

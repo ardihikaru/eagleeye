@@ -1,0 +1,64 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+spec:
+  ports:
+  - port: 6379
+    targetPort: 6379
+  selector:
+    name: redis-deploy
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: redis-deploy
+  name: redis-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: redis-deploy
+  template:
+    metadata:
+      labels:
+        name: redis-deploy
+      name: redis-deploy
+    spec:
+      containers:
+      - image: timwilliam/eagleeye.redis:1.0
+        name: redis
+        ports:
+        - containerPort: 6379
+        volumeMounts:
+        - mountPath: /data
+          name: redis-volume
+      volumes:
+      - name: redis-volume
+        persistentVolumeClaim:
+          claimName: redis-volume-claim
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: redis-volume
+spec:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 4Gi
+  hostPath:
+    path: /home/s010132/devel/eagleeye_tim/orchestration-imec/db-dir/redis
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-volume-claim
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 2Gi
+  volumeMode: Filesystem

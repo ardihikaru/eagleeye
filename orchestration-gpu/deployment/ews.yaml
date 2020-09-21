@@ -1,0 +1,173 @@
+apiVersion: v1
+data:
+  ews.conf: |
+    [general]
+    include = /conf/ews/site.conf
+
+    [eagleeye:api]
+    listen=0.0.0.0:8080
+    api_uri=http://localhost:8080/api/
+    ews_host=localhost
+
+    [clients]
+    source_ip=http://localhost:3000
+
+    [thread]
+    num_executor=1
+
+    [jwt]
+    secret_key="B1ismiLLa4hH-TYFIFvi6f"
+    algorithm=HS256
+    # expired in 6 hours
+    exp_delta_seconds=21600
+
+    [redis]
+    hostname=localhost
+    port=6379
+    password=
+    db=0
+    total_worker_key=total_worker
+
+    [asab:storage]
+    type = mongodb
+    mongodb_database = eagleeyeDB
+    mongodb_uri = mongodb://localhost:27017
+    mongodb_host = localhost
+
+    [pubsub:channel]
+    scheduler=scheduler
+    node=node
+
+    [pagination]
+    limit=10
+    offset=0
+
+    # output
+    fourcc=mp4v
+    dump_raw_img=0
+    dump_bbox_img=0
+    dump_crop_img=0
+    dump_bbox_txt=0
+    txt_format=cartucho
+    # txt_format=default
+
+    # export results
+    [export]
+    graph_path=../output/graph/
+    csv_path=../output/csv/
+
+    [config:builder]
+    path=./../object-detection-service/etc/site.conf
+
+    [zmq]
+    sender_uri=127.0.0.1
+
+    # This value will be overrided inside site.conf
+    [objdet:yolo]
+    output=outputs/
+    names= /home/ardi/devel/nctu/IBM-Lab/eagleeye/object-detection-service/config_files/yolo/data/coco.names
+    cfg=/home/ardi/devel/nctu/IBM-Lab/eagleeye/object-detection-service/config_files/yolo/cfg/yolo-obj-v5.cfg
+    weights=/home/ardi/devel/nctu/IBM-Lab/eagleeye/object-detection-service/config_files/yolo/weights/TW-01.weights
+  site.conf: |
+    [redis]
+    hostname=redis-service
+    password =
+
+    [asab:storage]
+    type = mongodb
+    mongodb_database = eagleeyeDB
+    mongodb_uri = mongodb://mongo-service:27017
+    mongodb_host = mongo-service
+
+    [zmq]
+    sender_uri=scheduler-service
+
+    # export results
+    [export]
+    graph_path=/home/s010132/devel/eagleeye/output/graph/
+    csv_path=/home/s010132/devel/eagleeye/output/csv/
+
+    [objdet:yolo]
+    names = /app/config_files/yolo/data/coco.names
+    cfg = /app/config_files/yolo/cfg/yolo-obj-v5.cfg
+    weights = /app/config_files/yolo/weights/TW-01.weights
+
+    [eagleeye:api]
+    ews_host=ews-service
+
+    [config:builder]
+    path=/conf/dual-det/site.conf
+kind: ConfigMap
+metadata:
+  name: ews-configmap
+---
+apiVersion: v1
+data:
+  site.conf: "[redis]\nhostname = redis-service\npassword = \n\n[asab:storage]\nmongodb_uri
+    = mongodb://mongo-service:27017\nmongodb_host = mongo-service\n\n[objdet:yolo]\noutput
+    = outputs/\nnames = /app/config_files/yolo/data/coco.names\ncfg = /app/config_files/yolo/cfg/yolo-obj-v5.cfg\nweights
+    = /app/config_files/yolo/weights/TW-01.weights\n\n[eagleeye:api]\nnode = http://ews-service:8080/api/nodes\nlatency
+    = http://ews-service:8080/api/latency\n\n[node]\nid = 5f60cd48107af97bc86570e6\nname
+    = 1\ncandidate_selection = 1\npersistence_validation = 1\n\n[zmq]\nsender_uri
+    = tcp://scheduler-service:5551\n"
+kind: ConfigMap
+metadata:
+  name: ews-dual-det-configmap
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ews-service
+spec:
+  ports:
+  - nodePort: 31000
+    port: 8080
+    targetPort: 8080
+  selector:
+    name: ews-deploy
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: ews-deploy
+  name: ews-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: ews-deploy
+  template:
+    metadata:
+      labels:
+        name: ews-deploy
+      name: ews-deploy
+    spec:
+      containers:
+      - image: timwilliam/eagleeye.webservice:1.0
+        name: ews
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - mountPath: /conf/ews
+          name: ews-config
+          readOnly: false
+        - mountPath: /conf/dual-det
+          name: ews-dual-det-config
+          readOnly: false
+      volumes:
+      - configMap:
+          items:
+          - key: ews.conf
+            path: ews.conf
+          - key: site.conf
+            path: site.conf
+          name: ews-configmap
+        name: ews-config
+      - configMap:
+          items:
+          - key: site.conf
+            path: site.conf
+          name: ews-dual-det-configmap
+        name: ews-dual-det-config

@@ -1,0 +1,182 @@
+apiVersion: v1
+data:
+  scheduler.conf: |
+    [general]
+    include = /conf/scheduler/site.conf
+
+    [thread]
+    num_executor=1
+
+    [redis]
+    hostname=localhost
+    port=6379
+    password=
+    db=0
+
+    [eagleeye:api]
+    node=http://localhost:8080/api/nodes
+    latency = http://localhost:8080/api/latency
+
+    [pubsub:channel]
+    scheduler=scheduler
+
+    [stream:config]
+    # true (1) or false (0)
+    # FYI: Sometimes, thead-based image extractor might failed, in this case, set this as false (0); default = true (1)
+    thread=1
+    convert_img=0
+    gpu_converter=0
+
+    # thread=0
+
+    [objdet:yolo]
+    # default configuration
+    ## type=bool
+    source_folder_prefix=out
+    file_ext=.png
+    half=0
+    # img_size=416
+    img_size=608
+
+
+    ## type=int
+    device=0
+    conf_thres=0.1
+    iou_thres=0.1
+    classes=+
+    ## type=bool
+    agnostic_nms=1
+    names=./common_files/object_detection/yolo/data/coco.names
+    cfg=./common_files/object_detection/yolo/cfg/yolov3.cfg
+    weights=./common_files/object_detection/yolo/weights/yolov3.weights
+    # Stream reader
+    ## type=bool
+    auto_restart=1
+    # visualizer
+    enable_cv_out=1
+    window_size_height=1920
+    window_size_width=1080
+
+    # output
+    fourcc=mp4v
+    dump_raw_img=0
+    dump_bbox_img=0
+    dump_crop_img=0
+    dump_bbox_txt=0
+    txt_format=cartucho
+    # txt_format=default
+
+    [zmq]
+    # this `sender_uri` is not used at the moment. (I guess)
+    sender_uri=*
+    sender_host=*
+  site.conf: |
+    [redis]
+    hostname=redis-service
+    password =
+
+    [asab:storage]
+    type = mongodb
+    mongodb_database = eagleeyeDB
+    mongodb_uri = mongodb://mongo-service:27017
+    mongodb_host = mongo-service
+
+    [eagleeye:api]
+    node=http://ews-service:8080/api/nodes
+    latency = http://ews-service:8080/api/latency
+
+    [zmq]
+    sender_uri=*
+    sender_host=*
+kind: ConfigMap
+metadata:
+  name: scheduler-configmap
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: scheduler-service
+spec:
+  ports:
+  - port: 5551
+    targetPort: 5551
+  selector:
+    name: scheduler-deploy
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: scheduler-stream-service
+spec:
+  externalIPs:
+  - 140.113.86.92
+  ports:
+  - name: rtmp
+    port: 1935
+    protocol: TCP
+    targetPort: 1935
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: scheduler-deploy
+  name: scheduler-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: scheduler-deploy
+  template:
+    metadata:
+      labels:
+        name: scheduler-deploy
+      name: scheduler-deploy
+    spec:
+      containers:
+      - image: timwilliam/eagleeye.scheduler:1.0
+        name: scheduler-deploy
+        ports:
+        - containerPort: 5551
+        volumeMounts:
+        - mountPath: /conf/scheduler
+          name: scheduler-config
+          readOnly: false
+        - mountPath: /app/data
+          name: data-files
+      volumes:
+      - configMap:
+          items:
+          - key: scheduler.conf
+            path: scheduler.conf
+          - key: site.conf
+            path: site.conf
+          name: scheduler-configmap
+        name: scheduler-config
+      - name: data-files
+        persistentVolumeClaim:
+          claimName: scheduler-volume-claim
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: scheduler-volume
+spec:
+  accessModes:
+  - ReadOnlyMany
+  capacity:
+    storage: 10Gi
+  hostPath:
+    path: /home/s010132/devel/eagleeye/data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: scheduler-volume-claim
+spec:
+  accessModes:
+  - ReadOnlyMany
+  resources:
+    requests:
+      storage: 5Gi
+  volumeMode: Filesystem
