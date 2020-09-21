@@ -23,6 +23,7 @@ spec:
       containers:
         - name: redis
           image: timwilliam/eagleeye.redis:1.0
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 6379
           volumeMounts:

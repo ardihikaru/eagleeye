@@ -34,6 +34,7 @@ spec:
       containers:
         - name: ews 
           image: timwilliam/eagleeye.webservice:1.0
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
           volumeMounts:
