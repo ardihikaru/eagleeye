@@ -38,7 +38,7 @@ class ReaderHandler(MyRedis):
         # Scheduler-service will ONLY handle a single stream, once it starts, ignore other input stream
         # TODO: To allow capturing multiple video streams (Future work)
 
-        is_configured = False
+        # is_configured = False
 
         channel = asab.Config["pubsub:channel"]["scheduler"]
         consumer = self.rc.pubsub()
@@ -50,10 +50,10 @@ class ReaderHandler(MyRedis):
                 # TODO: To tag the corresponding drone_id to identify where the image came from (Future work)
                 config = pubsub_to_json(item["data"])
 
-                if not is_configured:
-                    L.warning("Configure ZMQ for the first time.")
-                    is_configured = True
-                    await self.set_zmq_configurations()
+                # if not is_configured:
+                #     L.warning("Configure ZMQ for the first time.")
+                #     is_configured = True
+                #     await self.set_zmq_configurations()
 
                 # Run ONCE due to the current capability to capture only one video stream
                 # TODO: To allow capturing multiple video streams (Future work)

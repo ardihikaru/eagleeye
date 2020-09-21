@@ -19,7 +19,7 @@ class ReaderService(asab.Service):
         self.SubscriptionHandler.ExtractorService = app.get_service('scheduler.ExtractorService')
 
     async def start_subscription(self):
-        # await self.SubscriptionHandler.set_zmq_configurations()
+        await self.SubscriptionHandler.set_zmq_configurations()
         avail_nodes = self.SubscriptionHandler.ExtractorService.ZMQService.get_available_nodes()
         await self.SubscriptionHandler.ExtractorService.SchPolicyService.init_available_nodes(avail_nodes)
         await self.SubscriptionHandler.start()
