@@ -80,7 +80,7 @@ data:
     node = http://ews-service:8080/api/nodes
     latency = http://ews-service:8080/api/latency
     [node]
-    id = 5f61adaf413a4c8f1338f877
+    id = 5f6470ee4190dfb95261eb41
     name = 1
     candidate_selection = 1
     persistence_validation = 1
