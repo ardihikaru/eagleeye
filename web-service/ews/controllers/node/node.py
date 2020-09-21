@@ -191,7 +191,7 @@ class Node(MyRedis):
             self._update_available_nodes()
 
             node_data["id"] = inserted_data["id"]
-            node_data["idle"] = inserted_data["idle"]
+            # node_data["idle"] = inserted_data["idle"]
 
             # Generate a new Object-Detection-Service's site.conf file
             # self._config_node_generator(node_data)

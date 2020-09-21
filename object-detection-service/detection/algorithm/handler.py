@@ -58,8 +58,8 @@ class YOLOv3Handler(MyRedis):
     def _gen_node_info(self):
         return {
             "id": self.node_id,
-            "name": int(self.node_name),
-            "idle": asab.Config["node"]["idle"]
+            "name": int(self.node_name)
+            # "idle": asab.Config["node"]["idle"]
         }
 
     async def set_configuration(self):

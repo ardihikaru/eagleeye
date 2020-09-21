@@ -9,6 +9,7 @@ from ext_lib.redis.translator import redis_set
 from mongoengine import connect
 from mongoengine.connection import _get_db
 import logging
+from ews.controllers.node.node import Node as NodeController
 
 ###
 
@@ -45,4 +46,11 @@ class EagleEYEWebService(asab.Application):
 		self.add_module(RouteManagerModule)
 
 	async def initialize(self):
+		# Register one worker node as default available worker node
+		json_data = {
+			"candidate_selection": True,
+			"persistence_validation": True
+		}
+		NodeController().register(json_data)
+
 		L.warning("EagleEYE Web Service is running!")

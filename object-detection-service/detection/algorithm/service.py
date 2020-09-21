@@ -80,7 +80,7 @@ class DetectionAlgorithmService(asab.Service):
 
         # defining a params dict for the parameters to be sent to the API
         request_json = {
-            "pid": pid,
+            # "pid": pid,
             "channel": "node-" + node_id
         }
         headers = {"Content-Type": "application/json"}
