@@ -40,3 +40,5 @@ spec:
               readOnly: false
             - name: data-files
               mountPath: "/app/data"
+      imagePullSecrets:
+        - name: timwilliam-regcred

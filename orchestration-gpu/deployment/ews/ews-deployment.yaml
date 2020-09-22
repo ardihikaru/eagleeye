@@ -44,3 +44,5 @@ spec:
             - name: ews-dual-det-config
               mountPath: "/conf/dual-det"
               readOnly: false
+      imagePullSecrets:
+        - name: timwilliam-regcred

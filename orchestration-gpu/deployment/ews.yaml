@@ -157,6 +157,8 @@ spec:
         - mountPath: /conf/dual-det
           name: ews-dual-det-config
           readOnly: false
+      imagePullSecrets:
+      - name: timwilliam-regcred
       volumes:
       - configMap:
           items:

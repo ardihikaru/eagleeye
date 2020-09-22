@@ -28,3 +28,5 @@ spec:
           volumeMounts:
             - mountPath: /data/db
               name: mongo-volume
+      imagePullSecrets:
+        - name: timwilliam-regcred

@@ -252,6 +252,30 @@ metadata:
   name: scheduler-configmap
 ---
 apiVersion: v1
+data:
+  .dockerconfigjson: eyJhdXRocyI6eyJodHRwczovL2luZGV4LmRvY2tlci5pby92MS8iOnsidXNlcm5hbWUiOiJ0aW13aWxsaWFtIiwicGFzc3dvcmQiOiJWNzJZYzU3RGl4WWI2VzBhUnN5RDIiLCJlbWFpbCI6InRpbW90aHl3aWxsaWFtLmNzMDZnQGcyLm5jdHUuZWR1LnR3IiwiYXV0aCI6ImRHbHRkMmxzYkdsaGJUcFdOekpaWXpVM1JHbDRXV0kyVnpCaFVuTjVSREk9In19fQ==
+kind: Secret
+metadata:
+  creationTimestamp: "2020-09-22T05:09:11Z"
+  managedFields:
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:data:
+        .: {}
+        f:.dockerconfigjson: {}
+      f:type: {}
+    manager: kubectl
+    operation: Update
+    time: "2020-09-22T05:09:11Z"
+  name: timwilliam-regcred
+  namespace: default
+  resourceVersion: "485901"
+  selfLink: /api/v1/namespaces/default/secrets/timwilliam-regcred
+  uid: 8b4d3538-4af5-42c7-a649-43bb07595302
+type: kubernetes.io/dockerconfigjson
+---
+apiVersion: v1
 kind: Service
 metadata:
   name: ews-service
@@ -336,6 +360,8 @@ spec:
           readOnly: false
         - mountPath: /app/config_files
           name: config-files
+      imagePullSecrets:
+      - name: timwilliam-regcred
       restartPolicy: Always
       volumes:
       - configMap:
@@ -380,6 +406,8 @@ spec:
         - mountPath: /conf/dual-det
           name: ews-dual-det-config
           readOnly: false
+      imagePullSecrets:
+      - name: timwilliam-regcred
       volumes:
       - configMap:
           items:
@@ -421,6 +449,8 @@ spec:
         volumeMounts:
         - mountPath: /data/db
           name: mongo-volume
+      imagePullSecrets:
+      - name: timwilliam-regcred
       volumes:
       - name: mongo-volume
         persistentVolumeClaim:
@@ -452,6 +482,8 @@ spec:
         volumeMounts:
         - mountPath: /data
           name: redis-volume
+      imagePullSecrets:
+      - name: timwilliam-regcred
       volumes:
       - name: redis-volume
         persistentVolumeClaim:
@@ -486,6 +518,8 @@ spec:
           readOnly: false
         - mountPath: /app/data
           name: data-files
+      imagePullSecrets:
+      - name: timwilliam-regcred
       volumes:
       - configMap:
           items:

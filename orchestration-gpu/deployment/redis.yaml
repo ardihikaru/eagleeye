@@ -35,6 +35,8 @@ spec:
         volumeMounts:
         - mountPath: /data
           name: redis-volume
+      imagePullSecrets:
+      - name: timwilliam-regcred
       volumes:
       - name: redis-volume
         persistentVolumeClaim:
