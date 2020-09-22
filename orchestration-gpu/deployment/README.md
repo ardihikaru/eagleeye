@@ -1,7 +1,8 @@
 
+
  # NCTU EagleEYEv1.5 Orchestration
 This document serves as a guidance to deploy the NCTU's EagleEYEv1.5 by using Kubernetes.
-- Document version: 20200921
+- *Document version: 20200922*
 
 NCTU EagleEYEv1.5 consists of 4 micro-services:
 1. Database service (`mongo` and `redis`)
@@ -26,6 +27,7 @@ We structure these micro-services like this:
 	ews-service.yaml
 	kustomization.yaml
    ews.yaml
+   kustomization.yaml
    /mongo
 	kustomization.yaml
 	mongo-deployment.yaml
@@ -50,11 +52,12 @@ We structure these micro-services like this:
 	scheduler-stream-service.yaml
    scheduler.yaml
    start-ee.yaml
+   timwilliam-regcred.yaml
 ```
 - We separate the features that each micro-services uses and put them under a folder with the corresponding micro-service name.
-- To generate the K8S yaml file, we use `kustomization`
+- To generate the K8S yaml file, we use `Kustomization`
 	- Generate the yaml file by running the following command, e.g.: 
-		- `$ kubectl kustomize build detection > detection.yaml`
+		- `$ kubectl kustomize ./detection > detection.yaml`
 	- To generate the final yaml file which is `start-ee.yaml`, we use the command:
 		- `$ kubectl kustomize . > start-ee.yaml`
 	- **Note that you have to generate a new yaml file every time a modification is made!!!**
@@ -68,26 +71,6 @@ We structure these micro-services like this:
 
 ## Deployment Steps
 *Note that the deployment below should be done in this exact step!*
-
-#### Login to the Docker Hub account
-
-First, login to the dummy Docker Hub account so that we can download the image.
-- `$ docker login` 
-- **Username:** `crashdummydonny`
-- **Password:** `@1zbDp9l@2J$zeFL`
-
-#### Pull/Load the Docker images
-
-Download the images from Docker Hub (*need login with the above credentials*):
-- `$ docker pull timwilliam/eagleeye.scheduler:1.0`
-- `$ docker pull timwilliam/eagleeye.redis:1.0`
-- `$ docker pull timwilliam/eagleeye.webservice1.0`
-- `$ docker pull timwilliam/eagleeye.detection:1.0`
-
-Or you can also do `docker load` (*no need to docker login*):
-- Download the saved docker images from this [Google Drive link](https://drive.google.com/drive/folders/1rKNg4dry7zVALIYYSordI8G3CE5iE4K0?usp=sharing).
-	- You should be able to download 4 `*.tar` files namely `detection.tar`, `redis.tar`, `scheduler.tar`, and `webservice.tar`.
-- **Remember to update the `*-deployment.yaml` file as necessary.**
 
 #### Deploy
  1. Download the extra files
@@ -117,6 +100,12 @@ Or you can also do `docker load` (*no need to docker login*):
 4. Deploy EagleEYEv1.5
 	- `$ kubectl apply -f start-ee.yaml`
 
+#### Restore the Docker images with `docker load`
+
+- Download the saved docker images from this [Google Drive link](https://drive.google.com/drive/folders/1rKNg4dry7zVALIYYSordI8G3CE5iE4K0?usp=sharing).
+	- You should be able to download 4 `*.tar` files namely `detection.tar`, `redis.tar`, `scheduler.tar`, and `webservice.tar`.
+- **Remember to update the `*-deployment.yaml` file as necessary.**
+
 #### Notes
 - At this moment, a successful deployment means that you will be able to see 4 pods running which is `detection`, `ews`, `redis`, and `mongo`.
 - The `scheduler` pod is not running due to error, we are working on a solution right now.
@@ -124,10 +113,12 @@ Or you can also do `docker load` (*no need to docker login*):
 
 #### Kubernetes Features Used
 - Deployment
-- PersistentVolume, ConfigMap
+- PersistentVolume
+- ConfigMap, Secret
 - Service, NodePort (*we plan to replace this with Load Balancer in the future*)
 - Probe
 - Horizontal Pod Autoscaler (*we have not used HPA yet, but plan to use it in the future*)
 - Kustomization
+
 
 
