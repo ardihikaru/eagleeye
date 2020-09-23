@@ -6,16 +6,19 @@ data:
   detection.conf: |
     [general]
     include = /conf/dual-det/site.conf
+
     [redis]
     hostname = localhost
     port = 6379
     password = 
     db = 0
+
     [asab:storage]
     type = mongodb
     mongodb_database = eagleeyeDB
     mongodb_uri = mongodb://localhost:27017
     mongodb_host = localhost
+
     [objdet:yolo]
     output = outputs/
     source_folder_prefix = out
@@ -38,9 +41,11 @@ data:
     cv_out = 1
     window_size_height = 1920
     window_size_width = 1080
+
     [eagleeye:api]
     node = http://localhost:8080/api/nodes
     latency = http://localhost:8080/api/latency
+
     [node]
     channel = 
     consumer = 
@@ -51,38 +56,45 @@ data:
     idle =
     created_at =
     updated_at =
+    redis_id_key = register-node-id
+    redis_name_key = register-node-name
+    redis_pcs_key = register-node-pcs
+    redis_pv_key = register-node-pv
+
     [thread]
     num_executor = 1
+
     [bbox_config]
     pih_label_cand = PiH
     pih_label = PiH
     pih_color = [198, 50, 13]
     person_color = [191, 96, 165]
     flag_color = [100, 188, 70]
+
     [zmq]
     sender_uri = tcp://127.0.0.1:5551
+
     [persistence_detection]
     persistence_window = 10
     tolerance_limit_percentage = 0.3
   site.conf: |
     [redis]
-    hostname = redis-service
+    hostname=redis
     password =
+
     [asab:storage]
-    mongodb_uri = mongodb://mongo-service:27017
-    mongodb_host = mongo-service
+    mongodb_uri = mongodb://mongodb:27017
+    mongodb_host = mongodb
+
+    [eagleeye:api]
+    node=http://ews:8080/api/nodes
+    latency = http://ews:8080/api/latency
+
     [objdet:yolo]
-    output = outputs/
+    output = /app/outputs/
     names = /app/config_files/yolo/data/coco.names
     cfg = /app/config_files/yolo/cfg/yolo-obj-v5.cfg
     weights = /app/config_files/yolo/weights/TW-01.weights
-    [eagleeye:api]
-    node = http://ews-service:8080/api/nodes
-    latency = http://ews-service:8080/api/latency
-    [node]
-    id = 5f6470ee4190dfb95261eb41
-    name = 1
-    candidate_selection = 1
-    persistence_validation = 1
+
     [zmq]
-    sender_uri = tcp://scheduler-service:5551
+    sender_uri = tcp://scheduler:5551

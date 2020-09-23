@@ -5,28 +5,22 @@ metadata:
 data:
   site.conf: |
     [redis]
-    hostname = redis-service
-    password = 
+    hostname=redis
+    password =
 
     [asab:storage]
-    mongodb_uri = mongodb://mongo-service:27017
-    mongodb_host = mongo-service
+    mongodb_uri = mongodb://mongodb:27017
+    mongodb_host = mongodb
+
+    [eagleeye:api]
+    node=http://ews:8080/api/nodes
+    latency = http://ews:8080/api/latency
 
     [objdet:yolo]
-    output = outputs/
+    output = /app/outputs/
     names = /app/config_files/yolo/data/coco.names
     cfg = /app/config_files/yolo/cfg/yolo-obj-v5.cfg
     weights = /app/config_files/yolo/weights/TW-01.weights
 
-    [eagleeye:api]
-    node = http://ews-service:8080/api/nodes
-    latency = http://ews-service:8080/api/latency
-
-    [node]
-    id = 5f60cd48107af97bc86570e6
-    name = 1
-    candidate_selection = 1
-    persistence_validation = 1
-
     [zmq]
-    sender_uri = tcp://scheduler-service:5551
+    sender_uri = tcp://scheduler:5551
