@@ -6,5 +6,5 @@ resources:
   - mongo.yaml
   - redis.yaml
   - ews.yaml
-  - scheduler.yaml
   - detection.yaml
+  - scheduler.yaml

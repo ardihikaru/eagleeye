@@ -70,24 +70,32 @@ data:
     # this `sender_uri` is not used at the moment. (I guess)
     sender_uri=*
     sender_host=*
+    recv_host_prefix=dual-det
+
+    [orchestration]
+    mode=native
   site.conf: |
     [redis]
-    hostname=redis-service
+    hostname=redis
     password =
 
     [asab:storage]
     type = mongodb
     mongodb_database = eagleeyeDB
-    mongodb_uri = mongodb://mongo-service:27017
-    mongodb_host = mongo-service
+    mongodb_uri = mongodb://mongodb:27017
+    mongodb_host = mongodb
 
     [eagleeye:api]
-    node=http://ews-service:8080/api/nodes
-    latency = http://ews-service:8080/api/latency
+    node=http://ews:8080/api/nodes
+    latency = http://ews:8080/api/latency
 
     [zmq]
     sender_uri=*
     sender_host=*
+    recv_host_prefix=dual-det
+
+    [orchestration]
+    mode=docker
 kind: ConfigMap
 metadata:
   name: scheduler-configmap
