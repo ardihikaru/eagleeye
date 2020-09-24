@@ -161,6 +161,7 @@ class YOLOv3Handler(MyRedis):
                 # TODO: To start TCP Connection and be ready to capture the image from [Scheduler Service]
                 # TODO: To have a tag as the image identifier, i.e. DroneID
                 # TODO: To add a timeout, if no response found after a `timeout` time, ignore this (Future work)
+                L.warning("Try to collect Image DATA.")
                 is_success, frame_id, t0_zmq, img = await self.DetectionAlgorithmService.get_img()
                 L.warning("Image DATA is collected.")
                 # print(">>>> RECEIVED DATA:", is_success, frame_id, t0_zmq, img.shape)
