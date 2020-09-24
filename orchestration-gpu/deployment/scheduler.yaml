@@ -142,7 +142,7 @@ spec:
       name: scheduler-deploy
     spec:
       containers:
-      - image: timwilliam/eagleeye.scheduler:1.0
+      - image: 5g-dive/eagleeye/scheduler-service:1.0
         imagePullPolicy: IfNotPresent
         name: scheduler-deploy
         ports:

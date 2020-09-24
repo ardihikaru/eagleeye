@@ -72,7 +72,8 @@ data:
     flag_color = [100, 188, 70]
 
     [zmq]
-    sender_uri = tcp://127.0.0.1:5551
+    sender_host = localhost
+    sender_prefix_port = 555
 
     [persistence_detection]
     persistence_window = 10
@@ -97,4 +98,5 @@ data:
     weights = /app/config_files/yolo/weights/TW-01.weights
 
     [zmq]
-    sender_uri = tcp://scheduler-service:5551
+    sender_host = scheduler-service
+    sender_prefix_port = 555

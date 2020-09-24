@@ -101,14 +101,28 @@ data:
     mongodb_uri = mongodb://mongo-service:27017
     mongodb_host = mongo-service
 
-    [eagleeye:api]
-    node=http://ews-service:8080/api/nodes
-    latency = http://ews-service:8080/api/latency
-
     [zmq]
-    sender_uri=*
-    sender_host=*
-    recv_host_prefix=detection-service
+    sender_uri=scheduler-service
 
-    [orchestration]
-    mode=docker
+    # export results
+    [export]
+    graph_path=/home/s010132/devel/eagleeye/output/graph/
+    csv_path=/home/s010132/devel/eagleeye/output/csv/
+
+    [objdet:yolo]
+    names = /app/config_files/yolo/data/coco.names
+    cfg = /app/config_files/yolo/cfg/yolo-obj-v5.cfg
+    weights = /app/config_files/yolo/weights/TW-01.weights
+
+    [eagleeye:api]
+    ews_host=ews-service
+
+    [config:builder]
+    path=/conf/dual-det/site.conf
+
+    [eagleeye:realtime]
+    ews_rt_host=ews-service
+
+    [streaming:config]
+    w=640
+    h=480

@@ -23,4 +23,5 @@ data:
     weights = /app/config_files/yolo/weights/TW-01.weights
 
     [zmq]
-    sender_uri = tcp://scheduler-service:5551
+    sender_host = scheduler-service
+    sender_prefix_port = 555
