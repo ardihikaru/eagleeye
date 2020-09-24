@@ -2,12 +2,12 @@
 ## How to run in docker 
 1. `eagleeye` Network
 ```
-docker network create -d bridge eagleeye`
+docker network create -d bridge eagleeye
 ```
 
 2. MongoDB
 ```
-docker run -d -p 27017:27017 --name mongodb --network eagleeye mongo
+docker run -d -p 27017:27017 --name mongo-service --network eagleeye mongo
 ```
 
 3. RedisDB
@@ -15,7 +15,7 @@ docker run -d -p 27017:27017 --name mongodb --network eagleeye mongo
 docker run -d \
   -h redis \
   -p 6379:6379 \
-  --name redis \
+  --name redis-service \
   --restart always \
   --network eagleeye \
   5g-dive/redis:1.0 /bin/sh -c 'redis-server --appendonly yes'
@@ -23,7 +23,7 @@ docker run -d \
 
 4. WEB SERVICE
 ```
-docker run --name ews -d \
+docker run --name ews-service -d \
   --network eagleeye \
   -p 8080:8080 \
   -v /home/s010132/devel/eagleeye/web-service/etc/ews.conf:/conf/ews/ews.conf \
@@ -33,7 +33,7 @@ docker run --name ews -d \
 
 5. DUAL DET
 ```
-docker run --runtime=nvidia --name dual-det-1 -d \
+docker run --runtime=nvidia --name detection-service-1 -d \
   --network eagleeye \
   -v /home/s010132/devel/eagleeye/object-detection-service/etc/detection.conf:/conf/dual-det/detection.conf \
   -v /home/s010132/devel/eagleeye/site_conf_files/object-detection-service/site.conf:/conf/dual-det/site.conf \
@@ -42,7 +42,7 @@ docker run --runtime=nvidia --name dual-det-1 -d \
 
 6. SCHEDULER
 ```
-docker run --name scheduler -d \
+docker run --name scheduler-service -d \
   --network eagleeye \
   -v /home/s010132/devel/eagleeye/scheduler-service/etc/scheduler.conf:/conf/scheduler/scheduler.conf \
   -v /home/s010132/devel/eagleeye/site_conf_files/scheduler-service/site.conf:/conf/scheduler/site.conf \
