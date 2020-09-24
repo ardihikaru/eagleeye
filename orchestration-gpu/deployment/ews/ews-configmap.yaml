@@ -92,23 +92,23 @@ data:
     redis_pv_key = register-node-pv
   site.conf: |
     [redis]
-    hostname=redis
+    hostname=redis-service
     password =
 
     [asab:storage]
     type = mongodb
     mongodb_database = eagleeyeDB
-    mongodb_uri = mongodb://mongodb:27017
-    mongodb_host = mongodb
+    mongodb_uri = mongodb://mongo-service:27017
+    mongodb_host = mongo-service
 
     [eagleeye:api]
-    node=http://ews:8080/api/nodes
-    latency = http://ews:8080/api/latency
+    node=http://ews-service:8080/api/nodes
+    latency = http://ews-service:8080/api/latency
 
     [zmq]
     sender_uri=*
     sender_host=*
-    recv_host_prefix=dual-det
+    recv_host_prefix=detection-service
 
     [orchestration]
     mode=docker

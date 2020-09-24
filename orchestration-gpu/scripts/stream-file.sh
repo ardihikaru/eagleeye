@@ -1,4 +1,4 @@
-curl --location --request POST 'http://127.0.0.1:8080/api/stream/live' \
+curl --location --request POST 'http://127.0.0.1:31000/api/stream/live' \
 --data-raw '{
     "algorithm": "YOLOv3",
     "stream": true,

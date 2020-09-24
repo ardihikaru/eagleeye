@@ -79,16 +79,16 @@ data:
     tolerance_limit_percentage = 0.3
   site.conf: |
     [redis]
-    hostname=redis
+    hostname=redis-service
     password =
 
     [asab:storage]
-    mongodb_uri = mongodb://mongodb:27017
-    mongodb_host = mongodb
+    mongodb_uri = mongodb://mongo-service:27017
+    mongodb_host = mongo-service
 
     [eagleeye:api]
-    node=http://ews:8080/api/nodes
-    latency = http://ews:8080/api/latency
+    node=http://ews-service:8080/api/nodes
+    latency = http://ews-service:8080/api/latency
 
     [objdet:yolo]
     output = /app/outputs/
@@ -97,4 +97,4 @@ data:
     weights = /app/config_files/yolo/weights/TW-01.weights
 
     [zmq]
-    sender_uri = tcp://scheduler:5551
+    sender_uri = tcp://scheduler-service:5551
