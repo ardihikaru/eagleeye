@@ -131,6 +131,7 @@ class YOLOv3Handler(MyRedis):
             else:
                 # TODO: To tag the corresponding drone_id to identify where the image came from (Future work)
                 image_info = pubsub_to_json(item["data"])
+                L.warning("Image INFORMATION is collected.")
                 # print(" >>> image_info:", image_info)
 
                 # # assign shm value: ONCE only
@@ -161,6 +162,7 @@ class YOLOv3Handler(MyRedis):
                 # TODO: To have a tag as the image identifier, i.e. DroneID
                 # TODO: To add a timeout, if no response found after a `timeout` time, ignore this (Future work)
                 is_success, frame_id, t0_zmq, img = await self.DetectionAlgorithmService.get_img()
+                L.warning("Image DATA is collected.")
                 # print(">>>> RECEIVED DATA:", is_success, frame_id, t0_zmq, img.shape)
                 t1_zmq = (time.time() - t0_zmq) * 1000  # TODO: This is still INVALID! it got mixed up with Det latency!
                 # print('\n[%s] Latency for Receiving Image ZMQ (%.3f ms)' % (get_current_time(), t1_zmq))
