@@ -178,6 +178,8 @@ class ExtractorService(asab.Service):
 				node_channel = senders["node"][sel_node_id]["channel"]
 				node_name = senders["node"][sel_node_id]["name"]
 
+				L.warning("NodeID=%s; NodeChannel=%s; NodeName=%s" % (str(node_id), node_channel, node_name))
+
 				# Save Scheduling latency
 				await self._save_latency(
 					self.frame_id, t1_sched_lat, "Round-Robin", "scheduling", "Scheduling", node_id, node_name
