@@ -241,6 +241,7 @@ class YOLOv3Handler(MyRedis):
 
                 # Set this node as available again
                 redis_set(self.rc, redis_key, True)
+                L.warning("[DEBUG] Status of this Node: %s" % str(redis_get(self.rc, redis_key)))
 
                 # Capture and store e2e latency
                 t1_e2e_latency = (time.time() - t0_e2e_latency) * 1000
