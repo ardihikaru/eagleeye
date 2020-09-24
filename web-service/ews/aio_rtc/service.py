@@ -9,7 +9,6 @@ import platform
 
 pcs = set()
 ROOT = os.path.dirname(__file__) + "/http_stream_files/"
-# print(">> ROOT:", ROOT)
 
 
 class AIORTCService(asab.Service):
@@ -20,8 +19,7 @@ class AIORTCService(asab.Service):
     def __init__(self, app, service_name="ews.aio-rtc-service"):
         super().__init__(app, service_name)
 
-    async def on_shutdown(self, app):
-    # def on_shutdown(self, app):
+    async def on_shutdown(self):
         # close peer connections
         coros = [pc.close() for pc in pcs]
         await asyncio.gather(*coros)
@@ -38,6 +36,7 @@ class AIORTCService(asab.Service):
     async def offer(self, request):
         params = await request.json()
         offer = RTCSessionDescription(sdp=params["sdp"], type=params["type"])
+        print(params)
 
         pc = RTCPeerConnection()
         pcs.add(pc)
@@ -50,11 +49,12 @@ class AIORTCService(asab.Service):
                 pcs.discard(pc)
 
         # open media source
-        stream_id = params["data"]["stream_id"]
-        if stream_id:
+        if "stream_source" in params["data"]:
             # Get stream source
-            stream_source = None
-            player = MediaPlayer(stream_source)
+            player = MediaPlayer(params["data"]["stream_source"])
+        # elif "sub_channel" in params["data"]:
+        #     # Get stream source
+        #     player = MediaPlayer(params["data"]["stream_id"])
         else:
             options = {
                 "framerate": asab.Config["streaming:config"]["fps"],
@@ -67,8 +67,6 @@ class AIORTCService(asab.Service):
                 player = MediaPlayer("default:none", format="avfoundation", options=options)
             else:
                 player = MediaPlayer("/dev/video0", format="v4l2", options=options)
-                # player = MediaPlayer("/dev/video0", format="mjpeg", options=options)
-                # player = MediaPlayer("/dev/video0", format="yuyv422", options=options)
 
         await pc.setRemoteDescription(offer)
         for t in pc.getTransceivers():
