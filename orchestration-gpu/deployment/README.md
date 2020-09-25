@@ -65,11 +65,11 @@ NCTU EagleEYEv1.5 consists of 4 micro-services:
 		- `$ kubectl apply -f detection.yaml`
 	8. Or you can also run this magic script to do all the above magically :)
 		- `$ sh start-eagleeye.sh`
-#### Restore the Docker images with `docker load`
 
-- Download the saved docker images from this [Google Drive link](https://drive.google.com/drive/folders/1rKNg4dry7zVALIYYSordI8G3CE5iE4K0?usp=sharing).
-	- You should be able to download 4 `*.tar` files namely `detection.tar`, `redis.tar`, `scheduler.tar`, and `webservice.tar`.
-- **Remember to update the `*-deployment.yaml` file as necessary.**
+#### Testing
+- To do the testing, go to the `/scripts` folder and run the following:
+	- `$ sh stream-file.sh`
+- If all goes well, you should be able to see some information about the PiH Detection in the logs of `ews-deploy`, `scheduler-deploy`, and`detection-deploy`
 
 #### Notes
 - At this moment, a successful deployment means that you will be able to see 4 pods running which is `detection`, `ews`, `redis`, and `mongo`.
