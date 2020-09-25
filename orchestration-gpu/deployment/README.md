@@ -2,7 +2,7 @@
 
  # NCTU EagleEYEv1.5 Orchestration
 This document serves as a guidance to deploy the NCTU's EagleEYEv1.5 by using Kubernetes.
-- *Document version: 20200922*
+- *Document version: 20200925*
 
 NCTU EagleEYEv1.5 consists of 4 micro-services:
 1. Database service (`mongo` and `redis`)
@@ -10,56 +10,9 @@ NCTU EagleEYEv1.5 consists of 4 micro-services:
 3. EagleEYE scheduler service (`scheduler`)
 4. EagleEYE detection service (`detection`)
 
-We structure these micro-services like this:			
-```
- /eagleeye
-   /detection
-	detection-configmap.yaml
-	detection-deployment.yaml
-	detection-persistent-volume-claim.yaml
-	detection-persistent-volume.yaml
-	kustomization.yaml
-   detection.yaml
-   /ews
-	ews-configmap.yaml
-	ews-deployment.yaml
-	ews-dual-det-configmap.yaml
-	ews-service.yaml
-	kustomization.yaml
-   ews.yaml
-   kustomization.yaml
-   /mongo
-	kustomization.yaml
-	mongo-deployment.yaml
-	mongo-persistent-volume-claim.yaml
-	mongo-persistent-volume.yaml
-	mongo-service.yaml
-   mongo.yaml
-   /redis
-	kustomization.yaml
-	redis-deployment.yaml
-	redis-persistent-volume-claim.yaml
-	redis-persistent-volume.yaml
-	redis-service.yaml
-   redis.yaml
-   /scheduler
-	kustomization.yaml
-	scheduler-configmap.yaml
-	scheduler-deployment.yaml
-	scheduler-persistent-volume-claim.yaml
-	scheduler-persistent-volume.yaml
-	scheduler-service.yaml
-	scheduler-stream-service.yaml
-   scheduler.yaml
-   start-ee.yaml
-   timwilliam-regcred.yaml
-```
-- We separate the features that each micro-services uses and put them under a folder with the corresponding micro-service name.
 - To generate the K8S yaml file, we use `Kustomization`
 	- Generate the yaml file by running the following command, e.g.: 
 		- `$ kubectl kustomize ./detection > detection.yaml`
-	- To generate the final yaml file which is `start-ee.yaml`, we use the command:
-		- `$ kubectl kustomize . > start-ee.yaml`
 	- **Note that you have to generate a new yaml file every time a modification is made!!!**
 
 ## Requirements
@@ -92,14 +45,26 @@ We structure these micro-services like this:
 	-  For `scheduler` service (`scheduler-persistent-volume.yaml`)
 		 - Update the `hostPath` to use the current path of `/data` (*from step 1*) on your local machine
 3. Update the yaml file
-	- `$ kubectl kustomize ./detection > detection.yaml`
-	- `$ kubectl kustomize ./mongo > mongo.yaml`
-	- `$ kubectl kustomize ./redis > redis.yaml`
-	- `$ kubectl kustomize ./scheduler > scheduler.yaml`
-	- `$ kubectl kustomize . > start-ee.yaml`
-4. Deploy EagleEYEv1.5
-	- `$ kubectl apply -f start-ee.yaml`
-
+	- `$ sh kustomize-renew.sh`
+4. Deploy EagleEYEv1.5 with the following order
+	1. Create `Secret` to allow for image download from Docker Hub (optional):
+		- `$ kubectl apply -f timwilliam-regcred.yaml`
+	2. Create `Volume` and `VolumeClaim`:
+		- `$ kubectl apply -f volume.yaml`
+		- `$ kubectl apply -f volume-claim.yaml`
+	3. Create `Service` to allow for communication between `Pods`:
+		- `$ kubectl apply -f service.yaml`
+	4. Create the `redis-reployment` and `mongo-deployment`
+		- `$ kubectl apply -f redis.yaml`
+		- `$ kubectl apply -f mongo.yaml`
+	5. Create `ews-deployment` (Web Service):
+		- `$ kubectl apply -f ews.yaml`
+	6. Create `scheduler-deployment`:
+		- `$ kubectl apply -f scheduler.yaml`
+	7. Create `detection-deployment`:
+		- `$ kubectl apply -f detection.yaml`
+	8. Or you can also run this magic script to do all the above magically :)
+		- `$ sh start-eagleeye.sh`
 #### Restore the Docker images with `docker load`
 
 - Download the saved docker images from this [Google Drive link](https://drive.google.com/drive/folders/1rKNg4dry7zVALIYYSordI8G3CE5iE4K0?usp=sharing).
@@ -119,6 +84,3 @@ We structure these micro-services like this:
 - Probe
 - Horizontal Pod Autoscaler (*we have not used HPA yet, but plan to use it in the future*)
 - Kustomization
-
-
-
