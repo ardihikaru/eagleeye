@@ -3,7 +3,4 @@ kind: Kustomization
 
 resources:
   - detection-configmap.yaml
-  - detection-persistent-volume.yaml
-  - detection-persistent-volume-claim.yaml
-  - detection-service.yaml
   - detection-deployment.yaml

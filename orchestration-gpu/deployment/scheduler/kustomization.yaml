@@ -3,8 +3,4 @@ kind: Kustomization
 
 resources:
   - scheduler-configmap.yaml
-  - scheduler-persistent-volume.yaml
-  - scheduler-persistent-volume-claim.yaml
-  - scheduler-service.yaml
-  - scheduler-stream-service.yaml
   - scheduler-deployment.yaml

@@ -4,6 +4,4 @@ kind: Kustomization
 resources:
   - ews-configmap.yaml
   - ews-dual-det-configmap.yaml
-  - ews-ext-service.yaml
-  - ews-service.yaml
   - ews-deployment.yaml

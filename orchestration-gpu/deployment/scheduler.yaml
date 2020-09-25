@@ -100,30 +100,6 @@ kind: ConfigMap
 metadata:
   name: scheduler-configmap
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: scheduler-service
-spec:
-  ports:
-  - port: 5551
-    targetPort: 5551
-  selector:
-    name: scheduler-deploy
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: scheduler-stream-service
-spec:
-  externalIPs:
-  - 140.113.86.92
-  ports:
-  - name: rtmp
-    port: 1935
-    protocol: TCP
-    targetPort: 1935
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -167,27 +143,3 @@ spec:
       - name: data-files
         persistentVolumeClaim:
           claimName: scheduler-volume-claim
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: scheduler-volume
-spec:
-  accessModes:
-  - ReadOnlyMany
-  capacity:
-    storage: 10Gi
-  hostPath:
-    path: /home/s010132/devel/eagleeye/data
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: scheduler-volume-claim
-spec:
-  accessModes:
-  - ReadOnlyMany
-  resources:
-    requests:
-      storage: 5Gi
-  volumeMode: Filesystem
