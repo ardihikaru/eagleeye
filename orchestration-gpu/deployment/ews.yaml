@@ -173,7 +173,7 @@ spec:
       name: ews-deploy
     spec:
       containers:
-      - image: 5g-dive/eagleeye/web-service:1.0
+      - image: timwilliam/eagleeye.webservice:1.0
         imagePullPolicy: IfNotPresent
         name: ews
         ports:

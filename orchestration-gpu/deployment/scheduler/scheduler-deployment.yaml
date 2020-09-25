@@ -30,8 +30,8 @@ spec:
             claimName: scheduler-volume-claim
       containers:
         - name: scheduler-deploy
-          image: 5g-dive/eagleeye/scheduler-service:1.0
-          #image: timwilliam/eagleeye.scheduler:1.0
+          #image: 5g-dive/eagleeye/scheduler-service:1.0
+          image: timwilliam/eagleeye.scheduler:1.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 5551
