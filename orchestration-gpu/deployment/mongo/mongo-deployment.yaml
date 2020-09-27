@@ -1,0 +1,30 @@
+# MongoDB
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-deploy
+  labels:
+    name: mongo-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mongo-deploy
+  template:
+    metadata:
+      name: mongo-deploy
+      labels:
+        name: mongo-deploy
+    spec:
+      volumes:
+        - name: mongo-volume
+          persistentVolumeClaim:
+              claimName: mongo-volume-claim
+      containers:
+        - name: mongo
+          image: mongo:4.4.0
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - mountPath: /data/db
+              name: mongo-volume

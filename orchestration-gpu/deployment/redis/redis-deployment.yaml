@@ -1,0 +1,33 @@
+# Redis
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-deploy
+  labels:
+    name: redis-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: redis-deploy
+  template:
+    metadata:
+      name: redis-deploy
+      labels:
+        name: redis-deploy
+    spec:
+      volumes:
+        - name: redis-volume
+          persistentVolumeClaim:
+            claimName: redis-volume-claim
+      containers:
+        - name: redis
+          image: timwilliam/eagleeye.redis:1.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 6379
+          volumeMounts:
+            - name: redis-volume
+              mountPath: /data
+      imagePullSecrets:
+        - name: timwilliam-regcred

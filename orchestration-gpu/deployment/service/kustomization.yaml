@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - detection-service.yaml
+  - ews-ext-service.yaml
+  - ews-service.yaml
+  - mongo-service.yaml
+  - redis-service.yaml
+  - scheduler-service.yaml
+  - scheduler-stream-service.yaml

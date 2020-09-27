@@ -1,0 +1,128 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ews-configmap
+data:
+  ews.conf: |
+    [general]
+    include = /conf/ews/site.conf
+
+    [eagleeye:api]
+    listen=0.0.0.0:8080
+    api_uri=http://localhost:8080/api/
+    ews_host=localhost
+
+    [eagleeye:realtime]
+    listen=0.0.0.0:8081
+    port=8081
+    ews_rt_host=localhost
+
+    [streaming:config]
+    fps=30
+    w=640
+    #w=1280
+    #w=1080
+    h=480
+    #h=720
+
+    [clients]
+    source_ip=http://localhost:3000
+
+    [thread]
+    num_executor=1
+
+    [jwt]
+    secret_key="B1ismiLLa4hH-TYFIFvi6f"
+    algorithm=HS256
+    # expired in 6 hours
+    exp_delta_seconds=21600
+
+    [redis]
+    hostname=localhost
+    port=6379
+    password=
+    db=0
+    total_worker_key=total_worker
+
+    [asab:storage]
+    type = mongodb
+    mongodb_database = eagleeyeDB
+    mongodb_uri = mongodb://localhost:27017
+    mongodb_host = localhost
+
+    [pubsub:channel]
+    scheduler=scheduler
+    node=node
+
+    [pagination]
+    limit=10
+    offset=0
+
+    # output
+    fourcc=mp4v
+    dump_raw_img=0
+    dump_bbox_img=0
+    dump_crop_img=0
+    dump_bbox_txt=0
+    txt_format=cartucho
+    # txt_format=default
+
+    # export results
+    [export]
+    graph_path=../output/graph/
+    csv_path=../output/csv/
+
+    [config:builder]
+    path=./../object-detection-service/etc/site.conf
+
+    [zmq]
+    sender_uri=127.0.0.1
+
+    # This value will be overrided inside site.conf
+    [objdet:yolo]
+    output=outputs/
+    names= /home/ardi/devel/nctu/IBM-Lab/eagleeye/object-detection-service/config_files/yolo/data/coco.names
+    cfg=/home/ardi/devel/nctu/IBM-Lab/eagleeye/object-detection-service/config_files/yolo/cfg/yolo-obj-v5.cfg
+    weights=/home/ardi/devel/nctu/IBM-Lab/eagleeye/object-detection-service/config_files/yolo/weights/TW-01.weights
+
+    [node]
+    redis_id_key = register-node-id
+    redis_name_key = register-node-name
+    redis_pcs_key = register-node-pcs
+    redis_pv_key = register-node-pv
+  site.conf: |
+    [redis]
+    hostname=redis-service
+    password =
+
+    [asab:storage]
+    type = mongodb
+    mongodb_database = eagleeyeDB
+    mongodb_uri = mongodb://mongo-service:27017
+    mongodb_host = mongo-service
+
+    [zmq]
+    sender_uri=scheduler-service
+
+    # export results
+    [export]
+    graph_path=/home/s010132/devel/eagleeye/output/graph/
+    csv_path=/home/s010132/devel/eagleeye/output/csv/
+
+    [objdet:yolo]
+    names = /app/config_files/yolo/data/coco.names
+    cfg = /app/config_files/yolo/cfg/yolo-obj-v5.cfg
+    weights = /app/config_files/yolo/weights/TW-01.weights
+
+    [eagleeye:api]
+    ews_host=ews-service
+
+    [config:builder]
+    path=/conf/dual-det/site.conf
+
+    [eagleeye:realtime]
+    ews_rt_host=ews-service
+
+    [streaming:config]
+    w=640
+    h=480

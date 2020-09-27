@@ -1,0 +1,45 @@
+# Scheduler
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scheduler-deploy
+  labels:
+    name: scheduler-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: scheduler-deploy
+  template:
+    metadata:
+      name: scheduler-deploy
+      labels:
+        name: scheduler-deploy
+    spec:
+      volumes:
+        - name: scheduler-config
+          configMap:
+            name: scheduler-configmap
+            items:
+            - key: "scheduler.conf"
+              path: "scheduler.conf"
+            - key: "site.conf"
+              path: "site.conf"
+        - name: data-files
+          persistentVolumeClaim:
+            claimName: scheduler-volume-claim
+      containers:
+        - name: scheduler-deploy
+          #image: 5g-dive/eagleeye/scheduler-service:1.0
+          image: timwilliam/eagleeye.scheduler:1.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5551
+          volumeMounts:
+            - name: scheduler-config
+              mountPath: "/conf/scheduler"
+              readOnly: false
+            - name: data-files
+              mountPath: "/app/data"
+      imagePullSecrets:
+        - name: timwilliam-regcred
