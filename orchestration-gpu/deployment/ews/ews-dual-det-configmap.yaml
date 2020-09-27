@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ews-dual-det-configmap
+data:
+  site.conf: |
+    [redis]
+    hostname=redis-service
+    password =
+
+    [asab:storage]
+    mongodb_uri = mongodb://mongo-service:27017
+    mongodb_host = mongo-service
+
+    [eagleeye:api]
+    node=http://ews-service:8080/api/nodes
+    latency = http://ews-service:8080/api/latency
+
+    [objdet:yolo]
+    output = /app/outputs/
+    names = /app/config_files/yolo/data/coco.names
+    cfg = /app/config_files/yolo/cfg/yolo-obj-v5.cfg
+    weights = /app/config_files/yolo/weights/TW-01.weights
+
+    [zmq]
+    sender_host = scheduler-service
+    sender_prefix_port = 555

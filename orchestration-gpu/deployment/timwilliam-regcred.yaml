@@ -1,0 +1,23 @@
+apiVersion: v1
+data:
+  .dockerconfigjson: eyJhdXRocyI6eyJodHRwczovL2luZGV4LmRvY2tlci5pby92MS8iOnsidXNlcm5hbWUiOiJ0aW13aWxsaWFtIiwicGFzc3dvcmQiOiJWNzJZYzU3RGl4WWI2VzBhUnN5RDIiLCJlbWFpbCI6InRpbW90aHl3aWxsaWFtLmNzMDZnQGcyLm5jdHUuZWR1LnR3IiwiYXV0aCI6ImRHbHRkMmxzYkdsaGJUcFdOekpaWXpVM1JHbDRXV0kyVnpCaFVuTjVSREk9In19fQ==
+kind: Secret
+metadata:
+  creationTimestamp: "2020-09-22T06:11:55Z"
+  managedFields:
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:data:
+        .: {}
+        f:.dockerconfigjson: {}
+      f:type: {}
+    manager: kubectl
+    operation: Update
+    time: "2020-09-22T06:11:55Z"
+  name: timwilliam-regcred
+  namespace: default
+  resourceVersion: "489305"
+  selfLink: /api/v1/namespaces/default/secrets/timwilliam-regcred
+  uid: 8ef3a806-9519-432f-9e23-cf0176932afe
+type: kubernetes.io/dockerconfigjson

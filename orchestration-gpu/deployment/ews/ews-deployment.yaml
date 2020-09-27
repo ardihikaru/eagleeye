@@ -1,0 +1,49 @@
+# EWS
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ews-deploy
+  labels:
+    name: ews-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: ews-deploy
+  template:
+    metadata:
+      name: ews-deploy
+      labels:
+        name: ews-deploy
+    spec:
+      volumes:
+        - name: ews-config
+          configMap:
+            name: ews-configmap
+            items:
+            - key: "ews.conf"
+              path: "ews.conf"
+            - key: "site.conf"
+              path: "site.conf"
+        - name: ews-dual-det-config
+          configMap:
+            name: ews-dual-det-configmap
+            items:
+            - key: "site.conf"
+              path: "site.conf"
+      containers:
+        - name: ews 
+          image: timwilliam/eagleeye.webservice:1.0
+          #image: 5g-dive/eagleeye/web-service:1.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: ews-config
+              mountPath: "/conf/ews"
+              readOnly: false
+            - name: ews-dual-det-config
+              mountPath: "/conf/dual-det"
+              readOnly: false
+      imagePullSecrets:
+        - name: timwilliam-regcred
