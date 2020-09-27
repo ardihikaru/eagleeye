@@ -1,3 +1,45 @@
+## 4.1-EEv2.0-k8s-single-worker-stable (九月 27, 2020)
+  - Merge pull request #5 from ardihikaru/feature/EagleEYEv2.0/orchestration-gpu
+  - Updated the README file with how to test
+  - Updated the k8s deployment file to use image from docker hub (current stable version 1.0)
+  - Updated the README file
+  - Added a script to start EagleEYEv1.5
+  - Reorganized the k8s config files for easier deployment
+  - Updated the streaming script
+  - Updated the configmap to use the latest config
+  - Update to the K8S yaml file to solve for connectivity issue between microservices
+  - Added a script to renew all the kustomization yaml file
+  - Updated the ConfigMap of each microservices
+  - Updated the README file
+  - Update: - Added K8S Secret to enable pulling image from private docker hub registry - Updated the kustomization yaml file to reflect the changes above
+  - Updated the README file
+  - Updated the README file
+  - Update the kustomization file
+  - Tidying up
+  - Merge branch 'feature/EagleEYEv2.0/orchestration-gpu' of github.com:ardihikaru/eagleeye into feature/EagleEYEv2.0/orchestration-gpu
+  - Update: - Updated the README file - Updated the deployment file to support for 'imagePullPolicy'
+  - Merge branch 'feature/EagleEYEv2.0/orchestration-gpu' of https://github.com/ardihikaru/eagleeye into feature/EagleEYEv2.0/orchestration-gpu
+  - Test
+  - Code tidy up
+  - Update: - Reorganize the files to support for K8S Kustomization - Added Kustomization yaml file, user can now use this to start EagleEYE deployment
+  - Updated the k8s config for scheduler service
+  - Updated the k8s config for ews service
+  - Updated the k8s config for mongo service
+  - Update: - Updated the k8s yaml config for detection deployment so that it is more readeable - Updated the k8s yaml for redis deployment
+  - Updated the deployment of detection service
+  - Update: - Restructuring and reorganizing of the k8s yaml file - Update to use PersistentVolume instead of Volume - Update to the way we create ConfigMap
+  - Update: - Added scripts for testing the deployment - Updated config files and its scripts generator/delete - Added a test gpu deployment file
+  - Merge branch 'release/4.0-EEv1.5-dockerization-stable' into develop
+  - Update: - Initial commit for GPU based implementation - Added a K8S service to support for internal pod communication to the outside world (to support for RTMP stream input)
+  - Update README file with some markdown formatting for better clarity
+  - Added a README file on how to deploy with k8s
+  - Update: - Initial commit for orchestration with iMEC - Added a script to auto-generate/remove the required k8s ConfigMap - Added a k8s yaml for deploying EE via k8s
+  - Added volume mountin of '/data' to the scheduler deployment
+  - Deployment of Detection Service completed
+  - - Added deployment for Scheduler service
+  - - Initial K8S commit, sucessfully deployed EWS with Redis and Mongo - Need to look for option to disable password or provide password in redis
+  - add initial files
+
 ## 4.0-EEv1.5-dockerization-stable (九月 15, 2020)
   - Merge pull request #4 from ardihikaru/feature/EagleEYEv2.0/single-docker
   - Add default total available worker & increase/decrease the value dynamically
