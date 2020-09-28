@@ -46,6 +46,7 @@ class DetectionAlgorithmService(asab.Service):
 
     async def start_subscription(self):
         try:
+            L.warning("Configuring Object Detection")
             await self._configure_object_detection()
             await self.SubscriptionHandler.set_configuration()
             await self.SubscriptionHandler.set_deployment_status()

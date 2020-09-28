@@ -8,6 +8,7 @@ from concurrent.futures import ThreadPoolExecutor
 import time
 # from multiprocessing import shared_memory
 import numpy as np
+import simplejson as json
 # import signal
 
 ###
@@ -131,27 +132,11 @@ class YOLOv3Handler(MyRedis):
             else:
                 # TODO: To tag the corresponding drone_id to identify where the image came from (Future work)
                 image_info = pubsub_to_json(item["data"])
-                # print(" >>> image_info:", image_info)
+                L.warning("Collecting Image Info")
+                L.warning(json.dumps(image_info))
 
-                # # assign shm value: ONCE only
-                # if shm_node is None:
-                #     print("### MULAI ASSIGN SHM")
-                #     # try:
-                #     #     shm = shared_memory.SharedMemory(name=self.node_id)
-                #     #     # shm_node = shared_memory.SharedMemory(name=self.node_id)
-                #     #     shm_node = np.ndarray(self.node_info_list.shape, dtype=np.string, buffer=shm.buf)
-                #     #     print(">>>>>> shm_node:", )
-                #     # except Exception as e:
-                #     #     print(">>>>>> e:", e)
-                
-                # print("********* shm_node:", shm_node)
-                # print(">> > > > >> >START Receiving ZMQ in OBJDET @ ts:", time.time(), redis_get(self.rc, channel))
-
-                # if not image_info["active"]:
                 if redis_get(self.rc, channel) is not None:
                     self.rc.delete(channel)
-                    # print("\n[%s][%s] Forced to exit the Object Detection Service" %
-                    #       (get_current_time(), self.node_alias))
                     L.warning("\n[%s][%s] Forced to exit the Object Detection Service" %
                           (get_current_time(), self.node_alias))
                     await self.stop()
@@ -161,7 +146,7 @@ class YOLOv3Handler(MyRedis):
                 # TODO: To have a tag as the image identifier, i.e. DroneID
                 # TODO: To add a timeout, if no response found after a `timeout` time, ignore this (Future work)
                 is_success, frame_id, t0_zmq, img = await self.DetectionAlgorithmService.get_img()
-                # print(">>>> RECEIVED DATA:", is_success, frame_id, t0_zmq, img.shape)
+                L.warning("Receiving image data via ZMQ (is_success=%s; frame_id=%s)" % (str(is_success), str(frame_id)))
                 t1_zmq = (time.time() - t0_zmq) * 1000  # TODO: This is still INVALID! it got mixed up with Det latency!
                 # print('\n[%s] Latency for Receiving Image ZMQ (%.3f ms)' % (get_current_time(), t1_zmq))
                 L.warning('\n[%s] Latency for Receiving Image ZMQ (%.3f ms)' % (get_current_time(), t1_zmq))
@@ -171,18 +156,22 @@ class YOLOv3Handler(MyRedis):
                 t0_e2e_latency = time.time()
 
                 # Start performing object detection
+                L.warning("Start performing object detection")
                 bbox_data, det, names, pre_proc_lat, yolo_lat = await self.DetectionAlgorithmService.detect_object(img)
 
                 # build & submit latency data: Pre-processing
+                L.warning("build & submit latency data: Pre-processing")
                 await self._save_latency(frame_id, pre_proc_lat, "N/A", "preproc_det", "Pre-processing")
 
                 # build & submit latency data: YOLO
+                L.warning("build & submit latency data: YOLO")
                 await self._save_latency(frame_id, yolo_lat, image_info["algorithm"], "detection", "Object Detection")
 
                 # Get img information
                 h, w, c = img.shape
 
                 # Performing Candidate Selection Algorithm, if enabled
+                L.warning("Performing Candidate Selection Algorithm, if enabled")
                 if self.cs_enabled and det is not None:
                     # print("***** [%s] Performing Candidate Selection Algorithm" % self.node_alias)
                     L.warning("***** [%s] Performing Candidate Selection Algorithm" % self.node_alias)

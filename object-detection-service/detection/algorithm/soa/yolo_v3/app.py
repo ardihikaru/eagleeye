@@ -4,6 +4,7 @@ from detection.algorithm.soa.yolo_v3.etc.commons.opencv_helpers import *
 from detection.algorithm.soa.yolo_v3.components.utils.utils import get_current_time
 from detection.algorithm.soa.yolo_v3.etc.commons.yolo_functions import YOLOFunctions
 import logging
+import json
 
 ###
 
@@ -15,10 +16,14 @@ L = logging.getLogger(__name__)
 
 class YOLOv3(YOLOFunctions):
     def __init__(self, conf):
+        L.warning("Reformatting configuration data")
         conf = self._reformat_conf(conf)
+        L.warning(json.dumps(conf))
         super().__init__(conf)
         self.conf = conf
+        L.warning("Initializing Configuration")
         self.__initialize_configurations()
+        L.warning("Configuration initialized")
 
         # Set related parameters
         self.total_proc_frames = 0
