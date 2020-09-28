@@ -102,23 +102,9 @@ class YOLOv3Handler(MyRedis):
 
     async def start(self):
         channel = "node-" + self.node_id
-        # print("\n[%s][%s] YOLOv3Handler try to subsscribe to channel `%s` from [Scheduler Service]" %
-        #       (get_current_time(), self.node_alias, channel))
         L.warning("\n[%s][%s] YOLOv3Handler try to subsscribe to channel `%s` from [Scheduler Service]" %
               (get_current_time(), self.node_alias, channel))
 
-        # set params to store tmp latency data
-        # latency = {
-        #     "preproc": [],
-        #     "yolo": [],
-        #     "cand_selection": []
-        # }
-
-        # bug fix: invalid e2e latency due to detection issue with CPU
-        # t_start = None
-
-        # Set default value of shm node
-        # shm_node = None
         redis_key = self.node_id + "_status"
 
         consumer = self.rc.pubsub()
@@ -134,6 +120,7 @@ class YOLOv3Handler(MyRedis):
                 image_info = pubsub_to_json(item["data"])
                 L.warning("Collecting Image Info")
                 L.warning(json.dumps(image_info))
+                L.warning("Image INFORMATION is collected.")
 
                 if redis_get(self.rc, channel) is not None:
                     self.rc.delete(channel)
@@ -145,8 +132,11 @@ class YOLOv3Handler(MyRedis):
                 # TODO: To start TCP Connection and be ready to capture the image from [Scheduler Service]
                 # TODO: To have a tag as the image identifier, i.e. DroneID
                 # TODO: To add a timeout, if no response found after a `timeout` time, ignore this (Future work)
+                L.warning("Try to collect Image DATA.")
                 is_success, frame_id, t0_zmq, img = await self.DetectionAlgorithmService.get_img()
                 L.warning("Receiving image data via ZMQ (is_success=%s; frame_id=%s)" % (str(is_success), str(frame_id)))
+                L.warning("Image DATA is collected.")
+                # print(">>>> RECEIVED DATA:", is_success, frame_id, t0_zmq, img.shape)
                 t1_zmq = (time.time() - t0_zmq) * 1000  # TODO: This is still INVALID! it got mixed up with Det latency!
                 # print('\n[%s] Latency for Receiving Image ZMQ (%.3f ms)' % (get_current_time(), t1_zmq))
                 L.warning('\n[%s] Latency for Receiving Image ZMQ (%.3f ms)' % (get_current_time(), t1_zmq))
@@ -227,6 +217,7 @@ class YOLOv3Handler(MyRedis):
 
                 # Set this node as available again
                 redis_set(self.rc, redis_key, True)
+                L.warning("[DEBUG] Status of this Node: %s" % str(redis_get(self.rc, redis_key)))
 
                 # Capture and store e2e latency
                 t1_e2e_latency = (time.time() - t0_e2e_latency) * 1000
