@@ -1,9 +1,9 @@
 import subprocess
 import cv2
-rtsp_url = "rtmp://127.0.0.1:1935/stream/pupils_trace"
+rtsp_url = "rtsp://localhost/test"
 
-# In my mac webcamera is 0, also you can set a video file name instead, for example "/home/user/demo.mp4"
-path = 0
+# Setup path of the video file
+path = "/home/ardi/devel/nctu/IBM-Lab/eagleeye/data/5g-dive/videos/customTest_MIRC-Roadside-20s.mp4"
 cap = cv2.VideoCapture(path)
 
 # gather video info to ffmpeg
@@ -23,18 +23,19 @@ command = ['ffmpeg',
            '-c:v', 'libx264',
            '-pix_fmt', 'yuv420p',
            '-preset', 'ultrafast',
-           '-f', 'flv',
+           '-f', 'rtsp',
            rtsp_url]
 
 # using subprocess and pipe to fetch frame data
 p = subprocess.Popen(command, stdin=subprocess.PIPE)
 
-
+# sudo apt-get install h264enc ---> No idea, whether this is required or not!
 while cap.isOpened():
     ret, frame = cap.read()
     if not ret:
         print("frame read failed")
         break
+    print(">>>>> SHAPE>", frame.shape)
 
     # YOUR CODE FOR PROCESSING FRAME HERE
 
