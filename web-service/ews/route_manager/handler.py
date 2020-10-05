@@ -36,7 +36,7 @@ class RouteWebHandler(object):
         # super().__init__(app)
 
         self.EWSService = app.get_service("ews.service")
-        self.AIORTCService = app.get_service("ews.aio-rtc-service")
+        # self.AIORTCService = app.get_service("ews.aio-rtc-service")
 
         web_svc = app.get_service("asab.WebService")
         self.ServiceAPIWebContainer = asab.web.WebContainer(web_svc, 'eagleeye:api')
