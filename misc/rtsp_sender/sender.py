@@ -35,7 +35,6 @@ while cap.isOpened():
     if not ret:
         print("frame read failed")
         break
-    print(">>>>> SHAPE>", frame.shape)
 
     # YOUR CODE FOR PROCESSING FRAME HERE
 
