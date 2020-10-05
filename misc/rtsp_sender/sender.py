@@ -1,3 +1,16 @@
+"""
+How to use (Linux):
+1. Download EasyDarwin (RTSP Server) here:
+    https://github.com/EasyDarwin/EasyDarwin/releases/download/v8.1.0/EasyDarwin-linux-8.1.0-1901141151.tar.gz
+2. Extract and go to EasyDarwin directory
+3. Start EasyDarwin:
+    $ sudo ./start.sh
+4. Run this python file:
+    $ python sender.py
+5. Run FFplay:
+    $ ffplay rtsp://localhost/test
+"""
+
 import subprocess
 import cv2
 rtsp_url = "rtsp://localhost/test"
