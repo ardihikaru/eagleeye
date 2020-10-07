@@ -1,18 +1,18 @@
 """
-How to use (Linux):
-1. Download EasyDarwin (RTSP Server) here:
-    https://github.com/EasyDarwin/EasyDarwin/releases/download/v8.1.0/EasyDarwin-linux-8.1.0-1901141151.tar.gz
-2. Extract and go to EasyDarwin directory
-3. Start EasyDarwin:
-    $ sudo ./start.sh
-4. Run this python file:
-    $ python sender.py
-5. Run FFplay:
-    $ ffplay rtsp://localhost/test
-"""
 
-import subprocess
+"""
 import cv2
+import time
+import imagezmq
+import logging
+import subprocess
+
+###
+
+L = logging.getLogger(__name__)
+
+
+###
 
 rtsp_url = "rtsp://localhost/test"
 
@@ -24,6 +24,11 @@ cap = cv2.VideoCapture(path)
 fps = int(cap.get(cv2.CAP_PROP_FPS))
 width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+# Setup ZMQ Sender
+uri = 'tcp://127.0.0.1:5550'
+L.warning("ZMQ URI: %s" % uri)
+sender = imagezmq.ImageSender(connect_to=uri, REQ_REP=False)
 
 # command and params for ffmpeg
 command = ['ffmpeg',
@@ -43,14 +48,25 @@ command = ['ffmpeg',
 # using subprocess and pipe to fetch frame data
 p = subprocess.Popen(command, stdin=subprocess.PIPE)
 
-# sudo apt-get install h264enc ---> No idea, whether this is required or not!
+frame_id = 0
 while cap.isOpened():
+    frame_id += 1
+    t0 = time.time()
+
     ret, frame = cap.read()
     if not ret:
         print("frame read failed")
         break
 
-    # YOUR CODE FOR PROCESSING FRAME HERE
+    print(">>> Sending frames-%s" % str(frame_id))
+    t0_zmq = time.time()
+    zmq_id = str(frame_id) + "-" + str(t0_zmq)
+    sender.send_image(zmq_id, frame)
+    t1_zmq = (time.time() - t0_zmq) * 1000
+    L.warning('Latency [Send imagezmq] of frame-%s: (%.5fms)' % (str(frame_id), t1_zmq))
+    #
+    # time.sleep(0.33)
+    # print()
 
     # write to pipe
-    p.stdin.write(frame.tobytes())
+    # p.stdin.write(frame.tobytes())
