@@ -2,6 +2,7 @@ import asab
 import logging
 import imagezmq
 import subprocess
+import time
 
 ###
 
@@ -21,14 +22,14 @@ class ZMQService(asab.Service):
         self.zmq_receiver = None
 
         # gather video info to ffmpeg
-        fps = asab.Config["streaming"]["fps"]
-        width = int(asab.Config["streaming"]["width"])
-        height = int(asab.Config["streaming"]["height"])
+        fps = asab.Config["stream:config"]["fps"]
+        width = int(asab.Config["stream:config"]["width"])
+        height = int(asab.Config["stream:config"]["height"])
 
         # build rtsp URI
-        protocol = asab.Config["streaming"]["protocol"]
-        host = asab.Config["streaming"]["host"]
-        path = asab.Config["streaming"]["path"]
+        protocol = asab.Config["stream:config"]["protocol"]
+        host = asab.Config["stream:config"]["host"]
+        path = asab.Config["stream:config"]["path"]
         rtsp_url = "%s://%s/%s" % (protocol, host, path)
 
         # command and params for ffmpeg
@@ -77,6 +78,9 @@ class ZMQService(asab.Service):
         L.warning("I am running ...")
         while True:
             is_success, frame_id, t0_zmq, img = self._get_imagezmq()
+            t1_zmq = (time.time() - t0_zmq) * 1000
             if is_success:
+                # print(">>> I got image: ", frame_id, t0_zmq)
+                L.warning('Latency [Visualizer Capture] of frame-%s: (%.5fms)' % (str(frame_id), t1_zmq))
                 # write to pipe of RTSP Server
                 self._sp.stdin.write(img.tobytes())
