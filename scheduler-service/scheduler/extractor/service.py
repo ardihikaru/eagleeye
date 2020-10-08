@@ -146,6 +146,9 @@ class ExtractorService(asab.Service):
 				self.frame_id += 1
 				success, frame = await self._read_frame()
 
+				# Sending image data into Visualizer Service as well
+				self.ZMQService.send_image_to_visualizer(self.frame_id, frame)
+
 				# Start t0_e2e_lat: To calculate the e2e processing & comm. latency
 				t0_e2e_lat = time.time()
 
@@ -190,9 +193,6 @@ class ExtractorService(asab.Service):
 				if not bool(int(asab.Config["stream:config"]["convert_img"])):
 					# Sending image data through ZMQ (TCP connection)
 					self.ZMQService.send_this_image(senders["zmq"][sel_node_id], self.frame_id, frame)
-
-					# Sending image data into Visualizer Service as well
-					self.ZMQService.send_image_to_visualizer(self.frame_id, frame)
 				else:
 					# TODO: In this case, Candidate Selection Algorithm will not work!!!!!
 					# Convert the yolo input images; Here it converts from FullHD into <img_size> (padded size)
@@ -206,8 +206,6 @@ class ExtractorService(asab.Service):
 					# CHECKING: how is the latency if we send converted version?
 					# Sending image data through ZMQ (TCP connection)
 					self.ZMQService.send_this_image(senders["zmq"][sel_node_id], self.frame_id, yolo_frame)
-
-				# print()
 
 		except Exception as e:
 			L.error("[ERROR] extractor/service.py > def extract_video_stream(): %s" % str(e))
