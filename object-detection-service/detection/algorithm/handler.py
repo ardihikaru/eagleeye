@@ -160,6 +160,10 @@ class YOLOv3Handler(MyRedis):
                 # Get img information
                 h, w, c = img.shape
 
+                # Set default `mbbox_data` and `plot_info` values
+                mbbox_data = []
+                plot_info = {}
+
                 # Performing Candidate Selection Algorithm, if enabled
                 L.warning("Performing Candidate Selection Algorithm, if enabled")
                 if self.cs_enabled and det is not None:
@@ -170,7 +174,6 @@ class YOLOv3Handler(MyRedis):
                     t1_cs = (time.time() - t0_cs) * 1000
                     # print('\n[%s] Latency of Candidate Selection Algo. (%.3f ms)' % (get_current_time(), t1_cs))
                     L.warning('\n[%s] Latency of Candidate Selection Algo. (%.3f ms)' % (get_current_time(), t1_cs))
-                    # print(" >>>>> mbbox_data:", mbbox_data)
 
                     # build & submit latency data: PiH Candidate Selection
                     await self._save_latency(frame_id, t1_cs, "PiH Candidate Selection", "candidate_selection",
@@ -205,6 +208,14 @@ class YOLOv3Handler(MyRedis):
                         label = asab.Config["bbox_config"]["pih_label"]
                         det_status = label + " object FOUND"
 
+                    # If MBBox data available, build plot_info
+                    if len(mbbox_data) > 0:
+                        plot_info = {
+                            "mbbox": mbbox_data,
+                            "color": asab.Config["bbox_config"]["pih_color"],
+                            "label": label
+                        }
+
                     # print("\n[%s][%s]Frame-%s label=[%s], det_status=[%s]" %
                     #       (get_current_time(), self.node_alias, str(frame_id), label, det_status))
                     L.warning("\n[%s][%s]Frame-%s label=[%s], det_status=[%s]" %
@@ -212,8 +223,15 @@ class YOLOv3Handler(MyRedis):
 
                 # If enable visualizer, send the bbox into the Visualizer Service
                 if self.cv_out:
-                    # print("\n[%s][%s] SENDING BBox INTO Visualizer Service!" % (get_current_time(), self.node_alias))
-                    L.warning("\n[%s][%s] SENDING BBox INTO Visualizer Service!" % (get_current_time(), self.node_alias))
+                    L.warning("\n[%s][%s][%s] Store Box INTO Visualizer Service!" %
+                              (get_current_time(), self.node_alias, str(frame_id)))
+                    t0_plotinfo_saving = time.time()
+                    drone_id = "1"  # TODO: hardcoded for NOW! need to be assigned dynamically later on!
+                    plot_info_key = "plotinfo-drone-%s-frame-%s" % (drone_id, str(frame_id))
+                    redis_set(self.rc, plot_info_key, plot_info)
+                    t1_plotinfo_saving = (time.time() - t0_plotinfo_saving) * 1000
+                    L.warning('\n[%s] Latency of Storing Plot info in redisDB (%.3f ms)' %
+                              (get_current_time(), t1_plotinfo_saving))
 
                 # Set this node as available again
                 redis_set(self.rc, redis_key, True)
