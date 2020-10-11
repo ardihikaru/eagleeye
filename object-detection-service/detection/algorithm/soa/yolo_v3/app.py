@@ -90,7 +90,7 @@ class YOLOv3(YOLOFunctions):
 
         return image4yolo
 
-    def get_detection_results(self, img, is_yolo_format=True):
+    def get_detection_results(self, img, original_frame, is_yolo_format=True):
         padded_img = img
         if not is_yolo_format:
             padded_img = self.__img2yoloimg(img)
@@ -134,11 +134,10 @@ class YOLOv3(YOLOFunctions):
         for i, det in enumerate(pred):  # detections per image
             if det is not None and len(det):  # run ONCE
                 # Rescale boxes from img_size to raw_img size
-                det[:, :4] = scale_coords(image4yolo.shape[2:], det[:, :4], img.shape).round()
+                det[:, :4] = scale_coords(image4yolo.shape[2:], det[:, :4], original_frame.shape).round()
 
                 # Extracts detection results
                 bbox_data = self._extract_detection_results(det)
-                # print(" >>>>> bbox_data =", bbox_data)
                 break
         t1_get_detection = ((time.time() - t0_get_detection) * 1000)
         # print('\n # Get Detection time: (%.3f ms)' % t1_get_detection)

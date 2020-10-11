@@ -122,7 +122,7 @@ class DetectionAlgorithmService(asab.Service):
             # print('\n[%s] Proc. Latency of Pre-processing (%.3f ms)' % (get_current_time(), t1_preproc))
 
             # Perform object detection
-            bbox_data, det, names, yolo_lat = self.yolo.get_detection_results(resized_frame)
+            bbox_data, det, names, yolo_lat = self.yolo.get_detection_results(resized_frame, frame)
             # bbox_data = self.yolo.get_bbox_data(frame, False)
 
             # # build latency data: YOLO
