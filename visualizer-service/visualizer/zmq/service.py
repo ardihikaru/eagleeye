@@ -89,7 +89,6 @@ class ZMQService(asab.Service):
             continue
 
         plot_info = redis_get(self.redis.get_rc(), plot_info_key)
-        print(plot_info)
 
         if bool(plot_info):
             # TODO: To be refactored and be implemented in a more elegant way!
@@ -100,13 +99,9 @@ class ZMQService(asab.Service):
 
             plot_info["color"] = color
 
-        print(" >>> PLOT BARU")
-        print(plot_info)
-
         return plot_info
 
     async def _save_latest_plot_info(self, frame_id, plot_info):
-        print(" >>> **** plot_info has MBBox data! Store into redisDB")
         drone_id = "1"  # TODO: hardcoded for NOW! need to be assigned dynamically later on!
         latest_plotinfo_key = "latest-plotinfo-drone-%s-frame-%s" % (drone_id, frame_id)
         redis_set(self.redis.get_rc(), latest_plotinfo_key, plot_info)
