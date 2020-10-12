@@ -211,6 +211,7 @@ class YOLOv3Handler(MyRedis):
                     # If MBBox data available, build plot_info
                     if len(mbbox_data) > 0:
                         plot_info = {
+                            "bbox": bbox_data,
                             "mbbox": mbbox_data,
                             "color": asab.Config["bbox_config"]["pih_color"],
                             "label": label
