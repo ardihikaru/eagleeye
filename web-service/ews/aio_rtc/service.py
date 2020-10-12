@@ -57,10 +57,10 @@ class AIORTCService(asab.Service):
         #     player = MediaPlayer(params["data"]["stream_id"])
         else:
             options = {
-                "framerate": asab.Config["streaming:config"]["fps"],
+                "framerate": asab.Config["stream:config"]["fps"],
                 "video_size": "%sx%s" % (
-                    asab.Config["streaming:config"]["w"],
-                    asab.Config["streaming:config"]["h"]
+                    asab.Config["stream:config"]["w"],
+                    asab.Config["stream:config"]["h"]
                 )
             }
             if platform.system() == "Darwin":

@@ -24,8 +24,8 @@ class GPSCollectorService(asab.Service):
         super().__init__(app, service_name)
         _redis = MyRedis(asab.Config)
         self._rc = _redis.get_rc()
-        self._drone_id = "1"  # TODO: DroneID should be DYNAMIC!
-        self._gps_key_prefix = "gps-data-"  # TODO: Should use Config file instead!
+        self._drone_id = asab.Config["stream:config"]["drone_id"]  # TODO: DroneID should be DYNAMIC!
+        self._gps_key_prefix = asab.Config["stream:config"]["gps_key_prefix"]
         self._executor = ThreadPoolExecutor(int(asab.Config["thread"]["num_executor"]))
 
     async def initialize(self, app):
