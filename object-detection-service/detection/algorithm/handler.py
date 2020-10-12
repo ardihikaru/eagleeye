@@ -210,10 +210,15 @@ class YOLOv3Handler(MyRedis):
 
                     # If MBBox data available, build plot_info
                     if len(mbbox_data) > 0:
+
+                        color = asab.Config["bbox_config"]["pih_color"].strip('][').split(', ')
+                        for i in range(len(color)):
+                            color[i] = int(color[i])
+
                         plot_info = {
                             "bbox": bbox_data,
                             "mbbox": mbbox_data,
-                            "color": asab.Config["bbox_config"]["pih_color"],
+                            "color": color,
                             "label": label
                         }
 
