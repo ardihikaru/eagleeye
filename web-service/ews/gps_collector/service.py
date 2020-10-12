@@ -20,7 +20,7 @@ class GPSCollectorService(asab.Service):
         GPS Collector Service
     """
 
-    def __init__(self, app, service_name="ews.gpsCollectorService"):
+    def __init__(self, app, service_name="ews.GPSCollectorService"):
         super().__init__(app, service_name)
         _redis = MyRedis(asab.Config)
         self._rc = _redis.get_rc()
