@@ -54,17 +54,6 @@ class GPSCollectorService(asab.Service):
             L.warning("\n[%s]%s Saving data in every 1 second; GPS data=%s" % (get_current_time(), pool_name, str(gps_data)))
             time.sleep(1)
 
-    async def get_gps_data(self, drone_id):
-        gps_data = None
-        while gps_data is None:
-            _gps_key = self._gps_key_prefix + drone_id
-            gps_data = redis_get(self._rc, _gps_key)
-            if gps_data is None:
-                continue
-            else:
-                gps_data = json.loads(gps_data)
-        return gps_data
-
     def _set_gps_data(self, gps_data):
         _gps_key = self._gps_key_prefix + self._drone_id
         redis_set(self._rc, _gps_key, gps_data)
