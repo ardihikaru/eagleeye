@@ -111,8 +111,8 @@ class ZMQService(asab.Service):
 
     async def start(self):
         await self._set_zmq_configurations()
-        L.warning("I am running ...")
-        is_raw = bool(asab.Config["stream:config"]["is_raw"])
+        is_raw = bool(int(asab.Config["stream:config"]["is_raw"]))
+        L.warning("I am running ... is_raw=%s" % str(is_raw))
         is_latest_plot_available = False
         while True:
             is_success, frame_id, t0_zmq, img = self._get_imagezmq()
