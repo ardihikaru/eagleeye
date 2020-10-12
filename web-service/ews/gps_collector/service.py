@@ -3,7 +3,6 @@ import logging
 from ext_lib.redis.my_redis import MyRedis
 from ext_lib.redis.translator import redis_set, redis_get
 from ext_lib.utils import get_current_time, get_random_str
-import simplejson as json
 from concurrent.futures import ThreadPoolExecutor
 import time
 

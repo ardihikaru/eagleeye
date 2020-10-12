@@ -28,6 +28,7 @@ class YOLOv3Handler(MyRedis):
         self.executor = ThreadPoolExecutor(int(asab.Config["thread"]["num_executor"]))
 
         self.LatCollectorService = app.get_service("detection.LatencyCollectorService")
+        self.GPSCollectorService = app.get_service("detection.GPSCollectorService")
 
         # Set node information
         self.node_name = redis_get(self.rc, asab.Config["node"]["redis_name_key"])
@@ -215,11 +216,17 @@ class YOLOv3Handler(MyRedis):
                         for i in range(len(color)):
                             color[i] = int(color[i])
 
+                        # collect latest GPS Data
+                        print(">>>> collect latest GPS Data ...")
+                        gps_data = await self.GPSCollectorService.get_gps_data()
+                        print(">>>> gps_data:", gps_data, type(gps_data))
+
                         plot_info = {
                             "bbox": bbox_data,
                             "mbbox": mbbox_data,
                             "color": color,
-                            "label": label
+                            "label": label,
+                            "gps_data": gps_data
                         }
 
                     # print("\n[%s][%s]Frame-%s label=[%s], det_status=[%s]" %

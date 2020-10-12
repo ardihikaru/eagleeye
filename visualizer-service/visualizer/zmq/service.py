@@ -126,6 +126,7 @@ class ZMQService(asab.Service):
 
                     # Collect `plot_info`; wait until value `is not None; skip when `delay` > `wait_time`
                     plot_info = await self._get_plot_info(str(frame_id))
+                    print(plot_info)
 
                     # If `plot_info` is not empty, save into redisDB (indicating the latest collected `plot_info`
                     if bool(plot_info):
