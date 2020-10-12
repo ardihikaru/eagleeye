@@ -7,7 +7,14 @@ from ext_lib.utils import mongo_list_to_dict, mongo_dict_to_dict, pop_if_any, ge
 from datetime import datetime
 import time
 from ext_lib.redis.translator import redis_set
+import logging
 
+###
+
+L = logging.getLogger(__name__)
+
+
+###
 
 def insert_new_data(db_model, new_data, msg):
     try:
@@ -81,7 +88,7 @@ def del_data_by_id(db_model, _id, rc):
         redis_set(rc, channel, True)
         t1_notification = (time.time() - t0_notification) * 1000
         # TODO: Saving latency for scheduler:producer:destroy
-        print('[%s] Latency to send a notification to destroy Object Detection Service (%.3f ms)' %
+        L.warning('[%s] Latency to send a notification to destroy Object Detection Service (%.3f ms)' %
               (get_current_time(), t1_notification))
 
     except Exception as e:
