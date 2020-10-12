@@ -3,6 +3,7 @@ import asab.web
 import asab.web.rest
 import asab.web.session
 from ews.route_manager import RouteManagerModule
+from ews.gps_collector import GPSCollectorModule
 # from ews.aio_rtc import AIORTCModule
 from ext_lib.redis.my_redis import MyRedis
 from ext_lib.redis.translator import redis_set
@@ -44,6 +45,7 @@ class EagleEYEWebService(asab.Application):
 		self.add_module(asab.web.Module)
 		# self.add_module(AIORTCModule)
 		self.add_module(RouteManagerModule)
+		self.add_module(GPSCollectorModule)
 
 	async def initialize(self):
 		# Register one worker node as default available worker node
