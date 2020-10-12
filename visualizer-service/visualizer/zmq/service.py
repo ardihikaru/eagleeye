@@ -85,49 +85,65 @@ class ZMQService(asab.Service):
         # print(plot_info)
 
         # wait until `plot_info` is not None
+        max_delay = int(asab.Config["stream:config"]["delay"])
+        t0_wait = time.time()
+        t1_wait = 0.0
         while redis_get(self.redis.get_rc(), plot_info_key) is None:
+            t1_wait = (time.time() - t0_wait) * 1000
+            if t1_wait > max_delay:
+                break
             continue
 
+        L.warning("[FRAME Waiting time] of frame-%s=%s" % (frame_id, str(t1_wait)))
         plot_info = redis_get(self.redis.get_rc(), plot_info_key)
-
-        if bool(plot_info):
-            # TODO: To be refactored and be implemented in a more elegant way!
-            # Change color into list of int
-            color = plot_info["color"].strip('][').split(', ')
-            for i in range(len(color)):
-                color[i] = int(color[i])
-
-            plot_info["color"] = color
 
         return plot_info
 
     async def _save_latest_plot_info(self, frame_id, plot_info):
         drone_id = "1"  # TODO: hardcoded for NOW! need to be assigned dynamically later on!
-        latest_plotinfo_key = "latest-plotinfo-drone-%s-frame-%s" % (drone_id, frame_id)
+        latest_plotinfo_key = "latest-plotinfo-drone-%s" % drone_id
         redis_set(self.redis.get_rc(), latest_plotinfo_key, plot_info)
+
+    def _get_latest_plot_info(self, frame_id):
+        drone_id = "1"  # TODO: hardcoded for NOW! need to be assigned dynamically later on!
+        latest_plotinfo_key = "latest-plotinfo-drone-%s" % drone_id
+        return redis_get(self.redis.get_rc(), latest_plotinfo_key)
 
     async def start(self):
         await self._set_zmq_configurations()
         L.warning("I am running ...")
+        is_raw = bool(asab.Config["stream:config"]["is_raw"])
+        is_latest_plot_available = False
         while True:
             is_success, frame_id, t0_zmq, img = self._get_imagezmq()
             t1_zmq = (time.time() - t0_zmq) * 1000
             if is_success:
                 L.warning('Latency [Visualizer Capture] of frame-%s: (%.5fms)' % (str(frame_id), t1_zmq))
 
-                # Collect latest `gps_data`;
-                # // TODO HERE
+                if not is_raw:
+                    # Collect latest `gps_data`;
+                    # // TODO HERE
 
-                # Collect `plot_info`; wait until value `is not None; skip when `delay` > `wait_time`
-                plot_info = await self._get_plot_info(str(frame_id))
+                    # Collect `plot_info`; wait until value `is not None; skip when `delay` > `wait_time`
+                    plot_info = await self._get_plot_info(str(frame_id))
 
-                # If `plot_info` is not empty, save into redisDB (indicating the latest collected `plot_info`
-                if bool(plot_info):
-                    await self._save_latest_plot_info(str(frame_id), plot_info)
+                    # If `plot_info` is not empty, save into redisDB (indicating the latest collected `plot_info`
+                    if bool(plot_info):
+                        # print(">>>> YES AADAA PLOT !!!")
+                        await self._save_latest_plot_info(str(frame_id), plot_info)
+                        is_latest_plot_available = True
 
-                    # plot each mbbox data into the image
-                    for mbbox_data in plot_info["mbbox"]:
-                        plot_one_box(mbbox_data, img, label=plot_info["label"], color=plot_info["color"])
+                        # plot each mbbox data into the image
+                        for mbbox_data in plot_info["mbbox"]:
+                            plot_one_box(mbbox_data, img, label=plot_info["label"], color=plot_info["color"])
+                    # elif not bool(plot_info) and is_latest_plot_available:
+                    #     # print(">>>> plot_info EMPTY! pakai plot sebelum!")
+                    #     plot_info = self._get_latest_plot_info(str(frame_id))
+                    #     # print(plot_info)
+                    #     if bool(plot_info):
+                    #         # plot each mbbox data into the image
+                    #         for mbbox_data in plot_info["mbbox"]:
+                    #             plot_one_box(mbbox_data, img, label=plot_info["label"], color=plot_info["color"])
 
                 # write to pipe of RTSP Server
                 self._sp.stdin.write(img.tobytes())
