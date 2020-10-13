@@ -42,11 +42,13 @@ data:
 kind: ConfigMap
 metadata:
   name: detection-configmap
+  namespace: eagleeye
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: detection-deploy
+  namespace: eagleeye
 spec:
   replicas: 1
   selector:

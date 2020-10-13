@@ -1,6 +1,7 @@
 #!/bin/bash
 
 echo "[INFO] Starting NCTU EagleEYEv1.5 Deployment ..."
+kubectl create -f namespace-eagleeye.yaml
 
 # echo "[INFO] Creating Docker Hub credentials ..."
 #kubectl apply -f timwilliam-regcred.yaml

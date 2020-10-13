@@ -3,6 +3,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: scheduler-service
+  namespace: eagleeye
 spec:
   selector:
     name: scheduler-deploy

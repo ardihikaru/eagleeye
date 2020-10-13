@@ -99,6 +99,7 @@ data:
 kind: ConfigMap
 metadata:
   name: scheduler-configmap
+  namespace: eagleeye
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -106,6 +107,7 @@ metadata:
   labels:
     name: scheduler-deploy
   name: scheduler-deploy
+  namespace: eagleeye
 spec:
   replicas: 1
   selector:

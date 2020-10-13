@@ -4,6 +4,7 @@ metadata:
   labels:
     name: redis-deploy
   name: redis-deploy
+  namespace: eagleeye
 spec:
   replicas: 1
   selector:

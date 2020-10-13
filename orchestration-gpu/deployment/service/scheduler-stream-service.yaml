@@ -3,6 +3,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: scheduler-stream-service
+  namespace: eagleeye
 spec:
   ports:
     - name: rtmp

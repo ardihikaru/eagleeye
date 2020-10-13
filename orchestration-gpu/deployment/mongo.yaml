@@ -4,6 +4,7 @@ metadata:
   labels:
     name: mongo-deploy
   name: mongo-deploy
+  namespace: eagleeye
 spec:
   replicas: 1
   selector:

@@ -3,6 +3,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: detection-service
+  namespace: eagleeye
 spec:
   selector:
     name: detection-deploy

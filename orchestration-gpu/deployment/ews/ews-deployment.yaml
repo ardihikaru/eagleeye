@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ews-deploy
+  namespace: eagleeye
   labels:
     name: ews-deploy
 spec:

@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: detection-configmap
+  namespace: eagleeye
 data:
   detection.conf: |
     [general]

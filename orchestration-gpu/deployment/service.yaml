@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: detection-service
+  namespace: eagleeye
 spec:
   ports:
   - port: 5551
@@ -13,6 +14,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: ews-ext-service
+  namespace: eagleeye
 spec:
   ports:
   - nodePort: 31000
@@ -26,6 +28,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: ews-service
+  namespace: eagleeye
 spec:
   ports:
   - port: 8080
@@ -37,6 +40,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mongo-service
+  namespace: eagleeye
 spec:
   ports:
   - port: 27017
@@ -48,6 +52,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: redis-service
+  namespace: eagleeye
 spec:
   ports:
   - port: 6379
@@ -59,6 +64,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: scheduler-service
+  namespace: eagleeye
 spec:
   ports:
   - port: 5551
@@ -70,6 +76,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: scheduler-stream-service
+  namespace: eagleeye
 spec:
   externalIPs:
   - 140.113.86.92
