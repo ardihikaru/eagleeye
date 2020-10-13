@@ -26,27 +26,28 @@ width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
 # Setup ZMQ Sender
-uri = 'tcp://127.0.0.1:5550'
+# uri = 'tcp://127.0.0.1:5550'
+uri = 'tcp://*:5552'
 L.warning("ZMQ URI: %s" % uri)
 sender = imagezmq.ImageSender(connect_to=uri, REQ_REP=False)
 
-# command and params for ffmpeg
-command = ['ffmpeg',
-           '-y',
-           '-f', 'rawvideo',
-           '-vcodec', 'rawvideo',
-           '-pix_fmt', 'bgr24',
-           '-s', "{}x{}".format(width, height),
-           '-r', str(fps),
-           '-i', '-',
-           '-c:v', 'libx264',
-           '-pix_fmt', 'yuv420p',
-           '-preset', 'ultrafast',
-           '-f', 'rtsp',
-           rtsp_url]
+# # command and params for ffmpeg
+# command = ['ffmpeg',
+#            '-y',
+#            '-f', 'rawvideo',
+#            '-vcodec', 'rawvideo',
+#            '-pix_fmt', 'bgr24',
+#            '-s', "{}x{}".format(width, height),
+#            '-r', str(fps),
+#            '-i', '-',
+#            '-c:v', 'libx264',
+#            '-pix_fmt', 'yuv420p',
+#            '-preset', 'ultrafast',
+#            '-f', 'rtsp',
+#            rtsp_url]
 
-# using subprocess and pipe to fetch frame data
-p = subprocess.Popen(command, stdin=subprocess.PIPE)
+# # using subprocess and pipe to fetch frame data
+# p = subprocess.Popen(command, stdin=subprocess.PIPE)
 
 frame_id = 0
 while cap.isOpened():
@@ -65,7 +66,7 @@ while cap.isOpened():
     t1_zmq = (time.time() - t0_zmq) * 1000
     L.warning('Latency [Send imagezmq] of frame-%s: (%.5fms)' % (str(frame_id), t1_zmq))
     #
-    # time.sleep(0.33)
+    time.sleep(1)
     # print()
 
     # write to pipe
