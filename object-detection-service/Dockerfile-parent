@@ -1,4 +1,4 @@
-# How to build: docker build -t 5g-dive/eagleeye/dual-object-detection-service-head:1.0 .
+# How to build: docker build -f Dockerfile-parent -t 5g-dive/eagleeye/dual-object-detection-service-head:1.0 .
 
 # Misc:
 # Install Docker Nvidia 2.0: https://cnvrg.io/how-to-setup-docker-and-nvidia-docker-2-0-on-ubuntu-18-04/
@@ -16,5 +16,5 @@ COPY requirements-no-cv.txt /tmp/requirements.txt
 # install other requirements
 RUN pip3 install Cython
 
-RUN pip3 install -r /tmp/requirements.txt
+# RUN pip3 install -r /tmp/requirements.txt
 
