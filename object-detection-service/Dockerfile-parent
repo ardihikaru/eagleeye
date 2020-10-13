@@ -16,5 +16,5 @@ COPY requirements-no-cv.txt /tmp/requirements.txt
 # install other requirements
 RUN pip3 install Cython
 
-# RUN pip3 install -r /tmp/requirements.txt
+RUN pip3 install -r /tmp/requirements.txt
 
