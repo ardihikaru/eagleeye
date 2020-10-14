@@ -217,9 +217,7 @@ class YOLOv3Handler(MyRedis):
                             color[i] = int(color[i])
 
                         # collect latest GPS Data
-                        print(">>>> collect latest GPS Data ...")
                         gps_data = await self.GPSCollectorService.get_gps_data()
-                        print(">>>> gps_data:", gps_data, type(gps_data))
 
                         plot_info = {
                             "bbox": bbox_data,
