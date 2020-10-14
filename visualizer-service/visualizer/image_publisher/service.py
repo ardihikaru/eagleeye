@@ -30,6 +30,7 @@ class ImagePublisherService(asab.Service):
         host = asab.Config["stream:config"]["host"]
         path = asab.Config["stream:config"]["path"]
         rtsp_url = "%s://%s/%s" % (protocol, host, path)
+        L.warning("Setup RTSP URL: %s" % rtsp_url)
 
         # command and params for ffmpeg
         _command = ['ffmpeg',

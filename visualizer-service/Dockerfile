@@ -6,7 +6,7 @@
 
 # TODO: Add latex dependency: docker pull thomasweise/docker-texlive-full
 
-FROM 5g-dive/eagleeye/nvidia-gpu-opencv:1.0
+FROM 5g-dive/eagleeye/dual-object-detection-service-head:1.0
 MAINTAINER NCTU Team (mfardiansyah.eed08g@nctu.edu.tw)
 
 # http://bugs.python.org/issue19846
@@ -15,6 +15,8 @@ ENV LANG C.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 
 COPY requirements-no-cv.txt /tmp/requirements.txt
+
+RUN apt-get install -y ffmpeg
 
 # install requirements
 RUN pip3 install -r /tmp/requirements.txt
