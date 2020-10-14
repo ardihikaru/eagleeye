@@ -1,5 +1,7 @@
 import asab
 import asab.storage
+from visualizer.image_publisher import ImagePublisherModule
+from visualizer.image_plotter import ImagePlotterModule
 from visualizer.zmq import ZMQModule
 from ext_lib.utils import get_current_time
 import logging
@@ -21,6 +23,8 @@ class VisualizerService(asab.Application):
 		self.add_module(asab.storage.Module)
 
 		# Add customized modules
+		self.add_module(ImagePublisherModule)
+		self.add_module(ImagePlotterModule)
 		self.add_module(ZMQModule)
 
 		# Initialize ZMQ service
