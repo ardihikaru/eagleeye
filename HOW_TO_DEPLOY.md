@@ -49,6 +49,15 @@ docker run --name scheduler-service -d \
   -v /home/s010132/devel/eagleeye/data:/app/data 5g-dive/eagleeye/scheduler-service:1.0
 ```
 
+7. VISUALIZER
+```
+docker run --name visualizer-service -d \
+  --network eagleeye \
+  -v /home/s010132/devel/eagleeye/scheduler-service/etc/scheduler.conf:/conf/visualizer/visualizer.conf \
+  -v /home/s010132/devel/eagleeye/site_conf_files/visualizer-service/site.conf:/conf/visualizer/site.conf \
+  5g-dive/eagleeye/visualizer-service:1.0
+```
+
 
 ### MISC
 - PING
