@@ -3,16 +3,19 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: detection-deploy
+  labels:
+    name: detection-deploy
   namespace: eagleeye
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: detection-deploy
+      name: detection-deploy
   template:
     metadata:
+      name: detection-deploy
       labels:
-        app: detection-deploy
+        name: detection-deploy
     spec:
       volumes:
         - name: detection-config

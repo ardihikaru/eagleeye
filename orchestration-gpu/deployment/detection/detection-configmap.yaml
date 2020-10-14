@@ -99,5 +99,5 @@ data:
     weights = /app/config_files/yolo/weights/TW-01.weights
 
     [zmq]
-    sender_host = scheduler-service
+    sender_host = scheduler-service.eagleeye.svc.cluster.local
     sender_prefix_port = 555

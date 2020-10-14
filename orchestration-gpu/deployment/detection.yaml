@@ -37,7 +37,7 @@ data:
     weights = /app/config_files/yolo/weights/TW-01.weights
 
     [zmq]
-    sender_host = scheduler-service
+    sender_host = scheduler-service.eagleeye.svc.cluster.local
     sender_prefix_port = 555
 kind: ConfigMap
 metadata:
@@ -47,17 +47,20 @@ metadata:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  labels:
+    name: detection-deploy
   name: detection-deploy
   namespace: eagleeye
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: detection-deploy
+      name: detection-deploy
   template:
     metadata:
       labels:
-        app: detection-deploy
+        name: detection-deploy
+      name: detection-deploy
     spec:
       containers:
       - image: timwilliam/eagleeye.detection:1.0
