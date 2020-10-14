@@ -4,6 +4,7 @@ import time
 from ext_lib.commons.util import plot_one_box
 from ext_lib.redis.my_redis import MyRedis
 from ext_lib.redis.translator import redis_get, redis_set
+import cv2
 
 ###
 
@@ -23,32 +24,35 @@ class ImagePlotterService(asab.Service):
         self.ImagePublisherService = app.get_service("visualizer.ImagePublisherService")
         self.redis = MyRedis(asab.Config)
 
+        self._img_height = bool(int(asab.Config["stream:config"]["img_height"]))
+        self._img_width = bool(int(asab.Config["stream:config"]["img_width"]))
+
     async def plot_img(self, is_latest_plot_available, frame_id, img):
         is_raw = bool(int(asab.Config["stream:config"]["is_raw"]))
         is_forced_plot = bool(int(asab.Config["stream:config"]["is_forced_plot"]))
 
         if not is_raw:
-            # Collect latest `gps_data`;
-            # // TODO HERE
-
             # Collect `plot_info`; wait until value `is not None; skip when `delay` > `wait_time`
             plot_info = await self._get_plot_info(str(frame_id))
-            # print(plot_info)
+            print(plot_info)
 
             # If `plot_info` is not empty, save into redisDB (indicating the latest collected `plot_info`
             if bool(plot_info):
                 if is_forced_plot:
                     await self._save_latest_plot_info(str(frame_id), plot_info)
 
+                img = self._plot_gps_info(plot_info["gps_data"], "PiH Found", img)
+                img = self._plot_fps_info(img, 30)
+
                 is_latest_plot_available = True
 
                 # plot each mbbox data into the image
                 for mbbox_data in plot_info["mbbox"]:
                     plot_one_box(mbbox_data, img, label=plot_info["label"], color=plot_info["color"])
-                    break # TODO: This is a temporary approach! We need to fix the bug of PCS (v2)
+                    break  # TODO: This is a temporary approach! We need to fix the bug of PCS (v2)
 
             # This feature enable to plot PiH BBox based on the latest stored BBox in the redisDB
-            # Default: ENABLED
+            # Default: DISABLED
             if is_forced_plot and not bool(plot_info) and is_latest_plot_available:
                 plot_info = self._get_latest_plot_info(str(frame_id))
                 if bool(plot_info):
@@ -62,12 +66,71 @@ class ImagePlotterService(asab.Service):
 
         return is_latest_plot_available
 
+    def _plot_gps_info(self, gps_data, det_status, img):
+        x_coord_lbl, y_coord_lbl = 10, (self._img_height - 90)
+        x_coord_gps, y_coord_gps = 10, (self._img_height - 60)
+        x_coord_obj, y_coord_obj = 10, (self._img_height - 30)
+        gps_ts = time.strftime('%H:%M:%S', time.localtime(gps_data["timestamp"]))
+        long = gps_data["gps"]["long"]
+        lat = gps_data["gps"]["lat"]
+        alt = gps_data["gps"]["alt"]
+
+        # Set labels
+        gps_title_label = "GPS Information (%s):" % gps_ts
+        gps_data_label = "LONG= %f; LAT= %f; ALT= %f;" % (long, lat, alt)
+        obj_data_label = "Detection status: %s" % det_status
+
+        # Add filled box
+        # tl = round(0.002 * (self.img.shape[0] + self.img.shape[1]) / 2) + 1  # line thickness
+        tl = round(0.002 * (img.shape[0] + img.shape[1]) / 2) + 1  # line thickness
+        tf = max(tl - 1, 1)  # font thickness
+        t_size_title = cv2.getTextSize(gps_data_label, 0, fontScale=tl / 3, thickness=tf)[0]
+        t_size = cv2.getTextSize(gps_data_label, 0, fontScale=tl / 3, thickness=tf)[0]
+        t_size_obj = cv2.getTextSize(gps_data_label, 0, fontScale=tl / 3, thickness=tf)[0]
+        c1 = (int(x_coord_lbl), int(y_coord_lbl - 30))
+        c2 = x_coord_obj + t_size_title[0] - 300, y_coord_obj - t_size_obj[1] + 40
+
+        # cv2.rectangle(self.img, c1, c2, [0, 0, 0], -1)  # filled
+        cv2.rectangle(img, c1, c2, [0, 0, 0], -1)  # filled
+
+        # cv2.putText(self.img, gps_title_label,
+        cv2.putText(img, gps_title_label,
+                    (x_coord_lbl, y_coord_lbl), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), 2)
+
+        # cv2.putText(self.img, gps_data_label,
+        cv2.putText(img, gps_data_label,
+                    (x_coord_gps, y_coord_gps), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), 2)
+
+        # Plot detection status
+        # cv2.putText(self.img, obj_data_label,
+        cv2.putText(img, obj_data_label,
+                    (x_coord_obj, y_coord_obj), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), 2)
+
+        return img
+
+    def _plot_fps_info(self, img, fps=None):
+        x_coord, y_coord = (self._img_width - 300), 40
+
+        # Set labels
+        if fps is None:
+            label = "FPS: None"
+        else:
+            label = "FPS: %.2f" % fps
+
+        # Add filled box: FPS
+        tl = round(0.002 * (img.shape[0] + img.shape[1]) / 2) + 1  # line thickness
+        tf = max(tl - 1, 1)  # font thickness
+        t_size = cv2.getTextSize(label, 0, fontScale=tl / 3, thickness=tf)[0]
+        c1 = (int(x_coord), int(y_coord))
+        c2 = x_coord + t_size[0] + 30, y_coord - t_size[1] - 3
+        cv2.rectangle(img, c1, c2, [0, 0, 0], -1)  # filled
+        cv2.putText(img, label, (x_coord, y_coord), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 255, 0), 2)
+
+        return img
+
     async def _get_plot_info(self, frame_id):
         drone_id = "1"  # TODO: hardcoded for NOW! need to be assigned dynamically later on!
         plot_info_key = "plotinfo-drone-%s-frame-%s" % (drone_id, frame_id)
-        # plot_info = None
-        # plot_info = redis_get(self.redis.get_rc(), plot_info_key)
-        # print(plot_info)
 
         # wait until `plot_info` is not None
         max_delay = int(asab.Config["stream:config"]["delay"])

@@ -47,10 +47,18 @@ class GPSCollectorService(asab.Service):
         # TODO: Save the latency into ElasticSearchDB for the real-time monitoring
 
     def _spawn_gps_collector_worker(self, pool_name):
-        gps_data = [11.22, 44.22]
+        gps_data = {
+            "timestamp": time.time(),
+            "gps": {
+                "long": 21.3443,
+                "lat": 4321.3443,
+                "alt": 646.3443,
+            }
+        }
         while True:
             self._set_gps_data(gps_data)
-            L.warning("\n[%s]%s Saving data in every 1 second; GPS data=%s" % (get_current_time(), pool_name, str(gps_data)))
+            L.warning("\n[%s]%s Saving data in every 1 second; GPS data=%s" %
+                      (get_current_time(), pool_name, str(gps_data)))
             time.sleep(1)
 
     def _set_gps_data(self, gps_data):
