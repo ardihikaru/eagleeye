@@ -14,13 +14,15 @@ else
 fi
 
 echo "Building images"
-cd core-docker-images && docker build --no-cache -t "5g-dive/eagleeye/nvidia-gpu-opencv:${VERSION}" . && cd ..
-cd web-service && docker build --no-cache -t "5g-dive/eagleeye/web-service:${VERSION}" . && cd ..
-cd object-detection-service && docker build --no-cache -f Dockerfile-parent -t "5g-dive/eagleeye/dual-object-detection-service-head:${VERSION}" . && cd ..
-cd object-detection-service && docker build --no-cache -t "5g-dive/eagleeye/dual-object-detection-service:${VERSION}" . && cd ..
-cd scheduler-service && docker build --no-cache -t "5g-dive/eagleeye/scheduler-service:${VERSION}" . && cd ..
-cd visualizer-service && docker build --no-cache -t "5g-dive/eagleeye/visualizer-service:${VERSION}" . && cd ..
-
-echo "Deploying containers"
-sh ./docker-deploy.sh
-
+cd core-docker-images && docker build --no-cache -t "5g-dive/eagleeye/nvidia-gpu-opencv:${VERSION}" .
+cd ..
+cd web-service && docker build --no-cache -t "5g-dive/eagleeye/web-service:${VERSION}" .
+cd ..
+cd object-detection-service && docker build --no-cache -f Dockerfile-parent -t "5g-dive/eagleeye/dual-object-detection-service-head:${VERSION}" .
+cd ..
+cd object-detection-service && docker build --no-cache -t "5g-dive/eagleeye/dual-object-detection-service:${VERSION}" .
+cd ..
+cd scheduler-service && docker build --no-cache -t "5g-dive/eagleeye/scheduler-service:${VERSION}" .
+cd ..
+cd visualizer-service && docker build --no-cache -t "5g-dive/eagleeye/visualizer-service:${VERSION}" .
+cd ..
