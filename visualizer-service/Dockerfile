@@ -16,8 +16,6 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 COPY requirements-no-cv.txt /tmp/requirements.txt
 
-RUN apt-get install -y ffmpeg
-
 # install requirements
 RUN pip3 install -r /tmp/requirements.txt
 
