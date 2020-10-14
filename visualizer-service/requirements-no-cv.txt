@@ -1,5 +1,4 @@
 asab
 redis
-opencv-python
 simplejson
 imagezmq
