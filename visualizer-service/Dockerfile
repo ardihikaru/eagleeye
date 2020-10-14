@@ -27,6 +27,7 @@ RUN set -ex \
 
 # Application
 COPY visualizer /app/visualizer
+COPY ext_lib /app/ext_lib
 COPY ./visualizer.py /app
 
 # Version
