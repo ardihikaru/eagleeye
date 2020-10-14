@@ -1,0 +1,103 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: detection-configmap-2
+  namespace: eagleeye
+data:
+  detection.conf: |
+    [general]
+    include = /conf/dual-det/site.conf
+
+    [redis]
+    hostname = localhost
+    port = 6379
+    password = 
+    db = 0
+
+    [asab:storage]
+    type = mongodb
+    mongodb_database = eagleeyeDB
+    mongodb_uri = mongodb://localhost:27017
+    mongodb_host = localhost
+
+    [objdet:yolo]
+    output = outputs/
+    source_folder_prefix = out
+    file_ext = .png
+    dump_raw_img = 0
+    dump_bbox_img = 0
+    dump_crop_img = 0
+    save_txt = 0
+    txt_format = cartucho
+    agnostic_nms = 1
+    half = 0
+    img_size = 608
+    device = 
+    conf_thres = 0.1
+    iou_thres = 0.1
+    names = /home/ardi/devel/nctu/IBM-Lab/eagleeye/object-detection-service/config_files/yolo/data/coco.names
+    cfg = /home/ardi/devel/nctu/IBM-Lab/eagleeye/object-detection-service/config_files/yolo/cfg/yolo-obj-v5.cfg
+    weights = /home/ardi/devel/nctu/IBM-Lab/eagleeye/object-detection-service/config_files/yolo/weights/TW-01.weights
+    auto_restart = 1
+    cv_out = 1
+    window_size_height = 1920
+    window_size_width = 1080
+
+    [eagleeye:api]
+    node = http://localhost:8080/api/nodes
+    latency = http://localhost:8080/api/latency
+
+    [node]
+    channel = 
+    consumer = 
+    candidate_selection =
+    persistence_validation =
+    name =
+    id =
+    idle =
+    created_at =
+    updated_at =
+    redis_id_key = register-node-id
+    redis_name_key = register-node-name
+    redis_pcs_key = register-node-pcs
+    redis_pv_key = register-node-pv
+
+    [thread]
+    num_executor = 1
+
+    [bbox_config]
+    pih_label_cand = PiH
+    pih_label = PiH
+    pih_color = [198, 50, 13]
+    person_color = [191, 96, 165]
+    flag_color = [100, 188, 70]
+
+    [zmq]
+    sender_host = localhost
+    sender_prefix_port = 555
+
+    [persistence_detection]
+    persistence_window = 10
+    tolerance_limit_percentage = 0.3
+  site.conf: |
+    [redis]
+    hostname=redis-service
+    password =
+
+    [asab:storage]
+    mongodb_uri = mongodb://mongo-service:27017
+    mongodb_host = mongo-service
+
+    [eagleeye:api]
+    node=http://ews-service:8080/api/nodes
+    latency = http://ews-service:8080/api/latency
+
+    [objdet:yolo]
+    output = /app/outputs/
+    names = /app/config_files/yolo/data/coco.names
+    cfg = /app/config_files/yolo/cfg/yolo-obj-v5.cfg
+    weights = /app/config_files/yolo/weights/TW-01.weights
+
+    [zmq]
+    sender_host = scheduler-service.eagleeye.svc.cluster.local
+    sender_prefix_port = 555

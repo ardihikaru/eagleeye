@@ -1,0 +1,12 @@
+# EWS Node Port (API to EWS)
+apiVersion: v1
+kind: Service
+metadata:
+  name: detection-service-2
+  namespace: eagleeye
+spec:
+  selector:
+    name: detection-deploy-2
+  ports:
+  - port: 5552
+    targetPort: 5552

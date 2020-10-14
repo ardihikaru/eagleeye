@@ -8,5 +8,12 @@ spec:
   selector:
     name: scheduler-deploy
   ports:
-  - port: 5551
+  - name: worker-1
+    port: 5551
     targetPort: 5551
+  - name: worker-2
+    port: 5552
+    targetPort: 5552
+  - name: worker-3
+    port: 5553
+    targetPort: 5553
