@@ -25,8 +25,8 @@ class ImagePlotterService(asab.Service):
         self.GPSCollectorService = app.get_service("visualizer.GPSCollectorService")
         self.redis = MyRedis(asab.Config)
 
-        self._img_height = int(asab.Config["stream:config"]["img_height"])
-        self._img_width = int(asab.Config["stream:config"]["img_width"])
+        self._img_height = int(asab.Config["stream:config"]["height"])
+        self._img_width = int(asab.Config["stream:config"]["width"])
 
     async def plot_img(self, is_latest_plot_available, frame_id, img):
         is_raw = bool(int(asab.Config["stream:config"]["is_raw"]))

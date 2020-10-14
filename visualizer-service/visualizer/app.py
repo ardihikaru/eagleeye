@@ -20,9 +20,6 @@ class VisualizerService(asab.Application):
 	def __init__(self):
 		super().__init__()
 
-		# Loading asab modules
-		self.add_module(asab.storage.Module)
-
 		# Add customized modules
 		self.add_module(GPSCollectorModule)
 		self.add_module(ImagePublisherModule)
