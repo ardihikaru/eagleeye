@@ -6,9 +6,9 @@ metadata:
   namespace: eagleeye
 spec:
   ports:
-    - name: rtmp
+    - name: rtsp
       protocol: TCP
-      port: 1935
-      targetPort: 1935
+      port: 554
+      targetPort: 554
   externalIPs:
     - 140.113.86.92

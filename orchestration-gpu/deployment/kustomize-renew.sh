@@ -6,3 +6,4 @@ kubectl kustomize ./scheduler > scheduler.yaml
 kubectl kustomize ./volume > volume.yaml
 kubectl kustomize ./volume-claim > volume-claim.yaml
 kubectl kustomize ./service > service.yaml
+kubectl kustomize ./visualizer > visualizer.yaml

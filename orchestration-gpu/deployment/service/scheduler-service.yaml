@@ -8,6 +8,9 @@ spec:
   selector:
     name: scheduler-deploy
   ports:
+  - name: visualizer
+    port: 5550
+    targetPort: 5550
   - name: worker-1
     port: 5551
     targetPort: 5551

@@ -32,10 +32,8 @@ spec:
       containers:
         - name: scheduler-deploy
           #image: 5g-dive/eagleeye/scheduler-service:1.0
-          image: timwilliam/eagleeye.scheduler:1.0
+          image: timwilliam/eagleeye.scheduler:2.0
           imagePullPolicy: IfNotPresent
-          ports:
-            - containerPort: 5551
           volumeMounts:
             - name: scheduler-config
               mountPath: "/conf/scheduler"

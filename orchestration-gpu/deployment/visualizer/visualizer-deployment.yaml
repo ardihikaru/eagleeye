@@ -1,0 +1,41 @@
+# Scheduler
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: visualizer-deploy
+  namespace: eagleeye
+  labels:
+    name: visualizer-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: visualizer-deploy
+  template:
+    metadata:
+      name: visualizer-deploy
+      labels:
+        name: visualizer-deploy
+    spec:
+      volumes:
+        - name: visualizer-config
+          configMap:
+            name: visualizer-configmap
+            items:
+            - key: "visualizer.conf"
+              path: "visualizer.conf"
+            - key: "site.conf"
+              path: "site.conf"
+      containers:
+        - name: visualizer-deploy
+          #image: 5g-dive/eagleeye/scheduler-service:1.0
+          image: timwilliam/eagleeye.visualizer:2.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 554
+          volumeMounts:
+            - name: visualizer-config
+              mountPath: "/conf/visualizer"
+              readOnly: false
+      imagePullSecrets:
+        - name: timwilliam-regcred

@@ -73,12 +73,16 @@ data:
     flag_color = [100, 188, 70]
 
     [zmq]
-    sender_host = localhost
+    sender_host = 127.0.0.1
     sender_prefix_port = 555
 
     [persistence_detection]
     persistence_window = 10
     tolerance_limit_percentage = 0.3
+
+    [stream:config]
+    drone_id=1
+    gps_key_prefix=gps-data-
   site.conf: |
     [redis]
     hostname=redis-service
@@ -99,5 +103,5 @@ data:
     weights = /app/config_files/yolo/weights/TW-01.weights
 
     [zmq]
-    sender_host = scheduler-service.eagleeye.svc.cluster.local
+    sender_host = scheduler-service
     sender_prefix_port = 555

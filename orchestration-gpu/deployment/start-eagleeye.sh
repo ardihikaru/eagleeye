@@ -32,4 +32,8 @@ echo "[INFO] - Creating the Detection: detection-deploy ..."
 kubectl apply -f detection.yaml
 sleep 3
 
+echo "[INFO] - Creating the Detection: visualizer-deploy ..."
+kubectl apply -f visualizer.yaml
+sleep 3
+
 echo "[INFO] All things ready to go! Go run the scripts now!"

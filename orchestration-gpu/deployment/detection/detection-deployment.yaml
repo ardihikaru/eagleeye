@@ -31,11 +31,9 @@ spec:
             claimName: detection-config-volume-claim
       containers:
         - name: detection-deploy
-          image: timwilliam/eagleeye.detection:1.0
+          image: timwilliam/eagleeye.detection:2.0
           #image: 5g-dive/eagleeye/dual-object-detection-service:1.0
           imagePullPolicy: IfNotPresent
-          ports:
-            - containerPort: 5551
           volumeMounts:
             - name: detection-config
               mountPath: "/conf/dual-det"
