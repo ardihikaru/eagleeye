@@ -35,4 +35,4 @@ echo "Running shell script file: docker-prune-containers.sh"
 sh ./docker-prune-containers.sh ${NODES} ${DELAY}
 
 echo "Running shell script file: docker-deploy.sh"
-sh ./docker-deploy.sh ${VERSION}
+sh ./docker-deploy.sh ${DELAY} ${VERSION}
