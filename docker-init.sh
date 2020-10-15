@@ -38,5 +38,5 @@ echo "Running image builder script..."
 sh ./docker-build-images.sh ${VERSION}
 
 echo "Deploying containers"
-sh ./docker-deploy.sh ${VERSION}
+sh ./docker-deploy.sh ${DELAY} ${VERSION}
 
