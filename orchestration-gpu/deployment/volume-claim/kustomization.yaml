@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - detection-persistent-volume-claim.yaml
+  - detection-persistent-volume-claim-2.yaml
   - mongo-persistent-volume-claim.yaml
   - redis-persistent-volume-claim.yaml
   - scheduler-persistent-volume-claim.yaml

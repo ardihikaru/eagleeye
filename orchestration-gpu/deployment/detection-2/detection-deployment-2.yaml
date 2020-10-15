@@ -1,0 +1,45 @@
+# Detection
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: detection-deploy-2
+  labels:
+    name: detection-deploy-2
+  namespace: eagleeye
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: detection-deploy-2
+  template:
+    metadata:
+      name: detection-deploy-2
+      labels:
+        name: detection-deploy-2
+    spec:
+      volumes:
+        - name: detection-config
+          configMap:
+            name: detection-configmap
+            items:
+            - key: "detection.conf"
+              path: "detection.conf"
+            - key: "site.conf"
+              path: "site.conf"
+        - name: config-files
+          persistentVolumeClaim:
+            claimName: detection-config-volume-claim-2
+      containers:
+        - name: detection-deploy-2
+          image: timwilliam/eagleeye.detection:2.0
+          #image: 5g-dive/eagleeye/dual-object-detection-service:1.0
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: detection-config
+              mountPath: "/conf/dual-det"
+              readOnly: false
+            - name: config-files
+              mountPath: "/app/config_files"
+      imagePullSecrets:
+        - name: timwilliam-regcred
+      restartPolicy: Always

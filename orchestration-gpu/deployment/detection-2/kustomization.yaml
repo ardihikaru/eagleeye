@@ -3,4 +3,4 @@ kind: Kustomization
 
 resources:
   - detection-configmap.yaml
-  - detection-deployment.yaml
+  - detection-deployment-2.yaml
