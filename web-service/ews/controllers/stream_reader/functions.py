@@ -69,7 +69,7 @@ def config_to_mongodb(executor, request_json):
 
 def threaded_insertion(pool_name, request_json):
 	# print(" \n @@@@ threaded_task_scheduler-%s" % pool_name)
-	L.warning(" \n @@@@ threaded_task_scheduler-%s" % pool_name)
+	# L.warning(" \n @@@@ threaded_task_scheduler-%s" % pool_name)
 
 	t0_saving_mongo = time.time()
 	# print("> >>>> request_json:", request_json)

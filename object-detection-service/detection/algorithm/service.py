@@ -3,6 +3,8 @@ import logging
 from .handler import YOLOv3Handler
 from detection.algorithm.soa.yolo_v3.app import YOLOv3
 import requests
+from ext_lib.redis.my_redis import MyRedis
+from ext_lib.redis.translator import redis_get
 import time
 from ext_lib.utils import get_current_time
 
@@ -25,7 +27,10 @@ class DetectionAlgorithmService(asab.Service):
         self.SubscriptionHandler = YOLOv3Handler(app)
         self.ResizerService = app.get_service("detection.ResizerService")
 
-        self.node_alias = "NODE-%s" % asab.Config["node"]["name"]
+        # Set node alias
+        redis = MyRedis(asab.Config)
+        node_name = redis_get(redis.get_rc(), asab.Config["node"]["redis_name_key"])
+        self.node_alias = "NODE-%s" % str(node_name)
 
         # Extractor service may not exist at this point
         # This variable will be set up in the init time
@@ -41,6 +46,7 @@ class DetectionAlgorithmService(asab.Service):
 
     async def start_subscription(self):
         try:
+            L.warning("Configuring Object Detection")
             await self._configure_object_detection()
             await self.SubscriptionHandler.set_configuration()
             await self.SubscriptionHandler.set_deployment_status()
@@ -75,7 +81,7 @@ class DetectionAlgorithmService(asab.Service):
 
         # defining a params dict for the parameters to be sent to the API
         request_json = {
-            "pid": pid,
+            # "pid": pid,
             "channel": "node-" + node_id
         }
         headers = {"Content-Type": "application/json"}
@@ -116,7 +122,7 @@ class DetectionAlgorithmService(asab.Service):
             # print('\n[%s] Proc. Latency of Pre-processing (%.3f ms)' % (get_current_time(), t1_preproc))
 
             # Perform object detection
-            bbox_data, det, names, yolo_lat = self.yolo.get_detection_results(resized_frame)
+            bbox_data, det, names, yolo_lat = self.yolo.get_detection_results(resized_frame, frame)
             # bbox_data = self.yolo.get_bbox_data(frame, False)
 
             # # build latency data: YOLO

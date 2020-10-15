@@ -8,7 +8,8 @@ from concurrent.futures import ThreadPoolExecutor
 import time
 # from multiprocessing import shared_memory
 import numpy as np
-import signal
+import simplejson as json
+# import signal
 
 ###
 
@@ -27,18 +28,20 @@ class YOLOv3Handler(MyRedis):
         self.executor = ThreadPoolExecutor(int(asab.Config["thread"]["num_executor"]))
 
         self.LatCollectorService = app.get_service("detection.LatencyCollectorService")
+        self.GPSCollectorService = app.get_service("detection.GPSCollectorService")
 
-        # Default None
-        self.node_name = int(asab.Config["node"]["name"])  # Should be an integer and unique, i.e. 1, 2, 3 ...
-        self.node_id = asab.Config["node"]["id"]
+        # Set node information
+        self.node_name = redis_get(self.rc, asab.Config["node"]["redis_name_key"])
+        self.node_id = redis_get(self.rc, asab.Config["node"]["redis_id_key"])
+
         self.pid = os.getpid()
-        self.node_alias = "NODE-%s" % asab.Config["node"]["name"]
+        self.node_alias = "NODE-%s" % str(self.node_name)
         self.node_info = self._gen_node_info()
         self.node_info_list = self._dict2list(self.node_info)
 
         # Extra Module params
-        self.cs_enabled = bool(int(asab.Config["node"]["candidate_selection"]))
-        self.pv_enabled = bool(int(asab.Config["node"]["Persistence_validation"]))
+        self.cs_enabled = redis_get(self.rc, asab.Config["node"]["redis_pcs_key"])
+        self.pv_enabled = redis_get(self.rc, asab.Config["node"]["redis_pv_key"])
         self.cv_out = bool(int(asab.Config["objdet:yolo"]["cv_out"]))
 
         # PiH Persistence Validation params
@@ -56,9 +59,9 @@ class YOLOv3Handler(MyRedis):
 
     def _gen_node_info(self):
         return {
-            "id": asab.Config["node"]["name"],
-            "name": int(asab.Config["node"]["name"]),
-            "idle": asab.Config["node"]["idle"]
+            "id": self.node_id,
+            "name": int(self.node_name)
+            # "idle": asab.Config["node"]["idle"]
         }
 
     async def set_configuration(self):
@@ -83,7 +86,6 @@ class YOLOv3Handler(MyRedis):
         L.warning("\n[%s][%s] Object Detection Service is going to stop" % (get_current_time(), self.node_alias))
 
         # Delete Node
-        # await self.DetectionAlgorithmService.delete_node_information(asab.Config["node"]["id"])
         await self.DetectionAlgorithmService.delete_node_information(self.node_id)
 
         # Kill PID !!!
@@ -101,23 +103,9 @@ class YOLOv3Handler(MyRedis):
 
     async def start(self):
         channel = "node-" + self.node_id
-        # print("\n[%s][%s] YOLOv3Handler try to subsscribe to channel `%s` from [Scheduler Service]" %
-        #       (get_current_time(), self.node_alias, channel))
         L.warning("\n[%s][%s] YOLOv3Handler try to subsscribe to channel `%s` from [Scheduler Service]" %
               (get_current_time(), self.node_alias, channel))
 
-        # set params to store tmp latency data
-        # latency = {
-        #     "preproc": [],
-        #     "yolo": [],
-        #     "cand_selection": []
-        # }
-
-        # bug fix: invalid e2e latency due to detection issue with CPU
-        # t_start = None
-
-        # Set default value of shm node
-        # shm_node = None
         redis_key = self.node_id + "_status"
 
         consumer = self.rc.pubsub()
@@ -131,27 +119,12 @@ class YOLOv3Handler(MyRedis):
             else:
                 # TODO: To tag the corresponding drone_id to identify where the image came from (Future work)
                 image_info = pubsub_to_json(item["data"])
-                # print(" >>> image_info:", image_info)
+                L.warning("Collecting Image Info")
+                L.warning(json.dumps(image_info))
+                L.warning("Image INFORMATION is collected.")
 
-                # # assign shm value: ONCE only
-                # if shm_node is None:
-                #     print("### MULAI ASSIGN SHM")
-                #     # try:
-                #     #     shm = shared_memory.SharedMemory(name=self.node_id)
-                #     #     # shm_node = shared_memory.SharedMemory(name=self.node_id)
-                #     #     shm_node = np.ndarray(self.node_info_list.shape, dtype=np.string, buffer=shm.buf)
-                #     #     print(">>>>>> shm_node:", )
-                #     # except Exception as e:
-                #     #     print(">>>>>> e:", e)
-                
-                # print("********* shm_node:", shm_node)
-                # print(">> > > > >> >START Receiving ZMQ in OBJDET @ ts:", time.time(), redis_get(self.rc, channel))
-
-                # if not image_info["active"]:
                 if redis_get(self.rc, channel) is not None:
                     self.rc.delete(channel)
-                    # print("\n[%s][%s] Forced to exit the Object Detection Service" %
-                    #       (get_current_time(), self.node_alias))
                     L.warning("\n[%s][%s] Forced to exit the Object Detection Service" %
                           (get_current_time(), self.node_alias))
                     await self.stop()
@@ -160,7 +133,10 @@ class YOLOv3Handler(MyRedis):
                 # TODO: To start TCP Connection and be ready to capture the image from [Scheduler Service]
                 # TODO: To have a tag as the image identifier, i.e. DroneID
                 # TODO: To add a timeout, if no response found after a `timeout` time, ignore this (Future work)
+                L.warning("Try to collect Image DATA.")
                 is_success, frame_id, t0_zmq, img = await self.DetectionAlgorithmService.get_img()
+                L.warning("Receiving image data via ZMQ (is_success=%s; frame_id=%s)" % (str(is_success), str(frame_id)))
+                L.warning("Image DATA is collected.")
                 # print(">>>> RECEIVED DATA:", is_success, frame_id, t0_zmq, img.shape)
                 t1_zmq = (time.time() - t0_zmq) * 1000  # TODO: This is still INVALID! it got mixed up with Det latency!
                 # print('\n[%s] Latency for Receiving Image ZMQ (%.3f ms)' % (get_current_time(), t1_zmq))
@@ -171,18 +147,26 @@ class YOLOv3Handler(MyRedis):
                 t0_e2e_latency = time.time()
 
                 # Start performing object detection
+                L.warning("Start performing object detection")
                 bbox_data, det, names, pre_proc_lat, yolo_lat = await self.DetectionAlgorithmService.detect_object(img)
 
                 # build & submit latency data: Pre-processing
+                L.warning("build & submit latency data: Pre-processing")
                 await self._save_latency(frame_id, pre_proc_lat, "N/A", "preproc_det", "Pre-processing")
 
                 # build & submit latency data: YOLO
+                L.warning("build & submit latency data: YOLO")
                 await self._save_latency(frame_id, yolo_lat, image_info["algorithm"], "detection", "Object Detection")
 
                 # Get img information
                 h, w, c = img.shape
 
+                # Set default `mbbox_data` and `plot_info` values
+                mbbox_data = []
+                plot_info = {}
+
                 # Performing Candidate Selection Algorithm, if enabled
+                L.warning("Performing Candidate Selection Algorithm, if enabled")
                 if self.cs_enabled and det is not None:
                     # print("***** [%s] Performing Candidate Selection Algorithm" % self.node_alias)
                     L.warning("***** [%s] Performing Candidate Selection Algorithm" % self.node_alias)
@@ -191,7 +175,6 @@ class YOLOv3Handler(MyRedis):
                     t1_cs = (time.time() - t0_cs) * 1000
                     # print('\n[%s] Latency of Candidate Selection Algo. (%.3f ms)' % (get_current_time(), t1_cs))
                     L.warning('\n[%s] Latency of Candidate Selection Algo. (%.3f ms)' % (get_current_time(), t1_cs))
-                    # print(" >>>>> mbbox_data:", mbbox_data)
 
                     # build & submit latency data: PiH Candidate Selection
                     await self._save_latency(frame_id, t1_cs, "PiH Candidate Selection", "candidate_selection",
@@ -226,6 +209,24 @@ class YOLOv3Handler(MyRedis):
                         label = asab.Config["bbox_config"]["pih_label"]
                         det_status = label + " object FOUND"
 
+                    # If MBBox data available, build plot_info
+                    if len(mbbox_data) > 0:
+
+                        color = asab.Config["bbox_config"]["pih_color"].strip('][').split(', ')
+                        for i in range(len(color)):
+                            color[i] = int(color[i])
+
+                        # collect latest GPS Data
+                        gps_data = await self.GPSCollectorService.get_gps_data()
+
+                        plot_info = {
+                            "bbox": bbox_data,
+                            "mbbox": mbbox_data,
+                            "color": color,
+                            "label": label,
+                            "gps_data": gps_data
+                        }
+
                     # print("\n[%s][%s]Frame-%s label=[%s], det_status=[%s]" %
                     #       (get_current_time(), self.node_alias, str(frame_id), label, det_status))
                     L.warning("\n[%s][%s]Frame-%s label=[%s], det_status=[%s]" %
@@ -233,11 +234,19 @@ class YOLOv3Handler(MyRedis):
 
                 # If enable visualizer, send the bbox into the Visualizer Service
                 if self.cv_out:
-                    # print("\n[%s][%s] SENDING BBox INTO Visualizer Service!" % (get_current_time(), self.node_alias))
-                    L.warning("\n[%s][%s] SENDING BBox INTO Visualizer Service!" % (get_current_time(), self.node_alias))
+                    L.warning("\n[%s][%s][%s] Store Box INTO Visualizer Service!" %
+                              (get_current_time(), self.node_alias, str(frame_id)))
+                    t0_plotinfo_saving = time.time()
+                    drone_id = "1"  # TODO: hardcoded for NOW! need to be assigned dynamically later on!
+                    plot_info_key = "plotinfo-drone-%s-frame-%s" % (drone_id, str(frame_id))
+                    redis_set(self.rc, plot_info_key, plot_info)
+                    t1_plotinfo_saving = (time.time() - t0_plotinfo_saving) * 1000
+                    L.warning('\n[%s] Latency of Storing Plot info in redisDB (%.3f ms)' %
+                              (get_current_time(), t1_plotinfo_saving))
 
                 # Set this node as available again
                 redis_set(self.rc, redis_key, True)
+                L.warning("[DEBUG] Status of this Node: %s" % str(redis_get(self.rc, redis_key)))
 
                 # Capture and store e2e latency
                 t1_e2e_latency = (time.time() - t0_e2e_latency) * 1000

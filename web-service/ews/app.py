@@ -3,18 +3,22 @@ import asab.web
 import asab.web.rest
 import asab.web.session
 from ews.route_manager import RouteManagerModule
+from ews.gps_collector import GPSCollectorModule
+# from ews.aio_rtc import AIORTCModule
 from ext_lib.redis.my_redis import MyRedis
 from ext_lib.redis.translator import redis_set
 from mongoengine import connect
 from mongoengine.connection import _get_db
 import logging
+from ews.controllers.node.node import Node as NodeController
 
 ###
 
 L = logging.getLogger(__name__)
-
+# logging.basicConfig(level=logging.DEBUG)
 
 ###
+
 
 class EagleEYEWebService(asab.Application):
 
@@ -39,7 +43,16 @@ class EagleEYEWebService(asab.Application):
 
 		# Web module/service
 		self.add_module(asab.web.Module)
+		# self.add_module(AIORTCModule)
 		self.add_module(RouteManagerModule)
+		self.add_module(GPSCollectorModule)
 
 	async def initialize(self):
+		# Register one worker node as default available worker node
+		json_data = {
+			"candidate_selection": True,
+			"persistence_validation": True
+		}
+		NodeController().register(json_data)
+
 		L.warning("EagleEYE Web Service is running!")
