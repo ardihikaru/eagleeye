@@ -1,4 +1,4 @@
-# How to build: docker build -t 5g-dive/eagleeye/nvidia-gpu-opencv:1.0 . 
+# How to build: docker build -t 5g-dive/eagleeye/nvidia-gpu-opencv:2.0 .
 
 # To install : https://github.com/janza/docker-python3-opencv/blob/master/Dockerfile
 

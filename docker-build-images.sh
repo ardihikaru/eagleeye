@@ -8,7 +8,7 @@ VERSION=$1
 if [ -z "$VERSION" ]
 then
       echo "\$VERSION is empty"
-      VERSION="1.0"  # default value
+      VERSION="2.0"  # default value
 else
       echo "\$VERSION is NOT empty"
 fi

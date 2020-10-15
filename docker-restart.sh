@@ -3,6 +3,7 @@
 # Capturing expected total number of worker nodes (input arguments)
 NODES=$1
 DELAY=$2
+VERSION=$3
 
 # Verify input
 ## check Total worker nodes
@@ -21,9 +22,17 @@ then
 else
       echo "\$DELAY is NOT empty"
 fi
+## check version
+if [ -z "$VERSION" ]
+then
+      echo "\$VERSION is empty"
+      VERSION="2.0"  # default value
+else
+      echo "\$VERSION is NOT empty"
+fi
 
 echo "Running shell script file: docker-prune-containers.sh"
 sh ./docker-prune-containers.sh ${NODES} ${DELAY}
 
 echo "Running shell script file: docker-deploy.sh"
-sh ./docker-deploy.sh
+sh ./docker-deploy.sh ${VERSION}
