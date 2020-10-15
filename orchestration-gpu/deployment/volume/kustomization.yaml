@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - detection-persistent-volume.yaml
   - detection-persistent-volume-2.yaml
+  - detection-persistent-volume-3.yaml
   - mongo-persistent-volume.yaml
   - redis-persistent-volume.yaml
   - scheduler-persistent-volume.yaml

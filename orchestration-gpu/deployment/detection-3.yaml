@@ -1,0 +1,89 @@
+apiVersion: v1
+data:
+  detection.conf: "[general]\ninclude = /conf/dual-det/site.conf\n\n[redis]\nhostname
+    = localhost\nport = 6379\npassword = \ndb = 0\n\n[asab:storage]\ntype = mongodb\nmongodb_database
+    = eagleeyeDB\nmongodb_uri = mongodb://localhost:27017\nmongodb_host = localhost\n\n[objdet:yolo]\noutput
+    = outputs/\nsource_folder_prefix = out\nfile_ext = .png\ndump_raw_img = 0\ndump_bbox_img
+    = 0\ndump_crop_img = 0\nsave_txt = 0\ntxt_format = cartucho\nagnostic_nms = 1\nhalf
+    = 0\nimg_size = 608\ndevice = \nconf_thres = 0.1\niou_thres = 0.1\nnames = /home/ardi/devel/nctu/IBM-Lab/eagleeye/object-detection-service/config_files/yolo/data/coco.names\ncfg
+    = /home/ardi/devel/nctu/IBM-Lab/eagleeye/object-detection-service/config_files/yolo/cfg/yolo-obj-v5.cfg\nweights
+    = /home/ardi/devel/nctu/IBM-Lab/eagleeye/object-detection-service/config_files/yolo/weights/TW-01.weights\nauto_restart
+    = 1\ncv_out = 1\nwindow_size_height = 1920\nwindow_size_width = 1080\n\n[eagleeye:api]\nnode
+    = http://localhost:8080/api/nodes\nlatency = http://localhost:8080/api/latency\n\n[node]\nchannel
+    = \nconsumer = \ncandidate_selection =\npersistence_validation =\nname =\nid =\nidle
+    =\ncreated_at =\nupdated_at =\nredis_id_key = register-node-id\nredis_name_key
+    = register-node-name\nredis_pcs_key = register-node-pcs\nredis_pv_key = register-node-pv\n\n[thread]\nnum_executor
+    = 1\n\n[bbox_config]\npih_label_cand = PiH\npih_label = PiH\npih_color = [198,
+    50, 13]\nperson_color = [191, 96, 165]\nflag_color = [100, 188, 70]\n\n[zmq]\nsender_host
+    = 127.0.0.1\nsender_prefix_port = 555\n\n[persistence_detection]\npersistence_window
+    = 10\ntolerance_limit_percentage = 0.3\n\n[stream:config]\ndrone_id=1\ngps_key_prefix=gps-data-\n"
+  site.conf: |
+    [redis]
+    hostname=redis-service
+    password =
+
+    [asab:storage]
+    mongodb_uri = mongodb://mongo-service:27017
+    mongodb_host = mongo-service
+
+    [eagleeye:api]
+    node=http://ews-service:8080/api/nodes
+    latency = http://ews-service:8080/api/latency
+
+    [objdet:yolo]
+    output = /app/outputs/
+    names = /app/config_files/yolo/data/coco.names
+    cfg = /app/config_files/yolo/cfg/yolo-obj-v5.cfg
+    weights = /app/config_files/yolo/weights/TW-01.weights
+
+    [zmq]
+    sender_host = scheduler-service
+    sender_prefix_port = 555
+kind: ConfigMap
+metadata:
+  name: detection-configmap
+  namespace: eagleeye
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: detection-deploy-3
+  name: detection-deploy-3
+  namespace: eagleeye
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: detection-deploy-3
+  template:
+    metadata:
+      labels:
+        name: detection-deploy-3
+      name: detection-deploy-3
+    spec:
+      containers:
+      - image: timwilliam/eagleeye.detection:2.0
+        imagePullPolicy: IfNotPresent
+        name: detection-deploy-3
+        volumeMounts:
+        - mountPath: /conf/dual-det
+          name: detection-config
+          readOnly: false
+        - mountPath: /app/config_files
+          name: config-files
+      imagePullSecrets:
+      - name: timwilliam-regcred
+      restartPolicy: Always
+      volumes:
+      - configMap:
+          items:
+          - key: detection.conf
+            path: detection.conf
+          - key: site.conf
+            path: site.conf
+          name: detection-configmap
+        name: detection-config
+      - name: config-files
+        persistentVolumeClaim:
+          claimName: detection-config-volume-claim-3

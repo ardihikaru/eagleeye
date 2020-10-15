@@ -3,6 +3,7 @@ kubectl kustomize ./redis > redis.yaml
 kubectl kustomize ./ews > ews.yaml
 kubectl kustomize ./detection > detection.yaml
 kubectl kustomize ./detection-2 > detection-2.yaml
+kubectl kustomize ./detection-3 > detection-3.yaml
 kubectl kustomize ./scheduler > scheduler.yaml
 kubectl kustomize ./volume > volume.yaml
 kubectl kustomize ./volume-claim > volume-claim.yaml

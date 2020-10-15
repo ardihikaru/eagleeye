@@ -14,6 +14,19 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
+  name: detection-config-volume-3
+  namespace: eagleeye
+spec:
+  accessModes:
+  - ReadOnlyMany
+  capacity:
+    storage: 6Gi
+  hostPath:
+    path: /home/s010132/devel/eagleeye/object-detection-service/config_files
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
   name: detection-config-volume
   namespace: eagleeye
 spec:

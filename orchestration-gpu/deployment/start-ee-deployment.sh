@@ -23,6 +23,14 @@ echo "[INFO] Worker-2 ..."
 kubectl apply -f detection-2.yaml
 sleep 5
 
+echo "[INFO] Registering Worker-2 ..."
+sh register-node.sh
+sleep 2
+
+echo "[INFO] Worker-3 ..."
+kubectl apply -f detection-3.yaml
+sleep 5
+
 echo "[INFO] Scheduler ..."
 kubectl apply -f scheduler.yaml
 sleep 5

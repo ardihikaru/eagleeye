@@ -37,6 +37,14 @@ echo "[INFO] - Creating the Detection: detection-deploy-2 ..."
 kubectl apply -f detection-2.yaml
 sleep 4
 
+echo "[INFO] - Registering Worker-2 ..."
+sh register-node.sh
+sleep 2
+
+echo "[INFO] - Creating the Detection: detection-deploy-3 ..."
+kubectl apply -f detection-3.yaml
+sleep 4
+
 echo "[INFO] - Creating the Scheduler: scheduler-deploy ..."
 kubectl apply -f scheduler.yaml
 sleep 4
