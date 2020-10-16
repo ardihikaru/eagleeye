@@ -34,7 +34,7 @@ data:
     output = /app/outputs/
     names = /app/config_files/yolo/data/coco.names
     cfg = /app/config_files/yolo/cfg/yolo-obj-v5.cfg
-    weights = /app/config_files/yolo/weights/TW-01.weights
+    weights = /app/config_files/yolo/weights/TM-07.weights
 
     [zmq]
     sender_host = scheduler-service
