@@ -24,14 +24,14 @@ data:
     host=140.113.86.92
 
     # This is the path where the expected output URL for output video stream with PiH BBox
-    path=output-ee
+    path=output-raw
 
     # If Enabled (is_forced_plot=0), it will take the latest BBox and plot them into the current frame
     # This is still BUG, please disable it for now!
     is_forced_plot=0
 
     # Is thie parameter is enabled (is_raw=1), this Visualizer will only show real Video Stream (simply forward)
-    is_raw=0
+    is_raw=1
   visualizer.conf: |
     [general]
     include = /conf/visualizer/site.conf
@@ -69,36 +69,36 @@ data:
     gps_key_prefix=gps-data-
 kind: ConfigMap
 metadata:
-  name: visualizer-configmap
+  name: visualizer-configmap-raw
   namespace: eagleeye
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    name: visualizer-deploy
-  name: visualizer-deploy
+    name: visualizer-deploy-raw
+  name: visualizer-deploy-raw
   namespace: eagleeye
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: visualizer-deploy
+      name: visualizer-deploy-raw
   template:
     metadata:
       labels:
-        name: visualizer-deploy
-      name: visualizer-deploy
+        name: visualizer-deploy-raw
+      name: visualizer-deploy-raw
     spec:
       containers:
       - image: timwilliam/eagleeye.visualizer:2.0
         imagePullPolicy: IfNotPresent
-        name: visualizer-deploy
+        name: visualizer-deploy-raw
         ports:
         - containerPort: 554
         volumeMounts:
         - mountPath: /conf/visualizer
-          name: visualizer-config
+          name: visualizer-config-raw
           readOnly: false
       imagePullSecrets:
       - name: timwilliam-regcred
@@ -109,5 +109,5 @@ spec:
             path: visualizer.conf
           - key: site.conf
             path: site.conf
-          name: visualizer-configmap
-        name: visualizer-config
+          name: visualizer-configmap-raw
+        name: visualizer-config-raw

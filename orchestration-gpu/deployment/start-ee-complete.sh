@@ -53,4 +53,8 @@ echo "[INFO] - Creating the Detection: visualizer-deploy ..."
 kubectl apply -f visualizer.yaml
 sleep 4
 
+echo "[INFO] - Creating the Detection: visualizer-deploy-raw ..."
+kubectl apply -f visualizer-raw.yaml
+sleep 4
+
 echo "[INFO] All things ready to go! Go run the scripts now!"

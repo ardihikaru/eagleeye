@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: visualizer-configmap
+  name: visualizer-configmap-raw
   namespace: eagleeye
 data:
   visualizer.conf: |
@@ -63,11 +63,11 @@ data:
     host=140.113.86.92
 
     # This is the path where the expected output URL for output video stream with PiH BBox
-    path=output-ee
+    path=output-raw
 
     # If Enabled (is_forced_plot=0), it will take the latest BBox and plot them into the current frame
     # This is still BUG, please disable it for now!
     is_forced_plot=0
 
     # Is thie parameter is enabled (is_raw=1), this Visualizer will only show real Video Stream (simply forward)
-    is_raw=0
+    is_raw=1
