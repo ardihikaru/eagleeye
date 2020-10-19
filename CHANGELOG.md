@@ -1,3 +1,99 @@
+## 5.0-EEv2.0-field-trial (十月 19, 2020)
+  - Merge pull request #7 from ardihikaru/feature/EagleEYEv2.0/k8s-multi
+  - Updated the weight file to TM-07
+  - Added another visualizer to display for EE input feed
+  - Added a scrip to stream video continuously to rtsp server
+  - Multiple worker (3x) is now working
+  - Multiple worker (2x) is now working
+  - Update: - Updated the K8S yaml to work with the current tag version (2.0) - Added visualizer microservice deployment
+  - Merge branch 'bugfix/docker-script-deploy' into develop
+  - bugfix: missing arguments
+  - Merge pull request #6 from ardihikaru/feature/EagleEYEv2.0/http-visualizer
+  - update deployment version from 1.0 into 2.0
+  - bugfix: add an empty folder and empty README file
+  - bugfix: unable to change directory
+  - move ffmpeg installation inside core image's Dockerfile
+  - add shell scripts to deploy in the docker environment
+  - add sample docker run visualizer; add auto deploy, destroy shell scripts
+  - add missing `ext_lib` folder
+  - remove opencv
+  - add initial Dockerfile
+  - remove printing
+  - add site.conf template file for Visualizer Service
+  - bugfix: duplicate config parameters; unused codes
+  - plot GPS data and FPS data into frames
+  - bugfix & testing with visualizer
+  - Minor modification to add 2 worker node, working now
+  - code refactor: add image publisher and image plotter modules
+  - enable uncommented codes
+  - enable auto-plot from the latest bbox
+  - Fixed bug with detection-service
+  - add research-based files to send and receive image data
+  - Update to the current deployment file to support for namespace (eagleeye)
+  - bugfix: re-enable requirement file installation
+  - bugfix: add a specific dockerfile
+  - fix and test loading GPS data sending it along with the plot information
+  - change print into log-level printing
+  - bugfix: change service name
+  - remove unused function
+  - add Log information when initializing the modules
+  - add GPS Collector Module in Object Detection Service
+  - GPS collector's configuration are collected from the config file
+  - change print into log-level printing
+  - add GPS Collector Module & works in a thread-level
+  - move color's variable convertion here
+  - bugfix: `is_raw` wrong value convertion
+  - introduce new parameter to enable/disable bbox plotting: `is_raw`
+  - add bbox into to the published data
+  - remove prints
+  - do plotting in the visualizer service
+  - bugfix: wrong rescaled image reference
+  - add feature: store `plot_info` into redisDB
+  - Bugfix: format numpy-float into float data type
+  - delete unused codes
+  - move visualizer image data sender into the top of the function
+  - update & test visualizer in E2E
+  - add visualizer services; add research on sending image Data via imageZMQ
+  - add doc how to run this small script
+  - remove unused comment
+  - disable aiortc related web-based video streamer
+  - add sample code for sending video into RTSP Server
+  - bugfix: add namespace
+  - fix conficts
+  - add log warnings
+  - add init file
+  - add sample RTSP frames sender
+  - Merge branch 'release/4.1-EEv2.0-k8s-single-worker-stable' into develop
+  - add log to show the resizer algorithm latency
+  - add another warnings and remove unused codes
+  - add another warning
+  - bugfix: use IP instead of `localhost`
+  - bugfix: wrong ZMQ URI
+  - bugfix: wrong ews hostname
+  - add more logs
+  - add stream_source to stream from video files or stream
+  - add postfix `-service` on each config file: site.conf
+  - add postfix `-service` on each micro-service's name
+  - add documentation on how to run in docker environment
+  - add sample to pub and sub data with redis
+  - Bugfix: Assign before usage
+  - Bugfix: Multiple ports, broadcast network (*)
+  - Bugfix: Set ZMQ on the first pubsub
+  - Merge branch 'feature/EagleEYEv2.0/http-visualizer' of github.com:ardihikaru/eagleeye into feature/EagleEYEv2.0/http-visualizer
+  - bugfix: forgot to get value _set_zmq_uri() function
+  - store node's `pcs` and `pv` values into redisDB instead of through default config
+  - set fields: `idle` and `pid` in `nodes` collections
+  - set `channel as an optional input parameter`
+  - bugfix: unable to install aiortc
+  - add req file from web-service
+  - add another mandatory lib
+  - add dependency for RTC web-based video stream
+  - add orchestration mode: `native` or others (docker / kubernetes)
+  - updates: - disable site.conf file generator for Object Detection Service - use redis key-value to collect newly registered worker nodes - Object Detection Service's site.conf now only contains important values
+  - add new section and overridable values
+  - add library dependency
+  - updates: - add aiorc for real-time web-based video player - refactor web handler - add new service (port=8081) for streamng video
+
 ## 4.1-EEv2.0-k8s-single-worker-stable (九月 27, 2020)
   - Merge pull request #5 from ardihikaru/feature/EagleEYEv2.0/orchestration-gpu
   - Updated the README file with how to test
