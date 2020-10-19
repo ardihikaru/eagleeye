@@ -3,6 +3,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: ews-service
+  namespace: eagleeye
 spec:
   selector:
     name: ews-deploy

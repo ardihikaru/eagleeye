@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: ews-configmap
+  namespace: eagleeye
 data:
   ews.conf: |
     [general]
@@ -17,13 +18,15 @@ data:
     port=8081
     ews_rt_host=localhost
 
-    [streaming:config]
+    [stream:config]
     fps=30
     w=640
     #w=1280
     #w=1080
     h=480
     #h=720
+    drone_id=1
+    gps_key_prefix=gps-data-
 
     [clients]
     source_ip=http://localhost:3000

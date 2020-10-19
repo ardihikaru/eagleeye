@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mongo-deploy
+  namespace: eagleeye
   labels:
     name: mongo-deploy
 spec:

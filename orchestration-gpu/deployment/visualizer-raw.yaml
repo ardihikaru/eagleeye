@@ -1,0 +1,113 @@
+apiVersion: v1
+data:
+  site.conf: |
+    [redis]
+    hostname=redis-service
+    password =
+
+    [zmq]
+    sender_host=scheduler-service
+    sender_port=5550
+
+    [eagleeye:api]
+    node=http://ews-service:8080/api/nodes
+    latency = http://ews-service:8080/api/latency
+
+    [stream:config]
+    width=1920
+    height=1080
+
+    # This is the maximum waiting time to receive Plot info (including PiH BBox data); value should be <33ms for real-time
+    delay=100
+
+    # This `host` should be changed accordingly; i.e. host of the target RTSP Server
+    host=140.113.86.92
+
+    # This is the path where the expected output URL for output video stream with PiH BBox
+    path=output-raw
+
+    # If Enabled (is_forced_plot=0), it will take the latest BBox and plot them into the current frame
+    # This is still BUG, please disable it for now!
+    is_forced_plot=0
+
+    # Is thie parameter is enabled (is_raw=1), this Visualizer will only show real Video Stream (simply forward)
+    is_raw=1
+  visualizer.conf: |
+    [general]
+    include = /conf/visualizer/site.conf
+
+    [redis]
+    hostname=localhost
+    port=6379
+    password=
+    db=0
+
+    [eagleeye:api]
+    node=http://localhost:8080/api/nodes
+    latency = http://localhost:8080/api/latency
+
+    [pubsub:channel]
+    scheduler=scheduler
+
+    [zmq]
+    sender_host=127.0.0.1
+    sender_port=5550
+
+    [stream:config]
+    is_raw=0
+    is_forced_plot=0
+    protocol=rtsp
+    host=localhost
+    path=test
+    fps=30
+    width=1920
+    height=1080
+    delay=33
+    img_height=1080
+    img_width=1920
+    drone_id=1
+    gps_key_prefix=gps-data-
+kind: ConfigMap
+metadata:
+  name: visualizer-configmap-raw
+  namespace: eagleeye
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: visualizer-deploy-raw
+  name: visualizer-deploy-raw
+  namespace: eagleeye
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: visualizer-deploy-raw
+  template:
+    metadata:
+      labels:
+        name: visualizer-deploy-raw
+      name: visualizer-deploy-raw
+    spec:
+      containers:
+      - image: timwilliam/eagleeye.visualizer:2.0
+        imagePullPolicy: IfNotPresent
+        name: visualizer-deploy-raw
+        ports:
+        - containerPort: 554
+        volumeMounts:
+        - mountPath: /conf/visualizer
+          name: visualizer-config-raw
+          readOnly: false
+      imagePullSecrets:
+      - name: timwilliam-regcred
+      volumes:
+      - configMap:
+          items:
+          - key: visualizer.conf
+            path: visualizer.conf
+          - key: site.conf
+            path: site.conf
+          name: visualizer-configmap-raw
+        name: visualizer-config-raw

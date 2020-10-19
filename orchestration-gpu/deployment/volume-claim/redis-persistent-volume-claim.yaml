@@ -2,6 +2,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: redis-volume-claim
+  namespace: eagleeye
 spec:
   accessModes:
     - ReadWriteMany

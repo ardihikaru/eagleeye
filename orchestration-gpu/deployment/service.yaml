@@ -1,18 +1,8 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: detection-service
-spec:
-  ports:
-  - port: 5551
-    targetPort: 5551
-  selector:
-    name: detection-deploy
----
-apiVersion: v1
-kind: Service
-metadata:
   name: ews-ext-service
+  namespace: eagleeye
 spec:
   ports:
   - nodePort: 31000
@@ -26,6 +16,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: ews-service
+  namespace: eagleeye
 spec:
   ports:
   - port: 8080
@@ -37,6 +28,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mongo-service
+  namespace: eagleeye
 spec:
   ports:
   - port: 27017
@@ -48,6 +40,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: redis-service
+  namespace: eagleeye
 spec:
   ports:
   - port: 6379
@@ -59,10 +52,21 @@ apiVersion: v1
 kind: Service
 metadata:
   name: scheduler-service
+  namespace: eagleeye
 spec:
   ports:
-  - port: 5551
+  - name: visualizer
+    port: 5550
+    targetPort: 5550
+  - name: worker-1
+    port: 5551
     targetPort: 5551
+  - name: worker-2
+    port: 5552
+    targetPort: 5552
+  - name: worker-3
+    port: 5553
+    targetPort: 5553
   selector:
     name: scheduler-deploy
 ---
@@ -70,11 +74,12 @@ apiVersion: v1
 kind: Service
 metadata:
   name: scheduler-stream-service
+  namespace: eagleeye
 spec:
   externalIPs:
   - 140.113.86.92
   ports:
-  - name: rtmp
-    port: 1935
+  - name: rtsp
+    port: 554
     protocol: TCP
-    targetPort: 1935
+    targetPort: 554
