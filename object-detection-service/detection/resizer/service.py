@@ -3,6 +3,7 @@ import logging
 from ext_lib.utils import letterbox
 import numpy as np
 import time
+from ext_lib.utils import get_current_time
 
 ###
 
@@ -33,6 +34,7 @@ class ResizerService(asab.Service):
 		img4yolo = letterbox(img, new_shape=self.img_size)[0]
 		t1_padded = (time.time() - t0_padded) * 1000
 		# print('\n[%s] Proc. Latency converting into padded size (%.3f ms)' % (get_current_time(), t1_padded))
+		L.warning(('\n[%s] Proc. Latency converting into padded size (%.3f ms)' % (get_current_time(), t1_padded)))
 		# TODO: To save the latency to convert FullHD size into padded size	
 
 		# Convert
@@ -42,6 +44,7 @@ class ResizerService(asab.Service):
 		img4yolo /= 255.0  # 0 - 255 to 0.0 - 1.0
 		t1_convert = (time.time() - t0_convert) * 1000
 		# print('\n[%s] Proc. Latency converting into yolo format (%.3f ms)' % (get_current_time(), t1_convert))
+		L.warning('\n[%s] Proc. Latency converting into yolo format (%.3f ms)' % (get_current_time(), t1_convert))
 		# TODO: To save the latency to convert img into yolo format
 
 		return img4yolo, (t1_padded + t1_convert)

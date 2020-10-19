@@ -15,8 +15,8 @@ data:
     = register-node-name\nredis_pcs_key = register-node-pcs\nredis_pv_key = register-node-pv\n\n[thread]\nnum_executor
     = 1\n\n[bbox_config]\npih_label_cand = PiH\npih_label = PiH\npih_color = [198,
     50, 13]\nperson_color = [191, 96, 165]\nflag_color = [100, 188, 70]\n\n[zmq]\nsender_host
-    = localhost\nsender_prefix_port = 555\n\n[persistence_detection]\npersistence_window
-    = 10\ntolerance_limit_percentage = 0.3\n"
+    = 127.0.0.1\nsender_prefix_port = 555\n\n[persistence_detection]\npersistence_window
+    = 10\ntolerance_limit_percentage = 0.3\n\n[stream:config]\ndrone_id=1\ngps_key_prefix=gps-data-\n"
   site.conf: |
     [redis]
     hostname=redis-service
@@ -34,7 +34,7 @@ data:
     output = /app/outputs/
     names = /app/config_files/yolo/data/coco.names
     cfg = /app/config_files/yolo/cfg/yolo-obj-v5.cfg
-    weights = /app/config_files/yolo/weights/TW-01.weights
+    weights = /app/config_files/yolo/weights/TM-07.weights
 
     [zmq]
     sender_host = scheduler-service
@@ -42,27 +42,30 @@ data:
 kind: ConfigMap
 metadata:
   name: detection-configmap
+  namespace: eagleeye
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  labels:
+    name: detection-deploy
   name: detection-deploy
+  namespace: eagleeye
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: detection-deploy
+      name: detection-deploy
   template:
     metadata:
       labels:
-        app: detection-deploy
+        name: detection-deploy
+      name: detection-deploy
     spec:
       containers:
-      - image: timwilliam/eagleeye.detection:1.0
+      - image: timwilliam/eagleeye.detection:2.0
         imagePullPolicy: IfNotPresent
         name: detection-deploy
-        ports:
-        - containerPort: 5551
         volumeMounts:
         - mountPath: /conf/dual-det
           name: detection-config

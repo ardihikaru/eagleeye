@@ -9,10 +9,8 @@ import datetime
 class NodeModel(Document):
     meta = {'collection': 'Nodes'}
     name = StringField(required=True, unique=True)
-    channel = StringField(required=True, unique=True)
+    channel = StringField(default="", unique=True)
     consumer = StringField()  # drone_id
-    idle = BooleanField(default=True)
-    pid = IntField(default=-1)
     candidate_selection = BooleanField(required=True, default=True)
     persistence_validation = BooleanField(required=True, default=True)
     created_at = DateTimeField(default=datetime.datetime.now)

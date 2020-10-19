@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: ews-dual-det-configmap
+  namespace: eagleeye
 data:
   site.conf: |
     [redis]

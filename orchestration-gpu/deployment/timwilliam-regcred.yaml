@@ -16,7 +16,7 @@ metadata:
     operation: Update
     time: "2020-09-22T06:11:55Z"
   name: timwilliam-regcred
-  namespace: default
+  namespace: eagleeye
   resourceVersion: "489305"
   selfLink: /api/v1/namespaces/default/secrets/timwilliam-regcred
   uid: 8ef3a806-9519-432f-9e23-cf0176932afe

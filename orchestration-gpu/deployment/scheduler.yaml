@@ -22,7 +22,7 @@ data:
 
     [stream:config]
     # true (1) or false (0)
-    # FYI: Sometimes, thead-based image extractor might failed, in this case, set this as false (0); default = true (1)
+    # FYI: Sometimes, thread-based image extractor might failed, in this case, set this as false (0); default = true (1)
     thread=1
     convert_img=0
     gpu_converter=0
@@ -31,26 +31,20 @@ data:
 
     [objdet:yolo]
     # default configuration
-    ## type=bool
     source_folder_prefix=out
     file_ext=.png
     half=0
-    # img_size=416
     img_size=608
 
-
-    ## type=int
     device=0
     conf_thres=0.1
     iou_thres=0.1
     classes=+
-    ## type=bool
     agnostic_nms=1
     names=./common_files/object_detection/yolo/data/coco.names
     cfg=./common_files/object_detection/yolo/cfg/yolov3.cfg
     weights=./common_files/object_detection/yolo/weights/yolov3.weights
     # Stream reader
-    ## type=bool
     auto_restart=1
     # visualizer
     enable_cv_out=1
@@ -64,13 +58,11 @@ data:
     dump_crop_img=0
     dump_bbox_txt=0
     txt_format=cartucho
-    # txt_format=default
 
     [zmq]
-    # this `sender_uri` is not used at the moment. (I guess)
-    sender_uri=*
-    sender_host=*
+    sender_host=127.0.0.1
     recv_host_prefix=dual-det
+    visualizer_port=5550
 
     [orchestration]
     mode=native
@@ -99,6 +91,7 @@ data:
 kind: ConfigMap
 metadata:
   name: scheduler-configmap
+  namespace: eagleeye
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -106,6 +99,7 @@ metadata:
   labels:
     name: scheduler-deploy
   name: scheduler-deploy
+  namespace: eagleeye
 spec:
   replicas: 1
   selector:
@@ -118,11 +112,9 @@ spec:
       name: scheduler-deploy
     spec:
       containers:
-      - image: timwilliam/eagleeye.scheduler:1.0
+      - image: timwilliam/eagleeye.scheduler:2.0
         imagePullPolicy: IfNotPresent
         name: scheduler-deploy
-        ports:
-        - containerPort: 5551
         volumeMounts:
         - mountPath: /conf/scheduler
           name: scheduler-config

@@ -112,6 +112,10 @@ class CSv2(RegionCluster):
                 flag_xyxy = get_det_xyxy(self.det[flag_idx])
                 mbbox_xyxy = get_mbbox(person_xyxy, flag_xyxy)
 
+                # Bugfix: format numpy-float into float data type
+                for i in range(len(mbbox_xyxy)):
+                    mbbox_xyxy[i] = float(mbbox_xyxy[i])
+
                 self.detected_mbbox.append(mbbox_xyxy)
                 # plot_one_box(mbbox_xyxy, self.mbbox_img, label=self.pih_label, color=self.rgb_mbbox)
 

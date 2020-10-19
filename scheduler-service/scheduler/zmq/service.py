@@ -18,6 +18,7 @@ class ZMQService(asab.Service):
 
     def __init__(self, app, service_name="scheduler.ZMQService"):
         super().__init__(app, service_name)
+        self.zmq_visualizer = None
         self.zmq_sender = []
         self.node_info = []
         self.node_api_uri = asab.Config["eagleeye:api"]["node"]
@@ -34,23 +35,43 @@ class ZMQService(asab.Service):
         self.node_info = data["data"]
         total = int(data["total"])
 
-        # zmq_uri = asab.Config["zmq"]["sender_uri"]
         zmq_host = asab.Config["zmq"]["sender_host"]
-        # L.warning("ZMQ URI: %s" % zmq_uri)
-        # L.warning("ZMQ HOST: %s" % zmq_host)
-
         if is_success:
+            # Set ZMQ Sender for sending image to Worker Nodes
             # Builds ZMQ Senders
             for i in range(total):
-                # uri = 'tcp://127.0.0.1:555' + str(self.node_info[i]["name"])
-                uri = 'tcp://%s:555' % zmq_host + str(self.node_info[i]["name"])
-                # L.warning(">> This Corrected ZMQ Uri: %s" % uri)
+                # uri = 'tcp://%s:555' % zmq_host + str(self.node_info[i]["name"])
+                uri = self._set_zmq_uri(zmq_host, i)
+                L.warning("ZMQ URI: %s" % uri)
                 sender = imagezmq.ImageSender(connect_to=uri, REQ_REP=False)
                 self.zmq_sender.append(sender)
+
+            # Set ZMQ Sender for sending images to Visualizer Service
+            # build ZMQ URI
+            visualizer_port = asab.Config["zmq"]["visualizer_port"]
+            visualizer_uri = 'tcp://%s:%s' % (zmq_host, visualizer_port)
+            L.warning("ZMQ Visualizer URI: %s" % visualizer_uri)
+            self.zmq_visualizer = imagezmq.ImageSender(connect_to=visualizer_uri, REQ_REP=False)
+
         else:
             # print("\n[%s] Forced to exit, since No Node are available!" % get_current_time())
             L.warning("\n[%s] Forced to exit, since No Node are available!" % get_current_time())
             exit()
+
+    def _set_zmq_uri(self, zmq_host, i):
+        if asab.Config["orchestration"]["mode"] == "native":
+            return 'tcp://%s:555' % zmq_host + str(self.node_info[i]["name"])
+        else:
+            # Multiple ports, broadcast network (*)
+            return 'tcp://%s:555%s' % (
+                asab.Config["zmq"]["sender_host"],
+                str(self.node_info[i]["name"])
+            )
+            # # Single port, multiple hosts (ERROR)
+            # return 'tcp://%s-%s:5551' % (
+            #     asab.Config["zmq"]["recv_host_prefix"],
+            #     str(self.node_info[i]["name"])
+            # )
 
     def get_senders(self):
         return {
@@ -63,13 +84,17 @@ class ZMQService(asab.Service):
 
     def send_this_image(self, sender, frame_id, frame):
         t0_zmq = time.time()
-        # print("> >>>>>> START SENDING ZMQ in ts:", t0_zmq)
         zmq_id = str(frame_id) + "-" + str(t0_zmq)
         sender.send_image(zmq_id, frame)
         t1_zmq = (time.time() - t0_zmq) * 1000
-        # print('Latency [Send imagezmq] of frame-%s: (%.5fms)' % (str(frame_id), t1_zmq))
         L.warning('Latency [Send imagezmq] of frame-%s: (%.5fms)' % (str(frame_id), t1_zmq))
         # TODO: Saving latency for scheduler:latency:sending_image_zmq
 
-
+    def send_image_to_visualizer(self, frame_id, frame):
+        t0_zmq = time.time()
+        zmq_id = str(frame_id) + "-" + str(t0_zmq)
+        self.zmq_visualizer.send_image(zmq_id, frame)
+        t1_zmq = (time.time() - t0_zmq) * 1000
+        L.warning('Latency [Send image to Visualizer] of frame-%s: (%.5fms)' % (str(frame_id), t1_zmq))
+        # TODO: Saving latency for scheduler:latency:sending_image_zmq
 

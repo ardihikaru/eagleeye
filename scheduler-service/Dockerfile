@@ -1,10 +1,9 @@
-# How to build: docker build -t 5g-dive/eagleeye/scheduler-service:1.0 .
-# How to run: docker run --name scheduler -d --link mongodb:mongo --link redis:redis --link ews -v /home/s010132/devel/eagleeye/scheduler-service/etc/scheduler.conf:/conf/scheduler/scheduler.conf -v /home/s010132/devel/eagleeye/site_conf_files/scheduler-service/site.conf:/conf/scheduler/site.conf -v /home/s010132/devel/eagleeye/data:/app/data 5g-dive/eagleeye/scheduler-service:1.0
+# How to build: docker build -t 5g-dive/eagleeye/scheduler-service:2.0 .
 
 # Misc:
 # Install Docker Nvidia 2.0: https://cnvrg.io/how-to-setup-docker-and-nvidia-docker-2-0-on-ubuntu-18-04/
 
-FROM 5g-dive/eagleeye/nvidia-gpu-opencv:1.0
+FROM 5g-dive/eagleeye/nvidia-gpu-opencv:2.0
 MAINTAINER NCTU Team (mfardiansyah.eed08g@nctu.edu.tw)
 
 # http://bugs.python.org/issue19846
