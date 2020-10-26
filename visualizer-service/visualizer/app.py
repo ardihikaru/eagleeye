@@ -1,6 +1,7 @@
 import asab
 import asab.storage
 from visualizer.gps_collector import GPSCollectorModule
+from visualizer.opencv_visualizer import OpenCVVisualizerModule
 from visualizer.image_publisher import ImagePublisherModule
 from visualizer.image_plotter import ImagePlotterModule
 from visualizer.zmq import ZMQModule
@@ -21,6 +22,7 @@ class VisualizerService(asab.Application):
 		super().__init__()
 
 		# Add customized modules
+		self.add_module(OpenCVVisualizerModule)
 		self.add_module(GPSCollectorModule)
 		self.add_module(ImagePublisherModule)
 		self.add_module(ImagePlotterModule)
