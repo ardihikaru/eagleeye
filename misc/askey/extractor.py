@@ -87,7 +87,7 @@ if __name__ == "__main__":
     parser.add_argument('--path', type=str,
                         default="/home/ardi/devel/nctu/IBM-Lab/eagleeye/data/5g-dive/videos/june_demo_mission-2.mp4",
                         help='It can be a video file or RTSP/RTMP URL')
-    parser.add_argument('--zmq-host', type=str, default="*", help='Server Host IP')
+    parser.add_argument('--zmq-host', type=str, default="*", help='Server Host IP')  # never change this value!
     parser.add_argument('--zmq-port', type=str, default="5550", help='Server Host Port')
     parser.add_argument('--zmq-delay', type=float, default=0.0, help='Delay for sending every frame with ZMQ')
     parser.add_argument('--thread', type=str, default="1", help='Extractor mode for extracting; True (1) or False (0)')
