@@ -33,9 +33,6 @@ def get_imagezmq(zmq_receiver):
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser()
-	parser.add_argument('--path', type=str,
-						default="/home/ardi/devel/nctu/IBM-Lab/eagleeye/data/5g-dive/videos/june_demo_mission-2.mp4",
-						help='It can be a video file or RTSP/RTMP URL')
 	parser.add_argument('--zmq-host', type=str, default="localhost", help='Server Host IP')
 	parser.add_argument('--zmq-port', type=str, default="5550", help='Server Host Port')
 	parser.add_argument('--cv-title', type=str, default="EE-OpenCV", help='Title for the CV out windows')
