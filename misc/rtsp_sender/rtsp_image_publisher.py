@@ -17,7 +17,7 @@ import cv2
 rtsp_url = "rtsp://localhost/test"
 
 # Setup path of the video file
-path = "/home/ardi/devel/nctu/IBM-Lab/eagleeye/data/5g-dive/videos/customTest_MIRC-Roadside-20s.mp4"
+path = "/home/ardi/devel/nctu/IBM-Lab/eagleeye/data/5g-dive/videos/june_demo_mission-2.mp4"
 cap = cv2.VideoCapture(path)
 
 # gather video info to ffmpeg
