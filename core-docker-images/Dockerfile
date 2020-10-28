@@ -15,7 +15,7 @@ COPY misc /app/misc
 
 # Install important requirements
 RUN apt-get update
-RUN apt-get install software-properties-common build-essential apt-utils iputils-ping curl netcat -y
+RUN apt-get install software-properties-common build-essential apt-utils iputils-ping curl netcat vim -y
 RUN apt-get install python3.7 -y
 
 RUN apt-get update \
