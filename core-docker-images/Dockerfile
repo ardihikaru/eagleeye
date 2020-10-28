@@ -10,6 +10,9 @@ MAINTAINER NCTU Team (mfardiansyah.eed08g@nctu.edu.tw)
 ENV LANG C.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 
+# Copy research related work into the container
+COPY misc /app/misc
+
 # Install important requirements
 RUN apt-get update
 RUN apt-get install software-properties-common build-essential apt-utils iputils-ping curl -y
