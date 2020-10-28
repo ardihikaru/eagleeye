@@ -31,7 +31,7 @@ class ImagePlotterService(asab.Service):
         self._img_width = int(asab.Config["stream:config"]["width"])
         self._mode = asab.Config["stream:config"]["mode"]
 
-    async def plot_img(self, is_latest_plot_available, frame_id, img):
+    async def plot_img(self, is_latest_plot_available, frame_id, img, fps="-"):
         is_raw = bool(int(asab.Config["stream:config"]["is_raw"]))
         is_forced_plot = bool(int(asab.Config["stream:config"]["is_forced_plot"]))
 
@@ -60,7 +60,7 @@ class ImagePlotterService(asab.Service):
                 L.warning('\n[%s] Latency for plotting PiH BBox (%.3f ms)' % (get_current_time(), t1_plot_bbox))
 
             self._plot_gps_and_det_info(gps_data, pih_label, img)
-            self._plot_fps_info(img, 30)  # TODO: This constant FPS should be calculated from the fetched images!
+            self._plot_fps_info(img, fps)
 
             # This feature enable to plot PiH BBox based on the latest stored BBox in the redisDB
             # Default: DISABLED

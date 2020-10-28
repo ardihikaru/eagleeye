@@ -22,12 +22,14 @@ class OpenCVVisualizerService(asab.Service):
     def __init__(self, app, service_name="visualizer.OpenCVVisualizerService"):
         super().__init__(app, service_name)
         self.ImagePlotterService = app.get_service("visualizer.ImagePlotterService")
+        self.FPSCalculatorService = app.get_service("visualizer.FPSCalculatorService")
 
         self.redis = MyRedis(asab.Config)
         self._mode = asab.Config["stream:config"]["mode"]
         self._window_title = asab.Config["stream:config"]["path"]
         self._window_width = int(asab.Config["stream:config"]["window_width"])
         self._window_height = int(asab.Config["stream:config"]["window_height"])
+        self._t0_streaming = None  # set variable to calculate FPS
 
     async def run(self, zmq_receiver):
         cv2.namedWindow(self._window_title, cv2.WND_PROP_FULLSCREEN)
@@ -37,14 +39,21 @@ class OpenCVVisualizerService(asab.Service):
         while True:
             try:
                 is_success, frame_id, t0_zmq, img = get_imagezmq(zmq_receiver)
+
+                # Set initial value
+                if await self.FPSCalculatorService.get_start_time() is None:
+                    await self.FPSCalculatorService.start()
+
                 t1_zmq = (time.time() - t0_zmq) * 1000
                 if is_success:
+                    fps = await self.FPSCalculatorService.get_fps(frame_id)
                     L.warning('Latency [Visualizer Capture] of frame-%s: (%.5fms)' % (str(frame_id), t1_zmq))
                     is_latest_plot_available = await self.ImagePlotterService.plot_img(is_latest_plot_available,
-                                                                                       frame_id, img)
+                                                                                       frame_id, img, fps)
                     cv2.imshow(self._window_title, img)
-            except:
-                print("No more frame to show.")
+                    # L.warning('*** Current FPS: {}'.format(await self.FPSCalculatorService.get_fps(frame_id)))
+            except Exception as e:
+                print("No more frame to show; Reason: {}".format(e))
                 break
 
             if cv2.waitKey(1) & 0xFF == ord('q'):
