@@ -58,6 +58,8 @@ docker run --name visualizer-service -d \
   --network eagleeye \
   -v /home/s010132/devel/eagleeye/visualizer-service/etc/visualizer.conf:/conf/visualizer/visualizer.conf \
   -v /home/s010132/devel/eagleeye/site_conf_files/visualizer-service/site.conf:/conf/visualizer/site.conf \
+  -e DISPLAY=$DISPLAY \
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
   5g-dive/eagleeye/visualizer-service:2.0
 ```
 
