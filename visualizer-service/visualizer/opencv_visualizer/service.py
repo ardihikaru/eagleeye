@@ -21,6 +21,8 @@ class OpenCVVisualizerService(asab.Service):
 
     def __init__(self, app, service_name="visualizer.OpenCVVisualizerService"):
         super().__init__(app, service_name)
+        self.ImagePlotterService = app.get_service("visualizer.ImagePlotterService")
+
         self.redis = MyRedis(asab.Config)
         self._mode = asab.Config["stream:config"]["mode"]
         self._window_title = asab.Config["stream:config"]["path"]
@@ -30,13 +32,16 @@ class OpenCVVisualizerService(asab.Service):
     async def run(self, zmq_receiver):
         cv2.namedWindow(self._window_title, cv2.WND_PROP_FULLSCREEN)
         cv2.resizeWindow(self._window_title, self._window_width, self._window_height)  # Enter your size
+
+        is_latest_plot_available = False
         while True:
             try:
                 is_success, frame_id, t0_zmq, img = get_imagezmq(zmq_receiver)
                 t1_zmq = (time.time() - t0_zmq) * 1000
                 if is_success:
                     L.warning('Latency [Visualizer Capture] of frame-%s: (%.5fms)' % (str(frame_id), t1_zmq))
-                    # print(" IMAGE **** {} -- Shape={}".format(frame_id, img.shape))
+                    is_latest_plot_available = await self.ImagePlotterService.plot_img(is_latest_plot_available,
+                                                                                       frame_id, img)
                     cv2.imshow(self._window_title, img)
             except:
                 print("No more frame to show.")

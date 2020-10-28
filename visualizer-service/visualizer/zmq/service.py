@@ -49,6 +49,3 @@ class ZMQService(asab.Service):
                 if is_success:
                     # L.warning('Latency [Visualizer Capture] of frame-%s: (%.5fms)' % (str(frame_id), t1_zmq))
                     is_latest_plot_available = await self.ImagePlotterService.plot_img(is_latest_plot_available, frame_id, img)
-
-
-
