@@ -2,6 +2,7 @@ import asab
 import asab.storage
 from visualizer.gps_collector import GPSCollectorModule
 from visualizer.opencv_visualizer import OpenCVVisualizerModule
+from visualizer.rtsp_visualizer import RTSPVisualizerModule
 from visualizer.image_publisher import ImagePublisherModule
 from visualizer.image_plotter import ImagePlotterModule
 from visualizer.zmq import ZMQModule
@@ -26,6 +27,7 @@ class VisualizerService(asab.Application):
 		self.add_module(ImagePublisherModule)
 		self.add_module(ImagePlotterModule)
 		self.add_module(OpenCVVisualizerModule)
+		self.add_module(RTSPVisualizerModule)
 		self.add_module(ZMQModule)
 
 		# Initialize ZMQ service

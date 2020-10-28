@@ -6,6 +6,7 @@ from ext_lib.redis.my_redis import MyRedis
 from ext_lib.redis.translator import redis_get, redis_set
 import cv2
 from ext_lib.utils import get_current_time
+from ext_lib.utils import get_imagezmq
 
 ###
 
@@ -40,7 +41,6 @@ class ImagePlotterService(asab.Service):
         if not is_raw:
             # Collect `plot_info`; wait until value `is not None; skip when `delay` > `wait_time`
             plot_info = await self._get_plot_info(str(frame_id))
-            print(" ******************** ", plot_info)
 
             # If `plot_info` is not empty, save into redisDB (indicating the latest collected `plot_info`
             pih_label = "PiH not Found"

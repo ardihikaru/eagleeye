@@ -20,6 +20,7 @@ class ZMQService(asab.Service):
         super().__init__(app, service_name)
         self.ImagePlotterService = app.get_service("visualizer.ImagePlotterService")
         self.OpenCVVisualizerService = app.get_service("visualizer.OpenCVVisualizerService")
+        self.RTSPVisualizerService = app.get_service("visualizer.RTSPVisualizerService")
 
         self.zmq_receiver = None
         self._mode = asab.Config["stream:config"]["mode"]
@@ -43,9 +44,4 @@ class ZMQService(asab.Service):
         if self._mode == "opencv":
             await self.OpenCVVisualizerService.run(self.get_zmq_receiver())
         else:
-            while True:
-                is_success, frame_id, t0_zmq, img = get_imagezmq(self.get_zmq_receiver())
-                # t1_zmq = (time.time() - t0_zmq) * 1000
-                if is_success:
-                    # L.warning('Latency [Visualizer Capture] of frame-%s: (%.5fms)' % (str(frame_id), t1_zmq))
-                    is_latest_plot_available = await self.ImagePlotterService.plot_img(is_latest_plot_available, frame_id, img)
+            await self.RTSPVisualizerService.run(self.get_zmq_receiver())
