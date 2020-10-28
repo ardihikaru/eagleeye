@@ -22,6 +22,7 @@ class RTSPVisualizerService(asab.Service):
     def __init__(self, app, service_name="visualizer.RTSPVisualizerService"):
         super().__init__(app, service_name)
         self.ImagePlotterService = app.get_service("visualizer.ImagePlotterService")
+        self.FPSCalculatorService = app.get_service("visualizer.FPSCalculatorService")
 
         self.redis = MyRedis(asab.Config)
         self._mode = asab.Config["stream:config"]["mode"]
@@ -36,6 +37,14 @@ class RTSPVisualizerService(asab.Service):
             is_success, frame_id, t0_zmq, img = get_imagezmq(zmq_receiver)
             # t1_zmq = (time.time() - t0_zmq) * 1000
             if is_success:
+
+                # Set initial value
+                if await self.FPSCalculatorService.get_start_time() is None:
+                    await self.FPSCalculatorService.start()
+
+                # get the current FPS
+                fps = await self.FPSCalculatorService.get_fps(frame_id)
+
                 # L.warning('Latency [Visualizer Capture] of frame-%s: (%.5fms)' % (str(frame_id), t1_zmq))
                 is_latest_plot_available = await self.ImagePlotterService.plot_img(is_latest_plot_available,
-                                                                                    frame_id, img)
+                                                                                    frame_id, img, fps)
