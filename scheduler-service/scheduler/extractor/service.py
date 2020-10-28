@@ -214,19 +214,19 @@ class ExtractorService(asab.Service):
 			# TODO: When reloaded, we need to clean up: RedisDB and any other storage related to this action
 
 	async def _set_cap(self, config):
-		if bool(asab.Config["stream:config"]["thread"]):
+		if bool(int(asab.Config["stream:config"]["thread"])):
 			return FileVideoStream(config["uri"]).start()  # Thread-based video capture
 		else:
 			return cv2.VideoCapture(config["uri"])
 
 	async def _streaming(self):
-		if bool(asab.Config["stream:config"]["thread"]):
+		if bool(int(asab.Config["stream:config"]["thread"])):
 			return self.cap.more()
 		else:
-			return True
+			return self.cap.isOpened()
 
 	async def _read_frame(self):
-		if bool(asab.Config["stream:config"]["thread"]):
+		if bool(int(asab.Config["stream:config"]["thread"])):
 			return True, self.cap.read()
 		else:
 			return self.cap.read()
