@@ -92,3 +92,8 @@ data:
 
     [orchestration]
     mode=docker
+
+    [stream:config]
+    thread=0
+
+

@@ -88,6 +88,9 @@ data:
 
     [orchestration]
     mode=docker
+
+    [stream:config]
+    thread=0
 kind: ConfigMap
 metadata:
   name: scheduler-configmap
