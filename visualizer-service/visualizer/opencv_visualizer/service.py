@@ -24,10 +24,12 @@ class OpenCVVisualizerService(asab.Service):
         self.redis = MyRedis(asab.Config)
         self._mode = asab.Config["stream:config"]["mode"]
         self._window_title = asab.Config["stream:config"]["path"]
+        self._window_width = int(asab.Config["stream:config"]["width"])
+        self._window_height = int(asab.Config["stream:config"]["height"])
 
     async def run(self, zmq_receiver):
         cv2.namedWindow(self._window_title, cv2.WND_PROP_FULLSCREEN)
-        cv2.resizeWindow(self._window_title, 800, 550)  # Enter your size
+        cv2.resizeWindow(self._window_title, self._window_width, self._window_height)  # Enter your size
         while True:
             try:
                 is_success, frame_id, t0_zmq, img = get_imagezmq(zmq_receiver)
