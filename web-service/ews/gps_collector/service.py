@@ -5,6 +5,8 @@ from ext_lib.redis.translator import redis_set, redis_get
 from ext_lib.utils import get_current_time, get_random_str
 from concurrent.futures import ThreadPoolExecutor
 import time
+from suds.client import Client
+import simplejson as json
 
 ###
 
@@ -30,6 +32,7 @@ class GPSCollectorService(asab.Service):
         self._num_drones = int(asab.Config["stream:gps"]["num_drones"])
         self._drone_gps_data = []
         self._target_url = None
+        self._client = None
         self._is_online = False
         self._default_drone_gps_data = {
             "FlyNo": "0",
@@ -56,8 +59,13 @@ class GPSCollectorService(asab.Service):
     def _initialize_connection_mode(self):
         if self._collector_mode == "online":
             self._is_online = True
+            self._setup_soap_connection()
+            L.warning("[IMPORTANT!] ******* GPS COLLECTOR IS WORKING IN AN ONLINE MODE !!!!")
         else:
             L.warning("[WARNING!] ******* GPS COLLECTOR IS WORKING IN AN OFFLINE MODE !!!!")
+
+    def _setup_soap_connection(self):
+        self._client = Client(self._target_url)
 
     def _build_conn_url(self):
         host = asab.Config["stream:gps"]["host"]
@@ -93,10 +101,11 @@ class GPSCollectorService(asab.Service):
         # TODO: Save the latency into ElasticSearchDB for the real-time monitoring
 
     def _spawn_gps_collector_worker(self, pool_name):
-        drone_gps_data = self._drone_gps_data
+        dummy_gps_data = self._drone_gps_data
 
         while True:
-            all_gps_data = self._extract_and_build_gps_data(drone_gps_data)
+            # all_gps_data = self._extract_and_build_gps_data(dummy_gps_data)
+            all_gps_data = self._get_latest_drone_gps_data(dummy_gps_data)
 
             for each_gps_data in all_gps_data:
                 self._set_gps_data(each_gps_data["drone_id"], each_gps_data)
@@ -108,7 +117,22 @@ class GPSCollectorService(asab.Service):
 
             # OFFLINE MODE: Simulate drone movement (Lat, Long, Alt)
             if not self._is_online:
-                drone_gps_data = self._simulate_drone_movement(drone_gps_data)
+                dummy_gps_data = self._simulate_drone_movement(dummy_gps_data)
+
+    def _get_latest_drone_gps_data(self, dummy_gps_data):
+        if not self._is_online:
+            return self._extract_and_build_gps_data(dummy_gps_data)
+        else:
+            return self._extract_gps_data()
+
+    def _extract_gps_data(self):
+        try:
+            raw_gps_data = self._client.service.GetAllDroneState()
+            raw_gps_data = ''.join(raw_gps_data)
+            return json.loads(raw_gps_data)
+        except Exception as e:
+            L.error("Unable to capture and extract GPS Data: {}".format(e))
+            return None
 
     def _simulate_drone_movement(self, drone_gps_data):
         for i in range(len(drone_gps_data)):
