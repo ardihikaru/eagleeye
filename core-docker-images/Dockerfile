@@ -10,9 +10,12 @@ MAINTAINER NCTU Team (mfardiansyah.eed08g@nctu.edu.tw)
 ENV LANG C.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 
+# Copy research related work into the container
+COPY misc /app/misc
+
 # Install important requirements
 RUN apt-get update
-RUN apt-get install software-properties-common -y
+RUN apt-get install software-properties-common build-essential apt-utils iputils-ping curl netcat vim -y
 RUN apt-get install python3.7 -y
 
 RUN apt-get update \
@@ -48,7 +51,9 @@ RUN apt-get install -y libsrtp2-dev
 RUN apt install libopencv-dev -y
 
 RUN pip3 install scikit-build
-RUN pip3 install opencv-contrib-python-headless
+#RUN pip3 install opencv-contrib-python-headless
+RUN pip3 install opencv-contrib-python
+RUN pip3 install opencv-python
 
 # Copy and Install requirement from web-service
 COPY requirements-no-cv.txt /tmp/requirements.txt

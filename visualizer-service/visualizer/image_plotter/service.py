@@ -5,6 +5,8 @@ from ext_lib.commons.util import plot_one_box
 from ext_lib.redis.my_redis import MyRedis
 from ext_lib.redis.translator import redis_get, redis_set
 import cv2
+from ext_lib.utils import get_current_time
+from ext_lib.utils import get_imagezmq
 
 ###
 
@@ -27,8 +29,9 @@ class ImagePlotterService(asab.Service):
 
         self._img_height = int(asab.Config["stream:config"]["height"])
         self._img_width = int(asab.Config["stream:config"]["width"])
+        self._mode = asab.Config["stream:config"]["mode"]
 
-    async def plot_img(self, is_latest_plot_available, frame_id, img):
+    async def plot_img(self, is_latest_plot_available, frame_id, img, fps="-"):
         is_raw = bool(int(asab.Config["stream:config"]["is_raw"]))
         is_forced_plot = bool(int(asab.Config["stream:config"]["is_forced_plot"]))
 
@@ -38,7 +41,6 @@ class ImagePlotterService(asab.Service):
         if not is_raw:
             # Collect `plot_info`; wait until value `is not None; skip when `delay` > `wait_time`
             plot_info = await self._get_plot_info(str(frame_id))
-            # print(plot_info)
 
             # If `plot_info` is not empty, save into redisDB (indicating the latest collected `plot_info`
             pih_label = "PiH not Found"
@@ -50,12 +52,15 @@ class ImagePlotterService(asab.Service):
                 is_latest_plot_available = True
 
                 # plot each mbbox data into the image
+                t0_plot_bbox = time.time()
                 for mbbox_data in plot_info["mbbox"]:
                     plot_one_box(mbbox_data, img, label=plot_info["label"], color=plot_info["color"])
                     break  # TODO: This is a temporary approach! We need to fix the bug of PCS (v2)
+                t1_plot_bbox = (time.time() - t0_plot_bbox) * 1000
+                L.warning('\n[%s] Latency for plotting PiH BBox (%.3f ms)' % (get_current_time(), t1_plot_bbox))
 
             self._plot_gps_and_det_info(gps_data, pih_label, img)
-            self._plot_fps_info(img, 30)  # TODO: This constant FPS should be calculated from the fetched images!
+            self._plot_fps_info(img, fps)
 
             # This feature enable to plot PiH BBox based on the latest stored BBox in the redisDB
             # Default: DISABLED
@@ -67,12 +72,14 @@ class ImagePlotterService(asab.Service):
                         plot_one_box(mbbox_data, img, label=plot_info["label"], color=plot_info["color"])
                         break  # TODO: This is a temporary approach! We need to fix the bug of PCS (v2)
 
-        # write to pipe of RTSP Server
-        await self.ImagePublisherService.publish_to_rstp_server(img)
+        if self._mode == "rtsp":
+            # write to pipe of RTSP Server
+            await self.ImagePublisherService.publish_to_rstp_server(img)
 
         return is_latest_plot_available
 
     def _plot_gps_and_det_info(self, gps_data, det_status, img):
+        t0_plot_gps_det = time.time()
         x_coord_lbl, y_coord_lbl = 10, (self._img_height - 90)
         x_coord_gps, y_coord_gps = 10, (self._img_height - 60)
         x_coord_obj, y_coord_obj = 10, (self._img_height - 30)
@@ -108,7 +115,12 @@ class ImagePlotterService(asab.Service):
         cv2.putText(img, obj_data_label,
                     (x_coord_obj, y_coord_obj), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), 2)
 
+        t1_plot_gps_det = (time.time() - t0_plot_gps_det) * 1000
+        L.warning('\n[%s] Latency for plotting GPS and detection information (%.3f ms)' % (get_current_time(),
+                                                                                           t1_plot_gps_det))
+
     def _plot_fps_info(self, img, fps=None):
+        t0_plot_fps = time.time()
         x_coord, y_coord = (self._img_width - 300), 40
 
         # Set labels
@@ -125,6 +137,10 @@ class ImagePlotterService(asab.Service):
         c2 = x_coord + t_size[0] + 30, y_coord - t_size[1] - 3
         cv2.rectangle(img, c1, c2, [0, 0, 0], -1)  # filled
         cv2.putText(img, label, (x_coord, y_coord), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 255, 0), 2)
+
+        t1_plot_fps = (time.time() - t0_plot_fps) * 1000
+        L.warning('\n[%s] Latency for plotting FPS information (%.3f ms)' % (get_current_time(),
+                                                                                           t1_plot_fps))
 
     async def _get_plot_info(self, frame_id):
         drone_id = "1"  # TODO: hardcoded for NOW! need to be assigned dynamically later on!

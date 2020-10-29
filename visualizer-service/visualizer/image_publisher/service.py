@@ -32,6 +32,8 @@ class ImagePublisherService(asab.Service):
         rtsp_url = "%s://%s/%s" % (protocol, host, path)
         L.warning("Setup RTSP URL: %s" % rtsp_url)
 
+        mode = asab.Config["stream:config"]["mode"]
+
         # command and params for ffmpeg
         _command = ['ffmpeg',
                     '-y',
@@ -47,8 +49,10 @@ class ImagePublisherService(asab.Service):
                     '-f', 'rtsp',
                     rtsp_url]
 
-        # using subprocess and pipe to fetch frame data
-        self._sp = subprocess.Popen(_command, stdin=subprocess.PIPE)
+        # if `mode` != `rtsp`, no need to create a subprocess
+        if mode == "rtsp":
+            # using subprocess and pipe to fetch frame data
+            self._sp = subprocess.Popen(_command, stdin=subprocess.PIPE)
 
     async def publish_to_rstp_server(self, img):
         self._sp.stdin.write(img.tobytes())
