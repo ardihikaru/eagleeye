@@ -16,3 +16,4 @@ seaborn
 requests
 window-slider
 aiortc
+suds-py3
