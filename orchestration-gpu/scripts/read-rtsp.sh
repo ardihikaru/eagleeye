@@ -1,7 +1,7 @@
-curl --location --request POST 'http://127.0.0.1:31000/api/stream/live' \
+curl --location --request POST 'http://140.113.86.92:31000/api/stream/live' \
 --data-raw '{
     "algorithm": "YOLOv3",
     "stream": true,
-    "uri": "rtsp://192.168.1.250/0137",
+    "uri": "rtsp://10.194.188.106/1028",
     "scalable": true
 }'

@@ -21,7 +21,7 @@ data:
     delay=30
 
     # This `host` should be changed accordingly; i.e. host of the target RTSP Server
-    host=140.113.86.92
+    host=10.194.188.106
     #host=192.168.1.250
 
     # This is the path where the expected output URL for output video stream with PiH BBox
