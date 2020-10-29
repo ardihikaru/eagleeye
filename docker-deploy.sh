@@ -29,7 +29,7 @@ docker network create -d bridge eagleeye
 docker run -d \
   -h redis \
   -p 6379:6379 \
-  --name redis \
+  --name redis-service \
   --restart always \
   5g-dive/redis:1.0 /bin/sh -c 'redis-server --appendonly yes'
 
