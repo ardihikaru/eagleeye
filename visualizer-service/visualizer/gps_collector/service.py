@@ -2,6 +2,8 @@ import asab
 import logging
 from ext_lib.redis.my_redis import MyRedis
 from ext_lib.redis.translator import redis_set, redis_get
+import time
+from ext_lib.utils import get_current_time
 
 ###
 
@@ -24,6 +26,7 @@ class GPSCollectorService(asab.Service):
         self._gps_key_prefix = asab.Config["stream:config"]["gps_key_prefix"]
 
     async def get_gps_data(self, drone_id=None):
+        t0_gps = time.time()
         if drone_id is None:
             drone_id = self._drone_id
 
@@ -33,4 +36,7 @@ class GPSCollectorService(asab.Service):
             gps_data = redis_get(self._rc, _gps_key)
             if gps_data is None:
                 continue
+
+        t1_gps = (time.time() - t0_gps) * 1000
+        L.warning('\n[%s] Latency for collecting GPS data (%.3f ms)' % (get_current_time(), t1_gps))
         return gps_data

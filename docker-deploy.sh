@@ -17,10 +17,24 @@ fi
 if [ -z "$VERSION" ]
 then
       echo "\$VERSION is empty"
-      VERSION="2.0"  # default value
+      VERSION="2.1"  # default value
 else
       echo "\$VERSION is NOT empty"
 fi
+
+## Create Docker network
+docker network create -d bridge eagleeye
+
+# Deploy Redis
+docker run -d \
+  -h redis \
+  -p 6379:6379 \
+  --name redis \
+  --restart always \
+  5g-dive/redis:1.0 /bin/sh -c 'redis-server --appendonly yes'
+
+# Deploy mongo
+docker run -d -p 27017:27017 --name mongo-service --network eagleeye mongo
 
 # Deploy Web Service
 docker run --name ews-service -d \
@@ -61,4 +75,6 @@ docker run --name visualizer-service -d \
   --network eagleeye \
   -v /home/s010132/devel/eagleeye/visualizer-service/etc/visualizer.conf:/conf/visualizer/visualizer.conf \
   -v /home/s010132/devel/eagleeye/site_conf_files/visualizer-service/site.conf:/conf/visualizer/site.conf \
+  -e DISPLAY=$DISPLAY \
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
   "5g-dive/eagleeye/visualizer-service:${VERSION}"

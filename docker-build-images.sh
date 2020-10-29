@@ -8,12 +8,14 @@ VERSION=$1
 if [ -z "$VERSION" ]
 then
       echo "\$VERSION is empty"
-      VERSION="2.0"  # default value
+      VERSION="2.1"  # default value
 else
       echo "\$VERSION is NOT empty"
 fi
 
 echo "Building images"
+cd redis-servce && docker build -t "5g-dive/redis:1.0" .
+cd ..
 cd core-docker-images && docker build --no-cache -t "5g-dive/eagleeye/nvidia-gpu-opencv:${VERSION}" .
 cd ..
 cd web-service && docker build --no-cache -t "5g-dive/eagleeye/web-service:${VERSION}" .

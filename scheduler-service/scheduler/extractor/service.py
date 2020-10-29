@@ -155,7 +155,10 @@ class ExtractorService(asab.Service):
 				# Perform scheduling based on Round-Robin fasion (Default)
 				t0_sched_lat = time.time()
 				try:
-					sel_node_id = await self.SchPolicyService.schedule(max_node=len(senders["node"]))
+					if bool(int(asab.Config["stream:config"]["test_mode"])):
+						sel_node_id = 0
+					else:
+						sel_node_id = await self.SchPolicyService.schedule(max_node=len(senders["node"]))
 					L.warning("Selected Node idx: %s" % str(sel_node_id))
 				except Exception as e:
 					L.error("[ERROR]: %s" % str(e))
@@ -180,32 +183,35 @@ class ExtractorService(asab.Service):
 				self._exec_e2e_latency_collector(t0_e2e_lat, node_id, self.frame_id)
 
 				# send data into Scheduler service through the pub/sub
-				t0_publish = time.time()
-				L.warning("[%s] Publishing image into Redis channel: %s" % (get_current_time(), node_channel))
-				dump_request = json.dumps({"active": True, "algorithm": config["algorithm"], "ts": time.time()})
-				pub(self.redis.get_rc(), node_channel, dump_request)
-				t1_publish = (time.time() - t0_publish) * 1000
-				# TODO: Saving latency for scheduler:producer:notification:image
-				L.warning('[%s] Latency for Publishing FRAME NOTIFICATION into Object Detection Service (%.3f ms)' % (
-					get_current_time(), t1_publish)
-				)
+				# Never send any frame if `test_mode` is enabled (test_mode=1)
+				if not bool(int(asab.Config["stream:config"]["test_mode"])):
+					t0_publish = time.time()
+					L.warning("[%s] Publishing image into Redis channel: %s" % (get_current_time(), node_channel))
+					dump_request = json.dumps({"active": True, "algorithm": config["algorithm"], "ts": time.time()})
+					pub(self.redis.get_rc(), node_channel, dump_request)
+					t1_publish = (time.time() - t0_publish) * 1000
+					# TODO: Saving latency for scheduler:producer:notification:image
+					L.warning(
+						'[%s] Latency for Publishing FRAME NOTIFICATION into Object Detection Service (%.3f ms)' % (
+							get_current_time(), t1_publish)
+						)
 
-				if not bool(int(asab.Config["stream:config"]["convert_img"])):
-					# Sending image data through ZMQ (TCP connection)
-					self.ZMQService.send_this_image(senders["zmq"][sel_node_id], self.frame_id, frame)
-				else:
-					# TODO: In this case, Candidate Selection Algorithm will not work!!!!!
-					# Convert the yolo input images; Here it converts from FullHD into <img_size> (padded size)
-					if not bool(int(asab.Config["stream:config"]["gpu_converter"])):
-						yolo_frame = await self.ResizerService.cpu_convert_to_padded_size(frame)
+					if not bool(int(asab.Config["stream:config"]["convert_img"])):
+						# Sending image data through ZMQ (TCP connection)
+						self.ZMQService.send_this_image(senders["zmq"][sel_node_id], self.frame_id, frame)
 					else:
-						# NOT IMPLEMENTED YET!!!!
-						# TODO: To add GPU-based downsample function
-						yolo_frame = await self.ResizerService.gpu_convert_to_padded_size(frame)
+						# TODO: In this case, Candidate Selection Algorithm will not work!!!!!
+						# Convert the yolo input images; Here it converts from FullHD into <img_size> (padded size)
+						if not bool(int(asab.Config["stream:config"]["gpu_converter"])):
+							yolo_frame = await self.ResizerService.cpu_convert_to_padded_size(frame)
+						else:
+							# NOT IMPLEMENTED YET!!!!
+							# TODO: To add GPU-based downsample function
+							yolo_frame = await self.ResizerService.gpu_convert_to_padded_size(frame)
 
-					# CHECKING: how is the latency if we send converted version?
-					# Sending image data through ZMQ (TCP connection)
-					self.ZMQService.send_this_image(senders["zmq"][sel_node_id], self.frame_id, yolo_frame)
+						# CHECKING: how is the latency if we send converted version?
+						# Sending image data through ZMQ (TCP connection)
+						self.ZMQService.send_this_image(senders["zmq"][sel_node_id], self.frame_id, yolo_frame)
 
 		except Exception as e:
 			L.error("[ERROR] extractor/service.py > def extract_video_stream(): %s" % str(e))
@@ -214,19 +220,19 @@ class ExtractorService(asab.Service):
 			# TODO: When reloaded, we need to clean up: RedisDB and any other storage related to this action
 
 	async def _set_cap(self, config):
-		if bool(asab.Config["stream:config"]["thread"]):
+		if bool(int(asab.Config["stream:config"]["thread"])):
 			return FileVideoStream(config["uri"]).start()  # Thread-based video capture
 		else:
 			return cv2.VideoCapture(config["uri"])
 
 	async def _streaming(self):
-		if bool(asab.Config["stream:config"]["thread"]):
+		if bool(int(asab.Config["stream:config"]["thread"])):
 			return self.cap.more()
 		else:
-			return True
+			return self.cap.isOpened()
 
 	async def _read_frame(self):
-		if bool(asab.Config["stream:config"]["thread"]):
+		if bool(int(asab.Config["stream:config"]["thread"])):
 			return True, self.cap.read()
 		else:
 			return self.cap.read()

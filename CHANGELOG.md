@@ -1,3 +1,36 @@
+## 6.0-EEv2.0-field-trial (十月 29, 2020)
+  - updates: - change version from `2.0` into `2.1` - add missing images and container when performing auto docker init
+  - Merge pull request #8 from ardihikaru/feature/EagleEYEv2.0/visualizer-opencv
+  - add FPS calculator in the RTSP mode
+  - add FPS Calculator Module
+  - code refactor: create `rtsp visualizer` module
+  - add plotting feature on the opencv-based visualization
+  - bugfix: wrong module arrangement
+  - modify configuration parameters for a specific CV windows resolution size usage
+  - set CV width and height to automatically aligned with the configuration
+  - remove unused config parameters
+  - add display on the dockerized visualizer service
+  - add `vim`
+  - add `netcat`
+  - move `misc` folder to be added into the core Dockerfile
+  - add sample image
+  - move all research work into `misc` folder
+  - use `opencv-python` instead of `opencv-contrib-python-headless`
+  - update misc with more examples
+  - introduce new parameter: `test_mode`; it enables/disabled sending frames into worker nodes
+  - bugfix: unable to read frame with thread disabled
+  - update comments
+  - update readme and add more comments
+  - add threaded-based extractor
+  - add sample extractor and visualizer (for ASKEY)
+  - add visualizer mode `opencv`
+  - update recommended configurations
+  - add new parameter: `mode`
+  - bugfix: wrong URL
+  - add doc how to simulate side-by-side visualizer
+  - updates: - research updates on running visualizer with CV.out - add camera-based server-client sample script for read in openCV
+  - Merge branch 'release/5.0-EEv2.0-field-trial' into develop
+
 ## 5.0-EEv2.0-field-trial (十月 19, 2020)
   - Merge pull request #7 from ardihikaru/feature/EagleEYEv2.0/k8s-multi
   - Updated the weight file to TM-07

@@ -5,7 +5,6 @@ import cv2
 import time
 import imagezmq
 import logging
-import subprocess
 
 ###
 
@@ -14,11 +13,10 @@ L = logging.getLogger(__name__)
 
 ###
 
-rtsp_url = "rtsp://localhost/test"
-
 # Setup path of the video file
 # path = "/home/ardi/devel/nctu/IBM-Lab/eagleeye/data/5g-dive/videos/customTest_MIRC-Roadside-20s.mp4"
-path = "rtsp://140.113.86.98:40000/test"
+# path = "rtsp://140.113.86.98:40000/test"
+path = "rtsp://localhost/test"
 cap = cv2.VideoCapture(path)
 
 # gather video info to ffmpeg
@@ -28,27 +26,9 @@ height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
 # Setup ZMQ Sender
 # uri = 'tcp://127.0.0.1:5550'
-uri = 'tcp://*:5552'
+uri = 'tcp://*:5550'
 L.warning("ZMQ URI: %s" % uri)
 sender = imagezmq.ImageSender(connect_to=uri, REQ_REP=False)
-
-# command and params for ffmpeg
-command = ['ffmpeg',
-           '-y',
-           '-f', 'rawvideo',
-           '-vcodec', 'rawvideo',
-           '-pix_fmt', 'bgr24',
-           '-s', "{}x{}".format(width, height),
-           '-r', str(fps),
-           '-i', '-',
-           '-c:v', 'libx264',
-           '-pix_fmt', 'yuv420p',
-           '-preset', 'ultrafast',
-           '-f', 'rtsp',
-           rtsp_url]
-
-# using subprocess and pipe to fetch frame data
-p = subprocess.Popen(command, stdin=subprocess.PIPE)
 
 frame_id = 0
 while cap.isOpened():
@@ -69,6 +49,3 @@ while cap.isOpened():
     #
     # time.sleep(0.30)
     # print()
-
-    # write to pipe
-    p.stdin.write(frame.tobytes())
