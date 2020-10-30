@@ -48,10 +48,6 @@ class ImagePlotterService(asab.Service):
             pih_label = "PiH not Found"
             if bool(plot_info):
                 self._count_pih += 1
-                # sending GPS information to the Ground Control, every 30 frames
-                if int(frame_id) % 30 == 0 and self._count_pih > 0:
-                    await self.GPSCollectorService.send_gps_info(gps_data)
-                    self._count_pih = 0
 
                 pih_label = "PiH Found"
                 if is_forced_plot:
@@ -66,6 +62,11 @@ class ImagePlotterService(asab.Service):
                     break  # TODO: This is a temporary approach! We need to fix the bug of PCS (v2)
                 t1_plot_bbox = (time.time() - t0_plot_bbox) * 1000
                 L.warning('\n[%s] Latency for plotting PiH BBox (%.3f ms)' % (get_current_time(), t1_plot_bbox))
+
+            # sending GPS information to the Ground Control, every 30 frames
+            if int(frame_id) % 30 == 0 and self._count_pih > 0:
+                await self.GPSCollectorService.send_gps_info(gps_data)
+                self._count_pih = 0
 
             self._plot_gps_and_det_info(gps_data, pih_label, img)
             self._plot_fps_info(img, fps)
