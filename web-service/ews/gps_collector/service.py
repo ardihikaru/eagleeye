@@ -61,7 +61,6 @@ class GPSCollectorService(asab.Service):
     def _initialize_connection_mode(self):
         if self._collector_mode == "online":
             # Validate connection with the target URL
-            self._setup_soap_connection()
             if self._is_ip_reachable():
                 self._is_online = True
                 self._setup_soap_connection()
