@@ -7,6 +7,8 @@ from concurrent.futures import ThreadPoolExecutor
 import time
 from suds.client import Client
 import simplejson as json
+import subprocess
+from subprocess import Popen, PIPE
 
 ###
 
@@ -47,31 +49,50 @@ class GPSCollectorService(asab.Service):
             "Timestamp": 1603977660
           }
 
-    async def initialize(self, app):
-        L.warning("\n[%s] Initializing GPS Collector Service" % get_current_time())
-
-        self._initialize_connection_mode()
         self._build_conn_url()
+        self._initialize_connection_mode()
         self._drone_gps_data = self._build_dummy_gps_data()
 
         self._start_gps_collector_thread()
 
+    async def initialize(self, app):
+        L.warning("\n[%s] Initializing GPS Collector Service" % get_current_time())
+
     def _initialize_connection_mode(self):
         if self._collector_mode == "online":
-            self._is_online = True
-            self._setup_soap_connection()
-            L.warning("[IMPORTANT!] ******* GPS COLLECTOR IS WORKING IN AN ONLINE MODE !!!!")
+            # Validate connection with the target URL
+            if self._is_ip_reachable():
+                self._is_online = True
+                self._setup_soap_connection()
+                L.warning("[IMPORTANT!] ******* GPS COLLECTOR IS WORKING IN AN ONLINE MODE !!!!")
+            else:
+                L.warning("[WARNING!] ******* GPS COLLECTOR IS WORKING IN AN OFFLINE MODE !!!!")
         else:
             L.warning("[WARNING!] ******* GPS COLLECTOR IS WORKING IN AN OFFLINE MODE !!!!")
+
+    def _is_ip_reachable(self):
+        hostname = asab.Config["stream:gps"]["host"]
+        process = subprocess.Popen(['ping', '-c', '5', '-w', '5', hostname],
+                                   stdout=PIPE, stderr=PIPE)
+        stdout, stderr = process.communicate()
+        packetloss = float(
+            [x for x in stdout.decode('utf-8').split('\n') if x.find('packet loss') != -1][0].split('%')[0].split(' ')[
+                -1])
+        if packetloss > 10.0:  # TODO: constant value can be used dynamically in the future
+            L.error("[WARNING!] Unable to connect with {}".format(hostname))
+            return False
+        else:
+            return True
 
     def _setup_soap_connection(self):
         self._client = Client(self._target_url)
 
     def _build_conn_url(self):
+        schema = asab.Config["stream:gps"]["schema"]
         host = asab.Config["stream:gps"]["host"]
         port = asab.Config["stream:gps"]["port"]
         path = asab.Config["stream:gps"]["path"]
-        self._target_url = "{}:{}/{}".format(host, port, path)
+        self._target_url = "{}://{}:{}/{}".format(schema, host, port, path)
 
     def _build_dummy_gps_data(self):
         dummy_gps_data = []
