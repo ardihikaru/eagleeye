@@ -1,3 +1,27 @@
+## 6.2-EEv2.0-field-trial (十月 31, 2020)
+  - Merge branch 'bugfix/EagleEYEv2.0/gps-collector' into develop
+  - update version into 2.2; bugfix multiple container for detection service
+  - update version into 2.2
+  - add missing python library: suds-py3
+  - Merge branch 'master' into develop
+  - bugfix: add update printing info
+  - add delay after deploying visualizer service
+  - add new section
+  - bugfix: reading GPS from ASKEY (2)
+  - add functionality of sending GPS information to the ASKEY's DNS
+  - add flyNo detail on the print
+  - bugfix: wrong function placement
+  - add `fly_no` and assign `drone_id` from auto increment ids
+  - Merge branch 'release/6.1-EEv2.0-field-trial'
+  - Merge branch 'release/6.1-EEv2.0-field-trial' into develop
+  - Merge branch 'release/6.0-EEv2.0-field-trial'
+  - Merge branch 'release/5.0-EEv2.0-field-trial'
+  - Merge branch 'release/4.1-EEv2.0-k8s-single-worker-stable'
+  - Merge branch 'release/4.0-EEv1.5-dockerization-stable'
+  - Merge branch 'release/3.5-stable'
+  - Merge branch 'bugfix/3.4-gpu-implementation-issue'
+  - Merge branch 'bugfix/3.4-gpu-implementation-issue'
+
 ## 6.1-EEv2.0-field-trial (十月 30, 2020)
   - Merge pull request #9 from ardihikaru/feature/EagleEYEv2.0/gps-collector
   - bugfix: reading GPS from ASKEY
