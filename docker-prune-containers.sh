@@ -22,6 +22,12 @@ else
       echo "\$DELAY is NOT empty"
 fi
 
+echo "Deleting redis-service..."
+docker container rm -f redis-service
+
+echo "Deleting mongo-service..."
+docker container rm -f mongo-service
+
 echo "Deleting ews-service..."
 docker container rm -f ews-service
 
@@ -35,6 +41,9 @@ docker container rm -f scheduler-service
 
 echo "Deleting visualizer-service..."
 docker container rm -f visualizer-service
+
+echo "Deleting eagleeye network..."
+docker network rm eagleeye
 
 echo "Delaying for ${DELAY} seconds..."
 sleep ${DELAY}
