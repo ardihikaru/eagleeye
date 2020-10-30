@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Note: If the docker unable to connect into the internet (i.e. cannot perform `apt get update`),
+# do this: $ systemctl restart docker
+
 # Capturing expected total number of worker nodes (input arguments)
 NODES=$1
 DELAY=$2
@@ -10,7 +13,7 @@ VERSION=$3
 if [ -z "$NODES" ]
 then
       echo "\$NODES is empty"
-      NODES=3  # default value
+      NODES=2  # default value
 else
       echo "\$NODES is NOT empty"
 fi
@@ -38,5 +41,5 @@ echo "Running image builder script..."
 sh ./docker-build-images.sh ${VERSION}
 
 echo "Deploying containers"
-sh ./docker-deploy.sh ${DELAY} ${VERSION}
+sh ./docker-deploy.sh ${NODES} ${DELAY} ${VERSION}
 

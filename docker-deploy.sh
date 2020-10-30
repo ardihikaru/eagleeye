@@ -1,10 +1,19 @@
 #!/bin/bash
 
 # Capturing expected total number of worker nodes (input arguments)
-DELAY=$1
-VERSION=$2
+NODES=$1
+DELAY=$2
+VERSION=$3
 
 # Verify input
+## check Total worker nodes
+if [ -z "$NODES" ]
+then
+      echo "\$NODES is empty"
+      NODES=2  # default value
+else
+      echo "\$NODES is NOT empty"
+fi
 ## check delay
 if [ -z "$DELAY" ]
 then
@@ -53,12 +62,15 @@ echo "Delaying for $((DELAY + 5)) seconds..."
 sleep $((DELAY + 5))
 
 # Deploy Dual-Detection Service
-docker run --runtime=nvidia --name detection-service-1 -d \
+echo "Deploying ${NODES} -Dual-Detection Service- containers..."
+for i in $(seq 1 $NODES);
+  do docker run --runtime=nvidia --name "detection-service-${i}" -d \
   --network eagleeye \
   -v /home/s010132/devel/eagleeye/object-detection-service/etc/detection.conf:/conf/dual-det/detection.conf \
   -v /home/s010132/devel/eagleeye/site_conf_files/object-detection-service/site.conf:/conf/dual-det/site.conf \
   -v /home/s010132/devel/eagleeye/object-detection-service/config_files:/app/config_files \
-  "5g-dive/eagleeye/dual-object-detection-service:${VERSION}"
+  "5g-dive/eagleeye/dual-object-detection-service:${VERSION}";
+done
 
 echo "Delaying for ${DELAY} seconds..."
 sleep ${DELAY}
