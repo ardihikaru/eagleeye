@@ -1,3 +1,26 @@
+## 6.1-EEv2.0-field-trial (十月 30, 2020)
+  - Merge pull request #9 from ardihikaru/feature/EagleEYEv2.0/gps-collector
+  - bugfix: reading GPS from ASKEY
+  - add print
+  - add connection validation
+  - add printing
+  - bugfix: unable to read `timestamp`
+  - add ping functionality
+  - add more delay since web service needs to ping ASKEY's connection first
+  - add default value for dockerized version
+  - add  feature to collect GPS data from real RestAPI from ASKEY
+  - add  feature to collect GPS data from dummy data
+  - set default extractor into normal OpenCV extractor
+  - add SOAP Client library: `suds-py3` (alternative way)
+  - add SOAP Client library: `suds-py3`
+  - reallocation files; add gps data extractor from ASKEY
+  - add source file
+  - add sample file to cvout inside docker
+  - bugfix: error deploy containers
+  - bugfix: change redis name into `redis-service`
+  - bugfix: typo
+  - Merge branch 'release/6.0-EEv2.0-field-trial' into develop
+
 ## 6.0-EEv2.0-field-trial (十月 29, 2020)
   - updates: - change version from `2.0` into `2.1` - add missing images and container when performing auto docker init
   - Merge pull request #8 from ardihikaru/feature/EagleEYEv2.0/visualizer-opencv
