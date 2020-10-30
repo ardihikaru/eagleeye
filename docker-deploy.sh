@@ -83,5 +83,5 @@ docker run --name visualizer-service -d \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
   "5g-dive/eagleeye/visualizer-service:${VERSION}"
 
-echo "Delaying for ${DELAY} seconds after deploying Visualizer..."
+echo "Delaying for $((DELAY + 5)) seconds after deploying Visualizer..."
 sleep $((DELAY + 3))
