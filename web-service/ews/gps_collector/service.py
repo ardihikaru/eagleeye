@@ -168,7 +168,7 @@ class GPSCollectorService(asab.Service):
         for each_gps_data in drone_gps_data:
             gps_data = {
                 "drone_id": each_gps_data["FlyNo"],
-                "server_timestamp": time.time(),
+                "timestamp": time.time(),
                 "drone_timestamp": each_gps_data["Timestamp"],
                 "heading": float(each_gps_data["Heading"]),
                 "groundSpeed": float(each_gps_data["GroundSpeed"]),
