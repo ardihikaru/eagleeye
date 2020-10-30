@@ -64,7 +64,10 @@ class GPSCollectorService(asab.Service):
             if self._is_ip_reachable():
                 self._is_online = True
                 self._setup_soap_connection()
-                L.warning("[IMPORTANT!] ******* GPS COLLECTOR IS WORKING IN AN ONLINE MODE !!!!")
+                if self._client is None:
+                    L.warning("[WARNING!] ******* GPS COLLECTOR IS WORKING IN AN OFFLINE MODE !!!!")
+                else:
+                    L.warning("[IMPORTANT!] ******* GPS COLLECTOR IS WORKING IN AN ONLINE MODE !!!!")
             else:
                 L.warning("[WARNING!] ******* GPS COLLECTOR IS WORKING IN AN OFFLINE MODE !!!!")
         else:
@@ -85,7 +88,11 @@ class GPSCollectorService(asab.Service):
             return True
 
     def _setup_soap_connection(self):
-        self._client = Client(self._target_url)
+        print("@@@ _setup_soap_connection... self._target_url:", self._target_url)
+        try:
+            self._client = Client(self._target_url)
+        except Exception as e:
+            L.warning("Connection establishment Failed; Reason: {}".format(e))
         print(" #### self._client ...")
         print(self._client)
 
