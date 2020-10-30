@@ -171,9 +171,12 @@ class GPSCollectorService(asab.Service):
 
     def _extract_and_build_gps_data(self, drone_gps_data):
         extracted_gps_data = []
+        drone_id = 0
         for each_gps_data in drone_gps_data:
+            drone_id += 1
             gps_data = {
-                "drone_id": each_gps_data["FlyNo"],
+                "drone_id": str(drone_id),
+                "fly_no": each_gps_data["FlyNo"],
                 "timestamp": time.time(),
                 "drone_timestamp": each_gps_data["Timestamp"],
                 "heading": float(each_gps_data["Heading"]),
