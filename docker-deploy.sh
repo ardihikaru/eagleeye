@@ -49,8 +49,8 @@ docker run --name ews-service -d \
   -v /home/s010132/devel/eagleeye/site_conf_files/object-detection-service/site.conf:/conf/dual-det/site.conf \
   "5g-dive/eagleeye/web-service:${VERSION}"
 
-echo "Delaying for ${DELAY} seconds..."
-sleep ${DELAY}
+echo "Delaying for $((DELAY + 5)) seconds..."
+sleep $((DELAY + 5))
 
 # Deploy Dual-Detection Service
 docker run --runtime=nvidia --name detection-service-1 -d \
