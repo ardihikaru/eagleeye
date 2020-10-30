@@ -135,8 +135,8 @@ class GPSCollectorService(asab.Service):
             all_gps_data = self._get_latest_drone_gps_data(dummy_gps_data)
             for each_gps_data in all_gps_data:
                 self._set_gps_data(each_gps_data["drone_id"], each_gps_data)
-                L.warning("[{}]{} Saving data in every 1 second; GPS data (drone_id=`{}`)={}".format(
-                    get_current_time(), pool_name, each_gps_data["drone_id"], str(each_gps_data["gps"]))
+                L.warning("[{}]{} Saving data in every 1 second; GPS data (drone_id=`{}`; fly_no=`{}`)={}".format(
+                    get_current_time(), pool_name, each_gps_data["drone_id"], each_gps_data["fly_no"], str(each_gps_data["gps"]))
                 )
             L.warning("")
             time.sleep(1)
