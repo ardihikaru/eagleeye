@@ -9,7 +9,7 @@ DELAY=$2
 if [ -z "$NODES" ]
 then
       echo "\$NODES is empty"
-      NODES=3  # default value
+      NODES=2  # default value
 else
       echo "\$NODES is NOT empty"
 fi

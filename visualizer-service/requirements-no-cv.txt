@@ -2,3 +2,4 @@ asab
 redis
 simplejson
 imagezmq
+suds-py3  # it has been added in the `core-docker-images`; in case it was not re-deployed, this will do the installation
