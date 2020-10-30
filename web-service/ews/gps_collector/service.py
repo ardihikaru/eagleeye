@@ -89,13 +89,10 @@ class GPSCollectorService(asab.Service):
             return True
 
     def _setup_soap_connection(self):
-        print("@@@ _setup_soap_connection... self._target_url:", self._target_url)
         try:
             self._client = Client(self._target_url)
         except Exception as e:
             L.warning("Connection establishment Failed; Reason: {}".format(e))
-        print(" #### self._client ...")
-        print(self._client)
 
     def _build_conn_url(self):
         schema = asab.Config["stream:gps"]["schema"]
@@ -137,7 +134,6 @@ class GPSCollectorService(asab.Service):
         while True:
             # all_gps_data = self._extract_and_build_gps_data(dummy_gps_data)
             all_gps_data = self._get_latest_drone_gps_data(dummy_gps_data)
-
             for each_gps_data in all_gps_data:
                 self._set_gps_data(each_gps_data["drone_id"], each_gps_data)
                 L.warning("[{}]{} Saving data in every 1 second; GPS data (drone_id=`{}`)={}".format(
@@ -154,15 +150,12 @@ class GPSCollectorService(asab.Service):
         if not self._is_online:
             return self._extract_and_build_gps_data(dummy_gps_data)
         else:
-            return self._extract_gps_data()
+            return self._extract_and_build_gps_data(self._extract_gps_data())
 
     def _extract_gps_data(self):
         try:
             raw_gps_data = self._client.service.GetAllDroneState()
             raw_gps_data = ''.join(raw_gps_data)
-            print(" #### raw_gps_data ...")
-            print(raw_gps_data)
-            print()
             return json.loads(raw_gps_data)
         except Exception as e:
             L.error("Unable to capture and extract GPS Data: {}".format(e))
