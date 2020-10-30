@@ -31,6 +31,8 @@ class ImagePlotterService(asab.Service):
         self._img_width = int(asab.Config["stream:config"]["width"])
         self._mode = asab.Config["stream:config"]["mode"]
 
+        self._count_pih = 0
+
     async def plot_img(self, is_latest_plot_available, frame_id, img, fps="-"):
         is_raw = bool(int(asab.Config["stream:config"]["is_raw"]))
         is_forced_plot = bool(int(asab.Config["stream:config"]["is_forced_plot"]))
@@ -45,6 +47,8 @@ class ImagePlotterService(asab.Service):
             # If `plot_info` is not empty, save into redisDB (indicating the latest collected `plot_info`
             pih_label = "PiH not Found"
             if bool(plot_info):
+                self._count_pih += 1
+
                 pih_label = "PiH Found"
                 if is_forced_plot:
                     await self._save_latest_plot_info(str(frame_id), plot_info)
@@ -58,6 +62,11 @@ class ImagePlotterService(asab.Service):
                     break  # TODO: This is a temporary approach! We need to fix the bug of PCS (v2)
                 t1_plot_bbox = (time.time() - t0_plot_bbox) * 1000
                 L.warning('\n[%s] Latency for plotting PiH BBox (%.3f ms)' % (get_current_time(), t1_plot_bbox))
+
+            # sending GPS information to the Ground Control, every 30 frames
+            if int(frame_id) % 30 == 0 and self._count_pih > 0:
+                await self.GPSCollectorService.send_gps_info(gps_data)
+                self._count_pih = 0
 
             self._plot_gps_and_det_info(gps_data, pih_label, img)
             self._plot_fps_info(img, fps)

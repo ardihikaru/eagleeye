@@ -61,7 +61,6 @@ class GPSCollectorService(asab.Service):
     def _initialize_connection_mode(self):
         if self._collector_mode == "online":
             # Validate connection with the target URL
-            self._setup_soap_connection()
             if self._is_ip_reachable():
                 self._is_online = True
                 self._setup_soap_connection()
@@ -136,8 +135,8 @@ class GPSCollectorService(asab.Service):
             all_gps_data = self._get_latest_drone_gps_data(dummy_gps_data)
             for each_gps_data in all_gps_data:
                 self._set_gps_data(each_gps_data["drone_id"], each_gps_data)
-                L.warning("[{}]{} Saving data in every 1 second; GPS data (drone_id=`{}`)={}".format(
-                    get_current_time(), pool_name, each_gps_data["drone_id"], str(each_gps_data["gps"]))
+                L.warning("[{}]{} Saving data in every 1 second; GPS data (drone_id=`{}`; fly_no=`{}`)={}".format(
+                    get_current_time(), pool_name, each_gps_data["drone_id"], each_gps_data["fly_no"], str(each_gps_data["gps"]))
                 )
             L.warning("")
             time.sleep(1)
@@ -171,9 +170,12 @@ class GPSCollectorService(asab.Service):
 
     def _extract_and_build_gps_data(self, drone_gps_data):
         extracted_gps_data = []
+        drone_id = 0
         for each_gps_data in drone_gps_data:
+            drone_id += 1
             gps_data = {
-                "drone_id": each_gps_data["FlyNo"],
+                "drone_id": str(drone_id),
+                "fly_no": each_gps_data["FlyNo"],
                 "timestamp": time.time(),
                 "drone_timestamp": each_gps_data["Timestamp"],
                 "heading": float(each_gps_data["Heading"]),
