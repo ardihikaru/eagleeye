@@ -14,7 +14,7 @@ else
 fi
 
 echo "Building images"
-cd redis-servce && docker build -t "5g-dive/redis:1.0" .
+cd redis-service && docker build -t "5g-dive/redis:1.0" .
 cd ..
 cd core-docker-images && docker build --no-cache -t "5g-dive/eagleeye/nvidia-gpu-opencv:${VERSION}" .
 cd ..
