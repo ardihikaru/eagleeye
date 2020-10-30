@@ -86,6 +86,8 @@ class GPSCollectorService(asab.Service):
 
     def _setup_soap_connection(self):
         self._client = Client(self._target_url)
+        print(" #### self._client ...")
+        print(self._client)
 
     def _build_conn_url(self):
         schema = asab.Config["stream:gps"]["schema"]
@@ -150,6 +152,9 @@ class GPSCollectorService(asab.Service):
         try:
             raw_gps_data = self._client.service.GetAllDroneState()
             raw_gps_data = ''.join(raw_gps_data)
+            print(" #### raw_gps_data ...")
+            print(raw_gps_data)
+            print()
             return json.loads(raw_gps_data)
         except Exception as e:
             L.error("Unable to capture and extract GPS Data: {}".format(e))
