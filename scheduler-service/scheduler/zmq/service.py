@@ -19,6 +19,7 @@ class ZMQService(asab.Service):
     def __init__(self, app, service_name="scheduler.ZMQService"):
         super().__init__(app, service_name)
         self.zmq_visualizer = None
+        self.zmq_source_reader = None
         self.zmq_sender = []
         self.node_info = []
         self.node_api_uri = asab.Config["eagleeye:api"]["node"]
@@ -57,6 +58,26 @@ class ZMQService(asab.Service):
             # print("\n[%s] Forced to exit, since No Node are available!" % get_current_time())
             L.warning("\n[%s] Forced to exit, since No Node are available!" % get_current_time())
             exit()
+
+    async def initialize_zmq_source_reader(self, zmq_source_host, zmq_source_port):
+        img_source_uri = 'tcp://%s:%s' % (zmq_source_host, zmq_source_port)
+        L.warning("ZMQ Source Reader URI: %s" % img_source_uri)
+        self.zmq_source_reader = imagezmq.ImageHub(open_port=img_source_uri, REQ_REP=False)
+
+    def get_zmq_source_reader(self):
+        return self.zmq_source_reader
+
+    def get_imagezmq(self, zmq_receiver):
+        try:
+            array_name, image = zmq_receiver.recv_image()
+            tmp = array_name.split("-")
+            frame_id = int(tmp[0])
+            t0 = float(tmp[1])
+            return True, frame_id, t0, image
+
+        except Exception as e:
+            L.error("[ERROR]: %s" % str(e))
+            return False, None, None, None
 
     def _set_zmq_uri(self, zmq_host, i):
         if asab.Config["orchestration"]["mode"] == "native":
