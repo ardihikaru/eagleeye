@@ -34,7 +34,7 @@ def get_imagezmq(zmq_receiver):
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser()
 	parser.add_argument('--zmq-host', type=str, default="localhost", help='Image Sender\'s IP')
-	parser.add_argument('--zmq-port', type=str, default="5550", help='Image Sender\'s Port')
+	parser.add_argument('--zmq-port', type=str, default="5549", help='Image Sender\'s Port')
 	parser.add_argument('--cv-title', type=str, default="EE-OpenCV", help='Title for the CV out windows')
 	parser.add_argument('--cv-width', type=int, default=800, help='Window width of the OpenCV UI')
 	parser.add_argument('--cv-height', type=int, default=550, help='height width of the OpenCV UI')
