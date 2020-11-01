@@ -9,6 +9,7 @@ import cv2
 import time
 import simplejson as json
 from concurrent.futures import ThreadPoolExecutor
+from ext_lib.utils import get_imagezmq
 
 ###
 
@@ -235,7 +236,7 @@ class ExtractorService(asab.Service):
 
 		try:
 			while True:
-				success, frame_id, t0_zmq_soure, frame = self.ZMQService.get_imagezmq(zmq_source_reader)
+				success, frame_id, t0_zmq_soure, frame = get_imagezmq(zmq_source_reader)
 				t1_zmq_soure = (time.time() - t0_zmq_soure) * 1000
 				self.frame_id = int(frame_id)
 

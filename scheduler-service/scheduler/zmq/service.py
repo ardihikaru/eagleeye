@@ -3,7 +3,7 @@ import logging
 import imagezmq
 import time
 from ext_lib.utils import get_current_time
-import requests 
+import requests
 
 ###
 
@@ -66,18 +66,6 @@ class ZMQService(asab.Service):
 
     def get_zmq_source_reader(self):
         return self.zmq_source_reader
-
-    def get_imagezmq(self, zmq_receiver):
-        try:
-            array_name, image = zmq_receiver.recv_image()
-            tmp = array_name.split("-")
-            frame_id = int(tmp[0])
-            t0 = float(tmp[1])
-            return True, frame_id, t0, image
-
-        except Exception as e:
-            L.error("[ERROR]: %s" % str(e))
-            return False, None, None, None
 
     def _set_zmq_uri(self, zmq_host, i):
         if asab.Config["orchestration"]["mode"] == "native":
