@@ -49,6 +49,15 @@ class ReaderHandler(MyRedis):
             else:
                 # TODO: To tag the corresponding drone_id to identify where the image came from (Future work)
                 config = pubsub_to_json(item["data"])
+                '''
+                    Expected object value:
+                    {
+                        "algorithm": "YOLOv3",
+                        "stream": true,
+                        "uri": "/app/data/5g-dive/videos/customTest_MIRC-Roadside-5s.mp4",
+                        "scalable": true
+                    }
+                '''
 
                 # if not is_configured:
                 #     L.warning("Configure ZMQ for the first time.")
