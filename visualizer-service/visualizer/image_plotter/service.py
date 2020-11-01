@@ -6,7 +6,6 @@ from ext_lib.redis.my_redis import MyRedis
 from ext_lib.redis.translator import redis_get, redis_set
 import cv2
 from ext_lib.utils import get_current_time
-from ext_lib.utils import get_imagezmq
 
 ###
 
