@@ -2,6 +2,7 @@ import socket
 import cv2
 import numpy
 
+
 def recvall(sock, count):
     buf = b''
     while count:
@@ -11,15 +12,17 @@ def recvall(sock, count):
         count -= len(newbuf)
     return buf
 
-TCP_IP = "192.168.0.144"
+
+# TCP_IP = "10.42.0.98"
+TCP_IP = "localhost"
 TCP_PORT = 8002
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
+s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 s.bind((TCP_IP, TCP_PORT))
 s.listen(True)
 conn, addr = s.accept()
 while 1:
-    length = recvall(conn,16)
+    length = recvall(conn, 16)
     length=length.decode('utf-8')
     stringData = recvall(conn, int(length))
     #stringData = zlib.decompress(stringData)

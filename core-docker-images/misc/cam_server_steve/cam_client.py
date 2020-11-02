@@ -5,20 +5,24 @@ import threading
 import time
 
 # TCP_IP = "140.113.68.166"
-TCP_IP = "192.168.43.237"
+# TCP_IP = "192.168.43.237"
+TCP_IP = "localhost"
 TCP_PORT = 8002
 sock = socket.socket()
 sock.connect((TCP_IP, TCP_PORT))
-encode_param=[int(cv2.IMWRITE_JPEG_QUALITY), 90]
+encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
 
 
 class CamThread(threading.Thread):
     def run(self):
         global frame
         global cam
-        cam = cv2.VideoCapture(0)
+        path = "/home/ardi/devel/nctu/IBM-Lab/eagleeye/data/5g-dive/videos/june_demo_mission-2.mp4"
+        # cam = cv2.VideoCapture(0)
+        cam = cv2.VideoCapture(path)
         while True:
             ret, frame = cam.read()
+            print("Frame size:", frame.shape)
             result, imgencode = cv2.imencode('.jpg', frame, encode_param)
             data = numpy.array(imgencode)
             stringData = data.tostring()
