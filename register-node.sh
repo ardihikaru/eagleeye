@@ -30,4 +30,4 @@ curl --location --request POST "http://${HOST}:${PORT}/api/nodes" \
         "persistence_validation": true
     }'
 
-printf "\n\n>>> Regestering a new node succeed\n\n"
+printf "\n\n>>> Registering a new node succeed\n\n"
