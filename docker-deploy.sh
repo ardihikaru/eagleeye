@@ -64,21 +64,23 @@ sleep $((DELAY + 5))
 # Deploy Dual-Detection Service
 echo "Deploying ${NODES} -Dual-Detection Service- containers..."
 for i in $(seq 1 $NODES);
-  if [ $i -gt 1 ]
-  then
-    curl --location --request POST 'http://localhost:8080/api/nodes' \
-        --header 'Content-Type: application/json' \
-        --data '{
-            "candidate_selection": true,
-            "persistence_validation": true
-        }'
-  fi
-  do docker run --runtime=nvidia --name "detection-service-${i}" -d \
-  --network eagleeye \
-  -v /home/s010132/devel/eagleeye/object-detection-service/etc/detection.conf:/conf/dual-det/detection.conf \
-  -v /home/s010132/devel/eagleeye/site_conf_files/object-detection-service/site.conf:/conf/dual-det/site.conf \
-  -v /home/s010132/devel/eagleeye/object-detection-service/config_files:/app/config_files \
-  "5g-dive/eagleeye/dual-object-detection-service:${VERSION}";
+  do
+    if [ $i -gt 1 ]
+    then
+      curl --location --request POST 'http://localhost:8080/api/nodes' \
+          --header 'Content-Type: application/json' \
+          --data '{
+              "candidate_selection": true,
+              "persistence_validation": true
+          }'
+    fi
+    
+    docker run --runtime=nvidia --name "detection-service-${i}" -d \
+      --network eagleeye \
+      -v /home/s010132/devel/eagleeye/object-detection-service/etc/detection.conf:/conf/dual-det/detection.conf \
+      -v /home/s010132/devel/eagleeye/site_conf_files/object-detection-service/site.conf:/conf/dual-det/site.conf \
+      -v /home/s010132/devel/eagleeye/object-detection-service/config_files:/app/config_files \
+      "5g-dive/eagleeye/dual-object-detection-service:${VERSION}";
 done
 
 echo "Delaying for ${DELAY} seconds..."
