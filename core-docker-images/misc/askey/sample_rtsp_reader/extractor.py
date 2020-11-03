@@ -85,7 +85,8 @@ def threaded_opencv_reader(option):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--path', type=str,
-                        default="0",
+                        # default="0",
+                        default="2",
                         # default="/home/ardi/devel/nctu/IBM-Lab/eagleeye/data/5g-dive/videos/june_demo_mission-2.mp4",
                         help='It can be a video file or RTSP/RTMP URL')
 

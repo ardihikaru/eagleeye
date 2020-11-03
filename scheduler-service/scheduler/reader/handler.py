@@ -16,6 +16,7 @@ class VideoSourceType(Enum):
 	FOLDER = "FOLDER"
 	STREAM = "STREAM"
 	IMAGE_ZMQ = "IMAGEZMQ"
+	TCP = "TCP"
 
 
 class ReaderHandler(MyRedis):
@@ -80,7 +81,9 @@ class ReaderHandler(MyRedis):
 				# TODO: Saving latency for scheduler:consumer
 
 				# print("Once data collected, try extracting data..")
-				if config["stream"].upper() == VideoSourceType.IMAGE_ZMQ.value:
+				if config["stream"].upper() == VideoSourceType.TCP.value:
+					await self.ExtractorService.extract_image_tcp(config)
+				elif config["stream"].upper() == VideoSourceType.IMAGE_ZMQ.value:
 					await self.ExtractorService.extract_image_zmq(config)
 				elif config["stream"].upper() == VideoSourceType.STREAM.value:
 					await self.ExtractorService.extract_video_stream(config)
