@@ -81,6 +81,10 @@ for i in $(seq 1 $NODES);
       -v /home/s010132/devel/eagleeye/site_conf_files/object-detection-service/site.conf:/conf/dual-det/site.conf \
       -v /home/s010132/devel/eagleeye/object-detection-service/config_files:/app/config_files \
       "5g-dive/eagleeye/dual-object-detection-service:${VERSION}";
+
+    echo "Waiting $((DELAY + 3)) seconds for Detection-Service-${i} to be ready..."
+    sleep $((DELAY + 3))
+
 done
 
 echo "Delaying for ${DELAY} seconds..."
