@@ -130,7 +130,8 @@ class GPSCollectorService(asab.Service):
             L.warning(" **** GPS Information have been successfully sent into ASKEY's Drone Navigation Server.")
             L.warning("-- GPS INFO --> FlyNo={}; GPS={}".format(gps_data["fly_no"], gps_data["gps"]))
         else:
-            L.warning("UNABLE TO SEND GPS Information. FlyNo={}; GPS={}".format(gps_data["fly_no"], gps_data["gps"]))
+            L.warning("UNABLE TO SEND GPS Information (Reason: {}). FlyNo={}; GPS={}".format(resp, gps_data["fly_no"],
+                                                                                             gps_data["gps"]))
 
     async def send_gps_info(self, gps_data):
         print(">>> gps_data:", gps_data)
