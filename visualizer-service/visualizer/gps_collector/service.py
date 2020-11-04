@@ -117,10 +117,10 @@ class GPSCollectorService(asab.Service):
 
     async def _sending_real_request(self, gps_data):
         soap_request_obj = {
-            "FlyNo": 1,
-            "lat": 1,
-            "lon": 1,
-            "Alt": 1,
+            "FlyNo": gps_data["fly_no"],
+            "lat": str(gps_data["gps"]["lat"]),
+            "lon": str(gps_data["gps"]["long"]),
+            "Alt": str(gps_data["gps"]["alt"])
         }
         soap_request = json.dumps(soap_request_obj)
         resp = self._client.service.SendPeopleLocation(soap_request)
@@ -133,6 +133,7 @@ class GPSCollectorService(asab.Service):
             L.warning("UNABLE TO SEND GPS Information. FlyNo={}; GPS={}".format(gps_data["fly_no"], gps_data["gps"]))
 
     async def send_gps_info(self, gps_data):
+        print(">>> gps_data:", gps_data)
         if self._is_online:
             await self._sending_real_request(gps_data)
         else:
