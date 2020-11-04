@@ -123,7 +123,10 @@ class GPSCollectorService(asab.Service):
             "Alt": str(gps_data["gps"]["alt"])
         }
         soap_request = json.dumps(soap_request_obj)
+        t0_soap_askey = time.time()
         resp = self._client.service.SendPeopleLocation(soap_request)
+        t1_soap_askey = (time.time() - t0_soap_askey) * 1000
+        L.warning('\n[%s] Latency for ASKEY SOAP response (%.3f ms)' % (get_current_time(), t1_soap_askey))
         resp = ''.join(resp)
         resp = json.loads(resp)
         if "Response" in resp and resp["Response"] == "OK":
