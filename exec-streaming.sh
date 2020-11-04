@@ -1,15 +1,15 @@
 #!/bin/bash
 
 # Capturing input arguments
-HOST=$1
-PORT=$2
-FPATH=$3
+FPATH=$1
+HOST=$2
+PORT=$3
 MODE=$4
 
 printf "\n>>> FYI: Arg[1]=%s; Arg[2]=%s; Arg[3]=%s; Arg[4]=%s \n\n" \
+  "FPATH (default=/home/s010132/devel/eagleeye/data/5g-dive/videos/customTest_MIRC-Roadside-5s.mp4)" \
   "HOST (default=localhost)" \
   "PORT (default=8080)" \
-  "FPATH (default=/home/s010132/devel/eagleeye/data/5g-dive/videos/customTest_MIRC-Roadside-5s.mp4)" \
   "MODE (default=STREAM)"
 
 if [ -z "$HOST" ]
