@@ -2,14 +2,14 @@ echo "[START] Starting EagleEYE deployment ..."
 
 echo "[INFO] Init databases ..."
 kubectl apply -f redis.yaml
-sleep 1
+sleep 3
 
 kubectl apply -f mongo.yaml
-sleep 1
+sleep 3
 
 echo "[INFO] Web Service ..."
 kubectl apply -f ews.yaml
-sleep 3
+sleep 15
 
 echo "[INFO] Worker-1 ..."
 kubectl apply -f detection.yaml
@@ -33,7 +33,7 @@ sleep 5
 
 echo "[INFO] Scheduler ..."
 kubectl apply -f scheduler.yaml
-sleep 5
+sleep 3
 
 echo "[INFO] Visualizer ..."
 kubectl apply -f visualizer.yaml

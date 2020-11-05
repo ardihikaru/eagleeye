@@ -26,10 +26,14 @@ data:
 
     [stream:config]
     # true (1) or false (0)
-    # FYI: Sometimes, thread-based image extractor might failed, in this case, set this as false (0); default = true (1)
+    # FYI: Sometimes, thread-based image extractor might failed,
+    #      in this case, set this `thread` value as false (0); default = true (1)
     thread=1
     convert_img=0
     gpu_converter=0
+    test_mode=0
+    width=0
+    height=0
 
     # thread=0
 
@@ -67,8 +71,10 @@ data:
     sender_host=127.0.0.1
     recv_host_prefix=dual-det
     visualizer_port=5550
+    img_source_port=5549
 
     [orchestration]
+    # available values: {`native` and `docker`}
     mode=native
   site.conf: |
     [redis]
@@ -89,11 +95,16 @@ data:
     sender_uri=*
     sender_host=*
     recv_host_prefix=detection-service
+    img_source_port=5549
 
     [orchestration]
+    # available values: {`native` and `docker`}
+    # mode=`docker` can be used for both docker environment and kubernetes environment
     mode=docker
 
     [stream:config]
     thread=0
 
-
+    # Set this value as 1 (True) and use only one worker node,
+    # to: 1) disable waiting time of sending frame into worker node and 2) never send any frame to the worker node
+    test_mode=0
