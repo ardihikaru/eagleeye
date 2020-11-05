@@ -117,22 +117,27 @@ class GPSCollectorService(asab.Service):
 
     async def _sending_real_request(self, gps_data):
         soap_request_obj = {
-            "FlyNo": 1,
-            "lat": 1,
-            "lon": 1,
-            "Alt": 1,
+            "FlyNo": gps_data["fly_no"],
+            "lat": str(gps_data["gps"]["lat"]),
+            "lon": str(gps_data["gps"]["long"]),
+            "Alt": str(gps_data["gps"]["alt"])
         }
         soap_request = json.dumps(soap_request_obj)
+        t0_soap_askey = time.time()
         resp = self._client.service.SendPeopleLocation(soap_request)
+        t1_soap_askey = (time.time() - t0_soap_askey) * 1000
+        L.warning('\n[%s] Latency for ASKEY SOAP response (%.3f ms)' % (get_current_time(), t1_soap_askey))
         resp = ''.join(resp)
         resp = json.loads(resp)
         if "Response" in resp and resp["Response"] == "OK":
             L.warning(" **** GPS Information have been successfully sent into ASKEY's Drone Navigation Server.")
             L.warning("-- GPS INFO --> FlyNo={}; GPS={}".format(gps_data["fly_no"], gps_data["gps"]))
         else:
-            L.warning("UNABLE TO SEND GPS Information. FlyNo={}; GPS={}".format(gps_data["fly_no"], gps_data["gps"]))
+            L.warning("UNABLE TO SEND GPS Information (Reason: {}). FlyNo={}; GPS={}".format(resp, gps_data["fly_no"],
+                                                                                             gps_data["gps"]))
 
     async def send_gps_info(self, gps_data):
+        print(">>> gps_data:", gps_data)
         if self._is_online:
             await self._sending_real_request(gps_data)
         else:

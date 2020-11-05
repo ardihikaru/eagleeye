@@ -1,9 +1,9 @@
-# How to build: docker build -t 5g-dive/eagleeye/dual-object-detection-service:2.2 .
+# How to build: docker build -t 5g-dive/eagleeye/dual-object-detection-service:2.3 .
 
 # Misc:
 # Install Docker Nvidia 2.0: https://cnvrg.io/how-to-setup-docker-and-nvidia-docker-2-0-on-ubuntu-18-04/
 
-FROM 5g-dive/eagleeye/dual-object-detection-service-head:2.2
+FROM 5g-dive/eagleeye/dual-object-detection-service-head:2.3
 MAINTAINER NCTU Team (mfardiansyah.eed08g@nctu.edu.tw)
 
 # http://bugs.python.org/issue19846

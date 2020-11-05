@@ -85,15 +85,17 @@ def threaded_opencv_reader(option):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--path', type=str,
-                        default="/home/ardi/devel/nctu/IBM-Lab/eagleeye/data/5g-dive/videos/june_demo_mission-2.mp4",
+                        # default="0",
+                        default="2",
+                        # default="/home/ardi/devel/nctu/IBM-Lab/eagleeye/data/5g-dive/videos/june_demo_mission-2.mp4",
                         help='It can be a video file or RTSP/RTMP URL')
-    
+
     # never change this value!
     parser.add_argument('--zmq-host', type=str, default="*", help='Server Host IP which extracts into frames')
 
-    parser.add_argument('--zmq-port', type=str, default="5550", help='Server Host Port which extracts into frames')
+    parser.add_argument('--zmq-port', type=str, default="5549", help='Server Host Port which extracts into frames')
     parser.add_argument('--zmq-delay', type=float, default=0.0, help='Delay for sending every frame with ZMQ')
-    parser.add_argument('--thread', type=str, default="1", help='Extractor mode for extracting; True (1) or False (0)')
+    parser.add_argument('--thread', type=str, default="0", help='Extractor mode for extracting; True (1) or False (0)')
 
     opt = parser.parse_args()
     print(opt)
@@ -103,7 +105,7 @@ if __name__ == "__main__":
     L.warning("ZMQ URL: %s" % zmq_url)
     zmq_sender = imagezmq.ImageSender(connect_to=zmq_url, REQ_REP=False)
 
-    print("[INFO] starting video file thread...")
+    print("[INFO] starting extracting into frames...")
     if bool(int(opt.thread)):
         threaded_opencv_reader(opt)
     else:
