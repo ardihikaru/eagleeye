@@ -2,9 +2,8 @@
 
 # Capturing expected total number of worker nodes (input arguments)
 NODES=$1
-DEPLOY_MODE=$2
-DELAY=$3
-VERSION=$4
+DELAY=$2
+VERSION=$3
 
 # Verify input
 ## check Total worker nodes
@@ -14,14 +13,6 @@ then
       NODES=2  # default value
 else
       echo "\$NODES is NOT empty"
-fi
-## check Deployment mode: "NETWORK" (default) or "HOST"
-if [ -z "$DEPLOY_MODE" ]
-then
-      echo "\$DEPLOY_MODE is empty"
-      DEPLOY_MODE="NETWORK"  # default value
-else
-      echo "\$DEPLOY_MODE is NOT empty"
 fi
 ## check delay
 if [ -z "$DELAY" ]
