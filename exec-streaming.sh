@@ -5,6 +5,7 @@
 ## $ . exec-streaming.sh /home/s010132/devel/eagleeye/data/5g-dive/videos/customTest_MIRC-Roadside-5s.mp4
 # Docker:
 ## $ . exec-streaming.sh /app/data/5g-dive/videos/customTest_MIRC-Roadside-5s.mp4
+## $ . exec-streaming.sh udp://localhost:6000
 
 # Capturing input arguments
 FPATH=$1
