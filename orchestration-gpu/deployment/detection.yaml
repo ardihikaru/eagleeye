@@ -37,7 +37,7 @@ data:
     weights = /app/config_files/yolo/weights/TM-07.weights
 
     [zmq]
-    sender_host = scheduler-service
+    sender_host = scheduler-service.eagleeye
     sender_prefix_port = 555
 kind: ConfigMap
 metadata:
@@ -63,7 +63,7 @@ spec:
       name: detection-deploy
     spec:
       containers:
-      - image: timwilliam/eagleeye.detection:2.0
+      - image: timwilliam/eagleeye.detection:2.3
         imagePullPolicy: IfNotPresent
         name: detection-deploy
         volumeMounts:

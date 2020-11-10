@@ -6,7 +6,7 @@ data:
     password =
 
     [zmq]
-    sender_host=scheduler-service
+    sender_host=scheduler-service.eagleeye
     sender_port=5550
 
     [eagleeye:api]
@@ -18,10 +18,12 @@ data:
     height=1080
 
     # This is the maximum waiting time to receive Plot info (including PiH BBox data); value should be <33ms for real-time
-    delay=100
+    delay=32
 
     # This `host` should be changed accordingly; i.e. host of the target RTSP Server
+    #host=192.168.1.250
     host=140.113.86.92
+    #host=10.194.188.106
 
     # This is the path where the expected output URL for output video stream with PiH BBox
     path=output-raw
@@ -30,8 +32,18 @@ data:
     # This is still BUG, please disable it for now!
     is_forced_plot=0
 
-    # Is thie parameter is enabled (is_raw=1), this Visualizer will only show real Video Stream (simply forward)
+    # If this parameter is enabled (is_raw=1), this Visualizer will only show real Video Stream (simply forward)
     is_raw=1
+
+    # There are two type of `mode`: `rtsp` (default) and `opencv`
+    mode=rtsp
+
+    # This parameters
+    window_width=1920
+    window_height=1080
+
+    [stream:gps]
+    mode=online
   visualizer.conf: |
     [general]
     include = /conf/visualizer/site.conf
@@ -54,19 +66,28 @@ data:
     sender_port=5550
 
     [stream:config]
+    mode=rtsp
     is_raw=0
     is_forced_plot=0
     protocol=rtsp
     host=localhost
-    path=test
+    path=ee-raw
     fps=30
     width=1920
     height=1080
     delay=33
-    img_height=1080
-    img_width=1920
     drone_id=1
     gps_key_prefix=gps-data-
+    window_width=1920
+    window_height=1080
+
+    [stream:gps]
+    mode=offline
+    schema=http
+    host=10.194.188.105
+    port=36002
+    path=FlySocketWCF
+    num_drones=2
 kind: ConfigMap
 metadata:
   name: visualizer-configmap-raw
@@ -91,7 +112,7 @@ spec:
       name: visualizer-deploy-raw
     spec:
       containers:
-      - image: timwilliam/eagleeye.visualizer:2.0
+      - image: timwilliam/eagleeye.visualizer:2.3
         imagePullPolicy: IfNotPresent
         name: visualizer-deploy-raw
         ports:
