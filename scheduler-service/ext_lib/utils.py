@@ -119,3 +119,16 @@ def letterbox(img, new_shape=(416, 416), color=(128, 128, 128), auto=True, scale
 	left, right = int(round(dw - 0.1)), int(round(dw + 0.1))
 	img = cv2.copyMakeBorder(img, top, bottom, left, right, cv2.BORDER_CONSTANT, value=color)  # add border
 	return img, ratio, (dw, dh)
+
+
+def get_imagezmq(zmq_receiver):
+	try:
+		array_name, image = zmq_receiver.recv_image()
+		tmp = array_name.split("-")
+		frame_id = int(tmp[0])
+		t0 = float(tmp[1])
+		return True, frame_id, t0, image
+
+	except Exception as e:
+		L.error("[ERROR]: %s" % str(e))
+		return False, None, None, None

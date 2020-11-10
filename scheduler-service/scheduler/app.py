@@ -1,6 +1,7 @@
 import asab.web.session
 from scheduler.scheduling_policy import SchedulingPolicyModule
 from scheduler.zmq import ZMQModule
+from scheduler.tcp_camera_server import TCPCameraServerModule
 from scheduler.resizer import ResizerModule
 from scheduler.extractor import ExtractorModule
 from scheduler.reader import ReaderModule
@@ -26,6 +27,7 @@ class SchedulerService(asab.Application):
 		self.add_module(LatencyCollectorModule)
 		self.add_module(SchedulingPolicyModule)
 		self.add_module(ZMQModule)
+		self.add_module(TCPCameraServerModule)
 		self.add_module(ResizerModule)
 		self.add_module(ExtractorModule)
 		self.add_module(ReaderModule)

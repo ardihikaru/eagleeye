@@ -7,7 +7,9 @@ if __name__ == "__main__":
     # cap = cv.VideoCapture("rtsp://localhost/test")
     # cap = cv.VideoCapture("rtsp://192.168.42.1/live")
     # cap = cv.VideoCapture("rtsp://192.168.1.250/0137")
-    cap = cv.VideoCapture("rtsp://192.168.1.250/output-raw")
+    # cap = cv.VideoCapture("rtsp://192.168.1.250/output-raw")
+    # cap = cv.VideoCapture("udp://10.42.0.98:6000")
+    cap = cv.VideoCapture("udp://localhost:6000")
     cv.namedWindow(window_title, cv.WND_PROP_FULLSCREEN)
     # cv.resizeWindow("Image", 1920, 1080)  # Enter your size
     cv.resizeWindow(window_title, 800, 550)  # Enter your size

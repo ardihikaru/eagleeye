@@ -3,7 +3,7 @@ import logging
 import imagezmq
 import time
 from ext_lib.utils import get_current_time
-import requests 
+import requests
 
 ###
 
@@ -19,6 +19,7 @@ class ZMQService(asab.Service):
     def __init__(self, app, service_name="scheduler.ZMQService"):
         super().__init__(app, service_name)
         self.zmq_visualizer = None
+        self.zmq_source_reader = None
         self.zmq_sender = []
         self.node_info = []
         self.node_api_uri = asab.Config["eagleeye:api"]["node"]
@@ -57,6 +58,14 @@ class ZMQService(asab.Service):
             # print("\n[%s] Forced to exit, since No Node are available!" % get_current_time())
             L.warning("\n[%s] Forced to exit, since No Node are available!" % get_current_time())
             exit()
+
+    async def initialize_zmq_source_reader(self, zmq_source_host, zmq_source_port):
+        img_source_uri = 'tcp://%s:%s' % (zmq_source_host, zmq_source_port)
+        L.warning("ZMQ Source Reader URI: %s" % img_source_uri)
+        self.zmq_source_reader = imagezmq.ImageHub(open_port=img_source_uri, REQ_REP=False)
+
+    def get_zmq_source_reader(self):
+        return self.zmq_source_reader
 
     def _set_zmq_uri(self, zmq_host, i):
         if asab.Config["orchestration"]["mode"] == "native":

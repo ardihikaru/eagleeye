@@ -39,6 +39,20 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  name: redis-ext-service
+  namespace: eagleeye
+spec:
+  ports:
+  - nodePort: 31100
+    port: 6379
+    targetPort: 6379
+  selector:
+    name: redis-deploy
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
   name: redis-service
   namespace: eagleeye
 spec:
@@ -47,6 +61,20 @@ spec:
     targetPort: 6379
   selector:
     name: redis-deploy
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: scheduler-ext-service
+  namespace: eagleeye
+spec:
+  ports:
+  - nodePort: 31200
+    port: 5550
+    targetPort: 5550
+  selector:
+    name: scheduler-deploy
+  type: NodePort
 ---
 apiVersion: v1
 kind: Service
@@ -69,17 +97,3 @@ spec:
     targetPort: 5553
   selector:
     name: scheduler-deploy
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: scheduler-stream-service
-  namespace: eagleeye
-spec:
-  externalIPs:
-  - 140.113.86.92
-  ports:
-  - name: rtsp
-    port: 554
-    protocol: TCP
-    targetPort: 554

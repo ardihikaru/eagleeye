@@ -1,3 +1,47 @@
+## 6.3-EEv2.0-field-trial (十一月 10, 2020)
+  - Merge pull request #10 from ardihikaru/feature/EagleEYEv2.0/k8s-multi
+  - Merge branch 'feature/EagleEYEv2.0/reading-udp-docker' into develop
+  - Update to the streaming script to conform with the latest update in 2.3
+  - add `DEPLOY_MODE` to enable or disable (default) `network=HOST` mode
+  - add comment to enable/disable docker's `network=HOST` mode
+  - add UDP path example
+  - add another example: input with UDP
+  - add doc how to deploy in `network=HOST` mode
+  - Merge branch 'feature/EagleEYEv2.0/zmq-scheduler' into feature/EagleEYEv2.0/reading-udp-docker
+  - add sample data from steve for sending UDP stream
+  - Update the K8S deployment to use the tag 2.3
+  - add latency info from ASKEY SOAP
+  - add error reason from ASKEY
+  - bugfix: unable to send GPS info to ASKEY's
+  - add note how to run this script
+  - bugfix: wait N seconds before deploying another detection service
+  - change arguments order
+  - bugfix: if..else error
+  - fix typo
+  - disable JWT middleware
+  - add bash script to start streaming
+  - add more rule; add more detail printing info
+  - update printing info
+  - updates: - add latest revision - add script to register new node - bugfix: docker-deploy.sh forgot to regeister new node when NODES > 1 - add new plugin in scheduler service: reading TCP (ONGOING) - update scripts2 in MISC folder
+  - change values
+  - code refactor: move `get_imagezmq` function into `utils.py`
+  - add bash script to setup local env
+  - remove unused import
+  - change version from `2.2` into `2.3`
+  - add configurable parameter, `img_source_port`, also in the `site.conf` file
+  - new feature: enable Scheduler Service to read IMAGEZMQ Source
+  - add new parameter: `img_source_port`
+  - bugfix: duplicated `test_mode` parameter
+  - add sample onject request
+  - update comments
+  - add comments
+  - change port into `5549`
+  - update default printing info; change port into `5549` to avoid port conflict
+  - update default values
+  - Merge branch 'release/6.2-EEv2.0-field-trial' into develop
+  - Minor update to the K8S yaml file for the E2E test
+  - Hotfix for EE
+
 ## 6.2-EEv2.0-field-trial (十月 31, 2020)
   - Merge branch 'bugfix/EagleEYEv2.0/gps-collector' into develop
   - update version into 2.2; bugfix multiple container for detection service

@@ -24,6 +24,14 @@ data:
     drone_id=1
     gps_key_prefix=gps-data-
 
+    [stream:gps]
+    mode=offline
+    schema=http
+    host=10.194.188.105
+    port=36002
+    path=FlySocketWCF
+    num_drones=2
+
     [clients]
     source_ip=http://localhost:3000
 
@@ -125,6 +133,10 @@ data:
     [streaming:config]
     w=640
     h=480
+
+    [stream:gps]
+    mode=online
+    num_drones=1
 kind: ConfigMap
 metadata:
   name: ews-configmap
@@ -178,7 +190,7 @@ spec:
       name: ews-deploy
     spec:
       containers:
-      - image: timwilliam/eagleeye.webservice:2.0
+      - image: timwilliam/eagleeye.webservice:2.3
         imagePullPolicy: IfNotPresent
         name: ews
         ports:

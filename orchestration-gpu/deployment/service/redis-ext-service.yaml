@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-ext-service
+  namespace: eagleeye
+spec:
+  type: NodePort
+  selector:
+    name: redis-deploy
+  ports:
+  - port: 6379
+    targetPort: 6379
+    nodePort: 31100
