@@ -34,25 +34,20 @@ fi
 ## add user `root` to the list of authorised access to the X server
 xhost local:root
 
-## Create Docker network
-docker network create -d bridge eagleeye
-
 # Deploy Redis
 docker run -d \
   -h redis \
-  -p 6379:6379 \
   --name redis-service \
   --restart always \
-  --network eagleeye \
+  --network host \
   5g-dive/redis:1.0 /bin/sh -c 'redis-server --appendonly yes'
 
 # Deploy mongo
-docker run -d -p 27017:27017 --name mongo-service --network eagleeye mongo
+docker run -d --name mongo-service --network host mongo
 
 # Deploy Web Service
 docker run --name ews-service -d \
-  --network eagleeye \
-  -p 8080:8080 \
+  --network host \
   -v /home/s010132/devel/eagleeye/web-service/etc/ews.conf:/conf/ews/ews.conf \
   -v /home/s010132/devel/eagleeye/site_conf_files/web-service/site.conf:/conf/ews/site.conf \
   -v /home/s010132/devel/eagleeye/site_conf_files/object-detection-service/site.conf:/conf/dual-det/site.conf \
@@ -76,7 +71,7 @@ for i in $(seq 1 $NODES);
     fi
     
     docker run --runtime=nvidia --name "detection-service-${i}" -d \
-      --network eagleeye \
+      --network host \
       -v /home/s010132/devel/eagleeye/object-detection-service/etc/detection.conf:/conf/dual-det/detection.conf \
       -v /home/s010132/devel/eagleeye/site_conf_files/object-detection-service/site.conf:/conf/dual-det/site.conf \
       -v /home/s010132/devel/eagleeye/object-detection-service/config_files:/app/config_files \
@@ -92,7 +87,7 @@ sleep ${DELAY}
 
 # Deploy Scheduler Service
 docker run --name scheduler-service -d \
-  --network eagleeye \
+  --network host \
   -v /home/s010132/devel/eagleeye/scheduler-service/etc/scheduler.conf:/conf/scheduler/scheduler.conf \
   -v /home/s010132/devel/eagleeye/site_conf_files/scheduler-service/site.conf:/conf/scheduler/site.conf \
   -v /home/s010132/devel/eagleeye/data:/app/data \
@@ -103,7 +98,7 @@ sleep ${DELAY}
 
 # Deploy Visualizer Service
 docker run --name visualizer-service -d \
-  --network eagleeye \
+  --network host \
   -v /home/s010132/devel/eagleeye/visualizer-service/etc/visualizer.conf:/conf/visualizer/visualizer.conf \
   -v /home/s010132/devel/eagleeye/site_conf_files/visualizer-service/site.conf:/conf/visualizer/site.conf \
   -e DISPLAY=$DISPLAY \

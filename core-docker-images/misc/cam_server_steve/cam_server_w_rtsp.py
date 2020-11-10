@@ -3,14 +3,8 @@ import cv2
 import numpy
 import time
 import datetime
+import subprocess
 
-
-def get_fps(start, num_frames):
-    end = datetime.datetime.now()
-    elapsed = (end - start).total_seconds()
-    print(" >>> elapsed:", elapsed)
-
-    return num_frames / elapsed
 
 
 def recvall(sock, count):
@@ -33,6 +27,31 @@ s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 s.bind((TCP_IP, TCP_PORT))
 s.listen(True)
 conn, addr = s.accept()
+
+rtsp_url = "rtsp://localhost/test"
+
+# gather video info to ffmpeg
+fps = 20
+width = 1920
+height = 1080
+
+# command and params for ffmpeg
+command = ['ffmpeg',
+           '-y',
+           '-f', 'rawvideo',
+           '-vcodec', 'rawvideo',
+           '-pix_fmt', 'bgr24',
+           '-s', "{}x{}".format(width, height),
+           '-r', str(fps),
+           '-i', '-',
+           '-c:v', 'libx264',
+           '-pix_fmt', 'yuv420p',
+           '-preset', 'ultrafast',
+           '-f', 'rtsp',
+           rtsp_url]
+
+# using subprocess and pipe to fetch frame data
+p = subprocess.Popen(command, stdin=subprocess.PIPE)
 
 # start = None
 num_frames = 0
@@ -71,8 +90,12 @@ while 1:
 
     # decimg = cv2.resize(decimg, (1600, 1200))
     decimg = cv2.resize(decimg, (1920, 1080))
-    print("Frame size:", decimg.shape)
-    cv2.imshow('SERVER', decimg)
+
+    # write to pipe
+    p.stdin.write(decimg.tobytes())
+
+    # print("Frame size:", decimg.shape)
+    # cv2.imshow('SERVER', decimg)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 

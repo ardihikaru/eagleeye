@@ -56,16 +56,17 @@ class RouteWebHandler(object):
         # Enable exception to JSON exception middleware
         self.ServiceAPIWebContainer.WebApp.middlewares.append(asab.web.rest.JsonExceptionMiddleware)
 
-        # Enable exception to JWT middleware
-        self.ServiceAPIWebContainer.WebApp.middlewares.append(JWTMiddleware(
-            secret_or_pub_key=asab.Config["jwt"]["secret_key"],
-            request_property="user",
-            # whitelist=[r"/api/stream*", r"/api/users*", r"/api/auth/login"],  # use this to disable access_token validation
-            # whitelist=[r"/api/users*", r"/api/auth/login"],  # use this to disable access_token validation
-            whitelist=[r"/api*"],  # Final code: Please enable this one instead
-            # whitelist=[r"/api/auth/login"],  # Final code: Please enable this one instead
-            # token_getter=self.get_token,
-            token_getter=self.EWSService.get_token,
-            # is_revoked=self.is_revoked,
-            is_revoked=self.EWSService.is_revoked,
-        ))
+        # This JWT Middleware is disabled by default
+        # # Enable exception to JWT middleware
+        # self.ServiceAPIWebContainer.WebApp.middlewares.append(JWTMiddleware(
+        #     secret_or_pub_key=asab.Config["jwt"]["secret_key"],
+        #     request_property="user",
+        #     # whitelist=[r"/api/stream*", r"/api/users*", r"/api/auth/login"],  # use this to disable access_token validation
+        #     # whitelist=[r"/api/users*", r"/api/auth/login"],  # use this to disable access_token validation
+        #     whitelist=[r"/api*"],  # Final code: Please enable this one instead
+        #     # whitelist=[r"/api/auth/login"],  # Final code: Please enable this one instead
+        #     # token_getter=self.get_token,
+        #     token_getter=self.EWSService.get_token,
+        #     # is_revoked=self.is_revoked,
+        #     is_revoked=self.EWSService.is_revoked,
+        # ))
