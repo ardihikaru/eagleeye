@@ -24,10 +24,11 @@ def recvall(sock, count):
 
 
 # TCP_IP = "10.42.0.98"
+# TCP_IP = "172.20.10.5"
 TCP_IP = "localhost"
 # TCP_IP = "192.168.1.237"
 # TCP_PORT = 8002
-TCP_PORT = 5550
+TCP_PORT = 5549
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 s.bind((TCP_IP, TCP_PORT))
