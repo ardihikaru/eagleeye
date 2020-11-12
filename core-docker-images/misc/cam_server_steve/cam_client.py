@@ -19,8 +19,8 @@ class CamThread(threading.Thread):
         global frame
         global cam
         # path = "/home/ardi/devel/nctu/IBM-Lab/eagleeye/data/5g-dive/videos/june_demo_mission-2.mp4"
-        # cam = cv2.VideoCapture(0)
-        cam = cv2.VideoCapture(2)
+        cam = cv2.VideoCapture(0)
+        # cam = cv2.VideoCapture(2)
         # cam = cv2.VideoCapture(path)
         while True:
             ret, frame = cam.read()

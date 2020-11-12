@@ -53,7 +53,13 @@ class TCPCameraServerService(asab.Service):
         # print('old={} new={}'.format(len(stringData), len(zlib.compress(stringData)) ))
         data = numpy.fromstring(stringData, dtype='uint8')
         decimg = cv2.imdecode(data, 1)
-        decimg = cv2.resize(decimg, (_width, _height))
+
+        # Validate input image resolution
+        # If the resolution is not Full HD, then, force resizing it into FUll HD (1920 x 1080)
+        source_shape = list(decimg.shape)  # [heigh, width]
+        if source_shape[0] != _width and source_shape[1] != _height:
+            decimg = cv2.resize(decimg, (_width, _height))
+
         L.warning(" *** Frame size:{}".format(decimg.shape))
 
         return True, frame_id, 0.0, decimg
