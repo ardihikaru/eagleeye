@@ -1,3 +1,13 @@
+## release/6.3.1-EEv2.0-field-trial (十一月 12, 2020)
+  - Merge pull request #11 from ardihikaru/feature/EagleEYEv2.0/tcp-receiver
+  - add sample script to send frames from Jetson NANO device
+  - bugfix: force to resize input source resolution into FullHD (1920 x 1080)
+  - change port to match testing case
+  - set source from localhost
+  - bugfix: receiving images through TCP protocol
+  - add and fix config for `stream` type `TCP`
+  - Merge branch 'release/6.3-EEv2.0-field-trial' into develop
+
 ## 6.3-EEv2.0-field-trial (十一月 10, 2020)
   - Merge pull request #10 from ardihikaru/feature/EagleEYEv2.0/k8s-multi
   - Merge branch 'feature/EagleEYEv2.0/reading-udp-docker' into develop
