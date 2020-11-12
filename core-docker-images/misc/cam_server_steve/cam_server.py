@@ -23,8 +23,9 @@ def recvall(sock, count):
     return buf
 
 
-TCP_IP = "10.42.0.98"
-# TCP_IP = "localhost"
+# TCP_IP = "10.42.0.98"
+# TCP_IP = "172.20.10.5"
+TCP_IP = "localhost"
 # TCP_IP = "192.168.1.237"
 # TCP_PORT = 8002
 TCP_PORT = 5549
