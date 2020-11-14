@@ -2,6 +2,7 @@ import asab
 import asab.storage
 from visualizer.fps_calculator import FPSCalculatorModule
 from visualizer.gps_collector import GPSCollectorModule
+from visualizer.zeromq_visualizer import ZeroMQVisualizerModule
 from visualizer.opencv_visualizer import OpenCVVisualizerModule
 from visualizer.rtsp_visualizer import RTSPVisualizerModule
 from visualizer.image_publisher import ImagePublisherModule
@@ -28,6 +29,7 @@ class VisualizerService(asab.Application):
 		self.add_module(GPSCollectorModule)
 		self.add_module(ImagePublisherModule)
 		self.add_module(ImagePlotterModule)
+		self.add_module(ZeroMQVisualizerModule)
 		self.add_module(OpenCVVisualizerModule)
 		self.add_module(RTSPVisualizerModule)
 		self.add_module(ZMQModule)
