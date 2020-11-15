@@ -102,16 +102,19 @@ data:
     redis_pcs_key = register-node-pcs
     redis_pv_key = register-node-pv
   site.conf: |
+    # DISABLE THIS FOR `--network=HOST` mode.
     [redis]
     hostname=redis-service
     password =
 
+    # DISABLE THIS FOR `--network=HOST` mode.
     [asab:storage]
     type = mongodb
     mongodb_database = eagleeyeDB
     mongodb_uri = mongodb://mongo-service:27017
     mongodb_host = mongo-service
 
+    # DISABLE THIS FOR `--network=HOST` mode.
     [zmq]
     sender_uri=scheduler-service
 
@@ -123,14 +126,16 @@ data:
     [objdet:yolo]
     names = /app/config_files/yolo/data/coco.names
     cfg = /app/config_files/yolo/cfg/yolo-obj-v5.cfg
-    weights = /app/config_files/yolo/weights/TW-01.weights
+    weights = /app/config_files/yolo/weights/TW-07.weights
 
+    # DISABLE THIS FOR `--network=HOST` mode.
     [eagleeye:api]
     ews_host=ews-service
 
     [config:builder]
     path=/conf/dual-det/site.conf
 
+    # DISABLE THIS FOR `--network=HOST` mode.
     [eagleeye:realtime]
     ews_rt_host=ews-service
 
@@ -139,5 +144,5 @@ data:
     h=480
 
     [stream:gps]
-    mode=online
+    mode=offline
     num_drones=1

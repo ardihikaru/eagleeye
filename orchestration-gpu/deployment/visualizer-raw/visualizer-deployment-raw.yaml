@@ -29,10 +29,10 @@ spec:
       containers:
         - name: visualizer-deploy-raw
           #image: 5g-dive/eagleeye/scheduler-service:1.0
-          image: timwilliam/eagleeye.visualizer:2.3
+          image: timwilliam/eagleeye.visualizer:2.3.2
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 554
+            - containerPort: 5548
           volumeMounts:
             - name: visualizer-config-raw
               mountPath: "/conf/visualizer"

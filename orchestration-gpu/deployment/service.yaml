@@ -97,3 +97,17 @@ spec:
     targetPort: 5553
   selector:
     name: scheduler-deploy
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: visualizer-service
+  namespace: eagleeye
+spec:
+  ports:
+  - nodePort: 32000
+    port: 5548
+    targetPort: 5548
+  selector:
+    name: visualizer-deploy
+  type: NodePort

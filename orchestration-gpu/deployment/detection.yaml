@@ -18,14 +18,17 @@ data:
     = 127.0.0.1\nsender_prefix_port = 555\n\n[persistence_detection]\npersistence_window
     = 10\ntolerance_limit_percentage = 0.3\n\n[stream:config]\ndrone_id=1\ngps_key_prefix=gps-data-\n"
   site.conf: |
+    # DISABLE THIS FOR `--network=HOST` mode.
     [redis]
     hostname=redis-service
     password =
 
+    # DISABLE THIS FOR `--network=HOST` mode.
     [asab:storage]
     mongodb_uri = mongodb://mongo-service:27017
     mongodb_host = mongo-service
 
+    # DISABLE THIS FOR `--network=HOST` mode.
     [eagleeye:api]
     node=http://ews-service:8080/api/nodes
     latency = http://ews-service:8080/api/latency
@@ -36,8 +39,9 @@ data:
     cfg = /app/config_files/yolo/cfg/yolo-obj-v5.cfg
     weights = /app/config_files/yolo/weights/TM-07.weights
 
+    # DISABLE THIS FOR `--network=HOST` mode.
     [zmq]
-    sender_host = scheduler-service.eagleeye
+    sender_host = scheduler-service
     sender_prefix_port = 555
 kind: ConfigMap
 metadata:

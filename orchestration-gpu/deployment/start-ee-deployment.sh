@@ -37,10 +37,10 @@ sleep 3
 
 echo "[INFO] Visualizer ..."
 kubectl apply -f visualizer.yaml
-sleep 2
+sleep 3
 
 echo "[INFO] Visualizer RAWWWWR ..."
 kubectl apply -f visualizer-raw.yaml
-sleep 2
+sleep 3
 
 echo "[INFO] All things go!"

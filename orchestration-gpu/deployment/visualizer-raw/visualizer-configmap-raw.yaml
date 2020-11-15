@@ -26,7 +26,17 @@ data:
     sender_port=5550
 
     [stream:config]
+
+    # possible mode: rtsp, opencv, zeromq
+    ## rtsp: publish frames inside RTSP Server
+    ## opencv: directly show frames with opencv library
+    ## zeromq: publish frames into a specific PORT via TCP (ZeroMQ)
     mode=rtsp
+
+    # this port is used when mode is `zeromq`
+    zeromq_host=*
+    zeromq_port=5548
+
     is_raw=0
     is_forced_plot=0
     protocol=rtsp
@@ -49,14 +59,17 @@ data:
     path=FlySocketWCF
     num_drones=2
   site.conf: |
+    # DISABLE THIS FOR `--network=HOST` mode.
     [redis]
     hostname=redis-service
     password =
 
+    # DISABLE THIS FOR `--network=HOST` mode.
     [zmq]
     sender_host=scheduler-service.eagleeye
     sender_port=5550
 
+    # DISABLE THIS FOR `--network=HOST` mode.
     [eagleeye:api]
     node=http://ews-service:8080/api/nodes
     latency = http://ews-service:8080/api/latency
@@ -66,15 +79,14 @@ data:
     height=1080
 
     # This is the maximum waiting time to receive Plot info (including PiH BBox data); value should be <33ms for real-time
-    delay=32
+    delay=33
 
+    # DISABLE THIS FOR `--network=HOST` mode.
     # This `host` should be changed accordingly; i.e. host of the target RTSP Server
-    #host=192.168.1.250
     host=140.113.86.92
-    #host=10.194.188.106
 
     # This is the path where the expected output URL for output video stream with PiH BBox
-    path=output-raw
+    path=ee-output-raw
 
     # If Enabled (is_forced_plot=0), it will take the latest BBox and plot them into the current frame
     # This is still BUG, please disable it for now!
@@ -83,12 +95,19 @@ data:
     # If this parameter is enabled (is_raw=1), this Visualizer will only show real Video Stream (simply forward)
     is_raw=1
 
-    # There are two type of `mode`: `rtsp` (default) and `opencv`
-    mode=rtsp
+    # There are two type of `mode`: `rtsp` (default), `opencv`, and `zeromq`
+    ## rtsp: publish frames inside RTSP Server
+    ## opencv: directly show frames with opencv library
+    ## zeromq: publish frames into a specific PORT via TCP (ZeroMQ)
+    mode=zeromq
+
+    # this port is used when mode is `zeromq`
+    zeromq_host=*
+    zeromq_port=5549
 
     # This parameters
     window_width=1920
     window_height=1080
 
     [stream:gps]
-    mode=online
+    mode=offline

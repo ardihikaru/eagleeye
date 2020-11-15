@@ -3,12 +3,12 @@
 echo "[INFO] Starting NCTU EagleEYEv1.5 Deployment ..."
 kubectl create -f namespace-eagleeye.yaml
 
-# echo "[INFO] Creating Docker Hub credentials ..."
-#kubectl apply -f timwilliam-regcred.yaml
+echo "[INFO] Creating Docker Hub credentials ..."
+kubectl apply -f timwilliam-regcred.yaml
 
 echo "[INFO] - Creating Volume and VolumeClaim ..."
 kubectl apply -f volume.yaml
-sleep 5
+sleep 4
 kubectl apply -f volume-claim.yaml
 sleep 3
 
@@ -19,11 +19,11 @@ sleep 2
 echo "[INFO] - Creating the Databases: redis-deploy and mongo-deploy ..."
 kubectl apply -f redis.yaml
 kubectl apply -f mongo.yaml
-sleep 3
+sleep 4
 
 echo "[INFO] - Creating the Web Service: ews-deploy ..."
 kubectl apply -f ews.yaml
-sleep 4
+sleep 15
 
 echo "[INFO] - Creating the Detection: detection-deploy ..."
 kubectl apply -f detection.yaml

@@ -9,3 +9,4 @@ resources:
   - redis-ext-service.yaml
   - scheduler-service.yaml
   - scheduler-ext-service.yaml
+  - visualizer-service.yaml
