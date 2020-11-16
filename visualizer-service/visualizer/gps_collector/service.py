@@ -120,7 +120,8 @@ class GPSCollectorService(asab.Service):
             "FlyNo": gps_data["fly_no"],
             "lat": str(gps_data["gps"]["lat"]),
             "lon": str(gps_data["gps"]["long"]),
-            "Alt": str(gps_data["gps"]["alt"])
+            "Alt": str(gps_data["gps"]["alt"]),
+            "Heading": str(gps_data["gps"]["Heading"])
         }
         soap_request = json.dumps(soap_request_obj)
         t0_soap_askey = time.time()
