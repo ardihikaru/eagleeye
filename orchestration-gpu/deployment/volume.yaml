@@ -9,7 +9,7 @@ spec:
   capacity:
     storage: 6Gi
   hostPath:
-    path: /home/s010132/devel/eagleeye/object-detection-service/config_files
+    path: /home/k200/nctuAPP/20201028-eagleeye/deployment/config_files
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -22,7 +22,7 @@ spec:
   capacity:
     storage: 6Gi
   hostPath:
-    path: /home/s010132/devel/eagleeye/object-detection-service/config_files
+    path: /home/k200/nctuAPP/20201028-eagleeye/deployment/config_files
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -35,7 +35,7 @@ spec:
   capacity:
     storage: 6Gi
   hostPath:
-    path: /home/s010132/devel/eagleeye/object-detection-service/config_files
+    path: /home/k200/nctuAPP/20201028-eagleeye/deployment/config_files
 ---
 apiVersion: v1
 kind: PersistentVolume

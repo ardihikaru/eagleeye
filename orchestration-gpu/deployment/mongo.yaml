@@ -12,6 +12,9 @@ spec:
       name: mongo-deploy
   template:
     metadata:
+      annotations:
+        k8s.v1.cni.cncf.io/networks: '[ { "name": "data-net-app", "namespace": "mec-app",
+          "ips": [ "10.194.188.111/24" ] } ]'
       labels:
         name: mongo-deploy
       name: mongo-deploy

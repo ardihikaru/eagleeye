@@ -1,28 +1,28 @@
 ---
-# EWS deployment
+# EWS-test deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ews-deploy
+  name: ews-deploy-test
   namespace: eagleeye
   labels:
-    name: ews-deploy
+    name: ews-deploy-test
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: ews-deploy
+      name: ews-deploy-test
   template:
     metadata:
-      name: ews-deploy
+      name: ews-deploy-test
       labels:
-        name: ews-deploy
+        name: ews-deploy-test
       annotations:
         k8s.v1.cni.cncf.io/networks: '[
           {
             "name": "data-net-app",
             "namespace": "mec-app",
-            "ips": [ "10.194.188.112/24" ]
+            "ips": [ "10.194.188.119/24" ]
           }
         ]'
     spec:
@@ -57,4 +57,20 @@ spec:
               readOnly: false
       imagePullSecrets:
         - name: timwilliam-regcred
+...
+---
+# EWS-test Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: ews-ext-service-test
+  namespace: eagleeye
+spec:
+  type: NodePort
+  selector:
+    name: ews-deploy-test
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 31111
 

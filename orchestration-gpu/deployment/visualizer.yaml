@@ -2,16 +2,16 @@ apiVersion: v1
 data:
   site.conf: |
     [redis]
-    hostname=redis-service
+    hostname=10.194.188.110
     password =
 
     [zmq]
-    sender_host=scheduler-service.eagleeye
+    sender_host=10.194.188.116
     sender_port=5550
 
     [eagleeye:api]
-    node=http://ews-service:8080/api/nodes
-    latency = http://ews-service:8080/api/latency
+    node=http://10.194.188.112:8080/api/nodes
+    latency = http://10.194.188.112:8080/api/latency
 
     [stream:config]
     width=1920
@@ -22,8 +22,8 @@ data:
 
     # This `host` should be changed accordingly; i.e. host of the target RTSP Server
     #host=192.168.1.250
-    host=140.113.86.92
-    #host=10.194.188.106
+    #host=140.113.86.92
+    host=10.194.188.106
 
     # This is the path where the expected output URL for output video stream with PiH BBox
     path=output-ee
@@ -107,6 +107,9 @@ spec:
       name: visualizer-deploy
   template:
     metadata:
+      annotations:
+        k8s.v1.cni.cncf.io/networks: '[ { "name": "data-net-app", "namespace": "mec-app",
+          "ips": [ "10.194.188.117/24" ] } ]'
       labels:
         name: visualizer-deploy
       name: visualizer-deploy
