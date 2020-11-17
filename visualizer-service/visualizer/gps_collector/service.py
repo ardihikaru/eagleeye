@@ -113,8 +113,9 @@ class GPSCollectorService(asab.Service):
         return gps_data
 
     async def _sending_fake_request(self, gps_data):
-        L.warning(" **** I am in OFFLINE Mode. FlyNo={}; GPS={}; Heading={}".format(gps_data["fly_no"], gps_data["gps"],
-                                                                        gps_data["heading"]))
+        L.warning(" **** I am in OFFLINE Mode. FlyNo={}; GPS={}; Heading={}".format(gps_data["fly_no"],
+                                                                                    gps_data["gps"],
+                                                                                    gps_data["heading"]))
 
     async def _is_resp_valid(self, resp):
         if resp["Response"] == "OK":
