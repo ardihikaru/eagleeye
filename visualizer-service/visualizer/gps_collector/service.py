@@ -113,7 +113,14 @@ class GPSCollectorService(asab.Service):
         return gps_data
 
     async def _sending_fake_request(self, gps_data):
-        L.warning(" **** I am in OFFLINE Mode. FlyNo={}; GPS={}".format(gps_data["fly_no"], gps_data["gps"]))
+        L.warning(" **** I am in OFFLINE Mode. FlyNo={}; GPS={}; Heading={}".format(gps_data["fly_no"], gps_data["gps"],
+                                                                        gps_data["heading"]))
+
+    async def _is_resp_valid(self, resp):
+        if resp["Response"] == "OK":
+            return True
+
+        return True  # TODO: Still hardcoded; to be updated later
 
     async def _sending_real_request(self, gps_data):
         soap_request_obj = {
@@ -121,7 +128,7 @@ class GPSCollectorService(asab.Service):
             "lat": str(gps_data["gps"]["lat"]),
             "lon": str(gps_data["gps"]["long"]),
             "Alt": str(gps_data["gps"]["alt"]),
-            "Heading": str(gps_data["gps"]["Heading"])
+            "Heading": str(gps_data["heading"])
         }
         soap_request = json.dumps(soap_request_obj)
         t0_soap_askey = time.time()
@@ -130,15 +137,20 @@ class GPSCollectorService(asab.Service):
         L.warning('\n[%s] Latency for ASKEY SOAP response (%.3f ms)' % (get_current_time(), t1_soap_askey))
         resp = ''.join(resp)
         resp = json.loads(resp)
-        if "Response" in resp and resp["Response"] == "OK":
+        # if "Response" in resp and resp["Response"] == "OK":
+        #     L.warning(" **** GPS Information have been successfully sent into ASKEY's Drone Navigation Server.")
+        #     L.warning("-- GPS INFO --> FlyNo={}; GPS={}".format(gps_data["fly_no"], gps_data["gps"]))
+        if "Response" in resp and await self._is_resp_valid(resp["Response"]):
             L.warning(" **** GPS Information have been successfully sent into ASKEY's Drone Navigation Server.")
-            L.warning("-- GPS INFO --> FlyNo={}; GPS={}".format(gps_data["fly_no"], gps_data["gps"]))
+            L.warning("-- GPS INFO --> FlyNo={}; GPS={}; Heading={}".format(gps_data["fly_no"], gps_data["gps"],
+                                                                            gps_data["heading"]))
         else:
-            L.warning("UNABLE TO SEND GPS Information (Reason: {}). FlyNo={}; GPS={}".format(resp, gps_data["fly_no"],
-                                                                                             gps_data["gps"]))
+            L.warning("UNABLE TO SEND GPS Information (Reason: {}). FlyNo={}; GPS={}; Heading={}".
+                      format(resp, gps_data["fly_no"],
+                             gps_data["gps"],
+                             gps_data["heading"]))
 
     async def send_gps_info(self, gps_data):
-        print(">>> gps_data:", gps_data)
         if self._is_online:
             await self._sending_real_request(gps_data)
         else:
