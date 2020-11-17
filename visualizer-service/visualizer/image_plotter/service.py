@@ -29,6 +29,7 @@ class ImagePlotterService(asab.Service):
         self._img_height = int(asab.Config["stream:config"]["height"])
         self._img_width = int(asab.Config["stream:config"]["width"])
         self._mode = asab.Config["stream:config"]["mode"]
+        self._delay_send_gps = int(asab.Config["stream:gps"]["delay_send_gps"])
 
         self._count_pih = 0
 
@@ -63,7 +64,7 @@ class ImagePlotterService(asab.Service):
                 L.warning('\n[%s] Latency for plotting PiH BBox (%.3f ms)' % (get_current_time(), t1_plot_bbox))
 
             # sending GPS information to the Ground Control, every 30 frames
-            if int(frame_id) % 30 == 0 and self._count_pih > 0:
+            if int(frame_id) % self._delay_send_gps == 0 and self._count_pih > 0:
                 await self.GPSCollectorService.send_gps_info(gps_data)
                 self._count_pih = 0
 
