@@ -63,7 +63,7 @@ class ImagePlotterService(asab.Service):
                 t1_plot_bbox = (time.time() - t0_plot_bbox) * 1000
                 L.warning('\n[%s] Latency for plotting PiH BBox (%.3f ms)' % (get_current_time(), t1_plot_bbox))
 
-            # sending GPS information to the Ground Control, every 30 frames
+            # sending GPS information to the Ground Control, every N frames (default `N`=300)
             if int(frame_id) % self._delay_send_gps == 0 and self._count_pih > 0:
                 await self.GPSCollectorService.send_gps_info(gps_data)
                 self._count_pih = 0
