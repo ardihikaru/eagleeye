@@ -9,9 +9,13 @@ L = logging.getLogger(__name__)
 
 ###
 
-image_hub = imagezmq.ImageHub(open_port='tcp://localhost:5548', REQ_REP=False)
+image_hub = imagezmq.ImageHub(open_port='tcp://localhost:5550', REQ_REP=False)
 
-window_title = "CV Output"
+window_title = "CV Original"
+width = 1080
+height = 720
+cv2.namedWindow(window_title, cv2.WINDOW_NORMAL)
+cv2.resizeWindow(window_title, width, height)
 while True:  # show received images
     data, image = image_hub.recv_image()
     print(">> data:", data)
