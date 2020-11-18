@@ -29,6 +29,10 @@ class ZeroMQVisualizerService(asab.Service):
         self._mode = asab.Config["stream:config"]["mode"]
         self._t0_streaming = None  # set variable to calculate FPS
 
+        self._is_resized = bool(int(asab.Config["stream:out"]["is_resized"]))
+        self._out_width = int(asab.Config["stream:out"]["width"])
+        self._out_height = int(asab.Config["stream:out"]["height"])
+
     async def run(self, zmq_receiver, zmq_publisher):
         is_latest_plot_available = False
         while True:
@@ -56,6 +60,11 @@ class ZeroMQVisualizerService(asab.Service):
     def publish_image(self, zmq_sender, frame_id, frame):
         t0_zmq = time.time()
         zmq_id = str(frame_id) + "-" + str(t0_zmq)
+
+        # resize into VGA (640 x 480)
+        if self._is_resized:
+            frame = cv2.resize(frame, (self._out_width, self._out_height))
+
         zmq_sender.send_image(zmq_id, frame)
         t1_zmq = (time.time() - t0_zmq) * 1000
         L.warning('Latency [Publish Image via ZeroMQ] of frame-%s: (%.5fms)' % (str(frame_id), t1_zmq))
