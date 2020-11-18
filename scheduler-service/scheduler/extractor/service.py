@@ -379,13 +379,14 @@ class ExtractorService(asab.Service):
 			received_frame_id += 1
 			skip_count += 1
 
+			success, _, t0_zmq_source, frame = await self.TCPCameraServerService.get_image(self.frame_id)
+
 			# try skipping frames
 			if self._num_skipped_frames > 0 and received_frame_id > 1 and skip_count <= self._num_skipped_frames:
 				# skip this frame
 				L.warning(">>> Skipping frame-{}; Current `skip_count={}`".format(str(received_frame_id), str(skip_count)))
 			else:
 				self.frame_id += 1
-				success, frame_id, t0_zmq_source, frame = await self.TCPCameraServerService.get_image(self.frame_id)
 
 				# Sending image data into Visualizer Service as well
 				self.ZMQService.send_image_to_visualizer(self.frame_id, frame)
