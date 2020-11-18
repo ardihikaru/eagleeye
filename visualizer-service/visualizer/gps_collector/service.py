@@ -118,10 +118,12 @@ class GPSCollectorService(asab.Service):
                                                                                     gps_data["heading"]))
 
     async def _is_resp_valid(self, resp):
-        if resp["Response"] == "OK":
+        if resp == "OK":
+            return True
+        elif "ServerRecvData.Data" in resp:
             return True
 
-        return True  # TODO: Still hardcoded; to be updated later
+        return False
 
     async def _sending_real_request(self, gps_data):
         soap_request_obj = {
@@ -138,9 +140,6 @@ class GPSCollectorService(asab.Service):
         L.warning('\n[%s] Latency for ASKEY SOAP response (%.3f ms)' % (get_current_time(), t1_soap_askey))
         resp = ''.join(resp)
         resp = json.loads(resp)
-        # if "Response" in resp and resp["Response"] == "OK":
-        #     L.warning(" **** GPS Information have been successfully sent into ASKEY's Drone Navigation Server.")
-        #     L.warning("-- GPS INFO --> FlyNo={}; GPS={}".format(gps_data["fly_no"], gps_data["gps"]))
         if "Response" in resp and await self._is_resp_valid(resp["Response"]):
             L.warning(" **** GPS Information have been successfully sent into ASKEY's Drone Navigation Server.")
             L.warning("-- GPS INFO --> FlyNo={}; GPS={}; Heading={}".format(gps_data["fly_no"], gps_data["gps"],
