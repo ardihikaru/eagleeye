@@ -154,7 +154,7 @@ class ImagePlotterService(asab.Service):
                                                                                            t1_plot_fps))
 
     async def _get_plot_info(self, frame_id):
-        drone_id = "1"  # TODO: hardcoded for NOW! need to be assigned dynamically later on!
+        drone_id = asab.Config["stream:config"]["drone_id"]
         plot_info_key = "plotinfo-drone-%s-frame-%s" % (drone_id, frame_id)
 
         # wait until `plot_info` is not None
@@ -173,11 +173,11 @@ class ImagePlotterService(asab.Service):
         return plot_info
 
     async def _save_latest_plot_info(self, frame_id, plot_info):
-        drone_id = "1"  # TODO: hardcoded for NOW! need to be assigned dynamically later on!
+        drone_id = asab.Config["stream:config"]["drone_id"]
         latest_plotinfo_key = "latest-plotinfo-drone-%s" % drone_id
         redis_set(self.redis.get_rc(), latest_plotinfo_key, plot_info)
 
     def _get_latest_plot_info(self, frame_id):
-        drone_id = "1"  # TODO: hardcoded for NOW! need to be assigned dynamically later on!
+        drone_id = asab.Config["stream:config"]["drone_id"]
         latest_plotinfo_key = "latest-plotinfo-drone-%s" % drone_id
         return redis_get(self.redis.get_rc(), latest_plotinfo_key)
