@@ -61,7 +61,7 @@ class ZeroMQVisualizerService(asab.Service):
         t0_zmq = time.time()
         zmq_id = str(frame_id) + "-" + str(t0_zmq)
 
-        # resize into VGA (640 x 480)
+        # resize the frame; Default VGA (640 x 480)
         if self._is_resized:
             frame = cv2.resize(frame, (self._out_width, self._out_height))
 
