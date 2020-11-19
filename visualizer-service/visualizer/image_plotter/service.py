@@ -29,6 +29,8 @@ class ImagePlotterService(asab.Service):
         self._img_height = int(asab.Config["stream:config"]["height"])
         self._img_width = int(asab.Config["stream:config"]["width"])
         self._mode = asab.Config["stream:config"]["mode"]
+        self._delay_send_gps = int(asab.Config["stream:gps"]["delay_send_gps"])
+        self._plot_fps = bool(int(asab.Config["stream:plot"]["plot_fps"]))
 
         self._count_pih = 0
 
@@ -62,13 +64,14 @@ class ImagePlotterService(asab.Service):
                 t1_plot_bbox = (time.time() - t0_plot_bbox) * 1000
                 L.warning('\n[%s] Latency for plotting PiH BBox (%.3f ms)' % (get_current_time(), t1_plot_bbox))
 
-            # sending GPS information to the Ground Control, every 30 frames
-            if int(frame_id) % 30 == 0 and self._count_pih > 0:
+            # sending GPS information to the Ground Control, every N frames (default `N`=300)
+            if int(frame_id) % self._delay_send_gps == 0 and self._count_pih > 0:
                 await self.GPSCollectorService.send_gps_info(gps_data)
                 self._count_pih = 0
 
             self._plot_gps_and_det_info(gps_data, pih_label, img)
-            self._plot_fps_info(img, fps)
+            if self._plot_fps:
+                self._plot_fps_info(img, fps)
 
             # This feature enable to plot PiH BBox based on the latest stored BBox in the redisDB
             # Default: DISABLED
@@ -151,7 +154,7 @@ class ImagePlotterService(asab.Service):
                                                                                            t1_plot_fps))
 
     async def _get_plot_info(self, frame_id):
-        drone_id = "1"  # TODO: hardcoded for NOW! need to be assigned dynamically later on!
+        drone_id = asab.Config["stream:config"]["drone_id"]
         plot_info_key = "plotinfo-drone-%s-frame-%s" % (drone_id, frame_id)
 
         # wait until `plot_info` is not None
@@ -170,11 +173,11 @@ class ImagePlotterService(asab.Service):
         return plot_info
 
     async def _save_latest_plot_info(self, frame_id, plot_info):
-        drone_id = "1"  # TODO: hardcoded for NOW! need to be assigned dynamically later on!
+        drone_id = asab.Config["stream:config"]["drone_id"]
         latest_plotinfo_key = "latest-plotinfo-drone-%s" % drone_id
         redis_set(self.redis.get_rc(), latest_plotinfo_key, plot_info)
 
     def _get_latest_plot_info(self, frame_id):
-        drone_id = "1"  # TODO: hardcoded for NOW! need to be assigned dynamically later on!
+        drone_id = asab.Config["stream:config"]["drone_id"]
         latest_plotinfo_key = "latest-plotinfo-drone-%s" % drone_id
         return redis_get(self.redis.get_rc(), latest_plotinfo_key)

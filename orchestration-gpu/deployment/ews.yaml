@@ -99,17 +99,17 @@ data:
     redis_pv_key = register-node-pv
   site.conf: |
     [redis]
-    hostname=redis-service
+    hostname=10.194.188.110
     password =
 
     [asab:storage]
     type = mongodb
     mongodb_database = eagleeyeDB
-    mongodb_uri = mongodb://mongo-service:27017
-    mongodb_host = mongo-service
+    mongodb_uri = mongodb://10.194.188.111:27017
+    mongodb_host = 10.194.188.111
 
     [zmq]
-    sender_uri=scheduler-service
+    sender_uri=10.194.188.116
 
     # export results
     [export]
@@ -119,16 +119,16 @@ data:
     [objdet:yolo]
     names = /app/config_files/yolo/data/coco.names
     cfg = /app/config_files/yolo/cfg/yolo-obj-v5.cfg
-    weights = /app/config_files/yolo/weights/TW-01.weights
+    weights = /app/config_files/yolo/weights/TM-07.weights
 
     [eagleeye:api]
-    ews_host=ews-service
+    ews_host=10.194.188.112
 
     [config:builder]
     path=/conf/dual-det/site.conf
 
     [eagleeye:realtime]
-    ews_rt_host=ews-service
+    ews_rt_host=10.194.188.112
 
     [streaming:config]
     w=640
@@ -185,6 +185,9 @@ spec:
       name: ews-deploy
   template:
     metadata:
+      annotations:
+        k8s.v1.cni.cncf.io/networks: '[ { "name": "data-net-app", "namespace": "mec-app",
+          "ips": [ "10.194.188.112/24" ] } ]'
       labels:
         name: ews-deploy
       name: ews-deploy

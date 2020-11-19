@@ -42,6 +42,7 @@ class ExtractorService(asab.Service):
 		self.file_ext = asab.Config["objdet:yolo"]["file_ext"]
 		self._is_auto_restart = bool(int(asab.Config["stream:config"]["auto_restart"]))
 		self._restart_delay = float(asab.Config["stream:config"]["restart_delay"])
+		self._num_skipped_frames = int(asab.Config["stream:config"]["num_skipped_frames"])
 
 		self.executor = ThreadPoolExecutor(int(asab.Config["thread"]["num_executor"]))
 
@@ -146,76 +147,94 @@ class ExtractorService(asab.Service):
 
 			self.cap = await self._set_cap(config)
 
+			# variables used to skip some frames
+			received_frame_id = 0
+			skip_count = -1
+
 			while await self._streaming():
-				self.frame_id += 1
+				received_frame_id += 1
+				skip_count += 1
+
 				success, frame = await self._read_frame()
 
-				# Sending image data into Visualizer Service as well
-				self.ZMQService.send_image_to_visualizer(self.frame_id, frame)
+				# try skipping frames
+				if self._num_skipped_frames > 0 and received_frame_id > 1 and skip_count <= self._num_skipped_frames:
+					# skip this frame
+					L.warning(">>> Skipping frame-{}; Current `skip_count={}`".format(str(received_frame_id),
+																					  str(skip_count)))
+				else:
+					self.frame_id += 1
 
-				# Start t0_e2e_lat: To calculate the e2e processing & comm. latency
-				t0_e2e_lat = time.time()
+					# Sending image data into Visualizer Service as well
+					self.ZMQService.send_image_to_visualizer(self.frame_id, frame)
 
-				# Perform scheduling based on Round-Robin fasion (Default)
-				t0_sched_lat = time.time()
-				try:
-					if bool(int(asab.Config["stream:config"]["test_mode"])):
-						sel_node_id = 0
-					else:
-						sel_node_id = await self.SchPolicyService.schedule(max_node=len(senders["node"]))
-					L.warning("Selected Node idx: %s" % str(sel_node_id))
-				except Exception as e:
-					L.error("[ERROR]: %s" % str(e))
-				t1_sched_lat = (time.time() - t0_sched_lat) * 1000
-				# TODO: To implement scheduler here and find which node will be selected
+					# Start t0_e2e_lat: To calculate the e2e processing & comm. latency
+					t0_e2e_lat = time.time()
 
-				# First, notify the Object Detection Service to get ready (publish)
-				node_id = senders["node"][sel_node_id]["id"]
-				node_channel = senders["node"][sel_node_id]["channel"]
-				node_name = senders["node"][sel_node_id]["name"]
+					# Perform scheduling based on Round-Robin fasion (Default)
+					t0_sched_lat = time.time()
+					try:
+						if bool(int(asab.Config["stream:config"]["test_mode"])):
+							sel_node_id = 0
+						else:
+							sel_node_id = await self.SchPolicyService.schedule(max_node=len(senders["node"]))
+						L.warning("Selected Node idx: %s" % str(sel_node_id))
+					except Exception as e:
+						L.error("[ERROR]: %s" % str(e))
+					t1_sched_lat = (time.time() - t0_sched_lat) * 1000
+					# TODO: To implement scheduler here and find which node will be selected
 
-				L.warning("NodeID=%s; NodeChannel=%s; NodeName=%s" % (str(node_id), node_channel, node_name))
+					# First, notify the Object Detection Service to get ready (publish)
+					node_id = senders["node"][sel_node_id]["id"]
+					node_channel = senders["node"][sel_node_id]["channel"]
+					node_name = senders["node"][sel_node_id]["name"]
 
-				# Save Scheduling latency
-				await self._save_latency(
-					self.frame_id, t1_sched_lat, "Round-Robin", "scheduling", "Scheduling", node_id, node_name
-				)
-				L.warning('\n[%s] Proc. Latency of %s for frame-%s (%.3f ms)' % (
-					get_current_time(), "scheduling", str(self.frame_id), t1_sched_lat))
+					L.warning("NodeID=%s; NodeChannel=%s; NodeName=%s" % (str(node_id), node_channel, node_name))
 
-				# Save e2e latency
-				self._exec_e2e_latency_collector(t0_e2e_lat, node_id, self.frame_id)
+					# Save Scheduling latency
+					await self._save_latency(
+						self.frame_id, t1_sched_lat, "Round-Robin", "scheduling", "Scheduling", node_id, node_name
+					)
+					L.warning('\n[%s] Proc. Latency of %s for frame-%s (%.3f ms)' % (
+						get_current_time(), "scheduling", str(self.frame_id), t1_sched_lat))
 
-				# send data into Scheduler service through the pub/sub
-				# Never send any frame if `test_mode` is enabled (test_mode=1)
-				if not bool(int(asab.Config["stream:config"]["test_mode"])):
-					t0_publish = time.time()
-					L.warning("[%s] Publishing image into Redis channel: %s" % (get_current_time(), node_channel))
-					dump_request = json.dumps({"active": True, "algorithm": config["algorithm"], "ts": time.time()})
-					pub(self.redis.get_rc(), node_channel, dump_request)
-					t1_publish = (time.time() - t0_publish) * 1000
-					# TODO: Saving latency for scheduler:producer:notification:image
-					L.warning(
-						'[%s] Latency for Publishing FRAME NOTIFICATION into Object Detection Service (%.3f ms)' % (
-							get_current_time(), t1_publish)
+					# Save e2e latency
+					self._exec_e2e_latency_collector(t0_e2e_lat, node_id, self.frame_id)
+
+					# send data into Scheduler service through the pub/sub
+					# Never send any frame if `test_mode` is enabled (test_mode=1)
+					if not bool(int(asab.Config["stream:config"]["test_mode"])):
+						t0_publish = time.time()
+						L.warning("[%s] Publishing image into Redis channel: %s" % (get_current_time(), node_channel))
+						dump_request = json.dumps({"active": True, "algorithm": config["algorithm"], "ts": time.time()})
+						pub(self.redis.get_rc(), node_channel, dump_request)
+						t1_publish = (time.time() - t0_publish) * 1000
+						# TODO: Saving latency for scheduler:producer:notification:image
+						L.warning(
+							'[%s] Latency for Publishing FRAME NOTIFICATION into Object Detection Service (%.3f ms)' % (
+								get_current_time(), t1_publish)
 						)
 
-					if not bool(int(asab.Config["stream:config"]["convert_img"])):
-						# Sending image data through ZMQ (TCP connection)
-						self.ZMQService.send_this_image(senders["zmq"][sel_node_id], self.frame_id, frame)
-					else:
-						# TODO: In this case, Candidate Selection Algorithm will not work!!!!!
-						# Convert the yolo input images; Here it converts from FullHD into <img_size> (padded size)
-						if not bool(int(asab.Config["stream:config"]["gpu_converter"])):
-							yolo_frame = await self.ResizerService.cpu_convert_to_padded_size(frame)
+						if not bool(int(asab.Config["stream:config"]["convert_img"])):
+							# Sending image data through ZMQ (TCP connection)
+							self.ZMQService.send_this_image(senders["zmq"][sel_node_id], self.frame_id, frame)
 						else:
-							# NOT IMPLEMENTED YET!!!!
-							# TODO: To add GPU-based downsample function
-							yolo_frame = await self.ResizerService.gpu_convert_to_padded_size(frame)
+							# TODO: In this case, Candidate Selection Algorithm will not work!!!!!
+							# Convert the yolo input images; Here it converts from FullHD into <img_size> (padded size)
+							if not bool(int(asab.Config["stream:config"]["gpu_converter"])):
+								yolo_frame = await self.ResizerService.cpu_convert_to_padded_size(frame)
+							else:
+								# NOT IMPLEMENTED YET!!!!
+								# TODO: To add GPU-based downsample function
+								yolo_frame = await self.ResizerService.gpu_convert_to_padded_size(frame)
 
-						# CHECKING: how is the latency if we send converted version?
-						# Sending image data through ZMQ (TCP connection)
-						self.ZMQService.send_this_image(senders["zmq"][sel_node_id], self.frame_id, yolo_frame)
+							# CHECKING: how is the latency if we send converted version?
+							# Sending image data through ZMQ (TCP connection)
+							self.ZMQService.send_this_image(senders["zmq"][sel_node_id], self.frame_id, yolo_frame)
+
+				# reset skipping frames
+				if 0 < self._num_skipped_frames < skip_count:
+					skip_count = 0
 
 		except Exception as e:
 			L.error("[ERROR] extractor/service.py > def extract_video_stream(): %s" % str(e))
@@ -223,6 +242,7 @@ class ExtractorService(asab.Service):
 			# TODO: To have further actions, i.e. restart connection (work for both Video file / Streaming
 			# TODO: When reloaded, we need to clean up: RedisDB and any other storage related to this action
 
+	# TODO: Not TESTED YET! This functionality should be NOT WORKING NOW!
 	async def extract_image_zmq(self, config):
 		L.warning("#### I am extractor IMAGE ZMQ function from ExtractorService!")
 		senders = self.ZMQService.get_senders()
@@ -351,85 +371,93 @@ class ExtractorService(asab.Service):
 			_tcp_port=int(uri_detail[1])
 		)
 
+		# variables used to skip some frames
+		received_frame_id = 0
+		skip_count = -1
+
 		while True:
-			self.frame_id += 1
+			received_frame_id += 1
+			skip_count += 1
 
-			success, frame_id, t0_zmq_source, frame = await self.TCPCameraServerService.get_image(self.frame_id)
-			# t1_zmq_soure = (time.time() - t0_zmq_source) * 1000
+			success, _, t0_zmq_source, frame = await self.TCPCameraServerService.get_image(self.frame_id)
 
-			# # Save latency of receiving image from souce
-			# await self._save_latency(
-			# 	self.frame_id, t1_zmq_soure, "-", "imagezmq", "reading_source"
-			# )
-			# L.warning('\n[%s] Communication Latency of %s for frame-%s (%.3f ms)' % (
-			# 	get_current_time(), "[Receiving Image with IMAGEZMQ]", str(self.frame_id), t1_zmq_soure))
+			# try skipping frames
+			if self._num_skipped_frames > 0 and received_frame_id > 1 and skip_count <= self._num_skipped_frames:
+				# skip this frame
+				L.warning(">>> Skipping frame-{}; Current `skip_count={}`".format(str(received_frame_id), str(skip_count)))
+			else:
+				self.frame_id += 1
 
-			# Sending image data into Visualizer Service as well
-			self.ZMQService.send_image_to_visualizer(self.frame_id, frame)
+				# Sending image data into Visualizer Service as well
+				self.ZMQService.send_image_to_visualizer(self.frame_id, frame)
 
-			# Start t0_e2e_lat: To calculate the e2e processing & comm. latency
-			t0_e2e_lat = time.time()
+				# Start t0_e2e_lat: To calculate the e2e processing & comm. latency
+				t0_e2e_lat = time.time()
 
-			# Perform scheduling based on Round-Robin fasion (Default)
-			t0_sched_lat = time.time()
-			try:
-				if bool(int(asab.Config["stream:config"]["test_mode"])):
-					sel_node_id = 0
-				else:
-					sel_node_id = await self.SchPolicyService.schedule(max_node=len(senders["node"]))
-				L.warning("Selected Node idx: %s" % str(sel_node_id))
-			except Exception as e:
-				L.error("[ERROR]: %s" % str(e))
-			t1_sched_lat = (time.time() - t0_sched_lat) * 1000
-			# TODO: To implement scheduler here and find which node will be selected
-
-			# First, notify the Object Detection Service to get ready (publish)
-			node_id = senders["node"][sel_node_id]["id"]
-			node_channel = senders["node"][sel_node_id]["channel"]
-			node_name = senders["node"][sel_node_id]["name"]
-
-			L.warning("NodeID=%s; NodeChannel=%s; NodeName=%s" % (str(node_id), node_channel, node_name))
-
-			# Save Scheduling latency
-			await self._save_latency(
-				self.frame_id, t1_sched_lat, "Round-Robin", "scheduling", "Scheduling", node_id, node_name
-			)
-			L.warning('\n[%s] Proc. Latency of %s for frame-%s (%.3f ms)' % (
-				get_current_time(), "scheduling", str(self.frame_id), t1_sched_lat))
-
-			# Save e2e latency
-			self._exec_e2e_latency_collector(t0_e2e_lat, node_id, self.frame_id)
-
-			# send data into Scheduler service through the pub/sub
-			# Never send any frame if `test_mode` is enabled (test_mode=1)
-			if not bool(int(asab.Config["stream:config"]["test_mode"])):
-				t0_publish = time.time()
-				L.warning("[%s] Publishing image into Redis channel: %s" % (get_current_time(), node_channel))
-				dump_request = json.dumps({"active": True, "algorithm": config["algorithm"], "ts": time.time()})
-				pub(self.redis.get_rc(), node_channel, dump_request)
-				t1_publish = (time.time() - t0_publish) * 1000
-				# TODO: Saving latency for scheduler:producer:notification:image
-				L.warning(
-					'[%s] Latency for Publishing FRAME NOTIFICATION into Object Detection Service (%.3f ms)' % (
-						get_current_time(), t1_publish)
-				)
-
-				if not bool(int(asab.Config["stream:config"]["convert_img"])):
-					# Sending image data through ZMQ (TCP connection)
-					self.ZMQService.send_this_image(senders["zmq"][sel_node_id], self.frame_id, frame)
-				else:
-					# TODO: In this case, Candidate Selection Algorithm will not work!!!!!
-					# Convert the yolo input images; Here it converts from FullHD into <img_size> (padded size)
-					if not bool(int(asab.Config["stream:config"]["gpu_converter"])):
-						yolo_frame = await self.ResizerService.cpu_convert_to_padded_size(frame)
+				# Perform scheduling based on Round-Robin fasion (Default)
+				t0_sched_lat = time.time()
+				try:
+					if bool(int(asab.Config["stream:config"]["test_mode"])):
+						sel_node_id = 0
 					else:
-						# NOT IMPLEMENTED YET!!!!
-						# TODO: To add GPU-based downsample function
-						yolo_frame = await self.ResizerService.gpu_convert_to_padded_size(frame)
+						sel_node_id = await self.SchPolicyService.schedule(max_node=len(senders["node"]))
+					L.warning("Selected Node idx: %s" % str(sel_node_id))
+				except Exception as e:
+					L.error("[ERROR]: %s" % str(e))
+				t1_sched_lat = (time.time() - t0_sched_lat) * 1000
+				# TODO: To implement scheduler here and find which node will be selected
 
-					# CHECKING: how is the latency if we send converted version?
-					# Sending image data through ZMQ (TCP connection)
-					self.ZMQService.send_this_image(senders["zmq"][sel_node_id], self.frame_id, yolo_frame)
+				# First, notify the Object Detection Service to get ready (publish)
+				node_id = senders["node"][sel_node_id]["id"]
+				node_channel = senders["node"][sel_node_id]["channel"]
+				node_name = senders["node"][sel_node_id]["name"]
+
+				L.warning("NodeID=%s; NodeChannel=%s; NodeName=%s" % (str(node_id), node_channel, node_name))
+
+				# Save Scheduling latency
+				await self._save_latency(
+					self.frame_id, t1_sched_lat, "Round-Robin", "scheduling", "Scheduling", node_id, node_name
+				)
+				L.warning('\n[%s] Proc. Latency of %s for frame-%s (%.3f ms)' % (
+					get_current_time(), "scheduling", str(self.frame_id), t1_sched_lat))
+
+				# Save e2e latency
+				self._exec_e2e_latency_collector(t0_e2e_lat, node_id, self.frame_id)
+
+				# send data into Scheduler service through the pub/sub
+				# Never send any frame if `test_mode` is enabled (test_mode=1)
+				if not bool(int(asab.Config["stream:config"]["test_mode"])):
+					t0_publish = time.time()
+					L.warning("[%s] Publishing image into Redis channel: %s" % (get_current_time(), node_channel))
+					dump_request = json.dumps({"active": True, "algorithm": config["algorithm"], "ts": time.time()})
+					pub(self.redis.get_rc(), node_channel, dump_request)
+					t1_publish = (time.time() - t0_publish) * 1000
+					# TODO: Saving latency for scheduler:producer:notification:image
+					L.warning(
+						'[%s] Latency for Publishing FRAME NOTIFICATION into Object Detection Service (%.3f ms)' % (
+							get_current_time(), t1_publish)
+					)
+
+					if not bool(int(asab.Config["stream:config"]["convert_img"])):
+						# Sending image data through ZMQ (TCP connection)
+						self.ZMQService.send_this_image(senders["zmq"][sel_node_id], self.frame_id, frame)
+					else:
+						# TODO: In this case, Candidate Selection Algorithm will not work!!!!!
+						# Convert the yolo input images; Here it converts from FullHD into <img_size> (padded size)
+						if not bool(int(asab.Config["stream:config"]["gpu_converter"])):
+							yolo_frame = await self.ResizerService.cpu_convert_to_padded_size(frame)
+						else:
+							# NOT IMPLEMENTED YET!!!!
+							# TODO: To add GPU-based downsample function
+							yolo_frame = await self.ResizerService.gpu_convert_to_padded_size(frame)
+
+						# CHECKING: how is the latency if we send converted version?
+						# Sending image data through ZMQ (TCP connection)
+						self.ZMQService.send_this_image(senders["zmq"][sel_node_id], self.frame_id, yolo_frame)
+
+			# reset skipping frames
+			if 0 < self._num_skipped_frames < skip_count:
+				skip_count = 0
 
 	async def _set_cap(self, config):
 		if bool(int(asab.Config["stream:config"]["thread"])):

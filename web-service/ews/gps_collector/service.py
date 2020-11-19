@@ -108,6 +108,12 @@ class GPSCollectorService(asab.Service):
             gps_data["Latitude"] = str(float(gps_data["Latitude"]) + 1)
             gps_data["Longitude"] = str(float(gps_data["Longitude"]) + 1)
             gps_data["Altitude"] = str(int(gps_data["Altitude"]) + 1)
+            gps_data["Heading"] = self._default_drone_gps_data["Heading"]
+            gps_data["GroundSpeed"] = self._default_drone_gps_data["GroundSpeed"]
+            gps_data["Pitch"] = self._default_drone_gps_data["Pitch"]
+            gps_data["Roll"] = self._default_drone_gps_data["Roll"]
+            gps_data["Yaw"] = self._default_drone_gps_data["Yaw"]
+            gps_data["Timestamp"] = self._default_drone_gps_data["Timestamp"]
             dummy_gps_data.append(gps_data.copy())
 
         return dummy_gps_data
@@ -135,8 +141,11 @@ class GPSCollectorService(asab.Service):
             all_gps_data = self._get_latest_drone_gps_data(dummy_gps_data)
             for each_gps_data in all_gps_data:
                 self._set_gps_data(each_gps_data["drone_id"], each_gps_data)
-                L.warning("[{}]{} Saving data in every 1 second; GPS data (drone_id=`{}`; fly_no=`{}`)={}".format(
-                    get_current_time(), pool_name, each_gps_data["drone_id"], each_gps_data["fly_no"], str(each_gps_data["gps"]))
+                L.warning("[{}]{} Saving data in every 1 second; GPS data (drone_id=`{}`; fly_no=`{}`)={}; Heading={}".
+                    format(
+                            get_current_time(), pool_name, each_gps_data["drone_id"], each_gps_data["fly_no"],
+                            str(each_gps_data["gps"]), each_gps_data["heading"]
+                    )
                 )
             L.warning("")
             time.sleep(1)
@@ -178,7 +187,7 @@ class GPSCollectorService(asab.Service):
                 "fly_no": each_gps_data["FlyNo"],
                 "timestamp": time.time(),
                 "drone_timestamp": each_gps_data["Timestamp"],
-                "heading": float(each_gps_data["Heading"]),
+                "heading": each_gps_data["Heading"],
                 "groundSpeed": float(each_gps_data["GroundSpeed"]),
                 "gps": {
                     "long": float(each_gps_data["Longitude"]),
