@@ -6,6 +6,9 @@
 # Docker:
 ## $ . exec-streaming.sh /app/data/5g-dive/videos/customTest_MIRC-Roadside-5s.mp4
 ## $ . exec-streaming.sh udp://localhost:6000
+## $ . exec-streaming.sh 10.194.188.250:5549 10.194.188.250 8080 TCP
+## $ . exec-streaming.sh 140.113.86.92:5549 140.113.86.92 8080 TCP
+## $ . exec-streaming.sh localhost:5549 localhost 8080 TCP
 
 # Capturing input arguments
 FPATH=$1

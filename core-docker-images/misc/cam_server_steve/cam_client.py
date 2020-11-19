@@ -7,6 +7,7 @@ import time
 # TCP_IP = "140.113.68.166"
 # TCP_IP = "192.168.43.237"
 TCP_IP = "localhost"
+# TCP_IP = "10.194.188.250"
 # TCP_PORT = 8002
 TCP_PORT = 5549
 sock = socket.socket()

@@ -237,9 +237,9 @@ class YOLOv3Handler(MyRedis):
                     L.warning("\n[%s][%s][%s] Store Box INTO Visualizer Service!" %
                               (get_current_time(), self.node_alias, str(frame_id)))
                     t0_plotinfo_saving = time.time()
-                    drone_id = "1"  # TODO: hardcoded for NOW! need to be assigned dynamically later on!
+                    drone_id = asab.Config["stream:config"]["drone_id"]
                     plot_info_key = "plotinfo-drone-%s-frame-%s" % (drone_id, str(frame_id))
-                    redis_set(self.rc, plot_info_key, plot_info)
+                    redis_set(self.rc, plot_info_key, plot_info, expired=10)  # delete value after 10 seconds
                     t1_plotinfo_saving = (time.time() - t0_plotinfo_saving) * 1000
                     L.warning('\n[%s] Latency of Storing Plot info in redisDB (%.3f ms)' %
                               (get_current_time(), t1_plotinfo_saving))
