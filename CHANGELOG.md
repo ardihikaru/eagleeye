@@ -1,3 +1,39 @@
+## 6.4-EEv2.0-field-trial (十一月 19, 2020)
+  - Merge pull request #18 from ardihikaru/feature/EagleEYE2.0/k8s-imec-stable
+  - Merge pull request #17 from ardihikaru/bugfix/EagleEYEv2.0/drone-id-selection
+  - add another sample IP
+  - set default `drone_id`=1
+  - add and set default `drone_id`=2; set default `is_resized`=1
+  - add and set default `drone_id`=2; set default `is_resized`=1
+  - add more examples
+  - bugfix: set `drone_id` dinamically
+  - Merge pull request #16 from ardihikaru/feature/EagleEYEv2.0/skip-frames
+  - bugfix: capture frame first before triggering skip condition
+  - implement skip in input source from streaming
+  - add feature to skip frames
+  - Merge pull request #15 from ardihikaru/feature/EagleEYEv2.0/askey-dns-update-2
+  - add feature to enable/disable FPS information in the GUI
+  - add feature to forcefully resize the output frame before being published outside (2)
+  - update comment
+  - add feature to forcefully resize the output frame before being published outside
+  - bugfix: unable to send GPS data to ASKEY
+  - add original recv file; add resize parameter
+  - update comment
+  - update comment
+  - add new config `delay_send_gps` to estimate when sending GPS to ASKEY DNS
+  - bugfix: Unable to Send GPS to ASKEY DNS
+  - stable version of iMEC deployment (2.3)
+  - Merge pull request #14 from ardihikaru/feature/EagleEYEv2.0/askey-dns-update
+  - bugfix: add new variable to be sent into ASKEY DNS: `Heading`
+  - Merge pull request #13 from ardihikaru/bugfix/sample-visualizer
+  - Merge branch 'bugfix/sample-visualizer' of github.com:ardihikaru/eagleeye into bugfix/sample-visualizer
+  - rebase: fix conflict
+  - bugfix: wrong cv2 window title
+  - Merge pull request #12 from ardihikaru/feature/EagleEYEv2.0/zmq-visualizer-sender
+  - add new module in visualizer: publish via ZeroMQ
+  - introduce new parameter
+  - Merge branch 'release/6.3.1-EEv2.0-field-trial' into develop
+
 ## release/6.3.1-EEv2.0-field-trial (十一月 12, 2020)
   - Merge pull request #11 from ardihikaru/feature/EagleEYEv2.0/tcp-receiver
   - add sample script to send frames from Jetson NANO device
