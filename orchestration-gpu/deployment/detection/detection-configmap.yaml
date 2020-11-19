@@ -85,16 +85,16 @@ data:
     gps_key_prefix=gps-data-
   site.conf: |
     [redis]
-    hostname=redis-service
+    hostname=10.194.188.110
     password =
 
     [asab:storage]
-    mongodb_uri = mongodb://mongo-service:27017
-    mongodb_host = mongo-service
+    mongodb_uri = mongodb://10.194.188.111:27017
+    mongodb_host = 10.194.188.111
 
     [eagleeye:api]
-    node=http://ews-service:8080/api/nodes
-    latency = http://ews-service:8080/api/latency
+    node=http://10.194.188.112:8080/api/nodes
+    latency = http://10.194.188.112:8080/api/latency
 
     [objdet:yolo]
     output = /app/outputs/
@@ -103,6 +103,6 @@ data:
     weights = /app/config_files/yolo/weights/TM-07.weights
 
     [zmq]
-    sender_host = scheduler-service.eagleeye
+    sender_host = 10.194.188.116
     sender_prefix_port = 555
 

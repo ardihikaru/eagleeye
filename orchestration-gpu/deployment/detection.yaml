@@ -19,16 +19,16 @@ data:
     = 10\ntolerance_limit_percentage = 0.3\n\n[stream:config]\ndrone_id=1\ngps_key_prefix=gps-data-\n"
   site.conf: |
     [redis]
-    hostname=redis-service
+    hostname=10.194.188.110
     password =
 
     [asab:storage]
-    mongodb_uri = mongodb://mongo-service:27017
-    mongodb_host = mongo-service
+    mongodb_uri = mongodb://10.194.188.111:27017
+    mongodb_host = 10.194.188.111
 
     [eagleeye:api]
-    node=http://ews-service:8080/api/nodes
-    latency = http://ews-service:8080/api/latency
+    node=http://10.194.188.112:8080/api/nodes
+    latency = http://10.194.188.112:8080/api/latency
 
     [objdet:yolo]
     output = /app/outputs/
@@ -37,7 +37,7 @@ data:
     weights = /app/config_files/yolo/weights/TM-07.weights
 
     [zmq]
-    sender_host = scheduler-service.eagleeye
+    sender_host = 10.194.188.116
     sender_prefix_port = 555
 kind: ConfigMap
 metadata:
@@ -58,6 +58,9 @@ spec:
       name: detection-deploy
   template:
     metadata:
+      annotations:
+        k8s.v1.cni.cncf.io/networks: '[ { "name": "data-net-app", "namespace": "mec-app",
+          "ips": [ "10.194.188.113/24" ] } ]'
       labels:
         name: detection-deploy
       name: detection-deploy
