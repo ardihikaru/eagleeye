@@ -60,7 +60,7 @@ class ImagePlotterService(asab.Service):
                 t0_plot_bbox = time.time()
                 for mbbox_data in plot_info["mbbox"]:
                     plot_one_box(mbbox_data, img, label=plot_info["label"], color=plot_info["color"])
-                    break  # TODO: This is a temporary approach! We need to fix the bug of PCS (v2)
+                    # break  # TODO: This is a temporary approach! We need to fix the bug of PCS (v2)
                 t1_plot_bbox = (time.time() - t0_plot_bbox) * 1000
                 L.warning('\n[%s] Latency for plotting PiH BBox (%.3f ms)' % (get_current_time(), t1_plot_bbox))
 

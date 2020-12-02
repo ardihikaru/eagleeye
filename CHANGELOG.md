@@ -1,3 +1,14 @@
+## 6.4.2-EEv2.0-field-trial (十二月 02, 2020)
+  - Merge branch 'develop' of github.com:ardihikaru/eagleeye into develop
+  - Merge branch 'release/6.4.1-EEv2.0-field-trial' into develop
+  - Merge pull request #19 from ardihikaru/bugfix/EagleEYEv2.0/bad-pih-accuracy
+  - change version from `2.3` into `2.4`
+  - add config in `site.conf` file
+  - add setup to work on enhancing PiH object generator
+  - add config parameter to disable/enable it
+  - bugfix: resolve multiple PiH BBoxes
+  - add readme file for simple usage
+
 ## 6.4.1-EEv2.0-field-trial (十二月 02, 2020)
   - Merge branch 'release/6.4-EEv2.0-field-trial' into develop
 
