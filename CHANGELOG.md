@@ -1,3 +1,6 @@
+## 6.4.1-EEv2.0-field-trial (十二月 02, 2020)
+  - Merge branch 'release/6.4-EEv2.0-field-trial' into develop
+
 ## 6.4-EEv2.0-field-trial (十一月 19, 2020)
   - Merge pull request #18 from ardihikaru/feature/EagleEYE2.0/k8s-imec-stable
   - Merge pull request #17 from ardihikaru/bugfix/EagleEYEv2.0/drone-id-selection
