@@ -38,7 +38,7 @@ fi
 if [ -z "$VERSION" ]
 then
       echo "\$VERSION is empty"
-      VERSION="2.3"  # default value
+      VERSION="2.4"  # default value
 else
       echo "\$VERSION is NOT empty"
 fi
