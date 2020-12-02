@@ -46,8 +46,13 @@ class CSv2(RegionCluster):
         self.person_xyxys = {}
         self.flag_xyxys = {}
         self.flag_pair_candidates = {}
+        self.selected_pairs = []
+        self._prev_pairs = None
+        self.bbox_data = []
 
-    def initialize(self, det, names, h, w, c):
+    def initialize(self, det, names, h, w, c, prev_pairs, bbox_data):
+        self.bbox_data = bbox_data
+        self._prev_pairs = prev_pairs
         self.det = det
         self.names = names
         self.height = h
@@ -61,6 +66,7 @@ class CSv2(RegionCluster):
         self.person_xyxys = {}
         self.flag_xyxys = {}
         self.flag_pair_candidates = {}
+        self.selected_pairs = []
         self.detected_mbbox = []
         self._set_empty_object_data()
 
@@ -71,6 +77,9 @@ class CSv2(RegionCluster):
             self.map_to_clusters()
             self.find_pair_candidates()
             self.pair_selection()
+
+            # if no mbbox found so far, try to compare with previous pair Person and Flag objects
+            # TODO: to use previous data to fix missing mbbox object due to bad training dataset
 
     def __is_flag_valid(self, flag_idx, person_idx):
         person_xyxy = get_det_xyxy(self.det[person_idx])
@@ -137,6 +146,12 @@ class CSv2(RegionCluster):
                 flag_xyxy = get_det_xyxy(self.det[flag_idx])
                 mbbox_xyxy = get_mbbox(person_xyxy, flag_xyxy)
 
+                # save selected pairs
+                self.selected_pairs.append({
+                    "Person": person_xyxy,
+                    "Flag": flag_xyxy
+                })
+
                 # Bugfix: format numpy-float into float data type
                 for i in range(len(mbbox_xyxy)):
                     mbbox_xyxy[i] = float(mbbox_xyxy[i])
@@ -193,6 +208,9 @@ class CSv2(RegionCluster):
 
     def get_detected_mbbox(self):
         return self.detected_mbbox
+
+    def get_selected_pairs(self):
+        return self.selected_pairs
 
     def get_rgb_mbbox(self):
         return self.rgb_mbbox
