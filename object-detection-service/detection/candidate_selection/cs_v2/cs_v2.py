@@ -38,6 +38,7 @@ class CSv2(RegionCluster):
         self.detected_mbbox = []
         self.pih_label = asab.Config["bbox_config"]["pih_label"]
         self.rgb_mbbox = json.loads(asab.Config["bbox_config"]["pih_color"])
+        self.smoothen_pih = bool(int(asab.Config["objdet:yolo"]["smoothen_pih"]))
 
         self.paired_flags = {}
         self.saved_dist = {}  # of (FlagID, PersonID), e.g. ["0-0"] = 80
@@ -116,8 +117,12 @@ class CSv2(RegionCluster):
 
                         if self.__is_flag_valid(flag_idx, person_idx) and self.__is_distance_valid(dist_idx):
                             if person_idx not in self.flag_pair_candidates[flag_idx]["id"]:
-                                # also, check if similar PiH candidate has been stored before
-                                if self._validate_and_delete_higher_distant_pair(flag_idx, person_idx, dist_idx):
+                                if self.smoothen_pih:
+                                    # also, check if similar PiH candidate has been stored before
+                                    if self._validate_and_delete_higher_distant_pair(flag_idx, person_idx, dist_idx):
+                                        self.flag_pair_candidates[flag_idx]["id"].append(person_idx)
+                                        self.flag_pair_candidates[flag_idx]["dist"].append(self.saved_dist[dist_idx])
+                                else:
                                     self.flag_pair_candidates[flag_idx]["id"].append(person_idx)
                                     self.flag_pair_candidates[flag_idx]["dist"].append(self.saved_dist[dist_idx])
 
