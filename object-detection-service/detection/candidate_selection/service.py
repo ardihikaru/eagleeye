@@ -18,7 +18,7 @@ class CandidateSelectionService(asab.Service):
         super().__init__(app, service_name)
         self.cs = CSv2()
 
-    async def calc_mbbox(self, bbox_data, det, names, h, w, c):
-        self.cs.initialize(det, names, h, w, c)
+    async def calc_mbbox(self, bbox_data, det, names, h, w, c, selected_pairs):
+        self.cs.initialize(det, names, h, w, c, selected_pairs, bbox_data)
         self.cs.run()
-        return self.cs.get_detected_mbbox()
+        return self.cs.get_detected_mbbox(), self.cs.get_selected_pairs()

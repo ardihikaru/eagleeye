@@ -38,6 +38,7 @@ class CSv2(RegionCluster):
         self.detected_mbbox = []
         self.pih_label = asab.Config["bbox_config"]["pih_label"]
         self.rgb_mbbox = json.loads(asab.Config["bbox_config"]["pih_color"])
+        self.smoothen_pih = bool(int(asab.Config["objdet:yolo"]["smoothen_pih"]))
 
         self.paired_flags = {}
         self.saved_dist = {}  # of (FlagID, PersonID), e.g. ["0-0"] = 80
@@ -45,8 +46,13 @@ class CSv2(RegionCluster):
         self.person_xyxys = {}
         self.flag_xyxys = {}
         self.flag_pair_candidates = {}
+        self.selected_pairs = []
+        self._prev_pairs = None
+        self.bbox_data = []
 
-    def initialize(self, det, names, h, w, c):
+    def initialize(self, det, names, h, w, c, prev_pairs, bbox_data):
+        self.bbox_data = bbox_data
+        self._prev_pairs = prev_pairs
         self.det = det
         self.names = names
         self.height = h
@@ -60,6 +66,7 @@ class CSv2(RegionCluster):
         self.person_xyxys = {}
         self.flag_xyxys = {}
         self.flag_pair_candidates = {}
+        self.selected_pairs = []
         self.detected_mbbox = []
         self._set_empty_object_data()
 
@@ -71,13 +78,15 @@ class CSv2(RegionCluster):
             self.find_pair_candidates()
             self.pair_selection()
 
+            # if no mbbox found so far, try to compare with previous pair Person and Flag objects
+            # TODO: to use previous data to fix missing mbbox object due to bad training dataset
+
     def __is_flag_valid(self, flag_idx, person_idx):
         person_xyxy = get_det_xyxy(self.det[person_idx])
         flag_xyxy = get_det_xyxy(self.det[flag_idx])
 
         person_xywh = np_xyxy2xywh(person_xyxy)
         flag_xywh = np_xyxy2xywh(flag_xyxy)
-        # print(" -------- person_xywh VS flag_xywh:", person_xywh, flag_xywh)
         if flag_xywh[3] > person_xywh[3]:
             return False
         return True
@@ -88,9 +97,28 @@ class CSv2(RegionCluster):
             return True
         return False
 
+    # this function aims to delete stored pair with higher distant
+    # return True if new pair is having shorter distant
+    def _validate_and_delete_higher_distant_pair(self, ignored_flag_id, current_person_idx, current_dist_idx):
+        is_validated = True
+        current_distant = self.saved_dist[current_dist_idx]
+        for flag_id, pair_data in self.flag_pair_candidates.items():
+            if flag_id != ignored_flag_id and current_person_idx in pair_data["id"]:
+                # locate the index of stored person_id, and get its distant
+                for i in range(len(pair_data["id"])):
+                    # if current distant is smaller, then, delete the stored pair data: in key `id` and `dist`
+                    if pair_data["id"][i] == current_person_idx:
+                        if current_distant < pair_data["dist"][i]:
+                            del pair_data["id"][i]
+                            del pair_data["dist"][i]
+                            break  # exit loop once terget data has been deleted
+                        else:
+                            is_validated = False
+                            break  # exit loop once terget data has been deleted
+        return is_validated
+
     def find_pair_candidates(self):
         for cluster_data in self.mapped_obj:
-            # print("****** cluster_data =", cluster_data)
             if len(cluster_data["Person"]) > 0 and len(cluster_data["Flag"]) > 0:
                 for flag_idx in cluster_data["Flag"]:
                     for person_idx in cluster_data["Person"]:
@@ -98,12 +126,18 @@ class CSv2(RegionCluster):
 
                         if self.__is_flag_valid(flag_idx, person_idx) and self.__is_distance_valid(dist_idx):
                             if person_idx not in self.flag_pair_candidates[flag_idx]["id"]:
-                                self.flag_pair_candidates[flag_idx]["id"].append(person_idx)
-                                # dist_idx = str(flag_idx) + "-" + str(person_idx)
-                                self.flag_pair_candidates[flag_idx]["dist"].append(self.saved_dist[dist_idx])
+                                if self.smoothen_pih:
+                                    # also, check if similar PiH candidate has been stored before
+                                    if self._validate_and_delete_higher_distant_pair(flag_idx, person_idx, dist_idx):
+                                        self.flag_pair_candidates[flag_idx]["id"].append(person_idx)
+                                        self.flag_pair_candidates[flag_idx]["dist"].append(self.saved_dist[dist_idx])
+                                else:
+                                    self.flag_pair_candidates[flag_idx]["id"].append(person_idx)
+                                    self.flag_pair_candidates[flag_idx]["dist"].append(self.saved_dist[dist_idx])
 
     def pair_selection(self):
         for flag_idx, pair_data in self.flag_pair_candidates.items():
+            # if multiple `person_idx` are found in a single flag, then, choose one with closest distance
             if len(pair_data["id"]) > 0:
                 selected_idx = pair_data["dist"].index(min(pair_data["dist"]))
                 selected_person_idx = pair_data["id"][selected_idx]
@@ -111,6 +145,12 @@ class CSv2(RegionCluster):
                 person_xyxy = get_det_xyxy(self.det[selected_person_idx])
                 flag_xyxy = get_det_xyxy(self.det[flag_idx])
                 mbbox_xyxy = get_mbbox(person_xyxy, flag_xyxy)
+
+                # save selected pairs
+                self.selected_pairs.append({
+                    "Person": person_xyxy,
+                    "Flag": flag_xyxy
+                })
 
                 # Bugfix: format numpy-float into float data type
                 for i in range(len(mbbox_xyxy)):
@@ -168,6 +208,9 @@ class CSv2(RegionCluster):
 
     def get_detected_mbbox(self):
         return self.detected_mbbox
+
+    def get_selected_pairs(self):
+        return self.selected_pairs
 
     def get_rgb_mbbox(self):
         return self.rgb_mbbox

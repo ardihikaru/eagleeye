@@ -49,6 +49,9 @@ class YOLOv3Handler(MyRedis):
         self.persistence_window = int(asab.Config["persistence_detection"]["persistence_window"])
         self.period_pih_candidates = []
 
+        # save last selected_pairs in this node
+        self._selected_pairs = None
+
     def _dict2list(self, dict_data):
         list_data = []
         for key, value in dict_data.items():
@@ -171,7 +174,10 @@ class YOLOv3Handler(MyRedis):
                     # print("***** [%s] Performing Candidate Selection Algorithm" % self.node_alias)
                     L.warning("***** [%s] Performing Candidate Selection Algorithm" % self.node_alias)
                     t0_cs = time.time()
-                    mbbox_data = await self.CandidateSelectionService.calc_mbbox(bbox_data, det, names, h, w, c)
+                    mbbox_data, self._selected_pairs = await self.CandidateSelectionService.calc_mbbox(
+                        bbox_data, det, names, h, w, c, self._selected_pairs
+                    )
+
                     t1_cs = (time.time() - t0_cs) * 1000
                     # print('\n[%s] Latency of Candidate Selection Algo. (%.3f ms)' % (get_current_time(), t1_cs))
                     L.warning('\n[%s] Latency of Candidate Selection Algo. (%.3f ms)' % (get_current_time(), t1_cs))
