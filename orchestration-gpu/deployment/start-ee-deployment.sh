@@ -9,7 +9,7 @@ sleep 3
 
 echo "[INFO] Web Service ..."
 kubectl apply -f ews.yaml
-sleep 15
+sleep 18
 
 echo "[INFO] Worker-1 ..."
 kubectl apply -f detection.yaml

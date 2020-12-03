@@ -23,7 +23,7 @@ sleep 4
 
 echo "[INFO] - Creating the Web Service: ews-deploy ..."
 kubectl apply -f ews.yaml
-sleep 15
+sleep 20
 
 echo "[INFO] - Creating the Detection: detection-deploy ..."
 kubectl apply -f detection.yaml

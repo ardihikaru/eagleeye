@@ -101,6 +101,34 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  name: scheduler-source-service
+  namespace: eagleeye
+spec:
+  ports:
+  - nodePort: 31210
+    port: 5549
+    targetPort: 5549
+  selector:
+    name: scheduler-deploy
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: visualizer-raw-service
+  namespace: eagleeye
+spec:
+  ports:
+  - nodePort: 32010
+    port: 5547
+    targetPort: 5547
+  selector:
+    name: visualizer-deploy-raw
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
   name: visualizer-service
   namespace: eagleeye
 spec:

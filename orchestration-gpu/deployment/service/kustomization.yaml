@@ -10,3 +10,5 @@ resources:
   - scheduler-service.yaml
   - scheduler-ext-service.yaml
   - visualizer-service.yaml
+  - visualizer-raw-service.yaml
+  - scheduler-source-service.yaml

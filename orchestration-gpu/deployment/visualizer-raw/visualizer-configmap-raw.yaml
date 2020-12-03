@@ -84,6 +84,7 @@ data:
     # DISABLE THIS FOR `--network=HOST` mode.
     # This `host` should be changed accordingly; i.e. host of the target RTSP Server
     host=140.113.86.92
+    #host=10.194.188.106
 
     # This is the path where the expected output URL for output video stream with PiH BBox
     path=ee-output-raw
@@ -99,15 +100,15 @@ data:
     ## rtsp: publish frames inside RTSP Server
     ## opencv: directly show frames with opencv library
     ## zeromq: publish frames into a specific PORT via TCP (ZeroMQ)
-    mode=zeromq
+    mode=rtsp
 
     # this port is used when mode is `zeromq`
     zeromq_host=*
-    zeromq_port=5549
+    zeromq_port=5547
 
     # This parameters
     window_width=1920
     window_height=1080
 
     [stream:gps]
-    mode=offline
+    mode=online
