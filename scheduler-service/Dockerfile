@@ -26,7 +26,7 @@ RUN set -ex \
 
 # Application
 COPY scheduler /app/scheduler
-COPY ext_lib /app/ext_lib
+#COPY ext_lib /app/ext_lib
 COPY ./scheduler.py /app
 
 # Version
