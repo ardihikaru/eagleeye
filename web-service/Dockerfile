@@ -5,7 +5,7 @@
 
 # TODO: Add latex dependency: docker pull thomasweise/docker-texlive-full
 
-#FROM 5g-dive/eagleeye/nvidia-gpu-opencv:2.4
+# FROM 5g-dive/eagleeye/nvidia-gpu-opencv:2.4
 FROM 5g-dive/eagleeye/core-service:2.4
 MAINTAINER NCTU Team (mfardiansyah.eed08g@nctu.edu.tw)
 
