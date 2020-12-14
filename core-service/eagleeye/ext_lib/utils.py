@@ -239,3 +239,12 @@ def read_csv(file_path):
 	with open(file_path, 'r') as f:
 		reader = csv.reader(f)
 		return [float(line[0]) for line in list(reader)]
+
+
+def pubsub_to_json(json_data):
+	data = None
+	try:
+		data = json.loads(json_data)
+	except:
+		pass
+	return data
