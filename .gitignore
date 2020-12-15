@@ -12,6 +12,8 @@ old_codes/output/*
 old_codes/hasil
 data
 output/
+ext_lib/
+
 
 # Ignore site.conf in each micro-service
 object-detection-service/etc.site.conf
