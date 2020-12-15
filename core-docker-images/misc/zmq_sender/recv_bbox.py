@@ -1,6 +1,7 @@
 import cv2
 import imagezmq
 import logging
+import time
 
 ###
 
@@ -19,9 +20,17 @@ height = 1080
 cv2.namedWindow(window_title, cv2.WINDOW_NORMAL)
 cv2.resizeWindow(window_title, width, height)
 while True:  # show received images
-    data, image = image_hub.recv_image()
-    print(">> data:", data)
-    cv2.imshow(window_title, image)
+    data, encoded_img = image_hub.recv_image()
+
+    # decode image
+    t0 = time.time()
+    decoded_img = cv2.imdecode(encoded_img, 1)
+    t1 = (time.time() - t0) * 1000
+    L.warning('\nProc. Latency of Decoding frame: (%.3f ms)' % t1)
+
+    # print(">> data:", data)
+    print(">> decoded_img SHAPE:", decoded_img.shape)
+    cv2.imshow(window_title, decoded_img)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
