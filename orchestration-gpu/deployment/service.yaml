@@ -4,10 +4,8 @@ metadata:
   name: ews-ext-service
   namespace: eagleeye
 spec:
-  externalIPs:
-  - 10.194.188.112
   ports:
-  - nodePort: 31010
+  - nodePort: 31000
     port: 8080
     targetPort: 8080
   selector:
@@ -32,8 +30,6 @@ metadata:
   name: mongo-service
   namespace: eagleeye
 spec:
-  externalIPs:
-  - 10.194.188.111
   ports:
   - port: 27017
     targetPort: 27017
@@ -60,8 +56,6 @@ metadata:
   name: redis-service
   namespace: eagleeye
 spec:
-  externalIPs:
-  - 10.194.188.110
   ports:
   - port: 6379
     targetPort: 6379

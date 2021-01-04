@@ -3,6 +3,8 @@ kubectl delete deployments --all
 kubectl delete svc --all
 kubectl delete configmap --all
 
+kubectl apply -f service.yaml
+
 echo "[INFO] Init databases ..."
 kubectl apply -f redis.yaml
 #kubectl apply -f redis/redis-service.yaml

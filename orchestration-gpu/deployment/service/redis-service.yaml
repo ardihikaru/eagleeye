@@ -7,8 +7,8 @@ metadata:
 spec:
   selector:
     name: redis-deploy
-  externalIPs:
-  - 10.194.188.110
+    #externalIPs:
+    #- 10.194.188.110
   ports:
   - port: 6379
     targetPort: 6379
