@@ -34,7 +34,7 @@ spec:
               path: "site.conf"
       containers:
         - name: ews 
-          image: timwilliam/eagleeye.webservice:2.3.1
+          image: timwilliam/eagleeye.webservice:2.4
           #image: 5g-dive/eagleeye/web-service:1.0
           imagePullPolicy: IfNotPresent
           ports:

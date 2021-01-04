@@ -17,21 +17,22 @@ data:
     latency = http://ews-service:8080/api/latency
 
     [stream:config]
+    drone_id=1
     width=1920
     height=1080
 
     # This is the maximum waiting time to receive Plot info (including PiH BBox data); value should be <33ms for real-time
-    delay=32
+    delay=33
 
     # DISABLE THIS FOR `--network=HOST` mode.
     # This `host` should be changed accordingly; i.e. host of the target RTSP Server
     host=140.113.86.92
-    #host=10.194.188.106
 
     # This is the path where the expected output URL for output video stream with PiH BBox
     path=ee-output
 
     # If Enabled (is_forced_plot=0), it will take the latest BBox and plot them into the current frame
+    # This is still BUG, please disable it for now!
     # This is still BUG, please disable it for now!
     is_forced_plot=0
 
@@ -54,6 +55,15 @@ data:
 
     [stream:gps]
     mode=online
+
+    # expected 30 FPS; default value is 300 (it will send GPS every 300 frames; around 10 seconds)
+    delay_send_gps=300
+
+    [stream:plot]
+    plot_fps=0
+
+    [stream:out]
+    is_resized=1
   visualizer.conf: |
     [general]
     include = /conf/visualizer/site.conf
@@ -101,6 +111,9 @@ data:
     window_width=1920
     window_height=1080
 
+    [stream:plot]
+    plot_fps=1
+
     [stream:gps]
     mode=offline
     schema=http
@@ -108,6 +121,14 @@ data:
     port=36002
     path=FlySocketWCF
     num_drones=2
+
+    # expected 30 FPS; default value is 300 (it will send GPS every 300 frames; around 10 seconds)
+    delay_send_gps=300
+
+    [stream:out]
+    is_resized=0
+    width=640
+    height=480
 kind: ConfigMap
 metadata:
   name: visualizer-configmap
@@ -132,7 +153,7 @@ spec:
       name: visualizer-deploy
     spec:
       containers:
-      - image: timwilliam/eagleeye.visualizer:2.3.3
+      - image: timwilliam/eagleeye.visualizer:2.4
         imagePullPolicy: IfNotPresent
         name: visualizer-deploy
         ports:

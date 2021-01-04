@@ -37,7 +37,8 @@ data:
     expected_width=640
     expected_height=480
 
-    # thread=0
+    # set value > 0, to ENABLE this function; (Zero means that the system will NOT skip any frame)
+    num_skipped_frames=0
 
     [objdet:yolo]
     # default configuration
@@ -114,6 +115,7 @@ data:
     # Set this value as 1 (True) and use only one worker node,
     # to: 1) disable waiting time of sending frame into worker node and 2) never send any frame to the worker node
     test_mode=0
+    num_skipped_frames=3
 kind: ConfigMap
 metadata:
   name: scheduler-configmap
@@ -138,7 +140,7 @@ spec:
       name: scheduler-deploy
     spec:
       containers:
-      - image: timwilliam/eagleeye.scheduler:2.3.1
+      - image: timwilliam/eagleeye.scheduler:2.4
         imagePullPolicy: IfNotPresent
         name: scheduler-deploy
         volumeMounts:

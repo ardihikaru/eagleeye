@@ -126,7 +126,7 @@ data:
     [objdet:yolo]
     names = /app/config_files/yolo/data/coco.names
     cfg = /app/config_files/yolo/cfg/yolo-obj-v5.cfg
-    weights = /app/config_files/yolo/weights/TW-07.weights
+    weights = /app/config_files/yolo/weights/TW-01.weights
 
     # DISABLE THIS FOR `--network=HOST` mode.
     [eagleeye:api]
@@ -142,6 +142,7 @@ data:
     [streaming:config]
     w=640
     h=480
+    drone_id=1
 
     [stream:gps]
     mode=online

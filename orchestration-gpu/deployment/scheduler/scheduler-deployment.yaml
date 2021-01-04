@@ -32,7 +32,7 @@ spec:
       containers:
         - name: scheduler-deploy
           #image: 5g-dive/eagleeye/scheduler-service:1.0
-          image: timwilliam/eagleeye.scheduler:2.3.1
+          image: timwilliam/eagleeye.scheduler:2.4
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - name: scheduler-config

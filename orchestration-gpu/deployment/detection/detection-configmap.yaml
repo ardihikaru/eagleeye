@@ -21,6 +21,7 @@ data:
     mongodb_host = localhost
 
     [objdet:yolo]
+    smoothen_pih = 1
     output = outputs/
     source_folder_prefix = out
     file_ext = .png
@@ -100,12 +101,16 @@ data:
     latency = http://ews-service:8080/api/latency
 
     [objdet:yolo]
+    smoothen_pih = 1
     output = /app/outputs/
     names = /app/config_files/yolo/data/coco.names
     cfg = /app/config_files/yolo/cfg/yolo-obj-v5.cfg
-    weights = /app/config_files/yolo/weights/TM-07.weights
+    weights = /app/config_files/yolo/weights/TW-01.weights
 
     # DISABLE THIS FOR `--network=HOST` mode.
     [zmq]
-    sender_host = scheduler-service
+    sender_host = scheduler-service.eagleeye
     sender_prefix_port = 555
+
+    [stream:config]
+    drone_id=1

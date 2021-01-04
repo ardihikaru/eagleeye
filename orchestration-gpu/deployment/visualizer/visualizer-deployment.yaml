@@ -29,7 +29,7 @@ spec:
       containers:
         - name: visualizer-deploy
           #image: 5g-dive/eagleeye/scheduler-service:1.0
-          image: timwilliam/eagleeye.visualizer:2.3.3
+          image: timwilliam/eagleeye.visualizer:2.4
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 5548
