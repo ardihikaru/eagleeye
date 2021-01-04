@@ -28,10 +28,17 @@ data:
     convert_img=0
     gpu_converter=0
     test_mode=0
-    width=0
-    height=0
+    width=1920
+    height=1080
+    auto_restart=1
+    restart_delay=2
 
-    # thread=0
+    # These config below are used only for `stream` type = `TCP`
+    expected_width=640
+    expected_height=480
+
+    # set value > 0, to ENABLE this function; (Zero means that the system will NOT skip any frame)
+    num_skipped_frames=0
 
     [objdet:yolo]
     # default configuration
@@ -48,7 +55,7 @@ data:
     names=./common_files/object_detection/yolo/data/coco.names
     cfg=./common_files/object_detection/yolo/cfg/yolov3.cfg
     weights=./common_files/object_detection/yolo/weights/yolov3.weights
-    # Stream reader
+    # Stream reader; #TODO: To be verified whether this is still being used or not
     auto_restart=1
     # visualizer
     enable_cv_out=1
@@ -73,20 +80,24 @@ data:
     # available values: {`native` and `docker`}
     mode=native
   site.conf: |
+    # DISABLE THIS FOR `--network=HOST` mode.
     [redis]
     hostname=redis-service
     password =
 
+    # DISABLE THIS FOR `--network=HOST` mode.
     [asab:storage]
     type = mongodb
     mongodb_database = eagleeyeDB
     mongodb_uri = mongodb://mongo-service:27017
     mongodb_host = mongo-service
 
+    # DISABLE THIS FOR `--network=HOST` mode.
     [eagleeye:api]
     node=http://ews-service:8080/api/nodes
     latency = http://ews-service:8080/api/latency
 
+    # DISABLE THIS FOR `--network=HOST` mode.
     [zmq]
     sender_uri=*
     sender_host=*
@@ -104,6 +115,7 @@ data:
     # Set this value as 1 (True) and use only one worker node,
     # to: 1) disable waiting time of sending frame into worker node and 2) never send any frame to the worker node
     test_mode=0
+    num_skipped_frames=1
 kind: ConfigMap
 metadata:
   name: scheduler-configmap
@@ -128,7 +140,7 @@ spec:
       name: scheduler-deploy
     spec:
       containers:
-      - image: timwilliam/eagleeye.scheduler:2.3
+      - image: timwilliam/eagleeye.scheduler:2.4
         imagePullPolicy: IfNotPresent
         name: scheduler-deploy
         volumeMounts:

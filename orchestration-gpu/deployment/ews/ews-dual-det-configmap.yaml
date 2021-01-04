@@ -5,24 +5,32 @@ metadata:
   namespace: eagleeye
 data:
   site.conf: |
+    # DISABLE THIS FOR `--network=HOST` mode.
     [redis]
     hostname=redis-service
     password =
 
+    # DISABLE THIS FOR `--network=HOST` mode.
     [asab:storage]
     mongodb_uri = mongodb://mongo-service:27017
     mongodb_host = mongo-service
 
+    # DISABLE THIS FOR `--network=HOST` mode.
     [eagleeye:api]
     node=http://ews-service:8080/api/nodes
     latency = http://ews-service:8080/api/latency
 
     [objdet:yolo]
+    smoothen_pih = 1
     output = /app/outputs/
     names = /app/config_files/yolo/data/coco.names
     cfg = /app/config_files/yolo/cfg/yolo-obj-v5.cfg
     weights = /app/config_files/yolo/weights/TW-01.weights
 
+    # DISABLE THIS FOR `--network=HOST` mode.
     [zmq]
-    sender_host = scheduler-service
+    sender_host = scheduler-service.eagleeye
     sender_prefix_port = 555
+
+    [stream:config]
+    drone_id=1
