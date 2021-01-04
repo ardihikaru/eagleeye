@@ -31,6 +31,9 @@ else
       echo "\$VERSION is NOT empty"
 fi
 
+## export display (optional); enable this in case DISPLAY environment has not been set
+#export DISPLAY=:0
+
 ## add user `root` to the list of authorised access to the X server
 xhost local:root
 

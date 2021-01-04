@@ -13,7 +13,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Application
 COPY detection /app/detection
-COPY ext_lib /app/ext_lib
+#COPY ext_lib /app/ext_lib
 COPY outputs /app/outputs
 COPY ./detection.py /app
 
