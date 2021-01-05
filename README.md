@@ -1,4 +1,4 @@
-﻿![EagleEYE Logo Figure](https://lh3.googleusercontent.com/XedEhHMwmtTq0IDwZDKeTrxNwRmr3zbGJwScBUD4192mg9Og9wDzAHRJTZ-sNsZ0YQaHVR-79XtDvm7wZGONiuTnHP9K-fiBdJV_D0f5BQ54kb5KocXW9NTg--DBDAmuBSAsgyRpUqVmK05xOzLCj9_8dcRRJyunSw8go6l9KRzZu9RkaWVn8_b0EF1QR8fxozLwW5oXkZGBQNni3NwDYZ0tb6FUMvni4aEErqeLTjY77lXM0hPAloj6lDc1ZDBhjdM_IUUpr_IDkBCfaBw30l2X6ztmA8ui9XhW_Ja0uckd303wI8YTzpzIdsJQW8l4kutvoyoMSQSwU60nliOytW8u0oBY5hLfrf1TvJ2Nac7334mx1YIsU-pyqoDKLQwEdmE2PfQWio2kn9Rs8_yJXzFe88UJsz-kIb_6og5y8bIAoA5AE4cvl7TEdB6rU2KRbfv33XycOO_VbOt_cVeCGj9UBSybhVdgxg1P8s8zCe88d_cQUMKgsDPTgNGHCjnNBX9gc6V3Zpe82GCrk2fuxocuIWa6-vxHi5w0VJQpnY6QegXc8krgGpY-dx2T_I2Hd6yZpVI4pQdJFixQ_UH85mN8dQ2zyYK0FxfSVgMxjLAtW694tegvNPP2WZOJz2_1ICH8rZYdHb8jGYf6AhhgMzEr2oSu_WRSCb2z5NUCEPv8M43rWv-pjcXyeqJc=w723-h255-no?authuser=1)
+![EagleEYE Logo Figure](https://lh3.googleusercontent.com/EFFTePzMeLxbZbsT_tShVsSgv2XC4E1-WiWWpMUCIXGr5O3Ea8Gd14sIHtXsY5x11Te433nboyC0zVSZgtVdf40Uq1qjYbmhIUGpK1oipFsuabgYGFP2N1Sx4kj-_6TCX9cKxbACFImEACGCc06-rl20zABZxv-nksYB5toz-x5BZq2zlCU5hb1_EqqdeA_iTrMRqVwoX_CMSB4QzS_yMC5N6W3pfW0YVZw4-8Qc1_XEicEej2C69YpcLAwQ75gtrfdZygxllIR-PbpduHA_6CGffZIJ1c7-lKT6eRkYEOnGlUDua1XX6YrZ7lONLpi2MREAWi-lhst8Tx1yqV4T5ooITRVMbM7rLvcj7MM8bQj3gjTYiJ8hOwq9_909vMwklqQ0MMmpBK1TDn4wQRcO3te2rkTA3SamP0u6kEolqCZeuQiCJ4yHcrYbvtGQGn39wCenU3G_xvLgg8Ixxo28ZlPxW3wwd0i_KxjSUOVOyyDnY2TMoeGBFbsMInrkHEbcGLY6Fyy0wMTWbwPEnkaE6hwBUCOS3A2khoe1Zx_j-3RD97fNVST2lQW1GaJdRr6ziIkxR-0GHOXgdve2AAmWWsvOrf25ih0qjWoBW3ocRAOlWAJI430HpRrJ-uOHYdNZeGeJbQhfAo21D53A_4v60IudEQDmjv8FKGyRJVGHy2MtNyq44CgjhNHVhQ52=w723-h255-no?authuser=1)
 # Introduction
 
 This repository contains the implementation of EagleEYE, a disaster relief system developed by [National Chiao Tung University](https://www.nctu.edu.tw/en) (NCTU) of Taiwan for the [5G-DIVE](https://5g-dive.eu/) project. The 5G-DIVE project is a collaborative project between partners from the European Union and Taiwan. Together, we aimed at proving the technical merits and business value proposition of 5G technologies in Autonomous Drone Scout (ADS) vertical pilot. 
@@ -10,7 +10,7 @@ EagleEYE stands for A**e**ri**a**l Ed**g**e-enab**le**d Disaster Relief Respons*
 
 ### EagleEYE System Workflow
 
-![EagleEYE System Workflow Figure](https://lh3.googleusercontent.com/HxfxRnprjTV5ESFrEP5eSJpkMMjwqmYM_JpYn_aCxV6A3YgQaLS4bcdYhmgfh7G_1Oirk4rcR2U0OsK14YuVPvKNX3afofW5S4orREV99i-NIHAYg4u_Y2biRsEIHHF1xb5K-2fvQwXIdV5PqexSj-JJrdApN0FVOYdRWaFqTh3npT7OMKij9OsATK1WikRKiV3voA8gpJHJzrjeW3zR1v-YSygle-wED3JbVDDWb7K5xnpdLqWHM5GtRZqnSQrq0x9yg8YLiVrPRAzrZy8kGwUbu8y64b77dqmQPgEb2z5gUwHAPXVHr7U6b7jNqcjs2KDi8UcSncz7n2kffWLS3F6UqA_tWgdOAAu4XLR2-rXagknodWotn-hlVqV2XwdBwAzIYRYnQ-cH5yv1-T01UeDQsopnLQms6RD8GPuRKk67jftowDa40Xy6DYbECDDqixQeMLyez9e--5CpjuFLZGrb9Fdupd3B2evBYCaQuT2GZEh5vdYd4ILyIV3gWA1DzH_Z1bm8sauMEqfh1gc_ZFeYl4YMkPPbJ79STWqsPePQBONw3u1Sx2NJPe-N2512--1AD_7s78GzFhXL-yxenfdVcF5PpinuJ5jDJkD6mB9fKSma-eupumr3_Nx-YFadxkcgkicNvh7PQBeTVK0FpkNDBXXLBlWUTbbeBRE0MiueE_M1seIgKYgMbqIO=w1560-h500-no?authuser=1)
+![EagleEYE System Workflow Figure](https://lh3.googleusercontent.com/ANO_-ETEpiAqDV1CdYv6Cx14SdddaQySoJeFmTuJJzcZzoxfmt1-0XrETkTeq_5TKDQrFRBlPsvpX4PwYpC2VF698coym26WV1yQwoWHAj4X0YDghezy761n3Rkcvf0eXsz_LOHI-r-wa6EHV03s8NL1ZsVUr2krQ1vFGzvjMNLS2TfbXqpJ1qW1bSGS5R_EABAgdwFSx5tX57A_ofbgUnfl4YHBS01J_j49k4taLr0vU41okdLsuLnzCCKdC1eCTAfrYm7X4kiI6YnXFkj6w3QRtgTeRq2VXrXxYvdU4VIWsi67BDkcBiQ_c0LkNONg8reIiRVmGxKGAp-BY6E_7gAgikqluUjbgxHm43qCGFDBumtP3TUZLXKtpYAR7mfLJ3xPpb7H42WUkqhwvhvHVUDzF2sAPlfR7rq61er7lgUjFU-DwUC1dSpx6t8ncPpXa1x1ZU_WuOnIFEwveYToC6YI7uQkyq5o0qkDWdzIGULmTGo6HENbAyst1wM3p5yqT20d_-HcRZ5qAZaJNfXALJOecUcE2zIf_9isBHkA6d-6CNBiIGtIPqH-EuJT0FQ0lkM3-gU5RnWi6GXzpAXxA68PtKWuVoiPqFzgay_gdunFiBW6opq8Yu5jtMJXC6Yms0OGJqzcf4kJt97QGD8q-xhizwYGpXP6gTI0Z7PRMqQZTqw6w186XsB-_tkw=w1920-h616-no?authuser=1)
 
 The overview of EagleEYE system workflow are as follows:
  1. Drones are streaming video feed to EagleEYE via 4G/5G wireless communication. EagleEYE itself is deployed on OPTUNS Edge Data Center (EDC).
@@ -54,12 +54,16 @@ Our work will not be possible without the resources provided by other entities a
  - Various icons in the figures is made by [Freepik](https://www.flaticon.com/authors/freepik) from [www.flaticon.com](www.flaticon.com)
  - Background music in the demo video is provided by [Bensound.com](https://www.bensound.com/)
 
-#### In our implementation, we:
+#### Additional details:
 - Trained our object detection algorithm using the work of [1] and [2]. 
 - Implemented EagleEYE on top of [3] work. We use [3] repository linked above as the base of our EagleEYE development.
 - We used tools in [4], [5], and [6] during our development for testing and validation of our implementation.
 
-#### Acknowledgements
+#### OPTUNS Edge Data Center (EDC):
+OPTUNS is an optical-switched EDC network architecture for 5G application. OPTUNS provides high-bandwidth, and ultralow latency communication for supporting time-critical edge application. More details on OPTUNS data center can be found in the following publication:
+- Yuang, M., Tien, P.L., Ruan, W.Z., Lin, T.C., Wen, S.C., Tseng, P.J., Lin, C.C., Chen, C.N., Chen, C.T., Luo, Y.A. and Tsai, M.R., 2020. OPTUNS: Optical intra-data center network architecture and prototype testbed for a 5G edge cloud. Journal of Optical Communications and Networking, 12(1), pp.A28-A37.
+
+#### Acknowledgements:
 - This project has been partially funded by the H2020 EU/TW joint action 5G-DIVE (Grant #859881).
 
 # Contributors
