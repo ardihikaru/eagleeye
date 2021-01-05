@@ -6,6 +6,8 @@ resources:
   - ews-service.yaml
   - mongo-service.yaml
   - redis-service.yaml
-  - redis-ext-service.yaml
+    #  - redis-ext-service.yaml
   - scheduler-service.yaml
   - scheduler-ext-service.yaml
+  - visualizer-service.yaml
+  - visualizer-raw-service.yaml

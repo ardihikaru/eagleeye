@@ -91,7 +91,7 @@ data:
     height=1080
 
     # This is the maximum waiting time to receive Plot info (including PiH BBox data); value should be <33ms for real-time
-    delay=33
+    delay=100
 
     # DISABLE THIS FOR `--network=HOST` mode.
     # This `host` should be changed accordingly; i.e. host of the target RTSP Server
@@ -112,7 +112,7 @@ data:
     ## rtsp: publish frames inside RTSP Server
     ## opencv: directly show frames with opencv library
     ## zeromq: publish frames into a specific PORT via TCP (ZeroMQ)
-    mode=rtsp
+    mode=zeromq
 
     # this port is used when mode is `zeromq`
     zeromq_host=*

@@ -1,0 +1,14 @@
+# Visualizer Service Node Port (API to connect to external visualizer)
+apiVersion: v1
+kind: Service
+metadata:
+  name: visualizer-service-raw
+  namespace: eagleeye
+spec:
+  type: NodePort
+  selector:
+    name: visualizer-deploy-raw
+  ports:
+  - port: 5547
+    targetPort: 5547
+    nodePort: 31400
