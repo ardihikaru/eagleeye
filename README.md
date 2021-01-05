@@ -33,12 +33,17 @@ Below is a short description on our architecture for PiH detection. For more det
 - **Dual Object Detection:** CNN-based algorithm to detect ’*person*’ & ‘*flag*’ objects.
 - **PiH Candidate Selection:** heuristic algorithm to check if the correlation between ‘person’ & ‘flag’ objects meets a set of criteria.
 - **PiH Persistence Validation:** Sliding window algorithm to determine if PiH object appear across a consecutive number of frames persistently.
-### Publication
+
+### Publication & Video Demo
 More details on EagleEYE system can be found in:
 1. Our [2020 EUCNC](https://www.eucnc.eu/) paper publication. This contains the initial design of our EagleEYE system.
 	  - Ardiansyah, M.F., William, T., Abdullaziz, O.I., Wang, L.C., Tien, P.L. and Yuang, M.C., 2020, June. EagleEYE: Aerial edge-enabled disaster relief response system. In _2020 European Conference on Networks and Communications (EuCNC)_ (pp. 321-325). IEEE.
 
 2. An extended version of the paper is also under works. In this extended version, more details on our latest implementation and results will be presented.
+
+Video demo links:
+1. [EagleEYE Demo Video 1 for 5G-DIVE](https://youtu.be/yufPUupQbAo)
+2. [EagleEYE Demo Video 2 for 5G-DIVE](https://youtu.be/GcccfPQ4QHg)
 
 # Credits & Acknowledgements
 
