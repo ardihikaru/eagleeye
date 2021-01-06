@@ -15,6 +15,8 @@ sleep 4
 echo "[INFO] - Creating the Databases: redis-deploy and mongo-deploy ..."
 kubectl apply -f redis.yaml
 kubectl apply -f mongo.yaml
+
+kubectl apply -f service.yaml # comment out if service is not used
 sleep 3
 
 echo "[INFO] - Creating the Web Service: ews-deploy ..."

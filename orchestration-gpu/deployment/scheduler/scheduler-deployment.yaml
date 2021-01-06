@@ -16,14 +16,14 @@ spec:
       name: scheduler-deploy
       labels:
         name: scheduler-deploy
-      annotations:
-        k8s.v1.cni.cncf.io/networks: '[
-          {
-            "name": "data-net-app",
-            "namespace": "mec-app",
-            "ips": [ "10.194.188.116/24" ]
-          }
-        ]'
+#      annotations:
+#        k8s.v1.cni.cncf.io/networks: '[
+#          {
+#            "name": "data-net-app",
+#            "namespace": "mec-app",
+#            "ips": [ "10.194.188.116/24" ]
+#          }
+#        ]'
     spec:
       volumes:
         - name: scheduler-config
@@ -40,7 +40,7 @@ spec:
       containers:
         - name: scheduler-deploy
           #image: 5g-dive/eagleeye/scheduler-service:1.0
-          image: timwilliam/eagleeye.scheduler:2.3
+          image: timwilliam/eagleeye.scheduler:2.4
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - name: scheduler-config

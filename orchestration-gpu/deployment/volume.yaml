@@ -9,7 +9,7 @@ spec:
   capacity:
     storage: 6Gi
   hostPath:
-    path: /home/k200/nctuAPP/20201028-eagleeye/deployment/config_files
+    path: /home/s010132/devel/eagleeye/object-detection-service/config_files
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -22,7 +22,7 @@ spec:
   capacity:
     storage: 6Gi
   hostPath:
-    path: /home/k200/nctuAPP/20201028-eagleeye/deployment/config_files
+    path: /home/s010132/devel/eagleeye/object-detection-service/config_files
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -35,7 +35,7 @@ spec:
   capacity:
     storage: 6Gi
   hostPath:
-    path: /home/k200/nctuAPP/20201028-eagleeye/deployment/config_files
+    path: /home/s010132/devel/eagleeye/object-detection-service/config_files
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -48,7 +48,7 @@ spec:
   capacity:
     storage: 4Gi
   hostPath:
-    path: /home/s010132/devel/eagleeye_tim/orchestration-imec/db-dir/mongo
+    path: /home/s010132/devel/eagleeye_k8s/orchestration-gpu/db-dir/mongo
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -61,7 +61,7 @@ spec:
   capacity:
     storage: 4Gi
   hostPath:
-    path: /home/s010132/devel/eagleeye_tim/orchestration-imec/db-dir/redis
+    path: /home/s010132/devel/eagleeye_k8s/orchestration-gpu/db-dir/redis
 ---
 apiVersion: v1
 kind: PersistentVolume

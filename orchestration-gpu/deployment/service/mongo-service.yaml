@@ -7,8 +7,8 @@ metadata:
 spec:
   selector:
     name: mongo-deploy
-  externalIPs:
-  - 10.194.188.111
+    #externalIPs:
+    #- 10.194.188.111
   ports:
   - port: 27017
     targetPort: 27017

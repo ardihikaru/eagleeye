@@ -1,3 +1,4 @@
+# Scheduler service API for external visualizer
 apiVersion: v1
 kind: Service
 metadata:
@@ -8,6 +9,9 @@ spec:
   selector:
     name: scheduler-deploy
   ports:
-  - port: 5550
-    targetPort: 5550
-    nodePort: 31200
+      #- port: 5550
+      #targetPort: 5550
+      #nodePort: 31200
+  - port: 5549
+    targetPort: 5549
+    nodePort: 32000
