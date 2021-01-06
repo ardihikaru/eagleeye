@@ -1,3 +1,37 @@
+## 7.0-k8s-2.4 (一月 06, 2021)
+  - Merge branch 'develop' of github.com:ardihikaru/eagleeye into develop
+  - Merge pull request #22 from ardihikaru/feature/readme
+  - Merge branch 'develop' of github.com:ardihikaru/eagleeye into develop
+  - Merge pull request #21 from ardihikaru/feature/k8s-final-validation
+  - Merge branch 'feature/EagleEYEv2.0/extra-data' into develop
+  - add sample codes for getting and sending GPS data to ASKEY System
+  - add sample codes for kubernetes API usage
+  - add requirement for kubernetes API
+  - Merge branch 'feature/EagleEYEv2.0/fix-dockerfile' into develop
+  - Testing of zeromq mode + online gps done (2.4)
+  - Added video demo links
+  - Fixed broken figures link, updated details for OPTUNS
+  - Updated the README file to reflect our latest implementation in 2.4
+  - Removed old imec deployment folder
+  - Fixing the permission of the yaml files
+  - Testing of zeromq mode partially done (2.4)
+  - bugfix: not creating `outputs` folder
+  - Testing of RTSP mode done (2.4)
+  - Merge branch 'feature/EagleEYEv2.0/core-service' into develop
+  - Merge branch 'feature/EagleEYEv2.0/latex-graph-plotter' into develop
+  - add graph plotter code
+  - export DISPLAY (optional)
+  - add functionality to decode received frames
+  - add new feature to enable/disable frame decoder
+  - ignore another extra resource
+  - bugfix: add missing function
+  - bugfix: prune core-service
+  - bugfix: wrong docker source image
+  - add core-service and modify other dockerfiles
+  - remove unused functions
+  - remove unused functions
+  - Merge branch 'release/6.4.2-EEv2.0-field-trial' into develop
+
 ## 6.4.2-EEv2.0-field-trial (十二月 02, 2020)
   - Merge branch 'develop' of github.com:ardihikaru/eagleeye into develop
   - Merge branch 'release/6.4.1-EEv2.0-field-trial' into develop
