@@ -1,4 +1,3 @@
----
 # EWS deployment
 apiVersion: apps/v1
 kind: Deployment
@@ -17,14 +16,14 @@ spec:
       name: ews-deploy
       labels:
         name: ews-deploy
-      annotations:
-        k8s.v1.cni.cncf.io/networks: '[
-          {
-            "name": "data-net-app",
-            "namespace": "mec-app",
-            "ips": [ "10.194.188.112/24" ]
-          }
-        ]'
+#      annotations:
+#        k8s.v1.cni.cncf.io/networks: '[
+#          {
+#            "name": "data-net-app",
+#            "namespace": "mec-app",
+#            "ips": [ "10.194.188.112/24" ]
+#          }
+#        ]'
     spec:
       volumes:
         - name: ews-config
@@ -43,7 +42,7 @@ spec:
               path: "site.conf"
       containers:
         - name: ews 
-          image: timwilliam/eagleeye.webservice:2.3
+          image: timwilliam/eagleeye.webservice:2.4
           #image: 5g-dive/eagleeye/web-service:1.0
           imagePullPolicy: IfNotPresent
           ports:

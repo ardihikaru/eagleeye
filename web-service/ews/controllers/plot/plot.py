@@ -15,6 +15,7 @@ from ext_lib.utils import save_to_csv, read_csv
 import seaborn as sns
 # from matplotlib import rc
 
+
 class Plot(MyRedis):
     def __init__(self):
         super().__init__(asab.Config)

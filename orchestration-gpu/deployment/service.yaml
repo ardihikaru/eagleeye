@@ -4,10 +4,8 @@ metadata:
   name: ews-ext-service
   namespace: eagleeye
 spec:
-  externalIPs:
-  - 10.194.188.112
   ports:
-  - nodePort: 31010
+  - nodePort: 31000
     port: 8080
     targetPort: 8080
   selector:
@@ -32,8 +30,6 @@ metadata:
   name: mongo-service
   namespace: eagleeye
 spec:
-  externalIPs:
-  - 10.194.188.111
   ports:
   - port: 27017
     targetPort: 27017
@@ -43,25 +39,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: redis-ext-service
-  namespace: eagleeye
-spec:
-  ports:
-  - nodePort: 31100
-    port: 6379
-    targetPort: 6379
-  selector:
-    name: redis-deploy
-  type: NodePort
----
-apiVersion: v1
-kind: Service
-metadata:
   name: redis-service
   namespace: eagleeye
 spec:
-  externalIPs:
-  - 10.194.188.110
   ports:
   - port: 6379
     targetPort: 6379
@@ -75,9 +55,9 @@ metadata:
   namespace: eagleeye
 spec:
   ports:
-  - nodePort: 31200
-    port: 5550
-    targetPort: 5550
+  - nodePort: 32000
+    port: 5549
+    targetPort: 5549
   selector:
     name: scheduler-deploy
   type: NodePort
@@ -103,3 +83,31 @@ spec:
     targetPort: 5553
   selector:
     name: scheduler-deploy
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: visualizer-service-raw
+  namespace: eagleeye
+spec:
+  ports:
+  - nodePort: 31400
+    port: 5547
+    targetPort: 5547
+  selector:
+    name: visualizer-deploy-raw
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: visualizer-service
+  namespace: eagleeye
+spec:
+  ports:
+  - nodePort: 31500
+    port: 5548
+    targetPort: 5548
+  selector:
+    name: visualizer-deploy
+  type: NodePort

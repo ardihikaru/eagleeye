@@ -18,6 +18,8 @@ cd redis-service && docker build -t "5g-dive/redis:1.0" .
 cd ..
 cd core-docker-images && docker build --no-cache -t "5g-dive/eagleeye/nvidia-gpu-opencv:${VERSION}" .
 cd ..
+cd core-service && docker build --no-cache -t "5g-dive/eagleeye/core-service:${VERSION}" .
+cd ..
 cd web-service && docker build --no-cache -t "5g-dive/eagleeye/web-service:${VERSION}" .
 cd ..
 cd object-detection-service && docker build --no-cache -f Dockerfile-parent -t "5g-dive/eagleeye/dual-object-detection-service-head:${VERSION}" .

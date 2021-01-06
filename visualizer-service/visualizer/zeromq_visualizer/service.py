@@ -5,6 +5,7 @@ from ext_lib.redis.my_redis import MyRedis
 import cv2
 import time
 from ext_lib.utils import get_current_time
+import numpy as np
 
 ###
 
@@ -30,6 +31,8 @@ class ZeroMQVisualizerService(asab.Service):
         self._t0_streaming = None  # set variable to calculate FPS
 
         self._is_resized = bool(int(asab.Config["stream:out"]["is_resized"]))
+        self._is_encoded = asab.Config["stream:out"].getboolean("is_encoded")
+        self._encode_size = asab.Config["stream:out"].getint("encode_size")
         self._out_width = int(asab.Config["stream:out"]["width"])
         self._out_height = int(asab.Config["stream:out"]["height"])
 
@@ -64,6 +67,12 @@ class ZeroMQVisualizerService(asab.Service):
         # resize the frame; Default VGA (640 x 480)
         if self._is_resized:
             frame = cv2.resize(frame, (self._out_width, self._out_height))
+
+        # compress the frame to reduce bandwidth usage
+        if self._is_encoded:
+            encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), self._encode_size]
+            _, encoded_img = cv2.imencode('.jpg', frame, encode_param)
+            frame = encoded_img
 
         zmq_sender.send_image(zmq_id, frame)
         t1_zmq = (time.time() - t0_zmq) * 1000

@@ -20,3 +20,10 @@ spec:
   - name: worker-3
     port: 5553
     targetPort: 5553
+    #- name: tcp-server
+    #port: 5549
+    #targetPort: 5549
+    #- name: cv-out
+    #port: 5548
+    #targetPort: 5548
+

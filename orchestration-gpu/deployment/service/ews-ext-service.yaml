@@ -8,9 +8,10 @@ spec:
   type: NodePort
   selector:
     name: ews-deploy
-  externalIPs:
-  - 10.194.188.112
+    #externalIPs:
+    #- 10.194.188.112
   ports:
   - port: 8080
     targetPort: 8080
-    nodePort: 31010
+    #nodePort: 31010
+    nodePort: 31000

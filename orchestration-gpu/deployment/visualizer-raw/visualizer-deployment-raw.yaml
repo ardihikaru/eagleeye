@@ -16,14 +16,14 @@ spec:
       name: visualizer-deploy-raw
       labels:
         name: visualizer-deploy-raw
-      annotations:
-        k8s.v1.cni.cncf.io/networks: '[
-          {
-            "name": "data-net-app",
-            "namespace": "mec-app",
-            "ips": [ "10.194.188.118/24" ]
-          }
-        ]'
+#      annotations:
+#        k8s.v1.cni.cncf.io/networks: '[
+#          {
+#            "name": "data-net-app",
+#            "namespace": "mec-app",
+#            "ips": [ "10.194.188.118/24" ]
+#          }
+#        ]'
 
     spec:
       volumes:
@@ -38,7 +38,7 @@ spec:
       containers:
         - name: visualizer-deploy-raw
           #image: 5g-dive/eagleeye/scheduler-service:1.0
-          image: timwilliam/eagleeye.visualizer:2.3
+          image: timwilliam/eagleeye.visualizer:2.4
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 554
