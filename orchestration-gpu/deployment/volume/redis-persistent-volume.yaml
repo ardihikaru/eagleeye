@@ -10,5 +10,5 @@ spec:
     - ReadWriteMany
       #persistentVolumeReclaimPolicy: Recycle
   hostPath:
-    path: /home/s010132/devel/eagleeye_tim/orchestration-imec/db-dir/redis
-
+      #path: /home/s010132/devel/eagleeye_tim/orchestration-imec/db-dir/redis
+    path: /home/s010132/devel/eagleeye_k8s/orchestration-gpu/db-dir/redis

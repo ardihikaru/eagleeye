@@ -16,14 +16,14 @@ spec:
       name: detection-deploy
       labels:
         name: detection-deploy
-      annotations:
-        k8s.v1.cni.cncf.io/networks: '[
-          {
-            "name": "data-net-app",
-            "namespace": "mec-app",
-            "ips": [ "10.194.188.113/24" ]
-          }
-        ]'
+#      annotations:
+#        k8s.v1.cni.cncf.io/networks: '[
+#          {
+#            "name": "data-net-app",
+#            "namespace": "mec-app",
+#            "ips": [ "10.194.188.113/24" ]
+#          }
+#        ]'
     spec:
       volumes:
         - name: detection-config
@@ -39,7 +39,7 @@ spec:
             claimName: detection-config-volume-claim
       containers:
         - name: detection-deploy
-          image: timwilliam/eagleeye.detection:2.3
+          image: timwilliam/eagleeye.detection:2.4
           #image: 5g-dive/eagleeye/dual-object-detection-service:1.0
           imagePullPolicy: IfNotPresent
           volumeMounts:

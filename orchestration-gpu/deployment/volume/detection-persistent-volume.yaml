@@ -10,5 +10,5 @@ spec:
     - ReadOnlyMany
       #persistentVolumeReclaimPolicy: Recycle
   hostPath:
-          path: /home/k200/nctuAPP/20201028-eagleeye/deployment/config_files
-
+      #path: /home/k200/nctuAPP/20201028-eagleeye/deployment/config_files
+          path: /home/s010132/devel/eagleeye/object-detection-service/config_files

@@ -12,15 +12,12 @@ spec:
       name: detection-deploy-2
   template:
     metadata:
-      annotations:
-        k8s.v1.cni.cncf.io/networks: '[ { "name": "data-net-app", "namespace": "mec-app",
-          "ips": [ "10.194.188.114/24" ] } ]'
       labels:
         name: detection-deploy-2
       name: detection-deploy-2
     spec:
       containers:
-      - image: timwilliam/eagleeye.detection:2.3
+      - image: timwilliam/eagleeye.detection:2.4
         imagePullPolicy: IfNotPresent
         name: detection-deploy-2
         volumeMounts:
