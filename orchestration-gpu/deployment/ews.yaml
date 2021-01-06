@@ -141,7 +141,7 @@ data:
     drone_id=1
 
     [stream:gps]
-    mode=offline
+    mode=online
     num_drones=1
 kind: ConfigMap
 metadata:

@@ -123,7 +123,7 @@ data:
     window_height=1080
 
     [stream:gps]
-    mode=offline
+    mode=online
 
     # expected 30 FPS; default value is 300 (it will send GPS every 300 frames; around 10 seconds)
     delay_send_gps=300
