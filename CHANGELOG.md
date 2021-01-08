@@ -1,3 +1,13 @@
+## 7.0.1-k8s-2.4 (一月 08, 2021)
+  - bugfix: images dissapeared once building done
+  - Merge branch 'version/7.0-k8s-2.4'
+  - Merge branch 'release/6.4.2-EEv2.0-field-trial'
+  - Merge branch 'release/6.4.1-EEv2.0-field-trial'
+  - Merge branch 'release/6.4-EEv2.0-field-trial'
+  - Merge branch 'release/6.3.1-EEv2.0-field-trial'
+  - Merge branch 'release/6.3-EEv2.0-field-trial'
+  - Merge branch 'release/6.2-EEv2.0-field-trial'
+
 ## 7.0-k8s-2.4 (一月 06, 2021)
   - Merge branch 'develop' of github.com:ardihikaru/eagleeye into develop
   - Merge pull request #22 from ardihikaru/feature/readme
