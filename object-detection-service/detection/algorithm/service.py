@@ -1,12 +1,11 @@
 import asab
 import logging
-from .handler import YOLOv3Handler
-from detection.algorithm.soa.yolo_v3.app import YOLOv3
+from .handler import ObjectDetectionHandler
+from .soa.yolo_v3.app import YOLOv3
 import requests
 from ext_lib.redis.my_redis import MyRedis
 from ext_lib.redis.translator import redis_get
-import time
-from ext_lib.utils import get_current_time
+from enum import Enum
 
 ###
 
@@ -18,14 +17,22 @@ L = logging.getLogger(__name__)
 
 class DetectionAlgorithmService(asab.Service):
     """
-        Object Detection algorithm based on YOLOv3
+        Object Detection algorithm based on available object detection service
     """
+
+    class AvailableDetectionAlgorithms(Enum):
+        YOLOV3 = "YOLOv3"
 
     def __init__(self, app, service_name="detection.DetectionAlgorithmService"):
         super().__init__(app, service_name)
         self.app = app
-        self.SubscriptionHandler = YOLOv3Handler(app)
+        self.SubscriptionHandler = ObjectDetectionHandler(app)
         self.ResizerService = app.get_service("detection.ResizerService")
+
+        # list of valid object detection algorithms
+        self._valid_algorithms = frozenset([
+            self.AvailableDetectionAlgorithms.YOLOV3.value
+        ])
 
         # Set node alias
         redis = MyRedis(asab.Config)
@@ -37,27 +44,42 @@ class DetectionAlgorithmService(asab.Service):
         # of ServiceAPIModule
         self.ZMQService = None
 
-        # Build YOLO config
-        # TODO: To dynamically read the YOLO Version, if not found, Forced to close the Service!
-        self.yolo = None
+        # Build Object Detection config
+        # TODO: To dynamically read the Object Detection version, if not found, Forced to close the Service!
+        self._detection_algorithm = asab.Config["detection:config"]["algorithm"]
+        self.detection = None
 
         # Get node information
         self.node_api_uri = asab.Config["eagleeye:api"]["node"]
 
+    async def initialize(self, app):
+        await self._init_object_detection_algorithm()
+
+    async def _init_object_detection_algorithm(self):
+        if self._detection_algorithm == self.AvailableDetectionAlgorithms.YOLOV3.value:
+            # self.detection = self.YOLOv3Service
+            self.detection = YOLOv3(asab.Config["objdet:yolo"])
+        else:
+            L.error("[ERROR] Subscription Failed; Reason: Method not implemented yet")
+            await self.SubscriptionHandler.stop()
+
     async def start_subscription(self):
         try:
             L.warning("Configuring Object Detection")
-            await self._configure_object_detection()
+
+            # validate algorithms
+            if self._detection_algorithm not in self._valid_algorithms:
+                L.error("[ERROR] Subscription Failed; Reason: Object Detection algorithm `{}` not recognized".
+                        format(self._detection_algorithm))
+                await self.SubscriptionHandler.stop()
+
+            # await self._configure_object_detection()
             await self.SubscriptionHandler.set_configuration()
             await self.SubscriptionHandler.set_deployment_status()
             await self.SubscriptionHandler.start()
         except Exception as e:
-            # print(" >>>> start_subscription e:", e)
             L.error("[ERROR] start_subscription: %s" % str(e))
             await self.SubscriptionHandler.stop()
-
-    async def _configure_object_detection(self):
-        self.yolo = YOLOv3(asab.Config["objdet:yolo"])
 
     async def set_zmq_configurations(self, node_name, node_id):
         await self.ZMQService.set_configurations(node_name, node_id)
@@ -72,7 +94,6 @@ class DetectionAlgorithmService(asab.Service):
             return True, frame_id, t0, image
 
         except Exception as e:
-            # print("\tERROR:", e)
             L.error("[ERROR]: %s" % str(e))
             return False, None, None, None
 
@@ -101,47 +122,13 @@ class DetectionAlgorithmService(asab.Service):
         bbox_data, det, names, pre_proc_lat, yolo_lat = None, None, None, None, None
         try:
             # Perform conversion first!
-            # resized_frame = await self.ResizerService.cpu_convert_to_padded_size(frame)
             resized_frame, pre_proc_lat = await self.ResizerService.cpu_convert_to_padded_size(frame)
             # TODO: To add GPU-based downsample function
-            # resized_frame = await self.ResizerService.gpu_convert_to_padded_size(frame)
-
-            # # build latency data: Pre-processing
-            # t0_preproc = time.time()
-            # preproc_latency_data = {
-            #     "frame_id": int(frame_id),
-            #     "category": "Object Detection",
-            #     "algorithm": algorithm,
-            #     "section": "Pre-processing",
-            #     "latency": pre_proc_lat
-            # }
-            # # Submit and store latency data: Pre-processing
-            # if not await self.LatCollectorService.store_latency_data_thread(preproc_latency_data):
-            #     await self.SubscriptionHandler.stop()
-            # t1_preproc = (time.time() - t0_preproc) * 1000
-            # print('\n[%s] Proc. Latency of Pre-processing (%.3f ms)' % (get_current_time(), t1_preproc))
 
             # Perform object detection
-            bbox_data, det, names, yolo_lat = self.yolo.get_detection_results(resized_frame, frame)
-            # bbox_data = self.yolo.get_bbox_data(frame, False)
-
-            # # build latency data: YOLO
-            # t0_preproc = time.time()
-            # preproc_latency_data = {
-            #     "frame_id": int(frame_id),
-            #     "category": "Object Detection",
-            #     "algorithm": algorithm,
-            #     "section": "YOLO",
-            #     "latency": yolo_lat
-            # }
-            # # Submit and store latency data: YOLO
-            # if not await self.LatCollectorService.store_latency_data_thread(preproc_latency_data):
-            #     await self.SubscriptionHandler.stop()
-            # t1_preproc = (time.time() - t0_preproc) * 1000
-            # print('\n[%s] Proc. Latency of YOLO (%.3f ms)' % (get_current_time(), t1_preproc))
+            bbox_data, det, names, yolo_lat = self.detection.get_detection_results(resized_frame, frame)
 
         except Exception as e:
-            # print(" >>>> GET BBox e:", e)
             L.error("[ERROR]: %s" % str(e))
             await self.SubscriptionHandler.stop()
         return bbox_data, det, names, pre_proc_lat, yolo_lat

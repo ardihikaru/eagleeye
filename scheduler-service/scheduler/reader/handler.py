@@ -23,7 +23,6 @@ class ReaderHandler(MyRedis):
 
 	def __init__(self, app):
 		super().__init__(asab.Config)
-		# print(" # @ ReaderHandler ...")
 		self.ReaderService = app.get_service("scheduler.ReaderService")
 		# self.ZMQService = app.get_service("scheduler.ZMQService")
 

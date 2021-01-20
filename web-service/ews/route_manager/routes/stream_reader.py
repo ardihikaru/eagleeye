@@ -40,7 +40,7 @@ async def stream_live(request):
         Try: curl http://localhost:8080/api/stream/live -X POST -H "Content-Type: application/json"
                 -d '{
                         "raw": false,
-                        "algorithm": "YOLOv3",
+                        "algorithm": "YOLOv3",  --> this parameter is no longer being used (DEPRECATED)
                         "uri": "rtmp://140.113.86.98:15500/live/demo",
                         "exec": true,
                         "worker": 1
