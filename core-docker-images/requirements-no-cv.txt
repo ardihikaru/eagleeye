@@ -21,3 +21,4 @@ kubernetes
 tqdm
 torch
 torchvision
+imutils
