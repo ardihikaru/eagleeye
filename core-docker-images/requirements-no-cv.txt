@@ -22,3 +22,4 @@ tqdm
 torch
 torchvision
 imutils
+eclipse-zenoh
