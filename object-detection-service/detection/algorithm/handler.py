@@ -18,7 +18,7 @@ L = logging.getLogger(__name__)
 
 ###
 
-class YOLOv3Handler(MyRedis):
+class ObjectDetectionHandler(MyRedis):
 
     def __init__(self, app):
         super().__init__(asab.Config)
@@ -69,19 +69,16 @@ class YOLOv3Handler(MyRedis):
 
     async def set_configuration(self):
         # Initialize YOLOv3 configuration
-        # print("\n[%s][%s] Initialize YOLOv3 configuration" % (get_current_time(), self.node_alias))
         L.warning("\n[%s][%s] Initialize YOLOv3 configuration" % (get_current_time(), self.node_alias))
 
     async def set_deployment_status(self):
         """ To change Field `pid` from -1 into this process's PID """
-        # print("\n[%s][%s] Updating PID information" % (get_current_time(), self.node_alias))
         L.warning("\n[%s][%s] Updating PID information" % (get_current_time(), self.node_alias))
 
         # Update Node information: `channel` and `pid`
         await self.DetectionAlgorithmService.update_node_information(self.node_id, self.pid)
 
         # Set ZMQ Receiver (& Sender) configuration
-        # print("## # Set ZMQ Receiver (& Sender) configuration ##")
         await self.DetectionAlgorithmService.set_zmq_configurations(self.node_name, self.node_id)
 
     async def stop(self):
