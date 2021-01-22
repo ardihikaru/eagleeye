@@ -1,4 +1,14 @@
 from zenoh_pubsub import ZenohPubSub
+import time
+from datetime import datetime
+import logging
+
+###
+
+L = logging.getLogger(__name__)
+
+
+###
 
 
 class ZenohPublisher(ZenohPubSub):
@@ -13,10 +23,15 @@ class ZenohPublisher(ZenohPubSub):
 		# TODO: pre-process data before being sent into Zenoh system
 		# HERE
 
-		super().publish_data(val)
+		t0_publish = time.time()
+		L.warning("TIME ZERO: {}".format(t0_publish))
+		# super().publish_data(val)
+		super().publish_data(t0_publish)
+		t1_publish = (time.time() - t0_publish) * 1000
+		L.warning(('\n[%s] Latency insert data into Zenoh (%.3f ms) \n' % (datetime.now().strftime("%H:%M:%S"), t1_publish)))
 
 
-path = "/demo2/example/test2"
+path = "/demo/example/test3"
 value = 123
 pub = ZenohPublisher(
 	_path=path, _session_type="PUBLISHER"

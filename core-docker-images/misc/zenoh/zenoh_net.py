@@ -1,7 +1,8 @@
 from pubsub import PubSub
 import logging
 import zenoh
-from zenoh import Zenoh
+from zenoh.net import config, SubInfo, Reliability, SubMode, Sample, resource_name
+from zenoh.net.queryable import STORAGE
 from enum import Enum
 
 ###
@@ -12,9 +13,9 @@ L = logging.getLogger(__name__)
 ###
 
 
-class ZenohPubSub(PubSub):
+class ZenohNet(PubSub):
 	"""
-	Implementation of Zenoh PubSub
+	Implementation of Zenoh-net
 
 	Default input parameter for Zenoh Subscriber is:
 		(listener=None, mode='peer', peer=None, selector='/demo2/**')
@@ -31,13 +32,15 @@ class ZenohPubSub(PubSub):
 		SUBSCRIBER = "SUBSCRIBER"
 		PUBLISHER = "PUBLISHER"
 
-	def __init__(self, _listener=None, _mode="peer", _peer=None, _selector=None, _path=None, _session_type=None):
+	def __init__(self, _listener=None, _mode="peer", _peer=None, _selector=None, _path=None, _session_type=None,
+	             _network_enabled=False):
 		self.listener = _listener  # Locators to listen on.
 		self.mode = _mode  # The zenoh session mode.
 		self.peer = _peer  # Peer locators used to initiate the zenoh session.
 		self.selector = _selector  # The selection of resources to subscribe.
 		self.path = _path  # The name of the resource to put.
 		self.session_type = self._get_session_type(_session_type)  # Type of Zenoh connection
+		self.network_enabled = self.network_enabled  # Type of Zenoh network mode: enabled/disabled
 
 		# setup configuration
 		self.conf = {"mode": self.mode}
@@ -48,6 +51,7 @@ class ZenohPubSub(PubSub):
 
 		self.workspace = None
 		self.z_session = None
+		self.sub_info = None
 
 		self.pub = None
 		self.sub = None
@@ -65,10 +69,21 @@ class ZenohPubSub(PubSub):
 		zenoh.init_logger()
 
 		L.warning("[ZENOH] Openning session...")
-		self.z_session = Zenoh(self.conf)
+		self.z_session = zenoh.net.open(self.conf)
+
+		self.sub_info = SubInfo(Reliability.Reliable, SubMode.Push)
+
+		L.warning("Declaring Subscriber on '{}'...".format(selector))
+		self.sub = self.z_session.declare_subscriber(self.selector, self.sub_info, listener)
 
 		L.warning("[ZENOH] Create New workspace...")
 		self.workspace = self.z_session.workspace()
+
+	def _configure_zenoh_session(self):
+		pass
+
+	def _configure_zenoh_net_session(self):
+		pass
 
 	def close_connection(self):
 		self.z_session.close()

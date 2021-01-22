@@ -1,6 +1,8 @@
 from zenoh_pubsub import ZenohPubSub
 import sys
 import logging
+import time
+from datetime import datetime
 
 ###
 
@@ -11,9 +13,18 @@ L = logging.getLogger(__name__)
 
 
 def listener(change):
-	L.warning("[ZENOH][Subscription listener] received {:?} for {} : {} with timestamp {}"
-	      .format(change.kind, change.path, '' if change.value is None else change.value.get_content(),
-	              change.timestamp))
+	# print(">>> change.value:", change.value, type(change.value.get_content()), type(float(change.value.get_content())))
+	print(">>> change.value:", type(change.value.get_content()))
+	# print(change.value.get_content())
+	# t1_recv = (time.time() - change.value.get_content()) * 1000
+	# L.warning(('\n[%s] Latency E2E receive data (%.3f ms) \n' % (datetime.now().strftime("%H:%M:%S"), t1_recv)))
+	# L.warning("[ZENOH][Subscription listener] received {:?} for {} : {} with timestamp {}"
+	#       .format(change.kind, change.path, '' if change.value is None else change.value.get_content(),
+	#               change.timestamp))
+
+	print(">> [Storage listener] Received ('{}': '{}')"
+	      .format(change.res_name, change.payload.decode("utf-8")))
+	store[sample.res_name] = (change.payload, change.data_info)
 
 
 class ZenohSubscriber(ZenohPubSub):
@@ -31,7 +42,7 @@ class ZenohSubscriber(ZenohPubSub):
 		super().close_connection()
 
 
-selector = "/demo2/**"
+selector = "/demo/**"
 sub = ZenohSubscriber(
 	_selector=selector, _session_type="SUBSCRIBER"
 )

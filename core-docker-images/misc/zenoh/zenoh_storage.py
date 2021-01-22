@@ -16,7 +16,7 @@ def listener(change):
 	              change.timestamp))
 
 
-class ZenohCleaner(ZenohPubSub):
+class ZenohStorage(ZenohPubSub):
 	def __init__(self, _listener=None, _mode="peer", _peer=None, _selector=None, _session_type=None):
 		super().__init__(_listener=_listener, _mode=_mode, _peer=_peer, _selector=_selector, _session_type=_session_type)
 
@@ -32,7 +32,7 @@ class ZenohCleaner(ZenohPubSub):
 
 
 selector = "/demo2/**"
-sub = ZenohSubscriber(
+sub = ZenohStorage(
 	_selector=selector, _session_type="SUBSCRIBER"
 )
 sub.init_connection()
