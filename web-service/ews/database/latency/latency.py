@@ -2,7 +2,7 @@
     Class Model for `Latency` Collections
 """
 
-from mongoengine import Document, StringField, IntField, FloatField
+from mongoengine import Document, StringField, IntField, FloatField, DateTimeField
 import datetime
 
 
@@ -16,3 +16,4 @@ class LatencyModel(Document):
     latency = FloatField(required=True)
     node_id = StringField(default="-")
     node_name = StringField(default="-")
+    created_at = DateTimeField(default=datetime.datetime.now)

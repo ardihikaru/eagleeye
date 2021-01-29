@@ -18,4 +18,7 @@ window-slider
 aiortc
 suds-py3
 kubernetes
-
+tqdm
+torch
+torchvision
+imutils

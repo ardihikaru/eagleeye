@@ -149,8 +149,6 @@ spec:
           readOnly: false
         - mountPath: /app/data
           name: data-files
-      imagePullSecrets:
-      - name: timwilliam-regcred
       volumes:
       - configMap:
           items:
