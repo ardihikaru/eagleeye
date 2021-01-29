@@ -81,8 +81,6 @@ spec:
           readOnly: false
         - mountPath: /app/config_files
           name: config-files
-      imagePullSecrets:
-      - name: timwilliam-regcred
       restartPolicy: Always
       volumes:
       - configMap:
