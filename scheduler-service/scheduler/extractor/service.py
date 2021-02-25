@@ -10,6 +10,9 @@ import time
 import simplejson as json
 from concurrent.futures import ThreadPoolExecutor
 from ext_lib.utils import get_imagezmq
+from scheduler.extractor.zenoh_pubsub.zenoh_net_subscriber import ZenohNetSubscriber
+import numpy as np
+from datetime import datetime
 
 ###
 
@@ -47,6 +50,17 @@ class ExtractorService(asab.Service):
 		self.executor = ThreadPoolExecutor(int(asab.Config["thread"]["num_executor"]))
 
 		self.LatCollectorService = app.get_service("scheduler.LatencyCollectorService")
+
+		self._is_running = True  # TODO: we need to dynamically adjust the value
+
+		# input and source image resolution
+		self.img_w = asab.Config["stream:config"].getint("width")
+		self.img_h = asab.Config["stream:config"].getint("height")
+		self.img_ch = asab.Config["stream:config"].getint("channel")
+
+		# config related with ZENOH; default value
+		self.received_frame_id = 0
+		self.skip_count = -1
 
 	# async def extract_folder(self, config, senders):
 	# TODO: This function is currently not being tested YET
@@ -134,6 +148,21 @@ class ExtractorService(asab.Service):
 		}
 		# Submit and store latency data: Pre-processing
 		if not await self.LatCollectorService.store_latency_data_thread(preproc_latency_data):
+			L.warning("[%s]\nUps, it failed to save the latency data (Scheduling latency)" % get_current_time())
+
+	def _sync_save_latency(self, frame_id, latency, algorithm="[?]", section="[?]", cat="Object Detection",
+							node_id="-", node_name="-"):
+		preproc_latency_data = {
+			"frame_id": int(frame_id),
+			"category": cat,
+			"algorithm": algorithm,
+			"section": section,
+			"latency": latency,
+			"node_id": node_id,
+			"node_name": node_name
+		}
+		# Submit and store latency data: Pre-processing
+		if not self.LatCollectorService.sync_store_latency_data_thread(preproc_latency_data):
 			L.warning("[%s]\nUps, it failed to save the latency data (Scheduling latency)" % get_current_time())
 
 	# async def extract_video_stream(self, config, senders):
@@ -458,6 +487,183 @@ class ExtractorService(asab.Service):
 			# reset skipping frames
 			if 0 < self._num_skipped_frames < skip_count:
 				skip_count = 0
+
+	async def extract_image_zenoh(self, config):
+		L.warning("#### I am extractor ZENOH function from ExtractorService!")
+
+		# set config
+		self.ZMQService.set_config(config)
+
+		# Reset frame_id and other related variables
+		self.frame_id = 0
+		self.received_frame_id = 0
+		self.skip_count = -1
+
+		await self._stream_zenoh_img_data(config)
+
+	def img_listener(self, consumed_data):
+		# ####################### For tuple data
+		t0_decoding = time.time()
+		img_total_size = self.img_w * self.img_h * self.img_ch
+		encoder_format = [
+			('id', 'U10'),
+			('timestamp', 'f'),
+			('data', [('flatten', 'i')], (1, img_total_size)),
+			('store_enabled', '?'),
+		]
+		deserialized_bytes = np.frombuffer(consumed_data.payload, dtype=encoder_format)
+
+		t1_decoding = (time.time() - t0_decoding) * 1000
+		L.warning(
+		    ('\n[%s] Latency img_info (%.3f ms) \n' % (datetime.now().strftime("%H:%M:%S"), t1_decoding)))
+
+		t0_decoding = time.time()
+
+		# decode data
+		img_info = {
+			"id": str(deserialized_bytes["id"][0]),
+			"img": deserialized_bytes["data"]["flatten"][0].reshape(self.img_w, self.img_h, self.img_ch),
+			"timestamp": float(deserialized_bytes["timestamp"][0]),
+			"store_enabled": bool(deserialized_bytes["store_enabled"][0]),
+		}
+
+		_senders = self.ZMQService.get_senders()
+		_config = self.ZMQService.get_config()
+
+		t1_decoding = (time.time() - t0_decoding) * 1000
+		L.warning(
+		    ('\n[%s] Latency reformat image (%.3f ms) \n' % (datetime.now().strftime("%H:%M:%S"), t1_decoding)))
+		# ######################## END for tuple data
+		# ########################
+
+		# ######################## START Image type
+		# t0_decoding = time.time()
+		# img_info = np.frombuffer(consumed_data.payload, dtype=np.int8)
+		# t1_decoding = (time.time() - t0_decoding) * 1000
+		# L.warning(
+		# 	('[%s] Latency load ONLY numpy image (%.3f ms)' % (datetime.now().strftime("%H:%M:%S"), t1_decoding)))
+		#
+		# t0_decoding = time.time()
+		# deserialized_img = np.reshape(img_info, newshape=(self.img_w, self.img_h, self.img_ch))
+		# t1_decoding = (time.time() - t0_decoding) * 1000
+		# L.warning(
+		# 	('[%s] Latency reformat image (%.3f ms)' % (datetime.now().strftime("%H:%M:%S"), t1_decoding)))
+		# ######################## END Image type
+
+		###################################
+		# Start the pipeline to use the captured image data
+		self.received_frame_id += 1
+		self.skip_count += 1
+
+		success, t0_zenoh_source, frame = True, img_info["timestamp"], img_info["img"]
+
+		# try skipping frames
+		if self._num_skipped_frames > 0 and self.received_frame_id > 1 and self.skip_count <= self._num_skipped_frames:
+			# skip this frame
+			L.warning(">>> Skipping frame-{}; Current `skip_count={}`".format(str(self.received_frame_id), str(self.skip_count)))
+		else:
+			self.frame_id += 1
+
+			# Sending image data into Visualizer Service as well
+			self.ZMQService.send_image_to_visualizer(self.frame_id, frame)
+
+			# Start t0_e2e_lat: To calculate the e2e processing & comm. latency
+			t0_e2e_lat = time.time()
+
+			# Perform scheduling based on Round-Robin fasion (Default)
+			t0_sched_lat = time.time()
+			try:
+				if bool(int(asab.Config["stream:config"]["test_mode"])):
+					sel_node_id = 0
+				else:
+					# sel_node_id = await self.SchPolicyService.schedule(max_node=len(senders["node"]))
+					sel_node_id = self.SchPolicyService.sync_schedule(max_node=len(_senders["node"]))
+				L.warning("Selected Node idx: %s" % str(sel_node_id))
+			except Exception as e:
+				L.error("[ERROR]: %s" % str(e))
+			t1_sched_lat = (time.time() - t0_sched_lat) * 1000
+			# TODO: To implement scheduler here and find which node will be selected
+
+			# First, notify the Object Detection Service to get ready (publish)
+			node_id = _senders["node"][sel_node_id]["id"]
+			node_channel = _senders["node"][sel_node_id]["channel"]
+			node_name = _senders["node"][sel_node_id]["name"]
+
+			L.warning("NodeID=%s; NodeChannel=%s; NodeName=%s" % (str(node_id), node_channel, node_name))
+
+			# Save Scheduling latency
+			self._sync_save_latency(
+				self.frame_id, t1_sched_lat, "Round-Robin", "scheduling", "Scheduling", node_id, node_name
+			)
+			L.warning('\n[%s] Proc. Latency of %s for frame-%s (%.3f ms)' % (
+				get_current_time(), "scheduling", str(self.frame_id), t1_sched_lat))
+
+			# Save e2e latency
+			self._exec_e2e_latency_collector(t0_e2e_lat, node_id, self.frame_id)
+
+			# send data into Scheduler service through the pub/sub
+			# Never send any frame if `test_mode` is enabled (test_mode=1)
+			if not bool(int(asab.Config["stream:config"]["test_mode"])):
+				t0_publish = time.time()
+				L.warning("[%s] Publishing image into Redis channel: %s" % (get_current_time(), node_channel))
+				dump_request = json.dumps({"active": True, "algorithm": _config["algorithm"], "ts": time.time()})
+				pub(self.redis.get_rc(), node_channel, dump_request)
+				t1_publish = (time.time() - t0_publish) * 1000
+				# TODO: Saving latency for scheduler:producer:notification:image
+				L.warning(
+					'[%s] Latency for Publishing FRAME NOTIFICATION into Object Detection Service (%.3f ms)' % (
+						get_current_time(), t1_publish)
+				)
+
+				if not bool(int(asab.Config["stream:config"]["convert_img"])):
+					# Sending image data through ZMQ (TCP connection)
+					self.ZMQService.send_this_image(_senders["zmq"][sel_node_id], self.frame_id, frame)
+				else:
+					# TODO: In this case, Candidate Selection Algorithm will not work!!!!!
+					# Convert the yolo input images; Here it converts from FullHD into <img_size> (padded size)
+					if not bool(int(asab.Config["stream:config"]["gpu_converter"])):
+						yolo_frame = self.ResizerService.sync_cpu_convert_to_padded_size(frame)
+					else:
+						# NOT IMPLEMENTED YET!!!! USe CPU instead!
+						yolo_frame = self.ResizerService.sync_cpu_convert_to_padded_size(frame)
+						# TODO: To add GPU-based downsample function
+
+					# CHECKING: how is the latency if we send converted version?
+					# Sending image data through ZENOH (TCP connection)
+					self.ZMQService.send_this_image(_senders["zmq"][sel_node_id], self.frame_id, yolo_frame)
+
+		# reset skipping frames
+		if 0 < self._num_skipped_frames < self.skip_count:
+			self.skip_count = 0
+
+	def _start_zenoh(self, selector, listener):
+		try:
+			sub_svc = ZenohNetSubscriber(
+				_selector=selector, _session_type="SUBSCRIBER", _listener=listener
+			)
+			sub_svc.init_connection()
+
+			sub_svc.register(self.img_listener)
+			subscriber = sub_svc.get_subscriber()
+
+			while self._is_running:
+				# NOTHING TO DO HERE; this infinite loop simply makes sure the subscription keep running
+				pass
+
+		except Exception as e:
+			L.error("Zenoh initialization failed; Reason: `{}`".format(e))
+
+	async def _stream_zenoh_img_data(self, config,):
+		listener = config["uri"]
+		selector = config["extras"]["selector"]
+
+		executor = ThreadPoolExecutor(1)
+		kwargs = {
+			"listener": listener,
+			"selector": selector,
+			# "senders": senders,
+		}
+		executor.submit(self._start_zenoh, **kwargs)
 
 	async def _set_cap(self, config):
 		if bool(int(asab.Config["stream:config"]["thread"])):

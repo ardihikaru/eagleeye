@@ -17,6 +17,7 @@ class VideoSourceType(Enum):
 	STREAM = "STREAM"
 	IMAGE_ZMQ = "IMAGEZMQ"
 	TCP = "TCP"
+	ZENOH = "ZENOH"
 
 
 class ReaderHandler(MyRedis):
@@ -88,6 +89,8 @@ class ReaderHandler(MyRedis):
 					await self.ExtractorService.extract_video_stream(config)
 				elif config["stream"].upper() == VideoSourceType.FOLDER.value:
 					await self.ExtractorService.extract_folder(config)
+				elif config["stream"].upper() == VideoSourceType.ZENOH.value:
+					await self.ExtractorService.extract_image_zenoh(config)
 				else:
 					L.error("## No images can be captured for the time being.")
 				# print("## No images can be captured for the time being.")
