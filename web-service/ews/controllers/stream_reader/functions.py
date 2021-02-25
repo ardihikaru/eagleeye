@@ -79,14 +79,14 @@ def threaded_insertion(pool_name, request_json):
 	# print('[%s] Latency for Saving data into MongoDB (%.3f ms)' % (get_current_time(), t1_saving_mongo))
 	L.warning('[%s] Latency for Saving data into MongoDB (%.3f ms)' % (get_current_time(), t1_saving_mongo))
 
-	# This is an optional; ONLY for testing purpose! Comment this part later please
-	t0_deleting_mongo = time.time()
-	_, _ = del_data_by_id(ConfigModel, config_data["id"])
-	t1_deleting_mongo = (time.time() - t0_deleting_mongo) * 1000
-	# print('[%s] Latency for Deleting data into MongoDB (%.3f ms)' % (get_current_time(), t1_deleting_mongo))
-	L.warning('[%s] Latency for Deleting data into MongoDB (%.3f ms)' % (get_current_time(), t1_deleting_mongo))
-	# time.sleep(5)
-	# print(" -- coming back after sleeping in 5 secs ..")
+	# # This is an optional; ONLY for testing purpose! Comment this part later please
+	# t0_deleting_mongo = time.time()
+	# _, _ = del_data_by_id(ConfigModel, config_data["id"])
+	# t1_deleting_mongo = (time.time() - t0_deleting_mongo) * 1000
+	# # print('[%s] Latency for Deleting data into MongoDB (%.3f ms)' % (get_current_time(), t1_deleting_mongo))
+	# L.warning('[%s] Latency for Deleting data into MongoDB (%.3f ms)' % (get_current_time(), t1_deleting_mongo))
+	# # time.sleep(5)
+	# # print(" -- coming back after sleeping in 5 secs ..")
 
 
 def get_config_data():
