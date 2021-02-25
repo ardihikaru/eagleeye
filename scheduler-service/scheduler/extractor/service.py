@@ -165,7 +165,6 @@ class ExtractorService(asab.Service):
 		if not self.LatCollectorService.sync_store_latency_data_thread(preproc_latency_data):
 			L.warning("[%s]\nUps, it failed to save the latency data (Scheduling latency)" % get_current_time())
 
-	# async def extract_video_stream(self, config, senders):
 	async def extract_video_stream(self, config):
 		L.warning("#### I am extractor VIDEO STREAM function from ExtractorService!")
 		senders = self.ZMQService.get_senders()
