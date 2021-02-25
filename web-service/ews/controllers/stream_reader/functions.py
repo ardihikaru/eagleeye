@@ -18,7 +18,7 @@ L = logging.getLogger(__name__)
 # def validate_request_json(request_json):
 def request_to_config(request_json):
 	config = {}
-	valid_list = ["algorithm", "uri", "scalable", "stream"]
+	valid_list = ["algorithm", "uri", "scalable", "stream", "extras"]
 	if not isinstance(request_json, dict):
 		raise aiohttp.web.HTTPBadRequest()
 
