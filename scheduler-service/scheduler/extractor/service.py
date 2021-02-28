@@ -521,7 +521,7 @@ class ExtractorService(asab.Service):
 		# decode data
 		img_info = {
 			"id": str(deserialized_bytes["id"][0]),
-			"img": deserialized_bytes["data"]["flatten"][0].reshape(self.img_w, self.img_h, self.img_ch),
+			"img": deserialized_bytes["data"]["flatten"][0].reshape(self.img_h, self.img_w, self.img_ch).astype("uint8"),
 			"timestamp": float(deserialized_bytes["timestamp"][0]),
 			"store_enabled": bool(deserialized_bytes["store_enabled"][0]),
 		}
