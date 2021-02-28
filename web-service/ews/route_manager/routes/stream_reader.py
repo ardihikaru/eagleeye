@@ -39,11 +39,17 @@ async def stream_live(request):
         Endpoint to start streaming
         Try: curl http://localhost:8080/api/stream/live -X POST -H "Content-Type: application/json"
                 -d '{
-                        "raw": false,
+                        "raw": false, <-- Deprecated!
                         "algorithm": "YOLOv3",  --> this parameter is no longer being used (DEPRECATED)
                         "uri": "rtmp://140.113.86.98:15500/live/demo",
-                        "exec": true,
-                        "worker": 1
+                        "stream": "ZENOH",
+                        "scalable": true,
+                        "extras": { <-- the keys can be anything
+                            # Example for ZENOH
+                            "selector": "/eagleeye/img/**"
+                        },
+                        "exec": true, <-- Deprecated!
+                        "worker": 1 <-- Deprecated!
                     }'
     """
     try:
