@@ -94,7 +94,7 @@ class ReaderHandler(MyRedis):
 				else:
 					L.error("## No images can be captured for the time being.")
 				# print("## No images can be captured for the time being.")
-				L.warning("## No images can be captured for the time being.")
+				# L.warning("## No images can be captured for the time being.")
 
 				# TODO: To restart; This should be moved away in extract_video_stream() and extract_folder()
 
