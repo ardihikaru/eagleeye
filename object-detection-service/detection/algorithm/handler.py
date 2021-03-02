@@ -10,6 +10,7 @@ import time
 import numpy as np
 import simplejson as json
 # import signal
+from ext_lib.commons.opencv_helpers import get_det_xyxy, torch2list_det
 
 ###
 
@@ -43,6 +44,10 @@ class ObjectDetectionHandler(MyRedis):
         self.cs_enabled = redis_get(self.rc, asab.Config["node"]["redis_pcs_key"])
         self.pv_enabled = redis_get(self.rc, asab.Config["node"]["redis_pv_key"])
         self.cv_out = bool(int(asab.Config["objdet:yolo"]["cv_out"]))
+
+        # PiH Candidate Selection params
+        self.pcs_is_microservice = asab.Config["pih_candidate_selection"].getboolean("is_microservice")
+        self.pv_is_microservice = asab.Config["persistence_detection"].getboolean("is_microservice")
 
         # PiH Persistence Validation params
         self.total_pih_candidates = 0
@@ -171,9 +176,21 @@ class ObjectDetectionHandler(MyRedis):
                     # print("***** [%s] Performing Candidate Selection Algorithm" % self.node_alias)
                     L.warning("***** [%s] Performing Candidate Selection Algorithm" % self.node_alias)
                     t0_cs = time.time()
-                    mbbox_data, self._selected_pairs = await self.CandidateSelectionService.calc_mbbox(
-                        bbox_data, det, names, h, w, c, self._selected_pairs
-                    )
+
+                    # convert torch `det` into list `det`
+                    list_det = torch2list_det(det)
+
+                    if self.pcs_is_microservice:
+                        # TODO: To implement and use PCS microservice instead of a class
+                        print(" ----- YEAH MICROSERVICE PCS !!!!!")
+                        # mbbox_data, self._selected_pairs = await self.CandidateSelectionService.calc_mbbox(
+                        #     bbox_data, det, names, h, w, c, self._selected_pairs
+                        # )
+                    else:
+                        print(" ----- WOOII BUKAN MICROSERVICE PCS !!!!!")
+                        mbbox_data, self._selected_pairs = await self.CandidateSelectionService.calc_mbbox(
+                            bbox_data, det, names, h, w, c, self._selected_pairs
+                        )
 
                     t1_cs = (time.time() - t0_cs) * 1000
                     # print('\n[%s] Latency of Candidate Selection Algo. (%.3f ms)' % (get_current_time(), t1_cs))
