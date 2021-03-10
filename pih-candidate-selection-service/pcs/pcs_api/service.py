@@ -27,7 +27,7 @@ class PCSApiService(asab.Service):
 	async def calculate_and_wait(self, request_json):
 
 		mbbox_data, selected_pairs = await self.psc_svc.calc_mbbox(
-			bbox_data=request_json["bbox_data"],
+			# bbox_data=request_json["bbox_data"],  # DEPRECATED: no need to send this data anymore. we use `det` instead
 			det=request_json["det"],
 			names=request_json["names"],
 			h=request_json["h"],

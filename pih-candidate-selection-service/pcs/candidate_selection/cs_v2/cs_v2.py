@@ -25,10 +25,10 @@ class CSv2(RegionCluster):
         self.flag_pair_candidates = {}
         self.selected_pairs = []
         self._prev_pairs = None
-        self.bbox_data = []
+        # self.bbox_data = []  # an optional, since we can use `det`
 
-    def initialize(self, det, names, h, w, c, prev_pairs, bbox_data):
-        self.bbox_data = bbox_data
+    def initialize(self, det, names, h, w, c, prev_pairs):
+        # self.bbox_data = bbox_data
         self._prev_pairs = prev_pairs
         self.det = det
         self.names = names
