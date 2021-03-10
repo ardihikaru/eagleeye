@@ -55,6 +55,33 @@ def get_det_xyxy(det):
     return numpy_xyxy
 
 
+def torch2np_each_det(this_det):
+    # CPU Mode
+    try:
+        this_np_det = np.zeros_like(this_det)
+    # GPU Mode
+    except:
+        this_np_det = np.zeros_like(this_det.data.cpu().numpy())
+
+    this_np_det[0] = int(this_det[0])
+    this_np_det[1] = int(this_det[1])
+    this_np_det[2] = int(this_det[2])
+    this_np_det[3] = int(this_det[3])
+    this_np_det[4] = float(this_det[4])
+    this_np_det[5] = float(this_det[5])
+
+    return this_np_det
+
+
+def torch2list_det(det):
+    list_det = []
+    for each_det in det:
+        np_det_tmp = torch2np_each_det(each_det)
+        list_det.append(np_det_tmp.tolist())
+
+    return list_det
+
+
 # Merged of 2 bounding boxes (xyxy and xyxy)
 def get_mbbox(obj_1, obj_2):
     box1_x1 = obj_1[0]
