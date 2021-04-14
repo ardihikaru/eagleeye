@@ -5,6 +5,14 @@
 from mongoengine import DoesNotExist, NotUniqueError, Q, ValidationError
 from ext_lib.utils import mongo_list_to_dict, mongo_dict_to_dict, pop_if_any
 from datetime import datetime
+import logging
+
+###
+
+L = logging.getLogger(__name__)
+
+
+###
 
 
 def insert_new_data(db_model, new_data, msg=None):
@@ -12,9 +20,15 @@ def insert_new_data(db_model, new_data, msg=None):
         inserted_data = db_model(**new_data).save()
 
     except ValidationError as e:
+        L.error("[INSERT ERROR] {}".format(e))
         return False, None, str(e)
 
     except NotUniqueError as e:
+        L.error("[INSERT ERROR] {}".format(e))
+        return False, None, str(e)
+
+    except Exception as e:
+        L.error("[INSERT ERROR] {}".format(e))
         return False, None, str(e)
 
     new_data["id"] = str(inserted_data.id)

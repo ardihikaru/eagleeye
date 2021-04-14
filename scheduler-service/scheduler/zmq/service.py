@@ -24,6 +24,9 @@ class ZMQService(asab.Service):
         self.node_info = []
         self.node_api_uri = asab.Config["eagleeye:api"]["node"]
 
+        # config info
+        self.config = None
+
     # TODO: We need to have a dynamic configuration; This is still static and called ONCE
     async def set_configurations(self):
         # sending get request and saving the response as response object
@@ -87,6 +90,12 @@ class ZMQService(asab.Service):
             "zmq": self.zmq_sender,
             "node": self.node_info
         }
+
+    def set_config(self, config):
+        self.config = config
+
+    def get_config(self):
+        return self.config
 
     def get_available_nodes(self):
         return self.node_info

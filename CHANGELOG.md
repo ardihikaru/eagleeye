@@ -1,3 +1,50 @@
+## v7.1.0-native (April 14, 2021)
+  - Merge pull request #28 from ardihikaru/feature/plugin/zenoh-integration
+  - add initial dockerfile (not tested yet!)
+  - remove unused code
+  - bugfix: zenoh unable to send data from network
+  - Merge branch 'feature/microservice/pcs' into develop
+  - add new microservice: PCS Service
+  - implement PCS Microservice call
+  - add config parameter for calling PCS APIs
+  - add new microservice: `PiH Candidate Selection Service`
+  - add base implementation of PCS microservice mode
+  - add function to convert torch det into list det
+  - introduce parameter to enable/disable microservice mode for PCS and PV
+  - Merge pull request #27 from ardihikaru/feature/plugin/zenoh-integration
+  - bugfix: fix format resolution and data type
+  - commented print log
+  - remove unused code
+  - add ZENOH-based subscriber
+  - add sync-based function to be used by ZENOH
+  - add sync-based function to be used by ZENOH
+  - add `channel` parameter
+  - add ZENOH PubSub lib
+  - add an example to use Zenoh Publisher (with real examples)
+  - save config into ZMQ Service
+  - update comment
+  - disable debugging codes
+  - add `extras` key to the valid fields
+  - add log message when insert failed
+  - - fix data type for `stream` field - add new field: `extras` which is based on an Embedded Document
+  - Merge pull request #26 from ardihikaru/feature/plugin/ntp-server-test
+  - add research codes for NTP Server usage
+  - Merge pull request #25 from ardihikaru/feature/plugin/kafka-test
+  - add research codes for kafka usage
+  - Merge pull request #24 from ardihikaru/feature/plugin/zenoh
+  - save last research about publishing custom images via zenoh
+  - add sample script for Zenoh Pub/Sub
+  - Merge branch 'feature/EagleEYEv2.0/pluggable-yolo' into develop
+  - set detection algorithm as a config
+  - update requirements file: `imutils`
+  - update requirements file
+  - Merge pull request #23 from ardihikaru/feature/EagleEYEv2.0/add-timestamp
+  - add timestamp information
+  - Merge branch 'feature/EagleEYEv2.0/sample-gpu-checker' into develop
+  - add gpu data extractor
+  - Merge branch 'bugfix/7.0.1-k8s-2.4' into develop
+  - Merge branch 'version/7.0-k8s-2.4' into develop
+
 ## 7.0.1-k8s-2.4 (一月 08, 2021)
   - bugfix: images dissapeared once building done
   - Merge branch 'version/7.0-k8s-2.4'

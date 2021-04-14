@@ -6,10 +6,11 @@ from ext_lib.redis.translator import redis_get, redis_set
 import os
 from concurrent.futures import ThreadPoolExecutor
 import time
-# from multiprocessing import shared_memory
 import numpy as np
 import simplejson as json
-# import signal
+from ext_lib.commons.opencv_helpers import get_det_xyxy, torch2list_det
+import aiohttp
+import simplejson as json
 
 ###
 
@@ -18,7 +19,7 @@ L = logging.getLogger(__name__)
 
 ###
 
-class YOLOv3Handler(MyRedis):
+class ObjectDetectionHandler(MyRedis):
 
     def __init__(self, app):
         super().__init__(asab.Config)
@@ -44,6 +45,10 @@ class YOLOv3Handler(MyRedis):
         self.pv_enabled = redis_get(self.rc, asab.Config["node"]["redis_pv_key"])
         self.cv_out = bool(int(asab.Config["objdet:yolo"]["cv_out"]))
 
+        # PiH Candidate Selection params
+        self.pcs_is_microservice = asab.Config["pih_candidate_selection"].getboolean("is_microservice")
+        self.pv_is_microservice = asab.Config["persistence_detection"].getboolean("is_microservice")
+
         # PiH Persistence Validation params
         self.total_pih_candidates = 0
         self.persistence_window = int(asab.Config["persistence_detection"]["persistence_window"])
@@ -51,6 +56,9 @@ class YOLOv3Handler(MyRedis):
 
         # save last selected_pairs in this node
         self._selected_pairs = None
+
+        # private rest APIs
+        self.pcs_url = asab.Config["pcs:api"]["url"]
 
     def _dict2list(self, dict_data):
         list_data = []
@@ -69,19 +77,16 @@ class YOLOv3Handler(MyRedis):
 
     async def set_configuration(self):
         # Initialize YOLOv3 configuration
-        # print("\n[%s][%s] Initialize YOLOv3 configuration" % (get_current_time(), self.node_alias))
         L.warning("\n[%s][%s] Initialize YOLOv3 configuration" % (get_current_time(), self.node_alias))
 
     async def set_deployment_status(self):
         """ To change Field `pid` from -1 into this process's PID """
-        # print("\n[%s][%s] Updating PID information" % (get_current_time(), self.node_alias))
         L.warning("\n[%s][%s] Updating PID information" % (get_current_time(), self.node_alias))
 
         # Update Node information: `channel` and `pid`
         await self.DetectionAlgorithmService.update_node_information(self.node_id, self.pid)
 
         # Set ZMQ Receiver (& Sender) configuration
-        # print("## # Set ZMQ Receiver (& Sender) configuration ##")
         await self.DetectionAlgorithmService.set_zmq_configurations(self.node_name, self.node_id)
 
     async def stop(self):
@@ -103,6 +108,38 @@ class YOLOv3Handler(MyRedis):
         for i in range(len(shm_nodes[snode_id])):
             if shm_nodes[0][i][0] == "idle":
                 shm_nodes[0][i][1] = status
+
+    async def send_pcs_request(self, bbox_data, list_det, names, h, w, c, selected_pairs):
+        request_json = {
+            "bbox_data": bbox_data,
+            "det": list_det,
+            "names": names,
+            "h": h,
+            "w": w,
+            "c": c,
+            "selected_pairs": selected_pairs,
+        }
+
+        try:
+            async with aiohttp.ClientSession() as session:
+                resp = await session.post(
+                    self.pcs_url,
+                    data=json.dumps(request_json)
+                )
+
+                if resp.status != 200:
+                    L.error("Can't get a proper response. Server responded with code '{}':\n{}".format(
+                        resp.status,
+                        await resp.text()
+                    ))
+                    return [], []
+                else:
+                    r = await resp.json()
+                    resp_json = r.get("data")
+                    return resp_json.get("mbbox_data", []), resp_json.get("selected_pairs", [])
+        except Exception as e:
+            L.error("[PCS ERROR] `{}`".format(e))
+            return [], []
 
     async def start(self):
         channel = "node-" + self.node_id
@@ -174,9 +211,18 @@ class YOLOv3Handler(MyRedis):
                     # print("***** [%s] Performing Candidate Selection Algorithm" % self.node_alias)
                     L.warning("***** [%s] Performing Candidate Selection Algorithm" % self.node_alias)
                     t0_cs = time.time()
-                    mbbox_data, self._selected_pairs = await self.CandidateSelectionService.calc_mbbox(
-                        bbox_data, det, names, h, w, c, self._selected_pairs
-                    )
+
+                    # convert torch `det` into list `det`
+                    list_det = torch2list_det(det)
+
+                    if self.pcs_is_microservice:
+                        mbbox_data, self._selected_pairs = await self.send_pcs_request(
+                            bbox_data, list_det, names, h, w, c, self._selected_pairs
+                        )
+                    else:
+                        mbbox_data, self._selected_pairs = await self.CandidateSelectionService.calc_mbbox(
+                            bbox_data, det, names, h, w, c, self._selected_pairs
+                        )
 
                     t1_cs = (time.time() - t0_cs) * 1000
                     # print('\n[%s] Latency of Candidate Selection Algo. (%.3f ms)' % (get_current_time(), t1_cs))

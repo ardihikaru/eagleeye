@@ -17,13 +17,13 @@ class VideoSourceType(Enum):
 	STREAM = "STREAM"
 	IMAGE_ZMQ = "IMAGEZMQ"
 	TCP = "TCP"
+	ZENOH = "ZENOH"
 
 
 class ReaderHandler(MyRedis):
 
 	def __init__(self, app):
 		super().__init__(asab.Config)
-		# print(" # @ ReaderHandler ...")
 		self.ReaderService = app.get_service("scheduler.ReaderService")
 		# self.ZMQService = app.get_service("scheduler.ZMQService")
 
@@ -89,10 +89,12 @@ class ReaderHandler(MyRedis):
 					await self.ExtractorService.extract_video_stream(config)
 				elif config["stream"].upper() == VideoSourceType.FOLDER.value:
 					await self.ExtractorService.extract_folder(config)
+				elif config["stream"].upper() == VideoSourceType.ZENOH.value:
+					await self.ExtractorService.extract_image_zenoh(config)
 				else:
 					L.error("## No images can be captured for the time being.")
 				# print("## No images can be captured for the time being.")
-				L.warning("## No images can be captured for the time being.")
+				# L.warning("## No images can be captured for the time being.")
 
 				# TODO: To restart; This should be moved away in extract_video_stream() and extract_folder()
 

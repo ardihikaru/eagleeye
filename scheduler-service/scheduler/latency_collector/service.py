@@ -52,3 +52,15 @@ class LatencyCollectorService(asab.Service):
             return False
 
         return True
+
+    def sync_store_latency_data_thread(self, latency_data):
+        try:
+            kwargs = {
+                "latency_data": latency_data
+            }
+            self.executor.submit(self._store_latency_data, **kwargs)
+        except:
+            print("\n[%s] Somehow we unable to Store latency data." % get_current_time())
+            return False
+
+        return True
