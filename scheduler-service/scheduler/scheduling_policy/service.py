@@ -71,7 +71,6 @@ class SchedulingPolicyService(asab.Service):
         return self.selected_node_id
 
     def sync_round_robin(self):
-        # print("I am using Round-Robin")
         L.warning("I am using Round-Robin")
         self.selected_node_id += 1
 
