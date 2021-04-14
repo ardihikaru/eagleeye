@@ -1,4 +1,4 @@
-from eaglestitch.image_subscriber.zenoh_pubsub.core.zenoh_net import ZenohNet
+from scheduler.extractor.zenoh_pubsub.core.zenoh_net import ZenohNet
 import sys
 import time
 from datetime import datetime

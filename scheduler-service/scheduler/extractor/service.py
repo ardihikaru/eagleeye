@@ -11,6 +11,7 @@ import simplejson as json
 from concurrent.futures import ThreadPoolExecutor
 from ext_lib.utils import get_imagezmq
 from scheduler.extractor.zenoh_pubsub.zenoh_net_subscriber import ZenohNetSubscriber
+from .zenoh_pubsub.functions import extract_compressed_tagged_img
 import numpy as np
 from datetime import datetime
 
@@ -24,6 +25,10 @@ L = logging.getLogger(__name__)
 
 class ExtractorService(asab.Service):
 	""" A class to extract either: Video stream or tuple of images """
+
+	class ZenohConsumerType(object):
+		NON_COMPRESSION_TAGGED_IMAGE = 3
+		COMPRESSION_TAGGED_IMAGE = 4
 
 	def __init__(self, app, service_name="scheduler.ExtractorService"):
 		super().__init__(app, service_name)
@@ -61,6 +66,7 @@ class ExtractorService(asab.Service):
 		# config related with ZENOH; default value
 		self.received_frame_id = 0
 		self.skip_count = -1
+		self.comsumer_type = asab.Config["zenoh"].getint("comsumer_type")
 
 	# async def extract_folder(self, config, senders):
 	# TODO: This function is currently not being tested YET
@@ -500,6 +506,7 @@ class ExtractorService(asab.Service):
 
 		await self._stream_zenoh_img_data(config)
 
+	# DEPRECATED! not yet used!
 	def img_listener(self, consumed_data):
 		# ####################### For tuple data
 		t0_decoding = time.time()
@@ -635,6 +642,122 @@ class ExtractorService(asab.Service):
 		if 0 < self._num_skipped_frames < self.skip_count:
 			self.skip_count = 0
 
+	def img_listener_v2(self, consumed_data):
+		# Pre-process consumed data
+		img_info = None
+		# TODO: not yet implemented!
+		if self.comsumer_type == self.ZenohConsumerType.NON_COMPRESSION_TAGGED_IMAGE:
+			# img_info = self._extract_non_compression_tagged_img(consumed_data)
+			_err_msg = ">>>>> [ZENOH Consumer] Not yet implemented!"
+			L.error(_err_msg)
+			exit(0)  # Force stop the system!
+
+		# it is expected to come into this logic
+		elif self.comsumer_type == self.ZenohConsumerType.COMPRESSION_TAGGED_IMAGE:
+			img_info = extract_compressed_tagged_img(consumed_data)
+
+		else:
+			_err_msg = ">>>>> [ZENOH Consumer] Invalid Zenoh consumer type"
+			L.error(_err_msg)
+			exit(0)  # Force stop the system!
+
+		# start utilizing data
+
+		_senders = self.ZMQService.get_senders()
+		_config = self.ZMQService.get_config()
+
+		t1_decoding = (time.time() - t0_decoding) * 1000
+		L.warning(
+		    ('\n[%s] Latency reformat image (%.3f ms) \n' % (datetime.now().strftime("%H:%M:%S"), t1_decoding)))
+		# ######################## END for tuple data
+		# ########################
+
+		###################################
+		# Start the pipeline to use the captured image data
+		self.received_frame_id += 1
+		self.skip_count += 1
+
+		success, t0_zenoh_source, frame = True, img_info["timestamp"], img_info["img"]
+
+		# try skipping frames
+		if self._num_skipped_frames > 0 and self.received_frame_id > 1 and self.skip_count <= self._num_skipped_frames:
+			# skip this frame
+			L.warning(">>> Skipping frame-{}; Current `skip_count={}`".format(str(self.received_frame_id), str(self.skip_count)))
+		else:
+			self.frame_id += 1
+
+			# Sending image data into Visualizer Service as well
+			self.ZMQService.send_image_to_visualizer(self.frame_id, frame)
+
+			# Start t0_e2e_lat: To calculate the e2e processing & comm. latency
+			t0_e2e_lat = time.time()
+
+			# Perform scheduling based on Round-Robin fasion (Default)
+			t0_sched_lat = time.time()
+			try:
+				if bool(int(asab.Config["stream:config"]["test_mode"])):
+					sel_node_id = 0
+				else:
+					# sel_node_id = await self.SchPolicyService.schedule(max_node=len(senders["node"]))
+					sel_node_id = self.SchPolicyService.sync_schedule(max_node=len(_senders["node"]))
+				L.warning("Selected Node idx: %s" % str(sel_node_id))
+			except Exception as e:
+				L.error("[ERROR]: %s" % str(e))
+			t1_sched_lat = (time.time() - t0_sched_lat) * 1000
+			# TODO: To implement scheduler here and find which node will be selected
+
+			# First, notify the Object Detection Service to get ready (publish)
+			node_id = _senders["node"][sel_node_id]["id"]
+			node_channel = _senders["node"][sel_node_id]["channel"]
+			node_name = _senders["node"][sel_node_id]["name"]
+
+			L.warning("NodeID=%s; NodeChannel=%s; NodeName=%s" % (str(node_id), node_channel, node_name))
+
+			# Save Scheduling latency
+			self._sync_save_latency(
+				self.frame_id, t1_sched_lat, "Round-Robin", "scheduling", "Scheduling", node_id, node_name
+			)
+			L.warning('\n[%s] Proc. Latency of %s for frame-%s (%.3f ms)' % (
+				get_current_time(), "scheduling", str(self.frame_id), t1_sched_lat))
+
+			# Save e2e latency
+			self._exec_e2e_latency_collector(t0_e2e_lat, node_id, self.frame_id)
+
+			# send data into Scheduler service through the pub/sub
+			# Never send any frame if `test_mode` is enabled (test_mode=1)
+			if not bool(int(asab.Config["stream:config"]["test_mode"])):
+				t0_publish = time.time()
+				L.warning("[%s] Publishing image into Redis channel: %s" % (get_current_time(), node_channel))
+				dump_request = json.dumps({"active": True, "algorithm": _config["algorithm"], "ts": time.time()})
+				pub(self.redis.get_rc(), node_channel, dump_request)
+				t1_publish = (time.time() - t0_publish) * 1000
+				# TODO: Saving latency for scheduler:producer:notification:image
+				L.warning(
+					'[%s] Latency for Publishing FRAME NOTIFICATION into Object Detection Service (%.3f ms)' % (
+						get_current_time(), t1_publish)
+				)
+
+				if not bool(int(asab.Config["stream:config"]["convert_img"])):
+					# Sending image data through ZMQ (TCP connection)
+					self.ZMQService.send_this_image(_senders["zmq"][sel_node_id], self.frame_id, frame)
+				else:
+					# TODO: In this case, Candidate Selection Algorithm will not work!!!!!
+					# Convert the yolo input images; Here it converts from FullHD into <img_size> (padded size)
+					if not bool(int(asab.Config["stream:config"]["gpu_converter"])):
+						yolo_frame = self.ResizerService.sync_cpu_convert_to_padded_size(frame)
+					else:
+						# NOT IMPLEMENTED YET!!!! USe CPU instead!
+						yolo_frame = self.ResizerService.sync_cpu_convert_to_padded_size(frame)
+						# TODO: To add GPU-based downsample function
+
+					# CHECKING: how is the latency if we send converted version?
+					# Sending image data through ZENOH (TCP connection)
+					self.ZMQService.send_this_image(_senders["zmq"][sel_node_id], self.frame_id, yolo_frame)
+
+		# reset skipping frames
+		if 0 < self._num_skipped_frames < self.skip_count:
+			self.skip_count = 0
+
 	def _start_zenoh(self, selector, listener):
 		try:
 			sub_svc = ZenohNetSubscriber(
@@ -642,7 +765,8 @@ class ExtractorService(asab.Service):
 			)
 			sub_svc.init_connection()
 
-			sub_svc.register(self.img_listener)
+			# sub_svc.register(self.img_listener)
+			sub_svc.register(self.img_listener_v2)
 			subscriber = sub_svc.get_subscriber()
 
 			while self._is_running:
