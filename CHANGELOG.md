@@ -1,3 +1,9 @@
+## v7.1.3-native (April 16, 2021)
+  - Merge pull request #32 from ardihikaru/feature/persistance-validation-service
+  - Merge branch 'release/v7.1.2-native' into develop
+  - add dockerfile (not tested yet!)
+  - add PV micro service
+
 ## v7.1.2-native (April 16, 2021)
   - Merge pull request #31 from ardihikaru/feature/scheduling-measurement
   - bugfix: change scheduling policy name when storing into DB
