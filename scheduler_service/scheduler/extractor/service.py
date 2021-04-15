@@ -68,6 +68,9 @@ class ExtractorService(asab.Service):
 		self.skip_count = -1
 		self.comsumer_type = asab.Config["zenoh"].getint("comsumer_type")
 
+		# Scheduling policy
+		self.scheduler_policy = asab.Config["scheduler_policy"]["dynamic_round_robin"]
+
 	# async def extract_folder(self, config, senders):
 	# TODO: This function is currently not being tested YET
 	async def extract_folder(self, config):
@@ -583,7 +586,10 @@ class ExtractorService(asab.Service):
 					sel_node_id = 0
 				else:
 					# sel_node_id = await self.SchPolicyService.schedule(max_node=len(senders["node"]))
-					sel_node_id = self.SchPolicyService.sync_schedule(max_node=len(_senders["node"]))
+					sel_node_id = self.SchPolicyService.sync_schedule(
+						max_node=len(_senders["node"]),
+						sch_policy=self.scheduler_policy
+					)
 				L.warning("Selected Node idx: %s" % str(sel_node_id))
 			except Exception as e:
 				L.error("[ERROR]: %s" % str(e))
@@ -699,7 +705,10 @@ class ExtractorService(asab.Service):
 					sel_node_id = 0
 				else:
 					# sel_node_id = await self.SchPolicyService.schedule(max_node=len(senders["node"]))
-					sel_node_id = self.SchPolicyService.sync_schedule(max_node=len(_senders["node"]))
+					sel_node_id = self.SchPolicyService.sync_schedule(
+						max_node=len(_senders["node"]),
+						sch_policy=self.scheduler_policy
+					)
 				L.warning("Selected Node idx: %s" % str(sel_node_id))
 			except Exception as e:
 				L.error("[ERROR]: %s" % str(e))
