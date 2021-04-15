@@ -98,20 +98,32 @@ class YOLOv3(YOLOFunctions):
         # Get detections
         pred = None
         t0_det = time.time()
+
+        t0_from_numpy = time.time()
         img_torch = torch.from_numpy(padded_img)
+        tdiff_from_numpy = (time.time() - t0_from_numpy) * 1000  # to ms
+
+        t0_image4yolo = time.time()
         image4yolo = img_torch.to(self.device)
+        tdiff_image4yolo = (time.time() - t0_image4yolo) * 1000  # to ms
+
+        t0_pred = time.time()
         if image4yolo.ndimension() == 3:
             image4yolo = image4yolo.unsqueeze(0)
         try:
             pred = self.model(image4yolo)[0]
         except Exception as e:
-            # print("~~ EEROR: ", e)
             L.error("[ERROR]: %s" % str(e))
-        t1_inference = (time.time() - t0_det) * 1000  # to ms
+        tdiff_pred = (time.time() - t0_pred) * 1000  # to ms
+
+        tdiff_inference = (time.time() - t0_det) * 1000  # to ms
 
         # Latency: Inference
-        # print('[%s] Inference time (%.3f ms)' % (get_current_time(), t1_inference))
-        L.warning('[%s] Inference time (%.3f ms)' % (get_current_time(), t1_inference))
+        L.warning('[%s] Inference time (%.3f ms)' % (get_current_time(), tdiff_inference))
+
+        L.warning('[%s] Function (from_numpy) time (%.3f ms)' % (get_current_time(), tdiff_from_numpy))
+        L.warning('[%s] Function (image4yolo) time (%.3f ms)' % (get_current_time(), tdiff_image4yolo))
+        L.warning('[%s] Prediction time (%.3f ms)' % (get_current_time(), tdiff_pred))
 
         # Default: Disabled
         # if self.conf["half"]:
@@ -146,7 +158,7 @@ class YOLOv3(YOLOFunctions):
 
         names = load_classes(self.conf["names"])
 
-        return bbox_data, det, names, (t1_inference + t1_nms)
+        return bbox_data, det, names, (tdiff_inference + tdiff_nms), tdiff_from_numpy, tdiff_image4yolo, tdiff_pred
         # return pred
         # Apply Classifier: Default DISABLED
         # if self.classify:
