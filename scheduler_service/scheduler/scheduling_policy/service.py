@@ -53,6 +53,8 @@ class SchedulingPolicyService(asab.Service):
         self.max_node = max_node
         if sch_policy == "round_robin":
             self.sync_round_robin()
+        elif sch_policy == "dynamic_round_robin":
+            self.sync_dynamic_round_robin()
         else:
             self.sync_round_robin()
 
@@ -69,6 +71,23 @@ class SchedulingPolicyService(asab.Service):
 
     def _get_selected_node(self):
         return self.selected_node_id
+
+    def sync_dynamic_round_robin(self):
+        L.warning("I am using Dynamic Round-Robin")
+        self.selected_node_id += 1
+
+        if self.selected_node_id >= self.max_node:
+            self.selected_node_id = 0  # Reset
+
+        L.warning("#### ***** checking the status of selected node_id:")
+        t0_wait_node = time.time()
+        self._sync_wait_until_ready(self.selected_node_id)
+        t1_wait_node = (time.time() - t0_wait_node) * 1000
+        # print('\nLatency [Waiting node to be ready] in: (%.5f ms)' % t1_wait_node)
+        L.warning('\nLatency [Waiting node to be ready] in: (%.5f ms)' % t1_wait_node)
+
+        # Set selected node as busy (idle=False); "0" == False
+        self._sync_set_idle_status(self.selected_node_id, False)
 
     def sync_round_robin(self):
         L.warning("I am using Round-Robin")
