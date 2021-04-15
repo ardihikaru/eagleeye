@@ -59,6 +59,7 @@ class ObjectDetectionHandler(MyRedis):
 
         # private rest APIs
         self.pcs_url = asab.Config["pcs:api"]["url"]
+        self.pv_url = asab.Config["pv:api"]["url"]
 
     def _dict2list(self, dict_data):
         list_data = []
@@ -139,6 +140,34 @@ class ObjectDetectionHandler(MyRedis):
                     return resp_json.get("mbbox_data", []), resp_json.get("selected_pairs", [])
         except Exception as e:
             L.error("[PCS ERROR] `{}`".format(e))
+            return [], []
+
+    async def send_pv_request(self, frame_id, total_pih_candidates, period_pih_candidates):
+        request_json = {
+            "frame_id": frame_id,
+            "total_pih_candidates": total_pih_candidates,
+            "period_pih_candidates": period_pih_candidates,
+        }
+
+        try:
+            async with aiohttp.ClientSession() as session:
+                resp = await session.post(
+                    self.pv_url,
+                    data=json.dumps(request_json)
+                )
+
+                if resp.status != 200:
+                    L.error("Can't get a proper response. Server responded with code '{}':\n{}".format(
+                        resp.status,
+                        await resp.text()
+                    ))
+                    return [], []
+                else:
+                    r = await resp.json()
+                    resp_json = r.get("data")
+                    return resp_json.get("mbbox_data", []), resp_json.get("selected_pairs", [])
+        except Exception as e:
+            L.error("[PV ERROR] `{}`".format(e))
             return [], []
 
     async def start(self):
@@ -249,9 +278,20 @@ class ObjectDetectionHandler(MyRedis):
 
                         # mbbox_data_pv = await self.PersValService.predict_mbbox(mbbox_data)
                         t0_pv = time.time()
-                        label, det_status = await self.PersValService.validate_mbbox(frame_id,
-                                                                                     self.total_pih_candidates,
-                                                                                     self.period_pih_candidates)
+
+                        if self.pv_is_microservice:
+                            label, det_status = await self.send_pv_request(
+                                frame_id,
+                                self.total_pih_candidates,
+                                self.period_pih_candidates
+                            )
+                        else:
+                            label, det_status = await self.PersValService.validate_mbbox(
+                                frame_id,
+                                self.total_pih_candidates,
+                                self.period_pih_candidates
+                            )
+
                         await self._maintaince_period_pih_cand()
                         t1_pv = (time.time() - t0_pv) * 1000
                         # print('\n[%s] Latency of Persistence Detection Algorithm (%.3f ms)' %
