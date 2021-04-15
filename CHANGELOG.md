@@ -1,3 +1,16 @@
+## v7.1.1-native (April 16, 2021)
+  - Merge pull request #30 from ardihikaru/feature/detection-latency
+  - add & save other latency: `from_numpy`, `image4yolo`, and `pred`
+  - Merge pull request #29 from ardihikaru/feature/dynamic-round-robin
+  - add unittest for scheduling policy runner
+  - bugfix: wrong iteration values
+  - add scheduling policy from config
+  - add scheduling policy config
+  - code refactor
+  - add new package
+  - rename
+  - Merge branch 'release/v7.1.0-native' into develop
+
 ## v7.1.0-native (April 14, 2021)
   - Merge pull request #28 from ardihikaru/feature/plugin/zenoh-integration
   - add initial dockerfile (not tested yet!)
