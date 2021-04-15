@@ -1,3 +1,8 @@
+## v7.1.2-native (April 16, 2021)
+  - Merge pull request #31 from ardihikaru/feature/scheduling-measurement
+  - bugfix: change scheduling policy name when storing into DB
+  - Merge branch 'release/v7.1.1-native' into develop
+
 ## v7.1.1-native (April 16, 2021)
   - Merge pull request #30 from ardihikaru/feature/detection-latency
   - add & save other latency: `from_numpy`, `image4yolo`, and `pred`
