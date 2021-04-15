@@ -126,7 +126,8 @@ class DetectionAlgorithmService(asab.Service):
             # TODO: To add GPU-based downsample function
 
             # Perform object detection
-            bbox_data, det, names, yolo_lat = self.detection.get_detection_results(resized_frame, frame)
+            bbox_data, det, names, yolo_lat, from_numpy_lat, image4yolo_lat, pred_lat = \
+                self.detection.get_detection_results(resized_frame, frame)
 
         except Exception as e:
             L.error("[ERROR]: %s" % str(e))

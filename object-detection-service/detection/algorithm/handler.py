@@ -188,7 +188,8 @@ class ObjectDetectionHandler(MyRedis):
 
                 # Start performing object detection
                 L.warning("Start performing object detection")
-                bbox_data, det, names, pre_proc_lat, yolo_lat = await self.DetectionAlgorithmService.detect_object(img)
+                bbox_data, det, names, pre_proc_lat, yolo_lat, from_numpy_lat, image4yolo_lat, pred_lat = \
+                    await self.DetectionAlgorithmService.detect_object(img)
 
                 # build & submit latency data: Pre-processing
                 L.warning("build & submit latency data: Pre-processing")
@@ -197,6 +198,11 @@ class ObjectDetectionHandler(MyRedis):
                 # build & submit latency data: YOLO
                 L.warning("build & submit latency data: YOLO")
                 await self._save_latency(frame_id, yolo_lat, image_info["algorithm"], "detection", "Object Detection")
+
+                # save other proc. latency
+                await self._save_latency(frame_id, from_numpy_lat, image_info["algorithm"], "detection", "from_numpy")
+                await self._save_latency(frame_id, image4yolo_lat, image_info["algorithm"], "detection", "image4yolo")
+                await self._save_latency(frame_id, pred_lat, image_info["algorithm"], "detection", "pred")
 
                 # Get img information
                 h, w, c = img.shape
