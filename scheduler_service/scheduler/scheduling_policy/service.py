@@ -19,17 +19,12 @@ class SchedulingPolicyService(asab.Service):
 
 	def __init__(self, app, service_name="scheduler.SchedulingPolicyService"):
 		super().__init__(app, service_name)
-		# print(" ## SchedulingPolicyService")
-		# self.selected_node_id = selected_node_id
-		# self.max_node = max_node
 
-		# if avail_nodes is None:
-		#     avail_nodes = []
-		# self.avail_nodes = avail_nodes
-		# self.selected_node_id = 0
-		# self.max_node = 1
-		# self.avail_nodes = []
-		# self.rd = MyRedis(asab.Config)
+		# init default value
+		self.selected_node_id = 0
+		self.max_node = 1
+		self.avail_nodes = []
+		self.rd = None
 
 	async def initialize(self, app, asab_config=None):
 		self.selected_node_id = 0
@@ -52,9 +47,10 @@ class SchedulingPolicyService(asab.Service):
 	async def init_available_nodes(self, avail_nodes):
 		t0_shm = time.time()
 		for node in avail_nodes:
-			node_idx = int(node["id"]) - 1
-			redis_key = str(node_idx) + "_status"  # node_id here starts from `1`
 			# redis_key = node["id"] + "_status"  # node_id here starts from `1`
+
+			node_idx = int(node["id"]) - 1  # node_id here starts from `0`
+			redis_key = str(node_idx) + "_status"
 			redis_set(self.rd.get_rc(), redis_key, True)
 
 			self.avail_nodes.append({
@@ -76,8 +72,10 @@ class SchedulingPolicyService(asab.Service):
 			self.sync_round_robin()
 		elif sch_policy == "dynamic_round_robin":
 			self.sync_dynamic_round_robin()
+
+		# default policy
 		else:
-			self.sync_round_robin()
+			self.sync_dynamic_round_robin()
 
 		return self._get_selected_node()
 
