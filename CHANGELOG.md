@@ -1,3 +1,9 @@
+## v7.1.4-native (April 16, 2021)
+  - Merge branch 'bugfix/unittest-round-robin' into develop
+  - add assert
+  - rename
+  - Merge branch 'release/v7.1.3-native' into develop
+
 ## v7.1.3-native (April 16, 2021)
   - Merge pull request #32 from ardihikaru/feature/persistance-validation-service
   - Merge branch 'release/v7.1.2-native' into develop
