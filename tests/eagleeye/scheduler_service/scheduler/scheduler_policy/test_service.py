@@ -55,18 +55,11 @@ class TestSchedulingPolicyService(aiounittest.AsyncTestCase, SchedulingPolicySer
 
 		return avail_nodes_obj
 
-	async def async_add(self, x, y, delay=0.1):
-		await asyncio.sleep(delay)
-		return x + y
-
-	async def test_await_async_add(self):
-		ret = await self.async_add(1, 5)
-		self.assertEqual(ret, 6)
-
 	async def test_schedule_rr(self):
 		avail_nodes = await self.build_avail_nodes_obj()
 		await self.initialize(self, self.asab_config)
 		await self.init_available_nodes(avail_nodes)
+		# print(self.avail_nodes)
 
 		# set default current node_id
 		self.selected_node_id = 2
@@ -75,7 +68,28 @@ class TestSchedulingPolicyService(aiounittest.AsyncTestCase, SchedulingPolicySer
 		self.max_node = self.max_node_data
 
 		sel_node_id = self.sync_schedule(max_node=self.max_node, sch_policy=self.sch_policy_01)
+		self.assertEqual(3, sel_node_id)
 		L.warning("[RESULT] Selected NodeID = `{}`".format(sel_node_id))
+
+	# async def test_schedule_rr_test_two(self):
+	# 	avail_nodes = await self.build_avail_nodes_obj()
+	# 	await self.initialize(self, self.asab_config)
+	# 	await self.init_available_nodes(avail_nodes)
+	#
+	# 	# set next node_ids (=`3`) as busy
+	# 	busy_nodes = [3]  # index 3-th; only index 0-th is available
+	# 	await self.init_available_nodes(avail_nodes, busy_nodes)
+	# 	print(self.avail_nodes)
+	#
+	# 	# set default current node_id
+	# 	self.selected_node_id = 2
+	#
+	# 	# set default `max_node`
+	# 	self.max_node = self.max_node_data
+	#
+	# 	sel_node_id = self.sync_schedule(max_node=self.max_node, sch_policy=self.sch_policy_01)
+	# 	self.assertEqual(4, sel_node_id)
+	# 	L.warning("[RESULT] Selected NodeID = `{}`".format(sel_node_id))
 
 	async def test_schedule_drr_no_obstacle_test_one(self):
 		avail_nodes = await self.build_avail_nodes_obj()
@@ -83,7 +97,7 @@ class TestSchedulingPolicyService(aiounittest.AsyncTestCase, SchedulingPolicySer
 		await self.init_available_nodes(avail_nodes)
 
 		# set next node_ids (=`2`) as busy
-		busy_nodes = [2]  # index 1-th, 2-th, 3-th; only index 0-th is available
+		busy_nodes = [2]  # index 2-th; only index 0-th is available
 		await self.init_available_nodes(avail_nodes, busy_nodes)
 
 		# set default current node_id
