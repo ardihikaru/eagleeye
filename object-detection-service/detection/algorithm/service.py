@@ -120,6 +120,7 @@ class DetectionAlgorithmService(asab.Service):
         # print("####[%s]##### START OBJECT DETECTION" % self.node_alias)
         L.warning("####[%s]##### START OBJECT DETECTION" % self.node_alias)
         bbox_data, det, names, pre_proc_lat, yolo_lat = None, None, None, None, None
+        from_numpy_lat, image4yolo_lat, pred_lat = None, None, None
         try:
             # Perform conversion first!
             resized_frame, pre_proc_lat = await self.ResizerService.cpu_convert_to_padded_size(frame)
@@ -132,7 +133,9 @@ class DetectionAlgorithmService(asab.Service):
         except Exception as e:
             L.error("[ERROR]: %s" % str(e))
             await self.SubscriptionHandler.stop()
-        return bbox_data, det, names, pre_proc_lat, yolo_lat
+
+        # return bbox_data, det, names, pre_proc_lat, yolo_lat
+        return bbox_data, det, names, pre_proc_lat, yolo_lat, from_numpy_lat, image4yolo_lat, pred_lat
 
     async def delete_node_information(self, node_id):
         delete_uri = self.node_api_uri + "/" + node_id

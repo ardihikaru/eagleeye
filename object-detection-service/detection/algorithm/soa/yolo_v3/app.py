@@ -135,9 +135,9 @@ class YOLOv3(YOLOFunctions):
         pred = non_max_suppression(pred, self.conf["conf_thres"], self.conf["iou_thres"],
                                    classes=None,
                                    agnostic=self.conf["agnostic_nms"])
-        t1_nms = ((time.time() - t0_nms) * 1000)
-        # print('\n # Total Non-Maximum Suppression (NMS) time: (%.3f ms)' % t1_nms)
-        L.warning('\n # Total Non-Maximum Suppression (NMS) time: (%.3f ms)' % t1_nms)
+        tdiff_nms = ((time.time() - t0_nms) * 1000)
+        # print('\n # Total Non-Maximum Suppression (NMS) time: (%.3f ms)' % tdiff_nms)
+        L.warning('\n # Total Non-Maximum Suppression (NMS) time: (%.3f ms)' % tdiff_nms)
 
         # Get detection
         t0_get_detection = time.time()

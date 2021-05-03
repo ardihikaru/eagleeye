@@ -214,7 +214,11 @@ class ExtractorService(asab.Service):
 						if bool(int(asab.Config["stream:config"]["test_mode"])):
 							sel_node_id = 0
 						else:
-							sel_node_id = await self.SchPolicyService.schedule(max_node=len(senders["node"]))
+							# sel_node_id = await self.SchPolicyService.schedule(max_node=len(senders["node"]))
+							sel_node_id = await self.SchPolicyService.schedule(
+								max_node=len(senders["node"]),
+								sch_policy=self.scheduler_policy
+							)
 						L.warning("Selected Node idx: %s" % str(sel_node_id))
 					except Exception as e:
 						L.error("[ERROR]: %s" % str(e))
@@ -713,7 +717,6 @@ class ExtractorService(asab.Service):
 			except Exception as e:
 				L.error("[ERROR]: %s" % str(e))
 			t1_sched_lat = (time.time() - t0_sched_lat) * 1000
-			# TODO: To implement scheduler here and find which node will be selected
 
 			# First, notify the Object Detection Service to get ready (publish)
 			node_id = _senders["node"][sel_node_id]["id"]
