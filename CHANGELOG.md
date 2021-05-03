@@ -1,3 +1,8 @@
+## 7.1.5-native (May 03, 2021)
+  - Merge branch 'bugfix/unable-to-run-scheduler-service' into develop
+  - bugfix: wrong key
+  - Merge branch 'release/v7.1.4-native' into develop
+
 ## v7.1.4-native (April 16, 2021)
   - Merge branch 'bugfix/unittest-round-robin' into develop
   - add assert
