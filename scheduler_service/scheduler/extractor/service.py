@@ -69,7 +69,7 @@ class ExtractorService(asab.Service):
 		self.comsumer_type = asab.Config["zenoh"].getint("comsumer_type")
 
 		# Scheduling policy
-		self.scheduler_policy = asab.Config["scheduler_policy"]["dynamic_round_robin"]
+		self.scheduler_policy = asab.Config["scheduler_policy"]["policy"]
 
 	# async def extract_folder(self, config, senders):
 	# TODO: This function is currently not being tested YET

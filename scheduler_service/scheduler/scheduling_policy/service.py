@@ -49,7 +49,7 @@ class SchedulingPolicyService(asab.Service):
 		for node in avail_nodes:
 			# redis_key = node["id"] + "_status"  # node_id here starts from `1`
 
-			node_idx = int(node["id"]) - 1  # node_id here starts from `0`
+			node_idx = int(node["name"]) - 1  # node_id here starts from `0`
 			redis_key = str(node_idx) + "_status"
 			redis_set(self.rd.get_rc(), redis_key, True)
 
