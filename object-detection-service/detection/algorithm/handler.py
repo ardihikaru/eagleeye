@@ -372,6 +372,8 @@ class ObjectDetectionHandler(MyRedis):
                                   (get_current_time(), t1_plotinfo_saving))
 
                 # Else, No object detected!
+                else:
+                    L.warning("[DETECTION_RESULT] Unable to detect any valid objects in frame-{}".format(frame_id))
 
                 # Set this node as available again
                 redis_set(self.rc, redis_key, True)
