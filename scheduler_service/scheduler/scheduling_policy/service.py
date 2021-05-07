@@ -122,7 +122,7 @@ class SchedulingPolicyService(asab.Service):
 			# trying to get node status
 			redis_key = self.avail_nodes[self.selected_node_id]["redis_key"]
 			# L.warning(" >>> [self.avail_nodes]: `{}`".format(self.avail_nodes))
-			L.warning(" >>> [self.selected_node_id]: `{}`".format(self.selected_node_id))
+			# L.warning(" >>> [self.selected_node_id]: `{}`".format(self.selected_node_id))
 			# L.warning(" >>> [redis_key]: `{}`".format(redis_key))
 			# L.warning(" >>> [redis_key VALUE]: `{}`\n\n".format(redis_get(self.rd.get_rc(), redis_key)))
 			if redis_get(self.rd.get_rc(), redis_key):

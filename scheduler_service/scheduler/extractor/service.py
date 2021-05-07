@@ -10,7 +10,8 @@ import time
 import simplejson as json
 from concurrent.futures import ThreadPoolExecutor
 from ext_lib.utils import get_imagezmq
-from scheduler.extractor.zenoh_pubsub.zenoh_net_subscriber import ZenohNetSubscriber
+# from scheduler.extractor.zenoh_pubsub.zenoh_net_subscriber import ZenohNetSubscriber
+from zenoh_lib.zenoh_net_subscriber import ZenohNetSubscriber
 from .zenoh_pubsub.functions import extract_compressed_tagged_img
 import numpy as np
 from datetime import datetime
@@ -247,7 +248,15 @@ class ExtractorService(asab.Service):
 					if not bool(int(asab.Config["stream:config"]["test_mode"])):
 						t0_publish = time.time()
 						L.warning("[%s] Publishing image into Redis channel: %s" % (get_current_time(), node_channel))
-						dump_request = json.dumps({"active": True, "algorithm": config["algorithm"], "ts": time.time()})
+
+						# TODO: enrich with a specific drone ID
+						# with current implementation, it unable to differenciate img sources
+						dump_request = json.dumps({
+							"active": True,
+							"algorithm": config["algorithm"],
+							"ts": time.time()
+						})
+
 						pub(self.redis.get_rc(), node_channel, dump_request)
 						t1_publish = (time.time() - t0_publish) * 1000
 						# TODO: Saving latency for scheduler:producer:notification:image
@@ -676,9 +685,9 @@ class ExtractorService(asab.Service):
 		_senders = self.ZMQService.get_senders()
 		_config = self.ZMQService.get_config()
 
-		t1_decoding = (time.time() - t0_decoding) * 1000
-		L.warning(
-		    ('\n[%s] Latency reformat image (%.3f ms) \n' % (datetime.now().strftime("%H:%M:%S"), t1_decoding)))
+		# t1_decoding = (time.time() - t0_decoding) * 1000
+		# L.warning(
+		#     ('\n[%s] Latency reformat image (%.3f ms) \n' % (datetime.now().strftime("%H:%M:%S"), t1_decoding)))
 		# ######################## END for tuple data
 		# ########################
 
@@ -740,7 +749,15 @@ class ExtractorService(asab.Service):
 			if not bool(int(asab.Config["stream:config"]["test_mode"])):
 				t0_publish = time.time()
 				L.warning("[%s] Publishing image into Redis channel: %s" % (get_current_time(), node_channel))
-				dump_request = json.dumps({"active": True, "algorithm": _config["algorithm"], "ts": time.time()})
+
+				# TODO: enrich with drone ID information
+				dump_request = json.dumps({
+					"active": True,
+					"algorithm": _config["algorithm"],
+					"ts": time.time(),
+					"drone_id": int(img_info["id"]),
+				})
+
 				pub(self.redis.get_rc(), node_channel, dump_request)
 				t1_publish = (time.time() - t0_publish) * 1000
 				# TODO: Saving latency for scheduler:producer:notification:image
@@ -796,8 +813,8 @@ class ExtractorService(asab.Service):
 		kwargs = {
 			"listener": listener,
 			"selector": selector,
-			# "senders": senders,
 		}
+		L.warning("[ZENOH_CONSUMER] {}".format(kwargs))
 		executor.submit(self._start_zenoh, **kwargs)
 
 	async def _set_cap(self, config):

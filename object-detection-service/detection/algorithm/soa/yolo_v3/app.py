@@ -113,7 +113,7 @@ class YOLOv3(YOLOFunctions):
         try:
             pred = self.model(image4yolo)[0]
         except Exception as e:
-            L.error("[ERROR]: %s" % str(e))
+            L.error("[ERROR][get_detection_results]: %s" % str(e))
         tdiff_pred = (time.time() - t0_pred) * 1000  # to ms
 
         tdiff_inference = (time.time() - t0_det) * 1000  # to ms
@@ -141,7 +141,7 @@ class YOLOv3(YOLOFunctions):
 
         # Get detection
         t0_get_detection = time.time()
-        bbox_data = None
+        bbox_data = []
         det = None
         for i, det in enumerate(pred):  # detections per image
             if det is not None and len(det):  # run ONCE
@@ -168,11 +168,6 @@ class YOLOv3(YOLOFunctions):
     def _extract_detection_results(self, det):
         # print("@@@@ _extract_detection_results....")
         """ A function to do optional actions: Save cropped file, bbox in txt, bbox images """
-        # t0_copy_image = time.time()
-        # original_img = raw_img.copy()
-        # t1_copy_image = (time.time() - t0_copy_image) * 1000  # to ms
-        # print('[%s] Latency of copying image data of frame-%s (%.3f ms)' % (get_current_time(), str(this_frame_id),
-        #                                                                     t1_copy_image))
 
         # TODO: We can do the parallel computation to enhance the performance further!
         # Draw BBox information into images

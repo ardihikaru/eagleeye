@@ -170,6 +170,115 @@ class ObjectDetectionHandler(MyRedis):
             L.error("[PV ERROR] `{}`".format(e))
             return [], []
 
+    async def _save_detection_related_latency(self, pre_proc_lat, yolo_lat, from_numpy_lat,
+                                                         image4yolo_lat, pred_lat):
+        # build & submit latency data: Pre-processing
+        L.warning("build & submit latency data: Pre-processing")
+        await self._save_latency(frame_id, pre_proc_lat, "N/A", "preproc_det", "Pre-processing")
+
+        # build & submit latency data: YOLO
+        L.warning("build & submit latency data: YOLO")
+        await self._save_latency(frame_id, yolo_lat, image_info["algorithm"], "detection", "Object Detection")
+
+        # save other proc. latency
+        await self._save_latency(frame_id, from_numpy_lat, image_info["algorithm"], "detection", "from_numpy")
+        await self._save_latency(frame_id, image4yolo_lat, image_info["algorithm"], "detection", "image4yolo")
+        await self._save_latency(frame_id, pred_lat, image_info["algorithm"], "detection", "pred")
+
+    async def _exec_extra_pipeline(self, img, bbox_data, mbbox_data, plot_info):
+        # Get img information
+        h, w, c = img.shape
+
+        # Performing Candidate Selection Algorithm, if enabled
+        L.warning("Performing Candidate Selection Algorithm, if enabled")
+        if self.cs_enabled and det is not None:
+            # print("***** [%s] Performing Candidate Selection Algorithm" % self.node_alias)
+            L.warning("***** [%s] Performing Candidate Selection Algorithm" % self.node_alias)
+            t0_cs = time.time()
+
+            # convert torch `det` into list `det`
+            list_det = torch2list_det(det)
+
+            if self.pcs_is_microservice:
+                mbbox_data, self._selected_pairs = await self.send_pcs_request(
+                    bbox_data, list_det, names, h, w, c, self._selected_pairs
+                )
+            else:
+                mbbox_data, self._selected_pairs = await self.CandidateSelectionService.calc_mbbox(
+                    bbox_data, det, names, h, w, c, self._selected_pairs
+                )
+
+            t1_cs = (time.time() - t0_cs) * 1000
+            # print('\n[%s] Latency of Candidate Selection Algo. (%.3f ms)' % (get_current_time(), t1_cs))
+            L.warning('\n[%s] Latency of Candidate Selection Algo. (%.3f ms)' % (get_current_time(), t1_cs))
+
+            # build & submit latency data: PiH Candidate Selection
+            await self._save_latency(frame_id, t1_cs, "PiH Candidate Selection", "candidate_selection",
+                                     "Extra Pipeline")
+
+            # Performing Persistence Validation Algorithm, if enabled
+            if self.pv_enabled and len(mbbox_data) > 0:
+                # print("***** [%s] Performing Persistence Validation Algorithm" % self.node_alias)
+                L.warning("***** [%s] Performing Persistence Validation Algorithm" % self.node_alias)
+
+                # Increment PiH candidates
+                self.total_pih_candidates += 1
+                self.period_pih_candidates.append(int(frame_id))
+
+                # mbbox_data_pv = await self.PersValService.predict_mbbox(mbbox_data)
+                t0_pv = time.time()
+
+                if self.pv_is_microservice:
+                    label, det_status = await self.send_pv_request(
+                        frame_id,
+                        self.total_pih_candidates,
+                        self.period_pih_candidates
+                    )
+                else:
+                    label, det_status = await self.PersValService.validate_mbbox(
+                        frame_id,
+                        self.total_pih_candidates,
+                        self.period_pih_candidates
+                    )
+
+                await self._maintaince_period_pih_cand()
+                t1_pv = (time.time() - t0_pv) * 1000
+                # print('\n[%s] Latency of Persistence Detection Algorithm (%.3f ms)' %
+                #       (get_current_time(), t1_pv))
+                L.warning('\n[%s] Latency of Persistence Detection Algorithm (%.3f ms)' %
+                          (get_current_time(), t1_pv))
+
+                # build & submit latency data: PiH Persistence Validation
+                await self._save_latency(frame_id, t1_pv, "PiH Persistence Validation", "persistence_validation",
+                                         "Extra Pipeline")
+            else:
+                # Set default label, in case PV algorithm is DISABLED
+                label = asab.Config["bbox_config"]["pih_label"]
+                det_status = label + " object FOUND"
+
+            # If MBBox data available, build plot_info
+            if len(mbbox_data) > 0:
+
+                color = asab.Config["bbox_config"]["pih_color"].strip('][').split(', ')
+                for i in range(len(color)):
+                    color[i] = int(color[i])
+
+                # collect latest GPS Data
+                gps_data = await self.GPSCollectorService.get_gps_data()
+
+                plot_info = {
+                    "bbox": bbox_data,
+                    "mbbox": mbbox_data,
+                    "color": color,
+                    "label": label,
+                    "gps_data": gps_data
+                }
+
+            L.warning("\n[%s][%s]Frame-%s label=[%s], det_status=[%s]" %
+                      (get_current_time(), self.node_alias, str(frame_id), label, det_status))
+
+        return mbbox_data, plot_info
+
     async def start(self):
         channel = "node-" + self.node_id
         L.warning("\n[%s][%s] YOLOv3Handler try to subsscribe to channel `%s` from [Scheduler Service]" %
@@ -187,6 +296,24 @@ class ObjectDetectionHandler(MyRedis):
                       (get_current_time(), self.node_alias))
             else:
                 # TODO: To tag the corresponding drone_id to identify where the image came from (Future work)
+                """
+                Sender: 
+                
+                Previous data:
+                {
+                    'active': True, 
+                    'algorithm': 'YOLOv3', 
+                    'ts': 1620022172.6399865
+                }
+                
+                New data:
+                {
+                    'active': True, 
+                    'algorithm': 'YOLOv3', 
+                    'ts': 1620022172.6399865,
+                    'drone_id': 1,
+                }
+                """
                 image_info = pubsub_to_json(item["data"])
                 L.warning("Collecting Image Info")
                 L.warning(json.dumps(image_info))
@@ -217,130 +344,34 @@ class ObjectDetectionHandler(MyRedis):
 
                 # Start performing object detection
                 L.warning("Start performing object detection")
+                # bbox_data, det, names, (tdiff_inference + tdiff_nms), tdiff_from_numpy, tdiff_image4yolo, tdiff_pred
+                #  bbox_data, det, names, yolo_lat, from_numpy_lat, image4yolo_lat, pred_lat
                 bbox_data, det, names, pre_proc_lat, yolo_lat, from_numpy_lat, image4yolo_lat, pred_lat = \
                     await self.DetectionAlgorithmService.detect_object(img)
-
-                # build & submit latency data: Pre-processing
-                L.warning("build & submit latency data: Pre-processing")
-                await self._save_latency(frame_id, pre_proc_lat, "N/A", "preproc_det", "Pre-processing")
-
-                # build & submit latency data: YOLO
-                L.warning("build & submit latency data: YOLO")
-                await self._save_latency(frame_id, yolo_lat, image_info["algorithm"], "detection", "Object Detection")
-
-                # save other proc. latency
-                await self._save_latency(frame_id, from_numpy_lat, image_info["algorithm"], "detection", "from_numpy")
-                await self._save_latency(frame_id, image4yolo_lat, image_info["algorithm"], "detection", "image4yolo")
-                await self._save_latency(frame_id, pred_lat, image_info["algorithm"], "detection", "pred")
-
-                # Get img information
-                h, w, c = img.shape
 
                 # Set default `mbbox_data` and `plot_info` values
                 mbbox_data = []
                 plot_info = {}
+                if len(bbox_data) > 0:  # detected objects
+                    # save latecny
+                    await self._save_detection_related_latency(pre_proc_lat, yolo_lat, from_numpy_lat,
+                                                         image4yolo_lat, pred_lat)
+                    # execute PiH Candidate Selection & PiH Persitance Validation
+                    mbbox_data, plot_info = await self._exec_extra_pipeline(img, bbox_data, mbbox_data, plot_info)
 
-                # Performing Candidate Selection Algorithm, if enabled
-                L.warning("Performing Candidate Selection Algorithm, if enabled")
-                if self.cs_enabled and det is not None:
-                    # print("***** [%s] Performing Candidate Selection Algorithm" % self.node_alias)
-                    L.warning("***** [%s] Performing Candidate Selection Algorithm" % self.node_alias)
-                    t0_cs = time.time()
+                    # If enable visualizer, send the bbox into the Visualizer Service
+                    if self.cv_out:
+                        L.warning("\n[%s][%s][%s] Store Box INTO Visualizer Service!" %
+                                  (get_current_time(), self.node_alias, str(frame_id)))
+                        t0_plotinfo_saving = time.time()
+                        drone_id = asab.Config["stream:config"]["drone_id"]
+                        plot_info_key = "plotinfo-drone-%s-frame-%s" % (drone_id, str(frame_id))
+                        redis_set(self.rc, plot_info_key, plot_info, expired=10)  # delete value after 10 seconds
+                        t1_plotinfo_saving = (time.time() - t0_plotinfo_saving) * 1000
+                        L.warning('\n[%s] Latency of Storing Plot info in redisDB (%.3f ms)' %
+                                  (get_current_time(), t1_plotinfo_saving))
 
-                    # convert torch `det` into list `det`
-                    list_det = torch2list_det(det)
-
-                    if self.pcs_is_microservice:
-                        mbbox_data, self._selected_pairs = await self.send_pcs_request(
-                            bbox_data, list_det, names, h, w, c, self._selected_pairs
-                        )
-                    else:
-                        mbbox_data, self._selected_pairs = await self.CandidateSelectionService.calc_mbbox(
-                            bbox_data, det, names, h, w, c, self._selected_pairs
-                        )
-
-                    t1_cs = (time.time() - t0_cs) * 1000
-                    # print('\n[%s] Latency of Candidate Selection Algo. (%.3f ms)' % (get_current_time(), t1_cs))
-                    L.warning('\n[%s] Latency of Candidate Selection Algo. (%.3f ms)' % (get_current_time(), t1_cs))
-
-                    # build & submit latency data: PiH Candidate Selection
-                    await self._save_latency(frame_id, t1_cs, "PiH Candidate Selection", "candidate_selection",
-                                             "Extra Pipeline")
-
-                    # Performing Persistence Validation Algorithm, if enabled
-                    if self.pv_enabled and len(mbbox_data) > 0:
-                        # print("***** [%s] Performing Persistence Validation Algorithm" % self.node_alias)
-                        L.warning("***** [%s] Performing Persistence Validation Algorithm" % self.node_alias)
-
-                        # Increment PiH candidates
-                        self.total_pih_candidates += 1
-                        self.period_pih_candidates.append(int(frame_id))
-
-                        # mbbox_data_pv = await self.PersValService.predict_mbbox(mbbox_data)
-                        t0_pv = time.time()
-
-                        if self.pv_is_microservice:
-                            label, det_status = await self.send_pv_request(
-                                frame_id,
-                                self.total_pih_candidates,
-                                self.period_pih_candidates
-                            )
-                        else:
-                            label, det_status = await self.PersValService.validate_mbbox(
-                                frame_id,
-                                self.total_pih_candidates,
-                                self.period_pih_candidates
-                            )
-
-                        await self._maintaince_period_pih_cand()
-                        t1_pv = (time.time() - t0_pv) * 1000
-                        # print('\n[%s] Latency of Persistence Detection Algorithm (%.3f ms)' %
-                        #       (get_current_time(), t1_pv))
-                        L.warning('\n[%s] Latency of Persistence Detection Algorithm (%.3f ms)' %
-                              (get_current_time(), t1_pv))
-
-                        # build & submit latency data: PiH Persistence Validation
-                        await self._save_latency(frame_id, t1_pv, "PiH Persistence Validation", "persistence_validation",
-                                                 "Extra Pipeline")
-                    else:
-                        # Set default label, in case PV algorithm is DISABLED
-                        label = asab.Config["bbox_config"]["pih_label"]
-                        det_status = label + " object FOUND"
-
-                    # If MBBox data available, build plot_info
-                    if len(mbbox_data) > 0:
-
-                        color = asab.Config["bbox_config"]["pih_color"].strip('][').split(', ')
-                        for i in range(len(color)):
-                            color[i] = int(color[i])
-
-                        # collect latest GPS Data
-                        gps_data = await self.GPSCollectorService.get_gps_data()
-
-                        plot_info = {
-                            "bbox": bbox_data,
-                            "mbbox": mbbox_data,
-                            "color": color,
-                            "label": label,
-                            "gps_data": gps_data
-                        }
-
-                    # print("\n[%s][%s]Frame-%s label=[%s], det_status=[%s]" %
-                    #       (get_current_time(), self.node_alias, str(frame_id), label, det_status))
-                    L.warning("\n[%s][%s]Frame-%s label=[%s], det_status=[%s]" %
-                              (get_current_time(), self.node_alias, str(frame_id), label, det_status))
-
-                # If enable visualizer, send the bbox into the Visualizer Service
-                if self.cv_out:
-                    L.warning("\n[%s][%s][%s] Store Box INTO Visualizer Service!" %
-                              (get_current_time(), self.node_alias, str(frame_id)))
-                    t0_plotinfo_saving = time.time()
-                    drone_id = asab.Config["stream:config"]["drone_id"]
-                    plot_info_key = "plotinfo-drone-%s-frame-%s" % (drone_id, str(frame_id))
-                    redis_set(self.rc, plot_info_key, plot_info, expired=10)  # delete value after 10 seconds
-                    t1_plotinfo_saving = (time.time() - t0_plotinfo_saving) * 1000
-                    L.warning('\n[%s] Latency of Storing Plot info in redisDB (%.3f ms)' %
-                              (get_current_time(), t1_plotinfo_saving))
+                # Else, No object detected!
 
                 # Set this node as available again
                 redis_set(self.rc, redis_key, True)
