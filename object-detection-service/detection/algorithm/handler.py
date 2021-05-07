@@ -273,6 +273,8 @@ class ObjectDetectionHandler(MyRedis):
                     "label": label,
                     "gps_data": gps_data
                 }
+            else:
+                L.warning("[PCS_RESULT] Unable to detect any PiH objects in frame-{}".format(frame_id))
 
             L.warning("\n[%s][%s]Frame-%s label=[%s], det_status=[%s]" %
                       (get_current_time(), self.node_alias, str(frame_id), label, det_status))
