@@ -10,9 +10,8 @@ import time
 import simplejson as json
 from concurrent.futures import ThreadPoolExecutor
 from ext_lib.utils import get_imagezmq
-# from scheduler.extractor.zenoh_pubsub.zenoh_net_subscriber import ZenohNetSubscriber
 from zenoh_lib.zenoh_net_subscriber import ZenohNetSubscriber
-from .zenoh_pubsub.functions import extract_compressed_tagged_img
+from zenoh_lib.functions import extract_compressed_tagged_img
 import numpy as np
 from datetime import datetime
 
