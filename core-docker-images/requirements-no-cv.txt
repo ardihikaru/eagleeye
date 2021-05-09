@@ -23,3 +23,5 @@ torch
 torchvision
 imutils
 eclipse-zenoh
+aiounittest
+nose2
