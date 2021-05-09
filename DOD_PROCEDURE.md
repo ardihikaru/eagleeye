@@ -91,14 +91,45 @@
         mbbox_data = []
         plot_info = {}
         ...
-        if self.cv_out:
-            L.warning("\n[%s][%s][%s] Store Box INTO Visualizer Service!" %
-                      (get_current_time(), self.node_alias, str(frame_id)))
-            t0_plotinfo_saving = time.time()
-            drone_id = asab.Config["stream:config"]["drone_id"]
-            plot_info_key = "plotinfo-drone-%s-frame-%s" % (drone_id, str(frame_id))
-            redis_set(self.rc, plot_info_key, plot_info, expired=10)  # delete value after 10 seconds
-            t1_plotinfo_saving = (time.time() - t0_plotinfo_saving) * 1000
-            L.warning('\n[%s] Latency of Storing Plot info in redisDB (%.3f ms)' %
-                    (get_current_time(), t1_plotinfo_saving))           
+        # If enable visualizer, send the bbox into the Visualizer Service
+		if self.cv_out:
+			# Send processed frame info into sorter
+			# build channel
+			sorter_channel = "{}_{}".format(
+				self.ch_prefix,
+				str(image_info["drone_id"]),
+			)
+			# build frame sequence information
+			frame_seq_obj = {
+				"drone_id": int(image_info["drone_id"]),
+				"frame_id": int(frame_id),
+				"mbbox_data": mbbox_data,
+			}
+			pub(self.rc, sorter_channel, json.dumps(frame_seq_obj))
+
+			L.warning("\n[%s][%s][%s] Store Box INTO Visualizer Service!" %
+					  (get_current_time(), self.node_alias, str(frame_id)))
+			t0_plotinfo_saving = time.time()
+			drone_id = asab.Config["stream:config"]["drone_id"]
+			plot_info_key = "plotinfo-drone-%s-frame-%s" % (drone_id, str(frame_id))
+			redis_set(self.rc, plot_info_key, plot_info, expired=10)  # delete value after 10 seconds
+			t1_plotinfo_saving = (time.time() - t0_plotinfo_saving) * 1000
+			L.warning('\n[%s] Latency of Storing Plot info in redisDB (%.3f ms)' %
+					  (get_current_time(), t1_plotinfo_saving))  
         ```
+3. Sorter Service
+    - frame_seq_consumer/service.py (**Redis Consumer**)
+    ```
+    ...
+    async def start_subscription(self):
+		consumer = self.rc.pubsub()
+		consumer.subscribe([self.channel])
+		for item in consumer.listen():
+			if isinstance(item["data"], int):
+				L.warning("\n[{}] Starting subscription to channel `{}_{}`".format(
+						  get_current_time(), self.ch_prefix, self.sorter_id
+				))
+			else:
+				frame_seqs = pubsub_to_json(item["data"])
+    ...
+    ```

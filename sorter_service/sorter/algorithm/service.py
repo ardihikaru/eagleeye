@@ -17,10 +17,15 @@ class AlgorithmService(asab.Service):
 
     def __init__(self, app, service_name="sorter.AlgorithmService"):
         super().__init__(app, service_name)
-        self.sorter = Sorter()
+        self.sorter = Sorter(asab.Config["strategy"])
+        self.cn_size = asab.Config["strategy"].getint("max_pool")
 
     async def sort_frame_sequences(self, unsorted_frame_seqs):
-        self.sorter.initialize(unsorted_frame_seqs)
-        self.cs.run()
+        # initialize and run sortet network with the input
+        self.sorter.initialize(unsorted_frame_seqs, cn_size=self.cn_size)
+        self.sorter.run()
 
-        return sorted_frame_seqs
+        # collect sorted data
+        sorted_frame_seq = self.sorter.get_sorted_frame_seq()
+
+        return sorted_frame_seq

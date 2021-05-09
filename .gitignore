@@ -13,6 +13,7 @@ old_codes/hasil
 data
 output/
 ext_lib/
+sorter_service/etc/site.conf
 
 
 # Ignore site.conf in each micro-service
