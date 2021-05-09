@@ -54,7 +54,7 @@ class ExtractorService(asab.Service):
 
 		self.executor = ThreadPoolExecutor(int(asab.Config["thread"]["num_executor"]))
 
-		self.LatCollectorService = app.get_service("scheduler.LatencyCollectorService")
+		self.LatCollectorService = app.get_service("eagleeye.LatencyCollectorService")
 
 		self._is_running = True  # TODO: we need to dynamically adjust the value
 

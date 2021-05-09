@@ -19,6 +19,8 @@ class FrameIDConsumerService(asab.Service):
 	def __init__(self, app):
 		super().__init__(app, "sorter.FrameIDConsumerService")
 
+		self.lat_collector_svc = app.get_service("eagleeye.LatencyCollectorService")
+
 		self.algorithm_svc = app.get_service("sorter.AlgorithmService")
 
 		self.sorter_id = asab.Config["identity"].getint("id")
@@ -105,7 +107,18 @@ class FrameIDConsumerService(asab.Service):
 		While performing this sorting, the Consumer is halted for a while.
 		"""
 		# sort frame
+		t0_sorting = time.time()
 		sorted_seq = await self.algorithm_svc.sort_frame_sequences(unsorted_seq)
+		t1_sorting = (time.time() - t0_sorting) * 1000
+		L.warning('\n[%s] Latency of Sorting a frame sequence (%.3f ms)' %
+				  (get_current_time(), t1_sorting))
+
+		# build & submit latency data: Sorting
+		L.warning("\n[%s] build & submit latency data: Pre-processing" % get_current_time())
+		# IMPORTANT: `frame_id` is set into None
+		await self.lat_collector_svc.build_and_save_latency_info(
+			None, t1_sorting, "Sorting Network", "scheduling", "sorting"
+		)
 
 		# for each frame, send the result to the visualizer
 		if sorted_seq is not None:
@@ -115,7 +128,7 @@ class FrameIDConsumerService(asab.Service):
 			# update highest sequence id
 			self.highest_seq_id = sorted_seq[-1]
 
-			# TODO: sending detection result to the visualizer
+			# Send detection result to the visualizer
 			for frame_id in sorted_seq:
 				# extract drone_id for this frame_id
 				drone_id = data_pool[frame_id]["drone_id"]

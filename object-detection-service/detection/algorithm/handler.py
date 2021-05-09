@@ -32,7 +32,7 @@ class ObjectDetectionHandler(MyRedis):
 		self.PersValService = app.get_service("detection.PersistenceValidationService")
 		self.executor = ThreadPoolExecutor(int(asab.Config["thread"]["num_executor"]))
 
-		self.LatCollectorService = app.get_service("detection.LatencyCollectorService")
+		self.lat_collector_svc = app.get_service("eagleeye.LatencyCollectorService")
 		self.GPSCollectorService = app.get_service("detection.GPSCollectorService")
 
 		# Set node information
@@ -468,7 +468,7 @@ class ObjectDetectionHandler(MyRedis):
 			"node_name": node_name
 		}
 		# Submit and store latency data: Pre-processing
-		if not await self.LatCollectorService.store_latency_data_thread(preproc_latency_data):
+		if not await self.lat_collector_svc.store_latency_data_thread(preproc_latency_data):
 			await self.stop()
 		t1_preproc = (time.time() - t0_preproc) * 1000
 		# print('\n[%s] Proc. Latency of %s (%.3f ms)' % (get_current_time(), section, t1_preproc))

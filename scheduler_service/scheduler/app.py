@@ -5,7 +5,7 @@ from scheduler.tcp_camera_server import TCPCameraServerModule
 from scheduler.resizer import ResizerModule
 from scheduler.extractor import ExtractorModule
 from scheduler.reader import ReaderModule
-from scheduler.latency_collector import LatencyCollectorModule
+from latency.module import LatencyCollectorModule
 from mongoengine import connect
 from ext_lib.utils import get_current_time
 import logging

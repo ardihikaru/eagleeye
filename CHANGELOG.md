@@ -1,3 +1,11 @@
+## 7.1.7-native (May 09, 2021)
+  - Merge pull request #34 from ardihikaru/feature/sorter-latency-measurement
+  - code refactor: set Latency Collector Module as generalized module for other microservices
+  - code refactor: generalize function usage
+  - save sorting latency to database
+  - add generalized module
+  - Merge branch 'release/v7.1.6-native' into develop
+
 ## 7.1.6-native (May 09, 2021)
   - Merge pull request #33 from ardihikaru/feature/sorter-single-drone
   - implement logic to send plot_info result from sorter
