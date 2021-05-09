@@ -133,3 +133,5 @@
 				frame_seqs = pubsub_to_json(item["data"])
     ...
     ```
+4. Visualizer Service
+    - visualizer-service/visualizer/image_plotter/service.py

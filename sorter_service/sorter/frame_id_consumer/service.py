@@ -1,8 +1,10 @@
 import asab
 from enum import Enum
 import logging
+import time
 from ext_lib.utils import get_current_time, pubsub_to_json
 from ext_lib.redis.my_redis import MyRedis
+from ext_lib.redis.translator import redis_set
 
 ###
 
@@ -38,6 +40,28 @@ class FrameIDConsumerService(asab.Service):
 		)
 
 	async def start_subscription(self):
+		"""
+		Cansume data produced by: `detection/algorithm/handler.py`:
+		```
+			...
+			async def start(self):
+			...
+				# Send processed frame info into sorter
+				# build channel
+				sorter_channel = "{}_{}".format(
+					self.ch_prefix,
+					str(image_info["drone_id"]),
+				)
+				# build frame sequence information
+				frame_seq_obj = {
+					"drone_id": int(image_info["drone_id"]),
+					"frame_id": int(frame_id),
+					"plot_info": plot_info,
+				}
+				pub(self.rc, sorter_channel, json.dumps(frame_seq_obj))
+			...
+		```
+		"""
 		consumer = self.rc.pubsub()
 		consumer.subscribe([self.channel])
 
@@ -52,7 +76,7 @@ class FrameIDConsumerService(asab.Service):
 				detection_result = pubsub_to_json(item["data"])
 
 				# pull in captured data
-				data_pool[detection_result["frame_id"]]: detection_result
+				data_pool[detection_result["frame_id"]] = detection_result
 
 				unsorted_seq.append(detection_result["frame_id"])
 
@@ -93,4 +117,16 @@ class FrameIDConsumerService(asab.Service):
 
 			# TODO: sending detection result to the visualizer
 			for frame_id in sorted_seq:
-				print("### Sending detection of frame-{} to the visualizer.".format(frame_id))
+				# extract drone_id for this frame_id
+				drone_id = data_pool[frame_id]["drone_id"]
+				# extract plot info for this frame_id
+				plot_info = data_pool[frame_id]["plot_info"]
+				await self.send_plot_info_and_wait(drone_id, frame_id, plot_info)
+
+	async def send_plot_info_and_wait(self, drone_id, frame_id, plot_info):
+		t0_plotinfo_saving = time.time()
+		plot_info_key = "plotinfo-drone-%s-frame-%s" % (str(drone_id), str(frame_id))
+		redis_set(self.rc, plot_info_key, plot_info, expired=10)  # delete value after 10 seconds
+		t1_plotinfo_saving = (time.time() - t0_plotinfo_saving) * 1000
+		L.warning('\n[%s] Latency of Storing Plot info in redisDB (%.3f ms)' %
+				  (get_current_time(), t1_plotinfo_saving))

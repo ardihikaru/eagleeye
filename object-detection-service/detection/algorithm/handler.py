@@ -6,6 +6,7 @@ from ext_lib.redis.translator import redis_get, redis_set, pub
 import os
 from concurrent.futures import ThreadPoolExecutor
 import time
+from enum import Enum
 import numpy as np
 import simplejson as json
 from ext_lib.commons.opencv_helpers import get_det_xyxy, torch2list_det
@@ -19,6 +20,10 @@ L = logging.getLogger(__name__)
 ###
 
 class ObjectDetectionHandler(MyRedis):
+
+	class VizCommunicationMode(Enum):
+		DIRECT = "direct"
+		SORTER = "sorter"
 
 	def __init__(self, app):
 		super().__init__(asab.Config)
@@ -62,6 +67,7 @@ class ObjectDetectionHandler(MyRedis):
 
 		# sorter config
 		self.ch_prefix = asab.Config["sorter"]["ch_prefix"]
+		self.viz_com_mode = asab.Config["visualizer"]["viz_com_mode"]
 
 	def _dict2list(self, dict_data):
 		list_data = []
@@ -368,7 +374,9 @@ class ObjectDetectionHandler(MyRedis):
 					L.warning("[DETECTION_RESULT] Unable to detect any valid objects in frame-{}".format(frame_id))
 
 				# If enable visualizer, send the bbox into the Visualizer Service
-				if self.cv_out:
+				# mode 1: `sorter`
+				# mode 2: `direct`
+				if self.cv_out and self.viz_com_mode == self.VizCommunicationMode.SORTER.value:
 					# Send processed frame info into sorter
 					# build channel
 					sorter_channel = "{}_{}".format(
@@ -379,12 +387,13 @@ class ObjectDetectionHandler(MyRedis):
 					frame_seq_obj = {
 						"drone_id": int(image_info["drone_id"]),
 						"frame_id": int(frame_id),
-						"mbbox_data": mbbox_data,
+						"plot_info": plot_info,
 					}
 					pub(self.rc, sorter_channel, json.dumps(frame_seq_obj))
 
-					L.warning("\n[%s][%s][%s] Store Box INTO Visualizer Service!" %
-							  (get_current_time(), self.node_alias, str(frame_id)))
+					# IMPORTANT: it will send the detection result (plot_info) once sorted
+
+				elif self.cv_out and self.viz_com_mode == self.VizCommunicationMode.DIRECT.value:
 					t0_plotinfo_saving = time.time()
 					drone_id = asab.Config["stream:config"]["drone_id"]
 					plot_info_key = "plotinfo-drone-%s-frame-%s" % (drone_id, str(frame_id))
@@ -392,6 +401,9 @@ class ObjectDetectionHandler(MyRedis):
 					t1_plotinfo_saving = (time.time() - t0_plotinfo_saving) * 1000
 					L.warning('\n[%s] Latency of Storing Plot info in redisDB (%.3f ms)' %
 							  (get_current_time(), t1_plotinfo_saving))
+
+				L.warning("\n[%s][%s][%s] Store BBox INTO Visualizer Service!" %
+						  (get_current_time(), self.node_alias, str(frame_id)))
 
 				# Set this node as available again
 				redis_set(self.rc, redis_key, True)
