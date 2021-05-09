@@ -2,7 +2,7 @@ import asab
 import asab.storage
 import asab.web.session
 from detection.gps_collector import GPSCollectorModule
-from detection.latency_collector import LatencyCollectorModule
+from latency.module import LatencyCollectorModule
 from detection.zmq import ZMQModule
 from detection.resizer import ResizerModule
 from detection.candidate_selection import CandidateSelectionModule

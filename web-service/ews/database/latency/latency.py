@@ -9,7 +9,7 @@ import datetime
 # TODO: Add `drone_id` field to tag the image source
 class LatencyModel(Document):
     meta = {'collection': 'Latency'}
-    frame_id = IntField(required=True)
+    frame_id = IntField(required=False)  # bugfix: for Sorter latency, there is no `frame_id`!!
     category = StringField(required=True)
     algorithm = StringField(required=True)
     section = StringField(required=True)

@@ -4,6 +4,7 @@ import asab.web
 import asab.web.rest
 from .frame_id_consumer import FrameIDConsumerModule
 from .algorithm import AlgorithmModule
+from latency.module import LatencyCollectorModule
 from ext_lib.utils import get_current_time
 import logging
 
@@ -19,6 +20,7 @@ class SorterApplication(asab.Application):
 		super().__init__()
 
 		# Extra Modules
+		self.add_module(LatencyCollectorModule)
 		self.add_module(AlgorithmModule)
 		self.add_module(FrameIDConsumerModule)
 
