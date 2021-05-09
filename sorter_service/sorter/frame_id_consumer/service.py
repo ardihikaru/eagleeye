@@ -12,10 +12,10 @@ L = logging.getLogger(__name__)
 ###
 
 
-class SorterApiService(asab.Service):
+class FrameIDConsumerService(asab.Service):
 
 	def __init__(self, app):
-		super().__init__(app, "sorter.SorterApiService")
+		super().__init__(app, "sorter.FrameIDConsumerService")
 
 		self.algorithm_svc = app.get_service("sorter.AlgorithmService")
 
@@ -25,6 +25,8 @@ class SorterApiService(asab.Service):
 
 		# sorting strategy
 		self.max_pool = asab.Config["strategy"].getint("max_pool")
+
+		self.highest_seq_id = 0
 
 		self.rc = MyRedis(asab.Config).get_rc()
 
@@ -65,6 +67,14 @@ class SorterApiService(asab.Service):
 					data_pool = {}
 					unsorted_seq = []
 
+	async def filter_sorted_seq(self, sorted_seq, _highest_seq_id):
+		""" Drop an id which is lower than `_highest_seq_id` """
+		for seq in sorted_seq:
+			if seq < _highest_seq_id:
+				sorted_seq.remove(seq)
+
+		return sorted_seq
+
 	async def sort_and_wait(self, unsorted_seq, data_pool):
 		"""
 		Sort a tuple of frame ids. Once sorted, send each detection result to the visualizer service.
@@ -75,5 +85,12 @@ class SorterApiService(asab.Service):
 
 		# for each frame, send the result to the visualizer
 		if sorted_seq is not None:
+			# drop old sequences
+			sorted_seq = await self.filter_sorted_seq(sorted_seq.copy(), self.highest_seq_id)
+
+			# update highest sequence id
+			self.highest_seq_id = sorted_seq[-1]
+
+			# TODO: sending detection result to the visualizer
 			for frame_id in sorted_seq:
 				print("### Sending detection of frame-{} to the visualizer.".format(frame_id))

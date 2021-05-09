@@ -1,5 +1,5 @@
 import asab
-from .service import SorterApiService
+from .service import FrameIDConsumerService
 from ext_lib.utils import get_current_time
 import logging
 
@@ -15,7 +15,7 @@ class FrameIDConsumerModule(asab.Module):
 
 	def __init__(self, app):
 		super().__init__(app)
-		self.Service = SorterApiService(app)
+		self.Service = FrameIDConsumerService(app)
 
 	async def initialize(self, app):
 		L.warning("\n[%s] Initialize Frame ID Consumer Module." % get_current_time())
