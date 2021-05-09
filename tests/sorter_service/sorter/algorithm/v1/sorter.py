@@ -52,3 +52,7 @@ class TestSorter(unittest.TestCase):
 		sorted_frame_seq = sorter.get_sorted_frame_seq()
 		L.warning("[UNITTEST][TestSorter][test_run_failed] Sorted sequence: {}".format(sorted_frame_seq))
 		self.assertIsNone(sorted_frame_seq)
+
+
+if __name__ == '__main__':
+	unittest.main()
