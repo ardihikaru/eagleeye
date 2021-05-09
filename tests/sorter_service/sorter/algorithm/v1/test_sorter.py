@@ -1,4 +1,5 @@
 import unittest
+import os
 from sorter_service.sorter.algorithm.v1.sorter import Sorter
 import logging
 
@@ -15,7 +16,9 @@ class TestSorter(unittest.TestCase):
 	def setUp(self):
 		""" Set up testing values """
 		self.config = {
-			"root_dir": "/home/s010132/devel/eagleeye/sorter_service/sorter/algorithm/v1/cn_input_size",
+			"root_dir": "{}/cn_input_model".format(
+				os.path.dirname(os.path.realpath(__file__))
+			),
 			"max_pool": 4,
 		}
 
@@ -34,6 +37,15 @@ class TestSorter(unittest.TestCase):
 		]
 
 		self.unsorted_frame_seq = [2, 4, 1, 5]
+
+	def test_run_success_by_cn_size(self):
+		sorter = Sorter(self.config)
+		sorter.initialize(self.unsorted_frame_seq, cn_size=4)
+		sorter.run()
+
+		sorted_frame_seq = sorter.get_sorted_frame_seq()
+		L.warning("[UNITTEST][TestSorter][test_run_success] Sorted sequence: {}".format(sorted_frame_seq))
+		self.assertIsNotNone(sorted_frame_seq)
 
 	def test_run_success(self):
 		sorter = Sorter(self.config)
