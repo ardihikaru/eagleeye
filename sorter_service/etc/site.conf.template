@@ -1,0 +1,20 @@
+# [sorter:rest]
+# listen=0.0.0.0:8084
+
+# [redis]
+# hostname=localhost
+# port=6379
+# password=
+
+[strategy]
+# a full path where the Comparison Network's input model are stored
+# Filenames are: `4-input.cn`, `5-input.cn`, and `16-input.cn`
+root_dir=
+# total number of frame sequence required before starting the sorting
+# default value is 4, means that, this service will sort every 4 collected frame sequence in an ascending manner
+# max_pool=4
+
+[identity]
+# the value should be an integer
+# it is used to identify who is the source of the captured unsorted frames (e.g. `drone_id`)
+id=1

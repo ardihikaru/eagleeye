@@ -1,23 +1,39 @@
 import time
 import numpy as np
+import logging
+import cv2
+
+###
+
+L = logging.getLogger(__name__)
+
+
+###
 
 
 def extract_compressed_tagged_img(consumed_data):
 	"""
-	Expected data model:
-	[
-		[img_data],  # e.g. 1000
-		[drone_id],  # extra tag 01
-		[t0_part_1],  # extra tag 02
-		[t0_part_2],  # extra tag 03
-		[total_number_of_tag],
-		[tagged_data_len],  # total array size: `img_data` + `total_number_of_tag` + 1
-	]
+		Expected data model:
+		[
+			[img_data],  # e.g. 1000
+			[drone_id],  # extra tag 01
+			[t0_part_1],  # extra tag 02
+			[t0_part_2],  # extra tag 03
+			[total_number_of_tag],
+			[tagged_data_len],  # total array size: `img_data` + `total_number_of_tag` + 1
+		]
 	"""
-	# decode payload
+	# print(" #### LISTENER ..")
+
 	t0_decode = time.time()
-	decoded_data = decode_payload(consumed_data.payload)
-	extra_tag_len, encoded_img_len = extract_decoded_payload(decoded_data)
+
+	decoded_data = np.frombuffer(consumed_data.payload, dtype=np.int64)
+	decoded_data_len = list(decoded_data.shape)[0]
+	decoded_data = decoded_data.reshape(decoded_data_len, 1)
+	array_len = decoded_data[-1][0]
+	extra_tag_len = decoded_data[-2][0]
+	encoded_img_len = array_len - extra_tag_len
+
 	t1_decode = (time.time() - t0_decode) * 1000
 	L.warning(('[%s] Latency DECODING Payload (%.3f ms) ' % ("ZENOH CONSUMER", t1_decode)))
 
@@ -25,14 +41,19 @@ def extract_compressed_tagged_img(consumed_data):
 	t0_tag_extraction = time.time()
 	drone_id = extract_drone_id(decoded_data, encoded_img_len)
 	t0 = extract_t0(decoded_data, encoded_img_len)
+	# print(" ----- drone_id:", drone_id, type(drone_id))
+	# print(" ----- t0:", t0, type(t0))
 	t1_tag_extraction = (time.time() - t0_tag_extraction) * 1000
 	L.warning(('[%s] Latency Tag Extraction (%.3f ms) ' % ("ZENOH CONSUMER", t1_tag_extraction)))
 
 	# popping tagged information
 	t0_non_img_cleaning = time.time()
+	# print(" ----- OLD SHAPE decoded_data:", decoded_data.shape)
 	for i in range(extra_tag_len):
 		decoded_data = np.delete(decoded_data, -1)
 	decoded_data = decoded_data.reshape(decoded_data_len - 5, 1)
+	# print(" ----- NEWWWW SHAPE decoded_data:", decoded_data.shape)
+	# print(" ##### decoded_data[-1][0] = ", decoded_data[-1][0])  # tagged_data_len
 	t1_non_img_cleaning = (time.time() - t0_non_img_cleaning) * 1000
 	L.warning(
 		('[%s] Latency Non Image Cleaning (%.3f ms) ' % ("ZENOH CONSUMER", t1_non_img_cleaning)))
@@ -76,7 +97,7 @@ def decode_payload(payload):
 	return decoded_payload
 
 
-def extract_decoded_payload(decoded_payload):
+def extract_decoded_payload(decoded_data):
 	array_len = decoded_data[-1][0]
 	extra_tag_len = decoded_data[-2][0]
 	encoded_img_len = array_len - extra_tag_len
@@ -100,3 +121,9 @@ def extract_t0(data, img_len):
 		data[to_p2_idx][0],
 	)
 	return float(t0)
+
+
+def decrypt_str(int_val, byteorder="little"):
+	decrypted_bytes = int_val.to_bytes((int_val.bit_length() + 7) // 8, byteorder)  # byteorder must be either 'little' or 'big'
+	decrypted_str = decrypted_bytes.decode('utf-8')
+	return decrypted_str

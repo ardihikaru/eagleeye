@@ -47,10 +47,10 @@ class SchedulingPolicyService(asab.Service):
 	async def init_available_nodes(self, avail_nodes):
 		t0_shm = time.time()
 		for node in avail_nodes:
-			# redis_key = node["id"] + "_status"  # node_id here starts from `1`
+			redis_key = node["id"] + "_status"  # node_id here starts from `1`
 
-			node_idx = int(node["name"]) - 1  # node_id here starts from `0`
-			redis_key = str(node_idx) + "_status"
+			# node_idx = int(node["name"]) - 1  # node_id here starts from `0`
+			# redis_key = str(node_idx) + "_status"
 			redis_set(self.rd.get_rc(), redis_key, True)
 
 			self.avail_nodes.append({
@@ -65,7 +65,7 @@ class SchedulingPolicyService(asab.Service):
 		L.warning('\nLatency [Creating Redis variable] in: (%.5f ms)' % (t1_shm * 1000))
 
 	def sync_schedule(self, max_node=1, sch_policy="round_robin"):
-		L.warning("[SCHEDULING_POLICY]: `{}`".format(sch_policy))
+		L.warning("[sync_SCHEDULING_POLICY]: `{}`".format(sch_policy))
 		L.warning("[max_node]: `{}`".format(max_node))
 		self.max_node = max_node
 		if sch_policy == "round_robin":
@@ -80,19 +80,34 @@ class SchedulingPolicyService(asab.Service):
 		return self._get_selected_node()
 
 	async def schedule(self, max_node=1, sch_policy="round_robin"):
+		L.warning("[SCHEDULING_POLICY]: `{}`".format(sch_policy))
+		L.warning("[max_node]: `{}`".format(max_node))
 		self.max_node = max_node
 		if sch_policy == "round_robin":
 			await self.round_robin()
+		elif sch_policy == "dynamic_round_robin":
+			await self.dynamic_round_robin()
 		else:
 			await self.round_robin()
 
 		return self._get_selected_node()
 
+	# async def schedule(self, max_node=1, sch_policy="round_robin"):
+	# 	L.warning("[SCHEDULING_POLICY]: `{}`".format(sch_policy))
+	# 	L.warning("[max_node]: `{}`".format(max_node))
+	# 	self.max_node = max_node
+	# 	if sch_policy == "round_robin":
+	# 		await self.round_robin()
+	# 	else:
+	# 		await self.round_robin()
+	#
+	# 	return self._get_selected_node()
+
 	def _get_selected_node(self):
 		return self.selected_node_id
 
 	def sync_dynamic_round_robin(self):
-		L.warning("I am using Dynamic Round-Robin")
+		L.warning("[SYNC] I am using Dynamic Round-Robin")
 		L.warning("[self.selected_node_id]: `{}`".format(self.selected_node_id))
 
 		# perform a close loop to find an available worker node
@@ -106,10 +121,10 @@ class SchedulingPolicyService(asab.Service):
 
 			# trying to get node status
 			redis_key = self.avail_nodes[self.selected_node_id]["redis_key"]
-			L.warning(" >>> [self.avail_nodes]: `{}`".format(self.avail_nodes))
-			L.warning(" >>> [self.selected_node_id]: `{}`".format(self.selected_node_id))
-			L.warning(" >>> [redis_key]: `{}`".format(redis_key))
-			L.warning(" >>> [redis_key VALUE]: `{}`\n\n".format(redis_get(self.rd.get_rc(), redis_key)))
+			# L.warning(" >>> [self.avail_nodes]: `{}`".format(self.avail_nodes))
+			# L.warning(" >>> [self.selected_node_id]: `{}`".format(self.selected_node_id))
+			# L.warning(" >>> [redis_key]: `{}`".format(redis_key))
+			# L.warning(" >>> [redis_key VALUE]: `{}`\n\n".format(redis_get(self.rd.get_rc(), redis_key)))
 			if redis_get(self.rd.get_rc(), redis_key):
 				_node_searching = False
 
@@ -122,11 +137,12 @@ class SchedulingPolicyService(asab.Service):
 		self._sync_set_idle_status(self.selected_node_id, False)
 
 	def sync_round_robin(self):
-		L.warning("I am using Round-Robin")
+		L.warning("[SYNC] I am using Round-Robin")
 		self.selected_node_id += 1
 
 		if self.selected_node_id >= self.max_node:
-			self.selected_node_id = 0  # Reset
+			# self.selected_node_id = 0  # Reset
+			self.selected_node_id = 1  # Reset
 
 		L.warning("#### ***** checking the status of selected node_id:")
 		t0_wait_node = time.time()
@@ -140,7 +156,7 @@ class SchedulingPolicyService(asab.Service):
 
 	async def round_robin(self):
 		# print("I am using Round-Robin")
-		L.warning("I am using Round-Robin")
+		L.warning("[ASYNC] I am using Round-Robin")
 		self.selected_node_id += 1
 
 		if self.selected_node_id >= self.max_node:
@@ -158,6 +174,37 @@ class SchedulingPolicyService(asab.Service):
 		# self.avail_nodes[self.selected_node_id]["idle"] = "0"
 		await self._set_idle_status(self.selected_node_id, False)
 
+	async def dynamic_round_robin(self):
+		L.warning("[ASYNC] I am using Dynamic Round-Robin")
+		L.warning("[self.selected_node_id]: `{}`".format(self.selected_node_id))
+
+		# perform a close loop to find an available worker node
+		t0_wait_node = time.time()
+		_node_searching = True
+		while _node_searching:
+			# L.warning("[dynamic_round_robin] Looking for an available node ...")
+			self.selected_node_id += 1
+
+			if self.selected_node_id >= self.max_node:
+				self.selected_node_id = 0  # Reset
+
+			# trying to get node status
+			redis_key = self.avail_nodes[self.selected_node_id]["redis_key"]
+			# L.warning(" >>> [self.avail_nodes]: `{}`".format(self.avail_nodes))
+			# L.warning(" >>> [self.selected_node_id]: `{}`".format(self.selected_node_id))
+			# L.warning(" >>> [redis_key]: `{}`".format(redis_key))
+			# L.warning(" >>> [redis_key VALUE]: `{}`\n\n".format(redis_get(self.rd.get_rc(), redis_key)))
+			if redis_get(self.rd.get_rc(), redis_key):
+				_node_searching = False
+
+		# L.warning("#### ***** checking the status of selected node_id:")
+		t1_wait_node = (time.time() - t0_wait_node) * 1000
+
+		L.warning('\nLatency [Waiting node to be ready] in: (%.5f ms)' % t1_wait_node)
+
+		# Set selected node as busy (idle=False); "0" == False
+		self._sync_set_idle_status(self.selected_node_id, False)
+
 	def _sync_set_idle_status(self, snode_id, status):
 		redis_key = self.avail_nodes[snode_id]["redis_key"]
 		redis_set(self.rd.get_rc(), redis_key, status)
@@ -170,15 +217,17 @@ class SchedulingPolicyService(asab.Service):
 
 	def _sync_wait_until_ready(self, snode_id):
 		redis_key = self.avail_nodes[snode_id]["redis_key"]
-		L.warning("[DEBUG] snode_id: %s" % str(snode_id))
-		L.warning("[DEBUG] Redis key (wait until ready): %s" % str(redis_key))
-		L.warning("[DEBUG] Redis > Node STATUS: %s" % str(redis_get(self.rd.get_rc(), redis_key)))
+		L.warning("[sync_DEBUG] redis_key: %s" % str(redis_key))
+		L.warning("[sync_DEBUG] snode_id: %s" % str(snode_id))
+		L.warning("[sync_DEBUG] Redis key (wait until ready): %s" % str(redis_key))
+		L.warning("[sync_DEBUG] Redis > Node STATUS: %s" % str(redis_get(self.rd.get_rc(), redis_key)))
 		while not redis_get(self.rd.get_rc(), redis_key):
 			continue
 		return True
 
 	async def _wait_until_ready(self, snode_id):
 		redis_key = self.avail_nodes[snode_id]["redis_key"]
+		L.warning("[DEBUG] redis_key: %s" % str(redis_key))
 		L.warning("[DEBUG] snode_id: %s" % str(snode_id))
 		L.warning("[DEBUG] Redis key (wait until ready): %s" % str(redis_key))
 		L.warning("[DEBUG] Redis > Node STATUS: %s" % str(redis_get(self.rd.get_rc(), redis_key)))

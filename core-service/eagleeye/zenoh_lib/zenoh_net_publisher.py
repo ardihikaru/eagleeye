@@ -1,4 +1,4 @@
-from scheduler.extractor.zenoh_pubsub.core.zenoh_net import ZenohNet
+from zenoh_lib.core.zenoh_net import ZenohNet
 import sys
 import time
 from datetime import datetime
@@ -22,6 +22,7 @@ class ZenohNetPublisher(ZenohNet):
 		NATIVE_TYPE = 1
 		SIMPLE_NUMPY = 2
 		COMPLEX_NUMPY = 3
+		COMPRESSED_IMAGE = 4
 
 	def __init__(self, _listener=None, _mode="peer", _peer=None, _path=None, _session_type=None):
 		super().__init__(_listener=_listener, _mode=_mode, _peer=_peer, _path=_path, _session_type=_session_type)
@@ -44,14 +45,15 @@ class ZenohNetPublisher(ZenohNet):
 			encoder = self._get_encoder(_encoder)
 			tagged_data = np.array(_val, dtype=encoder)
 			encoded_data = tagged_data.tobytes()
+		elif _itype == self.InputDataType.COMPRESSED_IMAGE.value:
+			encoded_data = _val.tobytes()
 		else:
 			# simply convert the data into bytes
 			encoded_data = bytes(json.dumps(_val), encoding='utf8')
 
 		return encoded_data
 
-	# def publish(self, _val, _itype, _encoder=None, _taggable_info=None):
-	def publish(self, _val, _itype, _encoder=None):
+	def publish(self, _val, _itype=1, _encoder=None):
 		"""
 		_val: The value of the resource to put.
 		"""
