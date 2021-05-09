@@ -749,7 +749,6 @@ class ExtractorService(asab.Service):
 				t0_publish = time.time()
 				L.warning("[%s] Publishing image into Redis channel: %s" % (get_current_time(), node_channel))
 
-				# TODO: enrich with drone ID information
 				dump_request = json.dumps({
 					"active": True,
 					"algorithm": _config["algorithm"],
