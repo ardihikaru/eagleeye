@@ -19,6 +19,8 @@ class FrameIDConsumerService(asab.Service):
 	def __init__(self, app):
 		super().__init__(app, "sorter.FrameIDConsumerService")
 
+		self.LatCollectorService = app.get_service("eagleeye.LatencyCollectorService")
+
 		self.algorithm_svc = app.get_service("sorter.AlgorithmService")
 
 		self.sorter_id = asab.Config["identity"].getint("id")
@@ -99,13 +101,40 @@ class FrameIDConsumerService(asab.Service):
 
 		return sorted_seq
 
+	async def _save_latency(self, latency, algorithm="[?]", section="[?]", cat="sorting",
+							node_id="-", node_name="-"):
+		t0_preproc = time.time()
+		preproc_latency_data = {
+			"frame_id": None,
+			"category": cat,
+			"algorithm": algorithm,
+			"section": section,
+			"latency": latency,
+			"node_id": node_id,
+			"node_name": node_name
+		}
+		# Submit and store latency data: Pre-processing
+		if not await self.LatCollectorService.store_latency_data_thread(preproc_latency_data):
+			L.error("[SAVE_LATENCY] Saving latency failed.")
+			# await self.stop()
+		t1_preproc = (time.time() - t0_preproc) * 1000
+		L.warning('\n[%s] Proc. Latency of %s (%.3f ms)' % (get_current_time(), section, t1_preproc))
+
 	async def sort_and_wait(self, unsorted_seq, data_pool):
 		"""
 		Sort a tuple of frame ids. Once sorted, send each detection result to the visualizer service.
 		While performing this sorting, the Consumer is halted for a while.
 		"""
 		# sort frame
+		t0_sorting = time.time()
 		sorted_seq = await self.algorithm_svc.sort_frame_sequences(unsorted_seq)
+		t1_sorting = (time.time() - t0_sorting) * 1000
+		L.warning('\n[%s] Latency of Sorting a frame sequence (%.3f ms)' %
+				  (get_current_time(), t1_sorting))
+
+		# build & submit latency data: Sorting
+		L.warning("\n[%s] build & submit latency data: Pre-processing" % get_current_time())
+		await self._save_latency(t1_sorting, "Sorting Network", "scheduling", "sorting")
 
 		# for each frame, send the result to the visualizer
 		if sorted_seq is not None:
