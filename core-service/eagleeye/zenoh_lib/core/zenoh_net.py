@@ -1,4 +1,4 @@
-from scheduler.extractor.zenoh_pubsub.core.service_abc import ServiceABC
+from zenoh_lib.core.service_abc import ServiceABC
 import logging
 import zenoh
 from zenoh.net import config, SubInfo, Reliability, SubMode, Sample, resource_name
@@ -99,10 +99,9 @@ class ZenohNet(ServiceABC):
 
 	def init_connection(self):
 		# initiate logging
-		# Comment this to fix: `'env_logger::init should not be called after logger initialized: SetLoggerError(())`
-		# zenoh.init_logger()
+		zenoh.init_logger()
 
-		L.warning("[ZENOH] Opening session...")
+		L.warning("[ZENOH] Openning session...")
 		self.z_session = zenoh.net.open(self.conf)
 
 		self.z_sub_info = SubInfo(Reliability.Reliable, SubMode.Push)

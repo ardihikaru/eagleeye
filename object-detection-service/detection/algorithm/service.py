@@ -94,7 +94,7 @@ class DetectionAlgorithmService(asab.Service):
             return True, frame_id, t0, image
 
         except Exception as e:
-            L.error("[ERROR]: %s" % str(e))
+            L.error("[ERROR][get_img]: %s" % str(e))
             return False, None, None, None
 
     async def update_node_information(self, node_id, pid):
@@ -119,20 +119,25 @@ class DetectionAlgorithmService(asab.Service):
     async def detect_object(self, frame):
         # print("####[%s]##### START OBJECT DETECTION" % self.node_alias)
         L.warning("####[%s]##### START OBJECT DETECTION" % self.node_alias)
-        bbox_data, det, names, pre_proc_lat, yolo_lat = None, None, None, None, None
+        bbox_data, det, names, pre_proc_lat, yolo_lat = [], None, None, None, None
+        from_numpy_lat, image4yolo_lat, pred_lat = None, None, None
         try:
             # Perform conversion first!
             resized_frame, pre_proc_lat = await self.ResizerService.cpu_convert_to_padded_size(frame)
             # TODO: To add GPU-based downsample function
 
             # Perform object detection
+            # bbox_data, det, names, (tdiff_inference + tdiff_nms), tdiff_from_numpy, tdiff_image4yolo, tdiff_pred
             bbox_data, det, names, yolo_lat, from_numpy_lat, image4yolo_lat, pred_lat = \
                 self.detection.get_detection_results(resized_frame, frame)
 
         except Exception as e:
-            L.error("[ERROR]: %s" % str(e))
-            await self.SubscriptionHandler.stop()
-        return bbox_data, det, names, pre_proc_lat, yolo_lat
+            L.error("[ERROR][detect_object]: %s" % str(e))
+            return [], None, None, None, None, None, None, None
+            # await self.SubscriptionHandler.stop()
+
+        # return bbox_data, det, names, pre_proc_lat, yolo_lat
+        return bbox_data, det, names, pre_proc_lat, yolo_lat, from_numpy_lat, image4yolo_lat, pred_lat
 
     async def delete_node_information(self, node_id):
         delete_uri = self.node_api_uri + "/" + node_id

@@ -1,3 +1,29 @@
+## 7.1.6-native (May 09, 2021)
+  - Merge pull request #33 from ardihikaru/feature/sorter-single-drone
+  - implement logic to send plot_info result from sorter
+  - add missing packages: `nose2` and `aiounittest`
+  - bugfix: invalid root dir value for unittest
+  - add main() function
+  - add unittest to test filter to drop outdatted frame seq
+  - add filter to drop outdatted frame sequence
+  - bugfix: wrong `site.conf` path
+  - add unittest for sorting network
+  - implement sorting network logic
+  - bugfix: wrong `site.conf` path
+  - remove todo
+  - send notify finished detection process to sorting service
+  - add basic logic for sorting network
+  - add log msg when PCS unable to generate any PiH object
+  - add log msg when no YOLOv3 bbox result
+  - code refactor: delete unused files
+  - bugfix: unable to perfor PubSub with zenoh
+  - add an example pub and sub with zenoh
+  - add lib for zenoh pubsub
+  - add doc what changes made
+  - add tutorial on how to run this EagleEYE System
+  - bugfix: unable to receive detection results
+  - Merge branch 'release/v7.1.5-native' into develop
+
 ## 7.1.5-native (May 03, 2021)
   - Merge branch 'bugfix/unable-to-run-scheduler-service' into develop
   - bugfix: wrong key

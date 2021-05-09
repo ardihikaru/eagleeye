@@ -205,7 +205,7 @@ def get_imagezmq(zmq_receiver):
 		return True, frame_id, t0, image
 
 	except Exception as e:
-		L.error("[ERROR]: %s" % str(e))
+		L.error("[ERROR][get_imagezmq]: %s" % str(e))
 		return False, None, None, None
 
 
