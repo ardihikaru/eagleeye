@@ -35,12 +35,19 @@ def np_xyxy2xywh(xyxy, data_type=int):
 def torch2np_xyxy(xyxy, data_type=int):
     # Convert bounding box format from [x1, y1, x2, y2] to [x, y, w, h]
 
-    # CPU Mode
-    try:
-        np_xyxy = np.zeros_like(xyxy)
-    # GPU Mode
-    except:
-        np_xyxy = np.zeros_like(xyxy.data.cpu().numpy())
+    np_xyxy = np.asarray([0, 0, 0, 0])
+
+    # # CPU Mode
+    # try:
+    #     # np_xyxy = np.zeros_like(xyxy)
+    #     np_xyxy = np.zeros(shape=(4, 1), dtype=np.int64)
+    # # GPU Mode
+    # except:
+    #     try:
+    #         # np_xyxy = np.zeros_like(xyxy.data.cpu().numpy())
+    #         np_xyxy = np.zeros(shape=(4, 1), dtype=np.int64)
+    #     except Exception as e:
+    #         np_xyxy = []
 
     np_xyxy[0] = data_type(xyxy[0])
     np_xyxy[1] = data_type(xyxy[1])

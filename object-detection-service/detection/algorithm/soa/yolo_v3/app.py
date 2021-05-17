@@ -1,6 +1,7 @@
 from detection.algorithm.soa.yolo_v3.components.utils.datasets import *
 from detection.algorithm.soa.yolo_v3.components.utils.utils import *
-from detection.algorithm.soa.yolo_v3.etc.commons.opencv_helpers import *
+# from detection.algorithm.soa.yolo_v3.etc.commons.opencv_helpers import *
+from ext_lib.commons.opencv_helpers import *
 from detection.algorithm.soa.yolo_v3.components.utils.utils import get_current_time
 from detection.algorithm.soa.yolo_v3.etc.commons.yolo_functions import YOLOFunctions
 import logging
@@ -137,28 +138,34 @@ class YOLOv3(YOLOFunctions):
                                    agnostic=self.conf["agnostic_nms"])
         tdiff_nms = ((time.time() - t0_nms) * 1000)
         # print('\n # Total Non-Maximum Suppression (NMS) time: (%.3f ms)' % tdiff_nms)
-        L.warning('\n # Total Non-Maximum Suppression (NMS) time: (%.3f ms)' % tdiff_nms)
+        L.warning('# Total Non-Maximum Suppression (NMS) time: (%.3f ms)' % tdiff_nms)
 
         # Get detection
         t0_get_detection = time.time()
         bbox_data = []
         det = None
-        for i, det in enumerate(pred):  # detections per image
-            if det is not None and len(det):  # run ONCE
-                # Rescale boxes from img_size to raw_img size
-                det[:, :4] = scale_coords(image4yolo.shape[2:], det[:, :4], original_frame.shape).round()
+        if len(pred) == 1 and pred[0] is None:
+            # DO NOTHING
+            pass
+        else:
+            for i, det in enumerate(pred):  # detections per image
+                if det is not None and len(det):  # run ONCE
+                    # Rescale boxes from img_size to raw_img size
+                    det[:, :4] = scale_coords(image4yolo.shape[2:], det[:, :4], original_frame.shape).round()
 
-                # Extracts detection results
-                bbox_data = self._extract_detection_results(det)
-                break
+                    # Extracts detection results
+                    bbox_data = self._extract_detection_results(det)
+                    break
+
         t1_get_detection = ((time.time() - t0_get_detection) * 1000)
         # print('\n # Get Detection time: (%.3f ms)' % t1_get_detection)
-        L.warning('\n # Get Detection time: (%.3f ms)' % t1_get_detection)
+        L.warning('# Get Detection time: (%.3f ms)' % t1_get_detection)
         # TODO: To capture the latency of the POST-Processing
 
         names = load_classes(self.conf["names"])
 
         return bbox_data, det, names, (tdiff_inference + tdiff_nms), tdiff_from_numpy, tdiff_image4yolo, tdiff_pred
+
         # return pred
         # Apply Classifier: Default DISABLED
         # if self.classify:
@@ -184,7 +191,6 @@ class YOLOv3(YOLOFunctions):
             #                        self.conf["file_ext"])
             # Save bbox information
             # self._safety_store_txt(xyxy, this_frame_id, self.names[int(cls)], str(round(float(conf), 2)))
-
             this_bbox = {
                 "obj_idx": idx_detected,
                 "xyxy": [str(val) for val in numpy_xyxy],
