@@ -36,7 +36,7 @@ class ImagePlotterService(asab.Service):
 
     async def plot_img(self, is_latest_plot_available, frame_id, img, fps="-"):
         is_raw = bool(int(asab.Config["stream:config"]["is_raw"]))
-        is_forced_plot = bool(int(asab.Config["stream:config"]["is_forced_plot"]))
+        is_forced_plot = bool(int(asab.Config["stream:config"]["is_forced_plot"]))  # DEPRECATED!
 
         # collect latest GPS Data
         gps_data = await self.GPSCollectorService.get_gps_data()
