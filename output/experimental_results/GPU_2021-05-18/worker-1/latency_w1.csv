@@ -1,0 +1,2558 @@
+frame_id,category,algorithm,section,latency,node_id,node_name
+1,Scheduling,dynamic_round_robin,scheduling,84.59138870239258,60a35c66e03531831d1e8082,1
+1,Pre-processing,N/A,preproc_det,20.934581756591797,-,-
+1,Object Detection,YOLOv3,detection,35.952091217041016,-,-
+1,from_numpy,YOLOv3,detection,0.05745887756347656,-,-
+1,image4yolo,YOLOv3,detection,0.6930828094482422,-,-
+1,pred,YOLOv3,detection,31.45575523376465,-,-
+1,Extra Pipeline,PiH Candidate Selection,candidate_selection,8.458852767944336,-,-
+1,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.03552436828613281,-,-
+1,End-to-End,N/A,e2e_latency,88.27733993530273,60a35c66e03531831d1e8082,1
+2,Scheduling,dynamic_round_robin,scheduling,67.63267517089844,60a35c66e03531831d1e8082,1
+2,Pre-processing,N/A,preproc_det,19.865751266479492,-,-
+2,Object Detection,YOLOv3,detection,25.476455688476562,-,-
+2,from_numpy,YOLOv3,detection,0.03933906555175781,-,-
+2,image4yolo,YOLOv3,detection,0.7464885711669922,-,-
+2,pred,YOLOv3,detection,22.932052612304688,-,-
+2,Extra Pipeline,PiH Candidate Selection,candidate_selection,13.388395309448242,-,-
+2,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.025272369384765625,-,-
+2,End-to-End,N/A,e2e_latency,80.59430122375488,60a35c66e03531831d1e8082,1
+3,Scheduling,dynamic_round_robin,scheduling,88.87076377868652,60a35c66e03531831d1e8082,1
+3,Pre-processing,N/A,preproc_det,19.53887939453125,-,-
+3,Object Detection,YOLOv3,detection,16.885757446289062,-,-
+3,from_numpy,YOLOv3,detection,0.0400543212890625,-,-
+3,image4yolo,YOLOv3,detection,0.7185935974121094,-,-
+3,pred,YOLOv3,detection,14.360904693603516,-,-
+3,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.3478736877441406,-,-
+3,End-to-End,N/A,e2e_latency,50.60744285583496,60a35c66e03531831d1e8082,1
+4,Scheduling,dynamic_round_robin,scheduling,88.98639678955078,60a35c66e03531831d1e8082,1
+4,Pre-processing,N/A,preproc_det,19.748449325561523,-,-
+4,Object Detection,YOLOv3,detection,14.875650405883789,-,-
+,sorting,Sorting Network,scheduling,0.23317337036132812,-,-
+4,from_numpy,YOLOv3,detection,0.03910064697265625,-,-
+4,image4yolo,YOLOv3,detection,0.7250308990478516,-,-
+4,pred,YOLOv3,detection,12.36724853515625,-,-
+4,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.204273223876953,-,-
+4,End-to-End,N/A,e2e_latency,50.016164779663086,60a35c66e03531831d1e8082,1
+5,Scheduling,dynamic_round_robin,scheduling,89.01429176330566,60a35c66e03531831d1e8082,1
+5,Pre-processing,N/A,preproc_det,19.36793327331543,-,-
+5,Object Detection,YOLOv3,detection,16.70980453491211,-,-
+5,from_numpy,YOLOv3,detection,0.038623809814453125,-,-
+5,image4yolo,YOLOv3,detection,0.7119178771972656,-,-
+5,pred,YOLOv3,detection,14.037847518920898,-,-
+5,Extra Pipeline,PiH Candidate Selection,candidate_selection,8.066892623901367,-,-
+5,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.025033950805664062,-,-
+5,End-to-End,N/A,e2e_latency,61.048269271850586,60a35c66e03531831d1e8082,1
+6,Scheduling,dynamic_round_robin,scheduling,89.13278579711914,60a35c66e03531831d1e8082,1
+6,Pre-processing,N/A,preproc_det,19.57225799560547,-,-
+6,Object Detection,YOLOv3,detection,16.67952537536621,-,-
+6,from_numpy,YOLOv3,detection,0.0400543212890625,-,-
+6,image4yolo,YOLOv3,detection,0.7252693176269531,-,-
+6,pred,YOLOv3,detection,14.162063598632812,-,-
+6,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.965948104858398,-,-
+6,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.023365020751953125,-,-
+6,End-to-End,N/A,e2e_latency,53.75099182128906,60a35c66e03531831d1e8082,1
+7,Scheduling,dynamic_round_robin,scheduling,89.06030654907227,60a35c66e03531831d1e8082,1
+7,Pre-processing,N/A,preproc_det,19.20771598815918,-,-
+7,Object Detection,YOLOv3,detection,15.027046203613281,-,-
+7,from_numpy,YOLOv3,detection,0.03814697265625,-,-
+7,image4yolo,YOLOv3,detection,0.6833076477050781,-,-
+7,pred,YOLOv3,detection,12.520790100097656,-,-
+7,Extra Pipeline,PiH Candidate Selection,candidate_selection,14.052152633666992,-,-
+7,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.0400543212890625,-,-
+7,End-to-End,N/A,e2e_latency,62.011003494262695,60a35c66e03531831d1e8082,1
+8,Scheduling,dynamic_round_robin,scheduling,67.79932975769043,60a35c66e03531831d1e8082,1
+8,Pre-processing,N/A,preproc_det,19.67310905456543,-,-
+8,Object Detection,YOLOv3,detection,15.424966812133789,-,-
+,sorting,Sorting Network,scheduling,0.15401840209960938,-,-
+8,from_numpy,YOLOv3,detection,0.041961669921875,-,-
+8,image4yolo,YOLOv3,detection,0.8051395416259766,-,-
+8,pred,YOLOv3,detection,12.857437133789062,-,-
+8,Extra Pipeline,PiH Candidate Selection,candidate_selection,6.80232048034668,-,-
+8,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.025272369384765625,-,-
+8,End-to-End,N/A,e2e_latency,54.129600524902344,60a35c66e03531831d1e8082,1
+9,Pre-processing,N/A,preproc_det,19.287109375,-,-
+9,Object Detection,YOLOv3,detection,15.723466873168945,-,-
+9,from_numpy,YOLOv3,detection,0.03981590270996094,-,-
+9,image4yolo,YOLOv3,detection,0.7901191711425781,-,-
+9,pred,YOLOv3,detection,13.141393661499023,-,-
+9,Scheduling,dynamic_round_robin,scheduling,62.53695487976074,60a35c66e03531831d1e8082,1
+9,Extra Pipeline,PiH Candidate Selection,candidate_selection,7.229328155517578,-,-
+9,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.02193450927734375,-,-
+9,End-to-End,N/A,e2e_latency,52.1392822265625,60a35c66e03531831d1e8082,1
+10,Scheduling,dynamic_round_robin,scheduling,73.43578338623047,60a35c66e03531831d1e8082,1
+10,Pre-processing,N/A,preproc_det,19.644498825073242,-,-
+10,Object Detection,YOLOv3,detection,14.981985092163086,-,-
+10,from_numpy,YOLOv3,detection,0.038623809814453125,-,-
+10,image4yolo,YOLOv3,detection,0.698089599609375,-,-
+10,pred,YOLOv3,detection,12.485980987548828,-,-
+10,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.600690841674805,-,-
+10,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.025510787963867188,-,-
+10,End-to-End,N/A,e2e_latency,55.504560470581055,60a35c66e03531831d1e8082,1
+11,Scheduling,dynamic_round_robin,scheduling,88.87147903442383,60a35c66e03531831d1e8082,1
+11,Pre-processing,N/A,preproc_det,19.725799560546875,-,-
+11,Object Detection,YOLOv3,detection,14.905929565429688,-,-
+11,from_numpy,YOLOv3,detection,0.03981590270996094,-,-
+11,image4yolo,YOLOv3,detection,0.6897449493408203,-,-
+11,pred,YOLOv3,detection,12.43138313293457,-,-
+11,Extra Pipeline,PiH Candidate Selection,candidate_selection,6.400346755981445,-,-
+11,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.024318695068359375,-,-
+11,End-to-End,N/A,e2e_latency,52.99544334411621,60a35c66e03531831d1e8082,1
+12,Scheduling,dynamic_round_robin,scheduling,89.10369873046875,60a35c66e03531831d1e8082,1
+12,Pre-processing,N/A,preproc_det,19.391536712646484,-,-
+12,Object Detection,YOLOv3,detection,16.54505729675293,-,-
+,sorting,Sorting Network,scheduling,0.23365020751953125,-,-
+12,from_numpy,YOLOv3,detection,0.038623809814453125,-,-
+12,image4yolo,YOLOv3,detection,0.7195472717285156,-,-
+12,pred,YOLOv3,detection,14.041423797607422,-,-
+12,Extra Pipeline,PiH Candidate Selection,candidate_selection,6.643056869506836,-,-
+12,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.09870529174804688,-,-
+12,End-to-End,N/A,e2e_latency,55.14049530029297,60a35c66e03531831d1e8082,1
+13,Scheduling,dynamic_round_robin,scheduling,88.78278732299805,60a35c66e03531831d1e8082,1
+13,Pre-processing,N/A,preproc_det,19.846439361572266,-,-
+13,Object Detection,YOLOv3,detection,15.078067779541016,-,-
+13,from_numpy,YOLOv3,detection,0.04172325134277344,-,-
+13,image4yolo,YOLOv3,detection,0.7221698760986328,-,-
+13,pred,YOLOv3,detection,12.553930282592773,-,-
+13,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.564762115478516,-,-
+13,End-to-End,N/A,e2e_latency,50.08578300476074,60a35c66e03531831d1e8082,1
+14,Scheduling,dynamic_round_robin,scheduling,89.10679817199707,60a35c66e03531831d1e8082,1
+14,Pre-processing,N/A,preproc_det,19.362926483154297,-,-
+14,Object Detection,YOLOv3,detection,15.76685905456543,-,-
+14,from_numpy,YOLOv3,detection,0.04100799560546875,-,-
+14,image4yolo,YOLOv3,detection,0.7700920104980469,-,-
+14,pred,YOLOv3,detection,13.19742202758789,-,-
+14,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.476951599121094,-,-
+14,End-to-End,N/A,e2e_latency,51.747798919677734,60a35c66e03531831d1e8082,1
+15,Scheduling,dynamic_round_robin,scheduling,83.78434181213379,60a35c66e03531831d1e8082,1
+15,Pre-processing,N/A,preproc_det,20.124197006225586,-,-
+15,Object Detection,YOLOv3,detection,14.995336532592773,-,-
+15,from_numpy,YOLOv3,detection,0.03743171691894531,-,-
+15,image4yolo,YOLOv3,detection,0.6859302520751953,-,-
+15,pred,YOLOv3,detection,12.535572052001953,-,-
+15,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.198955535888672,-,-
+15,End-to-End,N/A,e2e_latency,56.81300163269043,60a35c66e03531831d1e8082,1
+16,Scheduling,dynamic_round_robin,scheduling,88.79804611206055,60a35c66e03531831d1e8082,1
+16,Pre-processing,N/A,preproc_det,19.975900650024414,-,-
+16,Object Detection,YOLOv3,detection,14.925718307495117,-,-
+,sorting,Sorting Network,scheduling,0.21314620971679688,-,-
+16,from_numpy,YOLOv3,detection,0.03695487976074219,-,-
+16,image4yolo,YOLOv3,detection,0.690460205078125,-,-
+16,pred,YOLOv3,detection,12.444734573364258,-,-
+16,Extra Pipeline,PiH Candidate Selection,candidate_selection,6.866693496704102,-,-
+16,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.08797645568847656,-,-
+16,End-to-End,N/A,e2e_latency,57.2512149810791,60a35c66e03531831d1e8082,1
+17,Scheduling,dynamic_round_robin,scheduling,89.0817642211914,60a35c66e03531831d1e8082,1
+17,Pre-processing,N/A,preproc_det,19.303083419799805,-,-
+17,Object Detection,YOLOv3,detection,15.972137451171875,-,-
+17,from_numpy,YOLOv3,detection,0.03910064697265625,-,-
+17,image4yolo,YOLOv3,detection,0.7226467132568359,-,-
+17,pred,YOLOv3,detection,13.447284698486328,-,-
+17,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.723787307739258,-,-
+17,End-to-End,N/A,e2e_latency,50.81009864807129,60a35c66e03531831d1e8082,1
+18,Scheduling,dynamic_round_robin,scheduling,89.06936645507812,60a35c66e03531831d1e8082,1
+18,Pre-processing,N/A,preproc_det,19.325971603393555,-,-
+18,Object Detection,YOLOv3,detection,15.056610107421875,-,-
+18,from_numpy,YOLOv3,detection,0.03695487976074219,-,-
+18,image4yolo,YOLOv3,detection,0.6911754608154297,-,-
+18,pred,YOLOv3,detection,12.531280517578125,-,-
+18,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.045890808105469,-,-
+18,End-to-End,N/A,e2e_latency,55.74655532836914,60a35c66e03531831d1e8082,1
+19,Pre-processing,N/A,preproc_det,19.882917404174805,-,-
+19,Object Detection,YOLOv3,detection,14.951944351196289,-,-
+19,Scheduling,dynamic_round_robin,scheduling,89.04242515563965,60a35c66e03531831d1e8082,1
+19,from_numpy,YOLOv3,detection,0.038623809814453125,-,-
+19,image4yolo,YOLOv3,detection,0.6861686706542969,-,-
+19,pred,YOLOv3,detection,12.478828430175781,-,-
+19,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.220247268676758,-,-
+19,End-to-End,N/A,e2e_latency,50.466299057006836,60a35c66e03531831d1e8082,1
+20,Scheduling,dynamic_round_robin,scheduling,89.05720710754395,60a35c66e03531831d1e8082,1
+20,Pre-processing,N/A,preproc_det,19.449710845947266,-,-
+,sorting,Sorting Network,scheduling,0.21386146545410156,-,-
+20,Object Detection,YOLOv3,detection,16.634464263916016,-,-
+20,from_numpy,YOLOv3,detection,0.03981590270996094,-,-
+20,image4yolo,YOLOv3,detection,0.9369850158691406,-,-
+20,pred,YOLOv3,detection,13.895988464355469,-,-
+20,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.196332931518555,-,-
+20,End-to-End,N/A,e2e_latency,52.68383026123047,60a35c66e03531831d1e8082,1
+21,Scheduling,dynamic_round_robin,scheduling,89.07413482666016,60a35c66e03531831d1e8082,1
+21,Pre-processing,N/A,preproc_det,19.177675247192383,-,-
+21,Object Detection,YOLOv3,detection,15.899419784545898,-,-
+21,from_numpy,YOLOv3,detection,0.04029273986816406,-,-
+21,image4yolo,YOLOv3,detection,0.7193088531494141,-,-
+21,pred,YOLOv3,detection,13.061285018920898,-,-
+21,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.138874053955078,-,-
+21,End-to-End,N/A,e2e_latency,51.93066596984863,60a35c66e03531831d1e8082,1
+22,Scheduling,dynamic_round_robin,scheduling,88.8223648071289,60a35c66e03531831d1e8082,1
+22,Pre-processing,N/A,preproc_det,19.830703735351562,-,-
+22,Object Detection,YOLOv3,detection,14.93382453918457,-,-
+22,from_numpy,YOLOv3,detection,0.03743171691894531,-,-
+22,image4yolo,YOLOv3,detection,0.6914138793945312,-,-
+22,pred,YOLOv3,detection,12.46953010559082,-,-
+22,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.1380653381347656,-,-
+22,End-to-End,N/A,e2e_latency,48.7973690032959,60a35c66e03531831d1e8082,1
+23,Scheduling,dynamic_round_robin,scheduling,84.05685424804688,60a35c66e03531831d1e8082,1
+23,Pre-processing,N/A,preproc_det,19.2110538482666,-,-
+23,Object Detection,YOLOv3,detection,16.405105590820312,-,-
+23,from_numpy,YOLOv3,detection,0.03838539123535156,-,-
+23,image4yolo,YOLOv3,detection,0.6992816925048828,-,-
+23,pred,YOLOv3,detection,13.901948928833008,-,-
+23,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.828929901123047,-,-
+23,End-to-End,N/A,e2e_latency,51.14483833312988,60a35c66e03531831d1e8082,1
+24,Scheduling,dynamic_round_robin,scheduling,89.10059928894043,60a35c66e03531831d1e8082,1
+24,Pre-processing,N/A,preproc_det,19.421100616455078,-,-
+,sorting,Sorting Network,scheduling,0.17571449279785156,-,-
+24,Object Detection,YOLOv3,detection,15.075922012329102,-,-
+24,from_numpy,YOLOv3,detection,0.03743171691894531,-,-
+24,image4yolo,YOLOv3,detection,0.6933212280273438,-,-
+24,pred,YOLOv3,detection,12.598276138305664,-,-
+24,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.22613525390625,-,-
+24,End-to-End,N/A,e2e_latency,51.906585693359375,60a35c66e03531831d1e8082,1
+25,Scheduling,dynamic_round_robin,scheduling,88.87934684753418,60a35c66e03531831d1e8082,1
+25,Pre-processing,N/A,preproc_det,19.192218780517578,-,-
+25,Object Detection,YOLOv3,detection,16.157865524291992,-,-
+25,from_numpy,YOLOv3,detection,0.03886222839355469,-,-
+25,image4yolo,YOLOv3,detection,0.6916522979736328,-,-
+25,pred,YOLOv3,detection,13.642072677612305,-,-
+25,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.3558349609375,-,-
+25,End-to-End,N/A,e2e_latency,52.07967758178711,60a35c66e03531831d1e8082,1
+26,Scheduling,dynamic_round_robin,scheduling,83.61983299255371,60a35c66e03531831d1e8082,1
+26,Pre-processing,N/A,preproc_det,20.096302032470703,-,-
+26,Object Detection,YOLOv3,detection,14.94741439819336,-,-
+26,from_numpy,YOLOv3,detection,0.03981590270996094,-,-
+26,image4yolo,YOLOv3,detection,0.690460205078125,-,-
+26,pred,YOLOv3,detection,12.464046478271484,-,-
+26,Extra Pipeline,PiH Candidate Selection,candidate_selection,12.024641036987305,-,-
+26,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.06580352783203125,-,-
+26,End-to-End,N/A,e2e_latency,59.47518348693848,60a35c66e03531831d1e8082,1
+27,Scheduling,dynamic_round_robin,scheduling,89.09416198730469,60a35c66e03531831d1e8082,1
+27,Pre-processing,N/A,preproc_det,19.51432228088379,-,-
+27,Object Detection,YOLOv3,detection,15.015125274658203,-,-
+27,from_numpy,YOLOv3,detection,0.03910064697265625,-,-
+27,image4yolo,YOLOv3,detection,0.7023811340332031,-,-
+27,pred,YOLOv3,detection,12.52436637878418,-,-
+27,Extra Pipeline,PiH Candidate Selection,candidate_selection,20.7974910736084,-,-
+27,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.06914138793945312,-,-
+27,End-to-End,N/A,e2e_latency,68.95661354064941,60a35c66e03531831d1e8082,1
+28,Scheduling,dynamic_round_robin,scheduling,89.03670310974121,60a35c66e03531831d1e8082,1
+28,Pre-processing,N/A,preproc_det,19.99974250793457,-,-
+28,Object Detection,YOLOv3,detection,15.017509460449219,-,-
+28,from_numpy,YOLOv3,detection,0.0400543212890625,-,-
+,sorting,Sorting Network,scheduling,0.2307891845703125,-,-
+28,image4yolo,YOLOv3,detection,0.7026195526123047,-,-
+28,pred,YOLOv3,detection,12.489795684814453,-,-
+28,Extra Pipeline,PiH Candidate Selection,candidate_selection,11.289834976196289,-,-
+28,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.0705718994140625,-,-
+28,End-to-End,N/A,e2e_latency,53.30085754394531,60a35c66e03531831d1e8082,1
+29,Scheduling,dynamic_round_robin,scheduling,88.95301818847656,60a35c66e03531831d1e8082,1
+29,Pre-processing,N/A,preproc_det,19.26279067993164,-,-
+29,Object Detection,YOLOv3,detection,15.082120895385742,-,-
+29,from_numpy,YOLOv3,detection,0.04100799560546875,-,-
+29,image4yolo,YOLOv3,detection,0.7112026214599609,-,-
+29,pred,YOLOv3,detection,12.582540512084961,-,-
+29,Extra Pipeline,PiH Candidate Selection,candidate_selection,12.285232543945312,-,-
+29,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.06461143493652344,-,-
+29,End-to-End,N/A,e2e_latency,55.483341217041016,60a35c66e03531831d1e8082,1
+30,Scheduling,dynamic_round_robin,scheduling,88.91582489013672,60a35c66e03531831d1e8082,1
+30,Pre-processing,N/A,preproc_det,19.11020278930664,-,-
+30,Object Detection,YOLOv3,detection,14.99629020690918,-,-
+30,from_numpy,YOLOv3,detection,0.039577484130859375,-,-
+30,image4yolo,YOLOv3,detection,0.7154941558837891,-,-
+30,pred,YOLOv3,detection,12.487649917602539,-,-
+30,Extra Pipeline,PiH Candidate Selection,candidate_selection,11.349916458129883,-,-
+30,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.06771087646484375,-,-
+30,End-to-End,N/A,e2e_latency,56.99300765991211,60a35c66e03531831d1e8082,1
+31,Scheduling,dynamic_round_robin,scheduling,89.01619911193848,60a35c66e03531831d1e8082,1
+31,Pre-processing,N/A,preproc_det,25.709152221679688,-,-
+31,Object Detection,YOLOv3,detection,16.411781311035156,-,-
+31,from_numpy,YOLOv3,detection,0.05841255187988281,-,-
+31,image4yolo,YOLOv3,detection,0.8916854858398438,-,-
+31,pred,YOLOv3,detection,13.585805892944336,-,-
+31,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.97834587097168,-,-
+31,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.07033348083496094,-,-
+31,End-to-End,N/A,e2e_latency,63.570261001586914,60a35c66e03531831d1e8082,1
+32,Scheduling,dynamic_round_robin,scheduling,88.9289379119873,60a35c66e03531831d1e8082,1
+32,Pre-processing,N/A,preproc_det,19.12522315979004,-,-
+,sorting,Sorting Network,scheduling,0.2155303955078125,-,-
+32,Object Detection,YOLOv3,detection,16.1287784576416,-,-
+32,from_numpy,YOLOv3,detection,0.0438690185546875,-,-
+32,image4yolo,YOLOv3,detection,0.8237361907958984,-,-
+32,pred,YOLOv3,detection,13.496160507202148,-,-
+32,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.540443420410156,-,-
+32,End-to-End,N/A,e2e_latency,50.3847599029541,60a35c66e03531831d1e8082,1
+33,Scheduling,dynamic_round_robin,scheduling,88.98615837097168,60a35c66e03531831d1e8082,1
+33,Pre-processing,N/A,preproc_det,20.021438598632812,-,-
+33,Object Detection,YOLOv3,detection,15.039682388305664,-,-
+33,from_numpy,YOLOv3,detection,0.03910064697265625,-,-
+33,image4yolo,YOLOv3,detection,0.7236003875732422,-,-
+33,pred,YOLOv3,detection,12.534379959106445,-,-
+33,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.692958831787109,-,-
+33,End-to-End,N/A,e2e_latency,48.15077781677246,60a35c66e03531831d1e8082,1
+34,Scheduling,dynamic_round_robin,scheduling,88.71603012084961,60a35c66e03531831d1e8082,1
+34,Pre-processing,N/A,preproc_det,18.941402435302734,-,-
+34,Object Detection,YOLOv3,detection,13.935327529907227,-,-
+34,from_numpy,YOLOv3,detection,0.039577484130859375,-,-
+34,image4yolo,YOLOv3,detection,0.6983280181884766,-,-
+34,pred,YOLOv3,detection,11.196613311767578,-,-
+34,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.03230094909668,-,-
+34,End-to-End,N/A,e2e_latency,54.352521896362305,60a35c66e03531831d1e8082,1
+35,Scheduling,dynamic_round_robin,scheduling,88.92297744750977,60a35c66e03531831d1e8082,1
+35,Pre-processing,N/A,preproc_det,17.578840255737305,-,-
+35,Object Detection,YOLOv3,detection,13.590574264526367,-,-
+35,from_numpy,YOLOv3,detection,0.03600120544433594,-,-
+35,image4yolo,YOLOv3,detection,0.6737709045410156,-,-
+35,pred,YOLOv3,detection,9.24539566040039,-,-
+35,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.471063613891602,-,-
+35,End-to-End,N/A,e2e_latency,46.189069747924805,60a35c66e03531831d1e8082,1
+36,Scheduling,dynamic_round_robin,scheduling,83.77742767333984,60a35c66e03531831d1e8082,1
+36,Pre-processing,N/A,preproc_det,18.19157600402832,-,-
+,sorting,Sorting Network,scheduling,0.2238750457763672,-,-
+36,Object Detection,YOLOv3,detection,13.621807098388672,-,-
+36,from_numpy,YOLOv3,detection,0.03600120544433594,-,-
+36,image4yolo,YOLOv3,detection,0.6718635559082031,-,-
+36,pred,YOLOv3,detection,9.194374084472656,-,-
+36,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.8406848907470703,-,-
+36,End-to-End,N/A,e2e_latency,46.51808738708496,60a35c66e03531831d1e8082,1
+37,Scheduling,dynamic_round_robin,scheduling,88.91034126281738,60a35c66e03531831d1e8082,1
+37,Pre-processing,N/A,preproc_det,18.939733505249023,-,-
+37,Object Detection,YOLOv3,detection,13.578414916992188,-,-
+37,from_numpy,YOLOv3,detection,0.03695487976074219,-,-
+37,image4yolo,YOLOv3,detection,0.6749629974365234,-,-
+37,pred,YOLOv3,detection,9.148836135864258,-,-
+37,Extra Pipeline,PiH Candidate Selection,candidate_selection,8.59379768371582,-,-
+37,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.05054473876953125,-,-
+37,End-to-End,N/A,e2e_latency,53.069114685058594,60a35c66e03531831d1e8082,1
+38,Scheduling,dynamic_round_robin,scheduling,58.06875228881836,60a35c66e03531831d1e8082,1
+38,Pre-processing,N/A,preproc_det,18.174171447753906,-,-
+38,Object Detection,YOLOv3,detection,13.614654541015625,-,-
+38,from_numpy,YOLOv3,detection,0.038623809814453125,-,-
+38,image4yolo,YOLOv3,detection,0.6747245788574219,-,-
+38,pred,YOLOv3,detection,9.214639663696289,-,-
+38,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.793882369995117,-,-
+38,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.04863739013671875,-,-
+38,End-to-End,N/A,e2e_latency,47.406911849975586,60a35c66e03531831d1e8082,1
+39,Scheduling,dynamic_round_robin,scheduling,88.92226219177246,60a35c66e03531831d1e8082,1
+39,Pre-processing,N/A,preproc_det,17.85731315612793,-,-
+39,Object Detection,YOLOv3,detection,13.58342170715332,-,-
+39,from_numpy,YOLOv3,detection,0.03600120544433594,-,-
+39,image4yolo,YOLOv3,detection,0.6754398345947266,-,-
+39,pred,YOLOv3,detection,9.187936782836914,-,-
+39,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.5719871520996094,-,-
+39,End-to-End,N/A,e2e_latency,46.28920555114746,60a35c66e03531831d1e8082,1
+40,Scheduling,dynamic_round_robin,scheduling,88.98472785949707,60a35c66e03531831d1e8082,1
+40,Pre-processing,N/A,preproc_det,14.347314834594727,-,-
+,sorting,Sorting Network,scheduling,0.15878677368164062,-,-
+40,Object Detection,YOLOv3,detection,13.548851013183594,-,-
+40,from_numpy,YOLOv3,detection,0.0362396240234375,-,-
+40,image4yolo,YOLOv3,detection,0.6740093231201172,-,-
+40,pred,YOLOv3,detection,9.152889251708984,-,-
+40,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.504203796386719,-,-
+40,End-to-End,N/A,e2e_latency,37.691354751586914,60a35c66e03531831d1e8082,1
+41,Scheduling,dynamic_round_robin,scheduling,88.67835998535156,60a35c66e03531831d1e8082,1
+41,Pre-processing,N/A,preproc_det,19.362211227416992,-,-
+41,Object Detection,YOLOv3,detection,13.527154922485352,-,-
+41,from_numpy,YOLOv3,detection,0.03504753112792969,-,-
+41,image4yolo,YOLOv3,detection,0.6618499755859375,-,-
+41,pred,YOLOv3,detection,9.226799011230469,-,-
+41,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.737211227416992,-,-
+41,End-to-End,N/A,e2e_latency,47.7137565612793,60a35c66e03531831d1e8082,1
+42,Scheduling,dynamic_round_robin,scheduling,88.81020545959473,60a35c66e03531831d1e8082,1
+42,Pre-processing,N/A,preproc_det,17.81439781188965,-,-
+42,Object Detection,YOLOv3,detection,13.562440872192383,-,-
+42,from_numpy,YOLOv3,detection,0.0362396240234375,-,-
+42,image4yolo,YOLOv3,detection,0.6732940673828125,-,-
+42,pred,YOLOv3,detection,9.099245071411133,-,-
+42,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.720449447631836,-,-
+42,End-to-End,N/A,e2e_latency,46.523094177246094,60a35c66e03531831d1e8082,1
+43,Scheduling,dynamic_round_robin,scheduling,89.05386924743652,60a35c66e03531831d1e8082,1
+43,Pre-processing,N/A,preproc_det,19.32692527770996,-,-
+43,Object Detection,YOLOv3,detection,13.557910919189453,-,-
+43,from_numpy,YOLOv3,detection,0.03552436828613281,-,-
+43,image4yolo,YOLOv3,detection,0.6563663482666016,-,-
+43,pred,YOLOv3,detection,9.218215942382812,-,-
+43,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.369258880615234,-,-
+43,End-to-End,N/A,e2e_latency,48.76899719238281,60a35c66e03531831d1e8082,1
+44,Scheduling,dynamic_round_robin,scheduling,88.40322494506836,60a35c66e03531831d1e8082,1
+44,Pre-processing,N/A,preproc_det,13.25678825378418,-,-
+,sorting,Sorting Network,scheduling,0.14448165893554688,-,-
+44,Object Detection,YOLOv3,detection,15.536069869995117,-,-
+44,from_numpy,YOLOv3,detection,0.0362396240234375,-,-
+44,image4yolo,YOLOv3,detection,0.7128715515136719,-,-
+44,pred,YOLOv3,detection,13.124465942382812,-,-
+44,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.9696693420410156,-,-
+44,End-to-End,N/A,e2e_latency,44.02661323547363,60a35c66e03531831d1e8082,1
+45,Scheduling,dynamic_round_robin,scheduling,89.06173706054688,60a35c66e03531831d1e8082,1
+45,Pre-processing,N/A,preproc_det,14.832496643066406,-,-
+45,Object Detection,YOLOv3,detection,13.600349426269531,-,-
+45,from_numpy,YOLOv3,detection,0.036716461181640625,-,-
+45,image4yolo,YOLOv3,detection,0.6804466247558594,-,-
+45,pred,YOLOv3,detection,9.159564971923828,-,-
+45,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.322290420532227,-,-
+45,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.045299530029296875,-,-
+45,End-to-End,N/A,e2e_latency,50.49395561218262,60a35c66e03531831d1e8082,1
+46,Scheduling,dynamic_round_robin,scheduling,88.93823623657227,60a35c66e03531831d1e8082,1
+46,Pre-processing,N/A,preproc_det,18.6614990234375,-,-
+46,Object Detection,YOLOv3,detection,13.588666915893555,-,-
+46,from_numpy,YOLOv3,detection,0.036716461181640625,-,-
+46,image4yolo,YOLOv3,detection,0.6844997406005859,-,-
+46,pred,YOLOv3,detection,9.140729904174805,-,-
+46,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.740642547607422,-,-
+46,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.04982948303222656,-,-
+46,End-to-End,N/A,e2e_latency,50.12869834899902,60a35c66e03531831d1e8082,1
+47,Scheduling,dynamic_round_robin,scheduling,62.05606460571289,60a35c66e03531831d1e8082,1
+47,Pre-processing,N/A,preproc_det,11.992692947387695,-,-
+47,Object Detection,YOLOv3,detection,13.658761978149414,-,-
+47,from_numpy,YOLOv3,detection,0.03790855407714844,-,-
+47,image4yolo,YOLOv3,detection,0.6804466247558594,-,-
+47,pred,YOLOv3,detection,9.16433334350586,-,-
+47,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.429267883300781,-,-
+47,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.04792213439941406,-,-
+47,End-to-End,N/A,e2e_latency,43.17116737365723,60a35c66e03531831d1e8082,1
+48,Scheduling,dynamic_round_robin,scheduling,88.52481842041016,60a35c66e03531831d1e8082,1
+48,Pre-processing,N/A,preproc_det,19.145727157592773,-,-
+,sorting,Sorting Network,scheduling,0.1442432403564453,-,-
+48,Object Detection,YOLOv3,detection,13.543844223022461,-,-
+48,from_numpy,YOLOv3,detection,0.037670135498046875,-,-
+48,image4yolo,YOLOv3,detection,0.6761550903320312,-,-
+48,pred,YOLOv3,detection,9.195327758789062,-,-
+48,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.980564117431641,-,-
+48,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.04649162292480469,-,-
+48,End-to-End,N/A,e2e_latency,50.4605770111084,60a35c66e03531831d1e8082,1
+49,Scheduling,dynamic_round_robin,scheduling,67.95072555541992,60a35c66e03531831d1e8082,1
+49,Pre-processing,N/A,preproc_det,18.672943115234375,-,-
+49,Object Detection,YOLOv3,detection,13.544082641601562,-,-
+49,from_numpy,YOLOv3,detection,0.03719329833984375,-,-
+49,image4yolo,YOLOv3,detection,0.6625652313232422,-,-
+49,pred,YOLOv3,detection,9.191036224365234,-,-
+49,Extra Pipeline,PiH Candidate Selection,candidate_selection,8.568525314331055,-,-
+49,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.0514984130859375,-,-
+49,End-to-End,N/A,e2e_latency,52.18029022216797,60a35c66e03531831d1e8082,1
+50,Scheduling,dynamic_round_robin,scheduling,78.69791984558105,60a35c66e03531831d1e8082,1
+50,Pre-processing,N/A,preproc_det,18.803119659423828,-,-
+50,Object Detection,YOLOv3,detection,13.679981231689453,-,-
+50,from_numpy,YOLOv3,detection,0.03719329833984375,-,-
+50,image4yolo,YOLOv3,detection,0.6866455078125,-,-
+50,pred,YOLOv3,detection,10.160446166992188,-,-
+50,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.7736892700195312,-,-
+50,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.052928924560546875,-,-
+50,End-to-End,N/A,e2e_latency,47.882080078125,60a35c66e03531831d1e8082,1
+51,Scheduling,dynamic_round_robin,scheduling,88.7289047241211,60a35c66e03531831d1e8082,1
+51,Pre-processing,N/A,preproc_det,19.659996032714844,-,-
+51,Object Detection,YOLOv3,detection,13.547658920288086,-,-
+51,from_numpy,YOLOv3,detection,0.03647804260253906,-,-
+51,image4yolo,YOLOv3,detection,0.6761550903320312,-,-
+51,pred,YOLOv3,detection,9.165048599243164,-,-
+51,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.821134567260742,-,-
+51,End-to-End,N/A,e2e_latency,47.712087631225586,60a35c66e03531831d1e8082,1
+52,Scheduling,dynamic_round_robin,scheduling,89.08343315124512,60a35c66e03531831d1e8082,1
+52,Pre-processing,N/A,preproc_det,17.91691780090332,-,-
+,sorting,Sorting Network,scheduling,0.1475811004638672,-,-
+52,Object Detection,YOLOv3,detection,13.671159744262695,-,-
+52,from_numpy,YOLOv3,detection,0.035762786865234375,-,-
+52,image4yolo,YOLOv3,detection,0.6895065307617188,-,-
+52,pred,YOLOv3,detection,9.16290283203125,-,-
+52,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.42140007019043,-,-
+52,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.04887580871582031,-,-
+52,End-to-End,N/A,e2e_latency,48.70033264160156,60a35c66e03531831d1e8082,1
+53,Scheduling,dynamic_round_robin,scheduling,78.4006118774414,60a35c66e03531831d1e8082,1
+53,Pre-processing,N/A,preproc_det,16.410350799560547,-,-
+53,Object Detection,YOLOv3,detection,13.572454452514648,-,-
+53,from_numpy,YOLOv3,detection,0.036716461181640625,-,-
+53,image4yolo,YOLOv3,detection,0.6761550903320312,-,-
+53,pred,YOLOv3,detection,9.198665618896484,-,-
+53,Extra Pipeline,PiH Candidate Selection,candidate_selection,2.850770950317383,-,-
+53,End-to-End,N/A,e2e_latency,43.872833251953125,60a35c66e03531831d1e8082,1
+54,Scheduling,dynamic_round_robin,scheduling,88.91797065734863,60a35c66e03531831d1e8082,1
+54,Pre-processing,N/A,preproc_det,19.331932067871094,-,-
+54,Object Detection,YOLOv3,detection,13.581275939941406,-,-
+54,from_numpy,YOLOv3,detection,0.03838539123535156,-,-
+54,image4yolo,YOLOv3,detection,0.6966590881347656,-,-
+54,pred,YOLOv3,detection,9.215831756591797,-,-
+54,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.710508346557617,-,-
+54,End-to-End,N/A,e2e_latency,48.174142837524414,60a35c66e03531831d1e8082,1
+55,Scheduling,dynamic_round_robin,scheduling,89.02573585510254,60a35c66e03531831d1e8082,1
+55,Pre-processing,N/A,preproc_det,19.41990852355957,-,-
+55,Object Detection,YOLOv3,detection,13.596773147583008,-,-
+55,from_numpy,YOLOv3,detection,0.037670135498046875,-,-
+55,image4yolo,YOLOv3,detection,0.6856918334960938,-,-
+55,pred,YOLOv3,detection,9.705543518066406,-,-
+55,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.097223281860352,-,-
+55,End-to-End,N/A,e2e_latency,53.04241180419922,60a35c66e03531831d1e8082,1
+56,Scheduling,dynamic_round_robin,scheduling,78.74059677124023,60a35c66e03531831d1e8082,1
+56,Pre-processing,N/A,preproc_det,18.858909606933594,-,-
+,sorting,Sorting Network,scheduling,0.13780593872070312,-,-
+56,Object Detection,YOLOv3,detection,13.549089431762695,-,-
+56,from_numpy,YOLOv3,detection,0.03838539123535156,-,-
+56,image4yolo,YOLOv3,detection,0.6842613220214844,-,-
+56,pred,YOLOv3,detection,9.456634521484375,-,-
+56,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.9789676666259766,-,-
+56,End-to-End,N/A,e2e_latency,58.88843536376953,60a35c66e03531831d1e8082,1
+57,Scheduling,dynamic_round_robin,scheduling,83.6038589477539,60a35c66e03531831d1e8082,1
+57,Pre-processing,N/A,preproc_det,18.498897552490234,-,-
+57,Object Detection,YOLOv3,detection,13.653755187988281,-,-
+57,from_numpy,YOLOv3,detection,0.037670135498046875,-,-
+57,image4yolo,YOLOv3,detection,0.6821155548095703,-,-
+57,pred,YOLOv3,detection,9.218692779541016,-,-
+57,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.09388542175293,-,-
+57,End-to-End,N/A,e2e_latency,47.002315521240234,60a35c66e03531831d1e8082,1
+58,Scheduling,dynamic_round_robin,scheduling,88.53912353515625,60a35c66e03531831d1e8082,1
+58,Pre-processing,N/A,preproc_det,19.58322525024414,-,-
+58,Object Detection,YOLOv3,detection,13.588190078735352,-,-
+58,from_numpy,YOLOv3,detection,0.03695487976074219,-,-
+58,image4yolo,YOLOv3,detection,0.6864070892333984,-,-
+58,pred,YOLOv3,detection,9.201526641845703,-,-
+58,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.210710525512695,-,-
+58,End-to-End,N/A,e2e_latency,48.19655418395996,60a35c66e03531831d1e8082,1
+59,Scheduling,dynamic_round_robin,scheduling,83.39858055114746,60a35c66e03531831d1e8082,1
+59,Pre-processing,N/A,preproc_det,17.596721649169922,-,-
+59,Object Detection,YOLOv3,detection,13.588428497314453,-,-
+59,from_numpy,YOLOv3,detection,0.036716461181640625,-,-
+59,image4yolo,YOLOv3,detection,0.6773471832275391,-,-
+59,pred,YOLOv3,detection,9.424924850463867,-,-
+59,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.000425338745117,-,-
+59,End-to-End,N/A,e2e_latency,46.56672477722168,60a35c66e03531831d1e8082,1
+60,Scheduling,dynamic_round_robin,scheduling,88.88101577758789,60a35c66e03531831d1e8082,1
+60,Pre-processing,N/A,preproc_det,18.774032592773438,-,-
+,sorting,Sorting Network,scheduling,0.1475811004638672,-,-
+60,Object Detection,YOLOv3,detection,13.625860214233398,-,-
+60,from_numpy,YOLOv3,detection,0.03647804260253906,-,-
+60,image4yolo,YOLOv3,detection,0.6799697875976562,-,-
+60,pred,YOLOv3,detection,9.270668029785156,-,-
+60,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.105091094970703,-,-
+60,End-to-End,N/A,e2e_latency,46.78845405578613,60a35c66e03531831d1e8082,1
+61,Scheduling,dynamic_round_robin,scheduling,83.37855339050293,60a35c66e03531831d1e8082,1
+61,Pre-processing,N/A,preproc_det,17.282485961914062,-,-
+61,Object Detection,YOLOv3,detection,13.561248779296875,-,-
+61,from_numpy,YOLOv3,detection,0.03743171691894531,-,-
+61,image4yolo,YOLOv3,detection,0.6802082061767578,-,-
+61,pred,YOLOv3,detection,9.219646453857422,-,-
+61,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.893136978149414,-,-
+61,End-to-End,N/A,e2e_latency,45.382022857666016,60a35c66e03531831d1e8082,1
+62,Scheduling,dynamic_round_robin,scheduling,89.05029296875,60a35c66e03531831d1e8082,1
+62,Pre-processing,N/A,preproc_det,17.925262451171875,-,-
+62,Object Detection,YOLOv3,detection,13.520479202270508,-,-
+62,from_numpy,YOLOv3,detection,0.034809112548828125,-,-
+62,image4yolo,YOLOv3,detection,0.6573200225830078,-,-
+62,pred,YOLOv3,detection,9.20724868774414,-,-
+62,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.4847259521484375,-,-
+62,End-to-End,N/A,e2e_latency,51.104068756103516,60a35c66e03531831d1e8082,1
+63,Scheduling,dynamic_round_robin,scheduling,83.83965492248535,60a35c66e03531831d1e8082,1
+63,Pre-processing,N/A,preproc_det,18.52250099182129,-,-
+63,Object Detection,YOLOv3,detection,13.65208625793457,-,-
+63,from_numpy,YOLOv3,detection,0.03719329833984375,-,-
+63,image4yolo,YOLOv3,detection,0.6754398345947266,-,-
+63,pred,YOLOv3,detection,9.122610092163086,-,-
+63,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.162860870361328,-,-
+63,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.04744529724121094,-,-
+63,End-to-End,N/A,e2e_latency,53.51686477661133,60a35c66e03531831d1e8082,1
+64,Scheduling,dynamic_round_robin,scheduling,51.82957649230957,60a35c66e03531831d1e8082,1
+64,Pre-processing,N/A,preproc_det,18.977880477905273,-,-
+64,Object Detection,YOLOv3,detection,13.52238655090332,-,-
+,sorting,Sorting Network,scheduling,0.14019012451171875,-,-
+64,from_numpy,YOLOv3,detection,0.032901763916015625,-,-
+64,image4yolo,YOLOv3,detection,0.6546974182128906,-,-
+64,pred,YOLOv3,detection,9.192705154418945,-,-
+64,Extra Pipeline,PiH Candidate Selection,candidate_selection,12.025117874145508,-,-
+64,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.05125999450683594,-,-
+64,End-to-End,N/A,e2e_latency,55.15122413635254,60a35c66e03531831d1e8082,1
+65,Scheduling,dynamic_round_robin,scheduling,88.51337432861328,60a35c66e03531831d1e8082,1
+65,Pre-processing,N/A,preproc_det,20.28679847717285,-,-
+65,Object Detection,YOLOv3,detection,13.644695281982422,-,-
+65,from_numpy,YOLOv3,detection,0.0362396240234375,-,-
+65,image4yolo,YOLOv3,detection,0.6656646728515625,-,-
+65,pred,YOLOv3,detection,10.215282440185547,-,-
+65,Extra Pipeline,PiH Candidate Selection,candidate_selection,6.017446517944336,-,-
+65,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.04792213439941406,-,-
+65,End-to-End,N/A,e2e_latency,51.28979682922363,60a35c66e03531831d1e8082,1
+66,Scheduling,dynamic_round_robin,scheduling,88.44947814941406,60a35c66e03531831d1e8082,1
+66,Pre-processing,N/A,preproc_det,18.898725509643555,-,-
+66,Object Detection,YOLOv3,detection,13.543844223022461,-,-
+66,from_numpy,YOLOv3,detection,0.03361701965332031,-,-
+66,image4yolo,YOLOv3,detection,0.6535053253173828,-,-
+66,pred,YOLOv3,detection,9.13858413696289,-,-
+66,Extra Pipeline,PiH Candidate Selection,candidate_selection,8.931159973144531,-,-
+66,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.049114227294921875,-,-
+66,End-to-End,N/A,e2e_latency,58.777570724487305,60a35c66e03531831d1e8082,1
+67,Scheduling,dynamic_round_robin,scheduling,89.07771110534668,60a35c66e03531831d1e8082,1
+67,Pre-processing,N/A,preproc_det,18.125534057617188,-,-
+67,Object Detection,YOLOv3,detection,13.606071472167969,-,-
+67,from_numpy,YOLOv3,detection,0.03457069396972656,-,-
+67,image4yolo,YOLOv3,detection,0.6616115570068359,-,-
+67,pred,YOLOv3,detection,9.191036224365234,-,-
+67,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.382848739624023,-,-
+67,End-to-End,N/A,e2e_latency,47.120094299316406,60a35c66e03531831d1e8082,1
+68,Scheduling,dynamic_round_robin,scheduling,89.05935287475586,60a35c66e03531831d1e8082,1
+68,Pre-processing,N/A,preproc_det,18.81575584411621,-,-
+68,Object Detection,YOLOv3,detection,13.916969299316406,-,-
+,sorting,Sorting Network,scheduling,0.1354217529296875,-,-
+68,from_numpy,YOLOv3,detection,0.034332275390625,-,-
+68,image4yolo,YOLOv3,detection,0.6532669067382812,-,-
+68,pred,YOLOv3,detection,10.556221008300781,-,-
+68,Extra Pipeline,PiH Candidate Selection,candidate_selection,6.260871887207031,-,-
+68,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.04744529724121094,-,-
+68,End-to-End,N/A,e2e_latency,51.072120666503906,60a35c66e03531831d1e8082,1
+69,Scheduling,dynamic_round_robin,scheduling,89.04409408569336,60a35c66e03531831d1e8082,1
+69,Pre-processing,N/A,preproc_det,17.708301544189453,-,-
+69,Object Detection,YOLOv3,detection,13.546466827392578,-,-
+69,from_numpy,YOLOv3,detection,0.033855438232421875,-,-
+69,image4yolo,YOLOv3,detection,0.6535053253173828,-,-
+69,pred,YOLOv3,detection,9.225130081176758,-,-
+69,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.030942916870117,-,-
+69,End-to-End,N/A,e2e_latency,46.19598388671875,60a35c66e03531831d1e8082,1
+70,Scheduling,dynamic_round_robin,scheduling,89.01619911193848,60a35c66e03531831d1e8082,1
+70,Pre-processing,N/A,preproc_det,13.686180114746094,-,-
+70,Object Detection,YOLOv3,detection,13.584136962890625,-,-
+70,from_numpy,YOLOv3,detection,0.03600120544433594,-,-
+70,image4yolo,YOLOv3,detection,0.6697177886962891,-,-
+70,pred,YOLOv3,detection,9.227514266967773,-,-
+70,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.37982177734375,-,-
+70,End-to-End,N/A,e2e_latency,41.289329528808594,60a35c66e03531831d1e8082,1
+71,Pre-processing,N/A,preproc_det,18.92232894897461,-,-
+71,Object Detection,YOLOv3,detection,13.501644134521484,-,-
+71,from_numpy,YOLOv3,detection,0.032901763916015625,-,-
+71,image4yolo,YOLOv3,detection,0.6527900695800781,-,-
+71,pred,YOLOv3,detection,9.148359298706055,-,-
+71,Scheduling,dynamic_round_robin,scheduling,83.90045166015625,60a35c66e03531831d1e8082,1
+71,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.893064498901367,-,-
+71,End-to-End,N/A,e2e_latency,47.82748222351074,60a35c66e03531831d1e8082,1
+72,Scheduling,dynamic_round_robin,scheduling,89.06173706054688,60a35c66e03531831d1e8082,1
+72,Pre-processing,N/A,preproc_det,17.751216888427734,-,-
+,sorting,Sorting Network,scheduling,0.2219676971435547,-,-
+72,Object Detection,YOLOv3,detection,13.508319854736328,-,-
+72,from_numpy,YOLOv3,detection,0.03337860107421875,-,-
+72,image4yolo,YOLOv3,detection,0.6527900695800781,-,-
+72,pred,YOLOv3,detection,9.102821350097656,-,-
+72,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.932165145874023,-,-
+72,End-to-End,N/A,e2e_latency,47.45340347290039,60a35c66e03531831d1e8082,1
+73,Scheduling,dynamic_round_robin,scheduling,89.0965461730957,60a35c66e03531831d1e8082,1
+73,Pre-processing,N/A,preproc_det,10.985374450683594,-,-
+73,Object Detection,YOLOv3,detection,13.483762741088867,-,-
+73,from_numpy,YOLOv3,detection,0.030040740966796875,-,-
+73,image4yolo,YOLOv3,detection,0.644683837890625,-,-
+73,pred,YOLOv3,detection,9.174108505249023,-,-
+73,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.332780838012695,-,-
+73,End-to-End,N/A,e2e_latency,40.19641876220703,60a35c66e03531831d1e8082,1
+74,Scheduling,dynamic_round_robin,scheduling,88.90628814697266,60a35c66e03531831d1e8082,1
+74,Pre-processing,N/A,preproc_det,19.27351951599121,-,-
+74,Object Detection,YOLOv3,detection,13.58342170715332,-,-
+74,from_numpy,YOLOv3,detection,0.03504753112792969,-,-
+74,image4yolo,YOLOv3,detection,0.6794929504394531,-,-
+74,pred,YOLOv3,detection,9.250879287719727,-,-
+74,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.612922668457031,-,-
+74,End-to-End,N/A,e2e_latency,48.30455780029297,60a35c66e03531831d1e8082,1
+75,Scheduling,dynamic_round_robin,scheduling,84.4106674194336,60a35c66e03531831d1e8082,1
+75,Pre-processing,N/A,preproc_det,17.374038696289062,-,-
+75,Object Detection,YOLOv3,detection,13.612747192382812,-,-
+75,from_numpy,YOLOv3,detection,0.03695487976074219,-,-
+75,image4yolo,YOLOv3,detection,0.6787776947021484,-,-
+75,pred,YOLOv3,detection,9.175300598144531,-,-
+75,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.544258117675781,-,-
+75,End-to-End,N/A,e2e_latency,47.03116416931152,60a35c66e03531831d1e8082,1
+76,Scheduling,dynamic_round_robin,scheduling,89.01667594909668,60a35c66e03531831d1e8082,1
+76,Pre-processing,N/A,preproc_det,18.997669219970703,-,-
+,sorting,Sorting Network,scheduling,0.21409988403320312,-,-
+76,Object Detection,YOLOv3,detection,13.539314270019531,-,-
+76,from_numpy,YOLOv3,detection,0.03361701965332031,-,-
+76,image4yolo,YOLOv3,detection,0.6554126739501953,-,-
+76,pred,YOLOv3,detection,9.145498275756836,-,-
+76,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.1656494140625,-,-
+76,End-to-End,N/A,e2e_latency,47.156572341918945,60a35c66e03531831d1e8082,1
+77,Scheduling,dynamic_round_robin,scheduling,89.01834487915039,60a35c66e03531831d1e8082,1
+77,Pre-processing,N/A,preproc_det,17.292499542236328,-,-
+77,Object Detection,YOLOv3,detection,13.602495193481445,-,-
+77,from_numpy,YOLOv3,detection,0.0362396240234375,-,-
+77,image4yolo,YOLOv3,detection,0.6957054138183594,-,-
+77,pred,YOLOv3,detection,9.325027465820312,-,-
+77,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.231929779052734,-,-
+77,End-to-End,N/A,e2e_latency,45.899152755737305,60a35c66e03531831d1e8082,1
+78,Scheduling,dynamic_round_robin,scheduling,88.95683288574219,60a35c66e03531831d1e8082,1
+78,Pre-processing,N/A,preproc_det,17.088651657104492,-,-
+78,Object Detection,YOLOv3,detection,13.508081436157227,-,-
+78,from_numpy,YOLOv3,detection,0.039577484130859375,-,-
+78,image4yolo,YOLOv3,detection,0.6656646728515625,-,-
+78,pred,YOLOv3,detection,9.141683578491211,-,-
+78,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.293369293212891,-,-
+78,End-to-End,N/A,e2e_latency,57.68394470214844,60a35c66e03531831d1e8082,1
+79,Scheduling,dynamic_round_robin,scheduling,88.94586563110352,60a35c66e03531831d1e8082,1
+79,Pre-processing,N/A,preproc_det,18.04041862487793,-,-
+79,Object Detection,YOLOv3,detection,13.526439666748047,-,-
+79,from_numpy,YOLOv3,detection,0.026941299438476562,-,-
+79,image4yolo,YOLOv3,detection,0.6437301635742188,-,-
+79,pred,YOLOv3,detection,9.141206741333008,-,-
+79,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.144191741943359,-,-
+79,End-to-End,N/A,e2e_latency,46.33188247680664,60a35c66e03531831d1e8082,1
+80,Scheduling,dynamic_round_robin,scheduling,88.93275260925293,60a35c66e03531831d1e8082,1
+80,Pre-processing,N/A,preproc_det,19.40751075744629,-,-
+,sorting,Sorting Network,scheduling,0.2129077911376953,-,-
+80,Object Detection,YOLOv3,detection,13.494014739990234,-,-
+80,from_numpy,YOLOv3,detection,0.029325485229492188,-,-
+80,image4yolo,YOLOv3,detection,0.6520748138427734,-,-
+80,pred,YOLOv3,detection,9.001493453979492,-,-
+80,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.883050918579102,-,-
+80,End-to-End,N/A,e2e_latency,43.21479797363281,60a35c66e03531831d1e8082,1
+81,Scheduling,dynamic_round_robin,scheduling,83.79459381103516,60a35c66e03531831d1e8082,1
+81,Pre-processing,N/A,preproc_det,18.909692764282227,-,-
+81,Object Detection,YOLOv3,detection,13.583898544311523,-,-
+81,from_numpy,YOLOv3,detection,0.029802322387695312,-,-
+81,image4yolo,YOLOv3,detection,0.6575584411621094,-,-
+81,pred,YOLOv3,detection,9.071588516235352,-,-
+81,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.368947982788086,-,-
+81,End-to-End,N/A,e2e_latency,48.601627349853516,60a35c66e03531831d1e8082,1
+82,Scheduling,dynamic_round_robin,scheduling,88.94014358520508,60a35c66e03531831d1e8082,1
+82,Pre-processing,N/A,preproc_det,17.616987228393555,-,-
+82,Object Detection,YOLOv3,detection,13.49782943725586,-,-
+82,from_numpy,YOLOv3,detection,0.031232833862304688,-,-
+82,image4yolo,YOLOv3,detection,0.6666183471679688,-,-
+82,pred,YOLOv3,detection,9.110212326049805,-,-
+82,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.562139511108398,-,-
+82,End-to-End,N/A,e2e_latency,46.63252830505371,60a35c66e03531831d1e8082,1
+83,Scheduling,dynamic_round_robin,scheduling,72.4489688873291,60a35c66e03531831d1e8082,1
+83,Pre-processing,N/A,preproc_det,19.204378128051758,-,-
+83,Object Detection,YOLOv3,detection,13.41557502746582,-,-
+83,from_numpy,YOLOv3,detection,0.027894973754882812,-,-
+83,image4yolo,YOLOv3,detection,0.6425380706787109,-,-
+83,pred,YOLOv3,detection,8.983850479125977,-,-
+83,Extra Pipeline,PiH Candidate Selection,candidate_selection,6.079673767089844,-,-
+83,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.0457763671875,-,-
+83,End-to-End,N/A,e2e_latency,52.631378173828125,60a35c66e03531831d1e8082,1
+84,Scheduling,dynamic_round_robin,scheduling,77.60477066040039,60a35c66e03531831d1e8082,1
+84,Pre-processing,N/A,preproc_det,19.161701202392578,-,-
+,sorting,Sorting Network,scheduling,0.11396408081054688,-,-
+84,Object Detection,YOLOv3,detection,13.543844223022461,-,-
+84,from_numpy,YOLOv3,detection,0.030755996704101562,-,-
+84,image4yolo,YOLOv3,detection,0.6692409515380859,-,-
+84,pred,YOLOv3,detection,9.121417999267578,-,-
+84,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.059242248535156,-,-
+84,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.04363059997558594,-,-
+84,End-to-End,N/A,e2e_latency,48.59495162963867,60a35c66e03531831d1e8082,1
+85,Scheduling,dynamic_round_robin,scheduling,88.92560005187988,60a35c66e03531831d1e8082,1
+85,Pre-processing,N/A,preproc_det,17.10057258605957,-,-
+85,Object Detection,YOLOv3,detection,13.581514358520508,-,-
+85,from_numpy,YOLOv3,detection,0.032901763916015625,-,-
+85,image4yolo,YOLOv3,detection,0.6625652313232422,-,-
+85,pred,YOLOv3,detection,9.30643081665039,-,-
+85,Extra Pipeline,PiH Candidate Selection,candidate_selection,2.7234554290771484,-,-
+85,End-to-End,N/A,e2e_latency,43.72096061706543,60a35c66e03531831d1e8082,1
+86,Scheduling,dynamic_round_robin,scheduling,89.02287483215332,60a35c66e03531831d1e8082,1
+86,Pre-processing,N/A,preproc_det,19.501686096191406,-,-
+86,Object Detection,YOLOv3,detection,13.483524322509766,-,-
+86,from_numpy,YOLOv3,detection,0.028848648071289062,-,-
+86,image4yolo,YOLOv3,detection,0.64849853515625,-,-
+86,pred,YOLOv3,detection,9.009599685668945,-,-
+86,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.083871841430664,-,-
+86,End-to-End,N/A,e2e_latency,47.73592948913574,60a35c66e03531831d1e8082,1
+87,Scheduling,dynamic_round_robin,scheduling,88.97590637207031,60a35c66e03531831d1e8082,1
+87,Pre-processing,N/A,preproc_det,17.992258071899414,-,-
+87,Object Detection,YOLOv3,detection,13.430356979370117,-,-
+87,from_numpy,YOLOv3,detection,0.031232833862304688,-,-
+87,image4yolo,YOLOv3,detection,0.6604194641113281,-,-
+87,pred,YOLOv3,detection,9.022235870361328,-,-
+87,Extra Pipeline,PiH Candidate Selection,candidate_selection,2.6705265045166016,-,-
+87,End-to-End,N/A,e2e_latency,55.631160736083984,60a35c66e03531831d1e8082,1
+88,Scheduling,dynamic_round_robin,scheduling,89.23220634460449,60a35c66e03531831d1e8082,1
+88,Pre-processing,N/A,preproc_det,17.224788665771484,-,-
+,sorting,Sorting Network,scheduling,0.21076202392578125,-,-
+88,Object Detection,YOLOv3,detection,13.54074478149414,-,-
+88,from_numpy,YOLOv3,detection,0.030040740966796875,-,-
+88,image4yolo,YOLOv3,detection,0.6687641143798828,-,-
+88,pred,YOLOv3,detection,9.161710739135742,-,-
+88,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.719806671142578,-,-
+88,End-to-End,N/A,e2e_latency,44.94333267211914,60a35c66e03531831d1e8082,1
+89,Scheduling,dynamic_round_robin,scheduling,83.52065086364746,60a35c66e03531831d1e8082,1
+89,Pre-processing,N/A,preproc_det,19.263505935668945,-,-
+89,Object Detection,YOLOv3,detection,13.550996780395508,-,-
+89,from_numpy,YOLOv3,detection,0.03218650817871094,-,-
+89,image4yolo,YOLOv3,detection,0.6632804870605469,-,-
+89,pred,YOLOv3,detection,9.12022590637207,-,-
+89,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.024982452392578,-,-
+89,End-to-End,N/A,e2e_latency,58.12692642211914,60a35c66e03531831d1e8082,1
+90,Scheduling,dynamic_round_robin,scheduling,88.8056755065918,60a35c66e03531831d1e8082,1
+90,Pre-processing,N/A,preproc_det,18.33176612854004,-,-
+90,Object Detection,YOLOv3,detection,13.504743576049805,-,-
+90,from_numpy,YOLOv3,detection,0.029802322387695312,-,-
+90,image4yolo,YOLOv3,detection,0.6570816040039062,-,-
+90,pred,YOLOv3,detection,9.171247482299805,-,-
+90,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.571033477783203,-,-
+90,End-to-End,N/A,e2e_latency,48.7973690032959,60a35c66e03531831d1e8082,1
+91,Scheduling,dynamic_round_robin,scheduling,89.01000022888184,60a35c66e03531831d1e8082,1
+91,Pre-processing,N/A,preproc_det,17.254114151000977,-,-
+91,Object Detection,YOLOv3,detection,13.524055480957031,-,-
+91,from_numpy,YOLOv3,detection,0.031232833862304688,-,-
+91,image4yolo,YOLOv3,detection,0.6506443023681641,-,-
+91,pred,YOLOv3,detection,9.090185165405273,-,-
+91,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.7038326263427734,-,-
+91,End-to-End,N/A,e2e_latency,47.52469062805176,60a35c66e03531831d1e8082,1
+92,Scheduling,dynamic_round_robin,scheduling,88.97066116333008,60a35c66e03531831d1e8082,1
+92,Pre-processing,N/A,preproc_det,18.029451370239258,-,-
+,sorting,Sorting Network,scheduling,0.20647048950195312,-,-
+92,Object Detection,YOLOv3,detection,13.510704040527344,-,-
+92,from_numpy,YOLOv3,detection,0.030755996704101562,-,-
+92,image4yolo,YOLOv3,detection,0.6592273712158203,-,-
+92,pred,YOLOv3,detection,9.020805358886719,-,-
+92,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.7529468536376953,-,-
+92,End-to-End,N/A,e2e_latency,46.46921157836914,60a35c66e03531831d1e8082,1
+93,Scheduling,dynamic_round_robin,scheduling,88.35005760192871,60a35c66e03531831d1e8082,1
+93,Pre-processing,N/A,preproc_det,18.361806869506836,-,-
+93,Object Detection,YOLOv3,detection,13.466596603393555,-,-
+93,from_numpy,YOLOv3,detection,0.028133392333984375,-,-
+93,image4yolo,YOLOv3,detection,0.6525516510009766,-,-
+93,pred,YOLOv3,detection,9.039878845214844,-,-
+93,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.641366958618164,-,-
+93,End-to-End,N/A,e2e_latency,45.90296745300293,60a35c66e03531831d1e8082,1
+94,Scheduling,dynamic_round_robin,scheduling,88.56534957885742,60a35c66e03531831d1e8082,1
+94,Pre-processing,N/A,preproc_det,17.80557632446289,-,-
+94,Object Detection,YOLOv3,detection,13.453006744384766,-,-
+94,from_numpy,YOLOv3,detection,0.030517578125,-,-
+94,image4yolo,YOLOv3,detection,0.6511211395263672,-,-
+94,pred,YOLOv3,detection,9.040594100952148,-,-
+94,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.710031509399414,-,-
+94,End-to-End,N/A,e2e_latency,45.47619819641113,60a35c66e03531831d1e8082,1
+95,Scheduling,dynamic_round_robin,scheduling,83.90188217163086,60a35c66e03531831d1e8082,1
+95,Pre-processing,N/A,preproc_det,17.395973205566406,-,-
+95,Object Detection,YOLOv3,detection,13.509035110473633,-,-
+95,from_numpy,YOLOv3,detection,0.03170967102050781,-,-
+95,image4yolo,YOLOv3,detection,0.6794929504394531,-,-
+95,pred,YOLOv3,detection,9.130239486694336,-,-
+95,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.3843517303466797,-,-
+95,End-to-End,N/A,e2e_latency,45.31145095825195,60a35c66e03531831d1e8082,1
+96,Scheduling,dynamic_round_robin,scheduling,88.60397338867188,60a35c66e03531831d1e8082,1
+96,Pre-processing,N/A,preproc_det,16.920804977416992,-,-
+,sorting,Sorting Network,scheduling,0.179290771484375,-,-
+96,Object Detection,YOLOv3,detection,13.920783996582031,-,-
+96,from_numpy,YOLOv3,detection,0.08726119995117188,-,-
+96,image4yolo,YOLOv3,detection,0.7421970367431641,-,-
+96,pred,YOLOv3,detection,9.901046752929688,-,-
+96,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.121541976928711,-,-
+96,End-to-End,N/A,e2e_latency,51.062583923339844,60a35c66e03531831d1e8082,1
+97,Scheduling,dynamic_round_robin,scheduling,84.5329761505127,60a35c66e03531831d1e8082,1
+97,Pre-processing,N/A,preproc_det,18.023252487182617,-,-
+97,Object Detection,YOLOv3,detection,13.425588607788086,-,-
+97,from_numpy,YOLOv3,detection,0.0286102294921875,-,-
+97,image4yolo,YOLOv3,detection,0.64849853515625,-,-
+97,pred,YOLOv3,detection,9.057044982910156,-,-
+97,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.142522811889648,-,-
+97,End-to-End,N/A,e2e_latency,58.20965766906738,60a35c66e03531831d1e8082,1
+98,Scheduling,dynamic_round_robin,scheduling,88.91940116882324,60a35c66e03531831d1e8082,1
+98,Pre-processing,N/A,preproc_det,18.129825592041016,-,-
+98,Object Detection,YOLOv3,detection,13.485193252563477,-,-
+98,from_numpy,YOLOv3,detection,0.026702880859375,-,-
+98,image4yolo,YOLOv3,detection,0.6473064422607422,-,-
+98,pred,YOLOv3,detection,8.998394012451172,-,-
+98,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.9420127868652344,-,-
+98,End-to-End,N/A,e2e_latency,57.2359561920166,60a35c66e03531831d1e8082,1
+99,Scheduling,dynamic_round_robin,scheduling,88.9742374420166,60a35c66e03531831d1e8082,1
+99,Pre-processing,N/A,preproc_det,18.97287368774414,-,-
+99,Object Detection,YOLOv3,detection,13.498067855834961,-,-
+99,from_numpy,YOLOv3,detection,0.022411346435546875,-,-
+99,image4yolo,YOLOv3,detection,0.6227493286132812,-,-
+99,pred,YOLOv3,detection,8.997678756713867,-,-
+99,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.416704177856445,-,-
+99,End-to-End,N/A,e2e_latency,52.51121520996094,60a35c66e03531831d1e8082,1
+100,Scheduling,dynamic_round_robin,scheduling,88.98067474365234,60a35c66e03531831d1e8082,1
+100,Pre-processing,N/A,preproc_det,18.559932708740234,-,-
+,sorting,Sorting Network,scheduling,0.2415180206298828,-,-
+100,Object Detection,YOLOv3,detection,13.539552688598633,-,-
+100,from_numpy,YOLOv3,detection,0.030517578125,-,-
+100,image4yolo,YOLOv3,detection,0.6580352783203125,-,-
+100,pred,YOLOv3,detection,9.557723999023438,-,-
+100,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.8466453552246094,-,-
+100,End-to-End,N/A,e2e_latency,57.54423141479492,60a35c66e03531831d1e8082,1
+101,Scheduling,dynamic_round_robin,scheduling,88.98806571960449,60a35c66e03531831d1e8082,1
+101,Pre-processing,N/A,preproc_det,19.259929656982422,-,-
+101,Object Detection,YOLOv3,detection,13.393878936767578,-,-
+101,from_numpy,YOLOv3,detection,0.0209808349609375,-,-
+101,image4yolo,YOLOv3,detection,0.6155967712402344,-,-
+101,pred,YOLOv3,detection,8.929252624511719,-,-
+101,Extra Pipeline,PiH Candidate Selection,candidate_selection,2.7701854705810547,-,-
+101,End-to-End,N/A,e2e_latency,45.7916259765625,60a35c66e03531831d1e8082,1
+102,Scheduling,dynamic_round_robin,scheduling,88.96303176879883,60a35c66e03531831d1e8082,1
+102,Pre-processing,N/A,preproc_det,18.271207809448242,-,-
+102,Object Detection,YOLOv3,detection,13.48876953125,-,-
+102,from_numpy,YOLOv3,detection,0.03266334533691406,-,-
+102,image4yolo,YOLOv3,detection,0.6601810455322266,-,-
+102,pred,YOLOv3,detection,9.122610092163086,-,-
+102,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.6725997924804688,-,-
+102,End-to-End,N/A,e2e_latency,41.12386703491211,60a35c66e03531831d1e8082,1
+103,Scheduling,dynamic_round_robin,scheduling,88.93609046936035,60a35c66e03531831d1e8082,1
+103,Pre-processing,N/A,preproc_det,19.190311431884766,-,-
+103,Object Detection,YOLOv3,detection,13.44609260559082,-,-
+103,from_numpy,YOLOv3,detection,0.026702880859375,-,-
+103,image4yolo,YOLOv3,detection,0.6287097930908203,-,-
+103,pred,YOLOv3,detection,9.035348892211914,-,-
+103,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.540205001831055,-,-
+103,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.07605552673339844,-,-
+103,End-to-End,N/A,e2e_latency,48.799753189086914,60a35c66e03531831d1e8082,1
+104,Scheduling,dynamic_round_robin,scheduling,88.99378776550293,60a35c66e03531831d1e8082,1
+104,Pre-processing,N/A,preproc_det,18.337726593017578,-,-
+,sorting,Sorting Network,scheduling,0.22673606872558594,-,-
+104,Object Detection,YOLOv3,detection,13.339757919311523,-,-
+104,from_numpy,YOLOv3,detection,0.019073486328125,-,-
+104,image4yolo,YOLOv3,detection,0.6079673767089844,-,-
+104,pred,YOLOv3,detection,8.903264999389648,-,-
+104,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.706859588623047,-,-
+104,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.06365776062011719,-,-
+104,End-to-End,N/A,e2e_latency,58.61544609069824,60a35c66e03531831d1e8082,1
+105,Scheduling,dynamic_round_robin,scheduling,88.92941474914551,60a35c66e03531831d1e8082,1
+105,Pre-processing,N/A,preproc_det,18.00847053527832,-,-
+105,Object Detection,YOLOv3,detection,13.415336608886719,-,-
+105,from_numpy,YOLOv3,detection,0.02288818359375,-,-
+105,image4yolo,YOLOv3,detection,0.6380081176757812,-,-
+105,pred,YOLOv3,detection,8.94784927368164,-,-
+105,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.486560821533203,-,-
+105,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.0457763671875,-,-
+105,End-to-End,N/A,e2e_latency,52.01840400695801,60a35c66e03531831d1e8082,1
+106,Scheduling,dynamic_round_robin,scheduling,88.89198303222656,60a35c66e03531831d1e8082,1
+106,Pre-processing,N/A,preproc_det,18.593549728393555,-,-
+106,Object Detection,YOLOv3,detection,13.419389724731445,-,-
+106,from_numpy,YOLOv3,detection,0.02956390380859375,-,-
+106,image4yolo,YOLOv3,detection,0.6477832794189453,-,-
+106,pred,YOLOv3,detection,8.96763801574707,-,-
+106,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.24647331237793,-,-
+106,End-to-End,N/A,e2e_latency,41.97573661804199,60a35c66e03531831d1e8082,1
+107,Scheduling,dynamic_round_robin,scheduling,88.91081809997559,60a35c66e03531831d1e8082,1
+107,Pre-processing,N/A,preproc_det,18.166780471801758,-,-
+107,Object Detection,YOLOv3,detection,13.460636138916016,-,-
+107,from_numpy,YOLOv3,detection,0.029087066650390625,-,-
+107,image4yolo,YOLOv3,detection,0.6587505340576172,-,-
+107,pred,YOLOv3,detection,9.03940200805664,-,-
+107,Extra Pipeline,PiH Candidate Selection,candidate_selection,8.335590362548828,-,-
+107,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.05245208740234375,-,-
+107,End-to-End,N/A,e2e_latency,54.5351505279541,60a35c66e03531831d1e8082,1
+108,Scheduling,dynamic_round_robin,scheduling,88.68241310119629,60a35c66e03531831d1e8082,1
+108,Pre-processing,N/A,preproc_det,18.900394439697266,-,-
+,sorting,Sorting Network,scheduling,0.20694732666015625,-,-
+108,Object Detection,YOLOv3,detection,13.65971565246582,-,-
+108,from_numpy,YOLOv3,detection,0.03361701965332031,-,-
+108,image4yolo,YOLOv3,detection,0.6577968597412109,-,-
+108,pred,YOLOv3,detection,9.216785430908203,-,-
+108,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.9637088775634766,-,-
+108,End-to-End,N/A,e2e_latency,47.14488983154297,60a35c66e03531831d1e8082,1
+109,Scheduling,dynamic_round_robin,scheduling,88.95516395568848,60a35c66e03531831d1e8082,1
+109,Pre-processing,N/A,preproc_det,18.117904663085938,-,-
+109,Object Detection,YOLOv3,detection,13.448953628540039,-,-
+109,from_numpy,YOLOv3,detection,0.02384185791015625,-,-
+109,image4yolo,YOLOv3,detection,0.6401538848876953,-,-
+109,pred,YOLOv3,detection,8.925676345825195,-,-
+109,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.063129425048828,-,-
+109,End-to-End,N/A,e2e_latency,47.01113700866699,60a35c66e03531831d1e8082,1
+110,Scheduling,dynamic_round_robin,scheduling,89.01762962341309,60a35c66e03531831d1e8082,1
+110,Pre-processing,N/A,preproc_det,18.080711364746094,-,-
+110,Object Detection,YOLOv3,detection,13.453483581542969,-,-
+110,from_numpy,YOLOv3,detection,0.024318695068359375,-,-
+110,image4yolo,YOLOv3,detection,0.6167888641357422,-,-
+110,pred,YOLOv3,detection,10.075569152832031,-,-
+110,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.926515579223633,-,-
+110,End-to-End,N/A,e2e_latency,46.344757080078125,60a35c66e03531831d1e8082,1
+111,Scheduling,dynamic_round_robin,scheduling,57.63363838195801,60a35c66e03531831d1e8082,1
+111,Pre-processing,N/A,preproc_det,18.834829330444336,-,-
+111,Object Detection,YOLOv3,detection,13.453006744384766,-,-
+111,from_numpy,YOLOv3,detection,0.024318695068359375,-,-
+111,image4yolo,YOLOv3,detection,0.6482601165771484,-,-
+111,pred,YOLOv3,detection,8.927106857299805,-,-
+111,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.8368701934814453,-,-
+111,End-to-End,N/A,e2e_latency,47.03044891357422,60a35c66e03531831d1e8082,1
+112,Scheduling,dynamic_round_robin,scheduling,88.98425102233887,60a35c66e03531831d1e8082,1
+112,Pre-processing,N/A,preproc_det,18.41139793395996,-,-
+,sorting,Sorting Network,scheduling,0.21147727966308594,-,-
+112,Object Detection,YOLOv3,detection,13.378381729125977,-,-
+112,from_numpy,YOLOv3,detection,0.024557113647460938,-,-
+112,image4yolo,YOLOv3,detection,0.6208419799804688,-,-
+112,pred,YOLOv3,detection,8.869171142578125,-,-
+112,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.073619842529297,-,-
+112,End-to-End,N/A,e2e_latency,57.94930458068848,60a35c66e03531831d1e8082,1
+113,Scheduling,dynamic_round_robin,scheduling,89.00260925292969,60a35c66e03531831d1e8082,1
+113,Pre-processing,N/A,preproc_det,16.49022102355957,-,-
+113,Object Detection,YOLOv3,detection,14.994144439697266,-,-
+113,from_numpy,YOLOv3,detection,0.019073486328125,-,-
+113,image4yolo,YOLOv3,detection,0.6492137908935547,-,-
+113,pred,YOLOv3,detection,12.637138366699219,-,-
+113,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.3006668090820312,-,-
+113,End-to-End,N/A,e2e_latency,47.438621520996094,60a35c66e03531831d1e8082,1
+114,Scheduling,dynamic_round_robin,scheduling,83.85300636291504,60a35c66e03531831d1e8082,1
+114,Pre-processing,N/A,preproc_det,17.945528030395508,-,-
+114,Object Detection,YOLOv3,detection,13.393640518188477,-,-
+114,from_numpy,YOLOv3,detection,0.026226043701171875,-,-
+114,image4yolo,YOLOv3,detection,0.6396770477294922,-,-
+114,pred,YOLOv3,detection,8.8653564453125,-,-
+114,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.3812522888183594,-,-
+114,End-to-End,N/A,e2e_latency,45.85123062133789,60a35c66e03531831d1e8082,1
+115,Scheduling,dynamic_round_robin,scheduling,88.95254135131836,60a35c66e03531831d1e8082,1
+115,Pre-processing,N/A,preproc_det,18.787384033203125,-,-
+115,Object Detection,YOLOv3,detection,13.386726379394531,-,-
+115,from_numpy,YOLOv3,detection,0.0247955322265625,-,-
+115,image4yolo,YOLOv3,detection,0.6318092346191406,-,-
+115,pred,YOLOv3,detection,8.899211883544922,-,-
+115,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.724740982055664,-,-
+115,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.046253204345703125,-,-
+115,End-to-End,N/A,e2e_latency,48.281192779541016,60a35c66e03531831d1e8082,1
+116,Scheduling,dynamic_round_robin,scheduling,83.40048789978027,60a35c66e03531831d1e8082,1
+116,Pre-processing,N/A,preproc_det,18.2497501373291,-,-
+,sorting,Sorting Network,scheduling,0.21791458129882812,-,-
+116,Object Detection,YOLOv3,detection,13.480186462402344,-,-
+116,from_numpy,YOLOv3,detection,0.03337860107421875,-,-
+116,image4yolo,YOLOv3,detection,0.4639625549316406,-,-
+116,pred,YOLOv3,detection,10.096311569213867,-,-
+116,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.418300628662109,-,-
+116,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.052928924560546875,-,-
+116,End-to-End,N/A,e2e_latency,45.50504684448242,60a35c66e03531831d1e8082,1
+117,Scheduling,dynamic_round_robin,scheduling,83.78720283508301,60a35c66e03531831d1e8082,1
+117,Pre-processing,N/A,preproc_det,18.085956573486328,-,-
+117,Object Detection,YOLOv3,detection,13.517618179321289,-,-
+117,from_numpy,YOLOv3,detection,0.027894973754882812,-,-
+117,image4yolo,YOLOv3,detection,0.4494190216064453,-,-
+117,pred,YOLOv3,detection,10.182380676269531,-,-
+117,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.275726318359375,-,-
+117,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.05340576171875,-,-
+117,End-to-End,N/A,e2e_latency,52.98256874084473,60a35c66e03531831d1e8082,1
+118,Scheduling,dynamic_round_robin,scheduling,89.00022506713867,60a35c66e03531831d1e8082,1
+118,Pre-processing,N/A,preproc_det,18.04351806640625,-,-
+118,Object Detection,YOLOv3,detection,13.73291015625,-,-
+118,from_numpy,YOLOv3,detection,0.03457069396972656,-,-
+118,image4yolo,YOLOv3,detection,0.6759166717529297,-,-
+118,pred,YOLOv3,detection,9.646892547607422,-,-
+118,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.045724868774414,-,-
+118,End-to-End,N/A,e2e_latency,47.61385917663574,60a35c66e03531831d1e8082,1
+119,Scheduling,dynamic_round_robin,scheduling,88.99426460266113,60a35c66e03531831d1e8082,1
+119,Pre-processing,N/A,preproc_det,17.51995086669922,-,-
+119,Object Detection,YOLOv3,detection,13.437032699584961,-,-
+119,from_numpy,YOLOv3,detection,0.02574920654296875,-,-
+119,image4yolo,YOLOv3,detection,0.6601810455322266,-,-
+119,pred,YOLOv3,detection,9.01937484741211,-,-
+119,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.619670867919922,-,-
+119,End-to-End,N/A,e2e_latency,41.34798049926758,60a35c66e03531831d1e8082,1
+120,Scheduling,dynamic_round_robin,scheduling,89.14351463317871,60a35c66e03531831d1e8082,1
+120,Pre-processing,N/A,preproc_det,17.66347885131836,-,-
+,sorting,Sorting Network,scheduling,0.21719932556152344,-,-
+120,Object Detection,YOLOv3,detection,13.44752311706543,-,-
+120,from_numpy,YOLOv3,detection,0.025987625122070312,-,-
+120,image4yolo,YOLOv3,detection,0.6418228149414062,-,-
+120,pred,YOLOv3,detection,8.891582489013672,-,-
+120,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.850625991821289,-,-
+120,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.055789947509765625,-,-
+120,End-to-End,N/A,e2e_latency,47.80721664428711,60a35c66e03531831d1e8082,1
+121,Scheduling,dynamic_round_robin,scheduling,89.00189399719238,60a35c66e03531831d1e8082,1
+121,Pre-processing,N/A,preproc_det,17.207622528076172,-,-
+121,Object Detection,YOLOv3,detection,13.417482376098633,-,-
+121,from_numpy,YOLOv3,detection,0.025987625122070312,-,-
+121,image4yolo,YOLOv3,detection,0.6463527679443359,-,-
+121,pred,YOLOv3,detection,9.078025817871094,-,-
+121,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.554105758666992,-,-
+121,End-to-End,N/A,e2e_latency,45.3486442565918,60a35c66e03531831d1e8082,1
+122,Scheduling,dynamic_round_robin,scheduling,88.9887809753418,60a35c66e03531831d1e8082,1
+122,Pre-processing,N/A,preproc_det,17.510652542114258,-,-
+122,Object Detection,YOLOv3,detection,13.54360580444336,-,-
+122,from_numpy,YOLOv3,detection,0.025987625122070312,-,-
+122,image4yolo,YOLOv3,detection,0.6692409515380859,-,-
+122,pred,YOLOv3,detection,9.029388427734375,-,-
+122,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.048824310302734,-,-
+122,End-to-End,N/A,e2e_latency,46.20957374572754,60a35c66e03531831d1e8082,1
+123,Scheduling,dynamic_round_robin,scheduling,88.97042274475098,60a35c66e03531831d1e8082,1
+123,Pre-processing,N/A,preproc_det,17.5168514251709,-,-
+123,Object Detection,YOLOv3,detection,13.380050659179688,-,-
+123,from_numpy,YOLOv3,detection,0.020265579223632812,-,-
+123,image4yolo,YOLOv3,detection,0.6175041198730469,-,-
+123,pred,YOLOv3,detection,8.843660354614258,-,-
+123,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.9968490600585938,-,-
+123,End-to-End,N/A,e2e_latency,45.876264572143555,60a35c66e03531831d1e8082,1
+124,Scheduling,dynamic_round_robin,scheduling,89.01476860046387,60a35c66e03531831d1e8082,1
+124,Pre-processing,N/A,preproc_det,17.41170883178711,-,-
+,sorting,Sorting Network,scheduling,0.21004676818847656,-,-
+124,Object Detection,YOLOv3,detection,13.26131820678711,-,-
+124,from_numpy,YOLOv3,detection,0.012874603271484375,-,-
+124,image4yolo,YOLOv3,detection,0.5784034729003906,-,-
+124,pred,YOLOv3,detection,8.623838424682617,-,-
+124,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.5507678985595703,-,-
+124,End-to-End,N/A,e2e_latency,45.473337173461914,60a35c66e03531831d1e8082,1
+125,Pre-processing,N/A,preproc_det,18.572330474853516,-,-
+125,Object Detection,YOLOv3,detection,13.306379318237305,-,-
+125,from_numpy,YOLOv3,detection,0.014781951904296875,-,-
+125,image4yolo,YOLOv3,detection,0.5948543548583984,-,-
+125,pred,YOLOv3,detection,8.571386337280273,-,-
+125,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.9119720458984375,-,-
+125,End-to-End,N/A,e2e_latency,41.31722450256348,60a35c66e03531831d1e8082,1
+125,Scheduling,dynamic_round_robin,scheduling,51.60641670227051,60a35c66e03531831d1e8082,1
+126,Scheduling,dynamic_round_robin,scheduling,41.36943817138672,60a35c66e03531831d1e8082,1
+126,Pre-processing,N/A,preproc_det,17.20261573791504,-,-
+126,Object Detection,YOLOv3,detection,13.164281845092773,-,-
+126,from_numpy,YOLOv3,detection,0.012636184692382812,-,-
+126,image4yolo,YOLOv3,detection,0.5805492401123047,-,-
+126,pred,YOLOv3,detection,8.483648300170898,-,-
+126,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.05120849609375,-,-
+126,End-to-End,N/A,e2e_latency,45.13192176818848,60a35c66e03531831d1e8082,1
+127,Pre-processing,N/A,preproc_det,17.132043838500977,-,-
+127,Object Detection,YOLOv3,detection,13.220787048339844,-,-
+127,from_numpy,YOLOv3,detection,0.01049041748046875,-,-
+127,image4yolo,YOLOv3,detection,0.5781650543212891,-,-
+127,Scheduling,dynamic_round_robin,scheduling,41.15939140319824,60a35c66e03531831d1e8082,1
+127,pred,YOLOv3,detection,8.326530456542969,-,-
+127,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.967761993408203,-,-
+127,End-to-End,N/A,e2e_latency,47.08671569824219,60a35c66e03531831d1e8082,1
+128,Scheduling,dynamic_round_robin,scheduling,46.12874984741211,60a35c66e03531831d1e8082,1
+128,Pre-processing,N/A,preproc_det,16.93105697631836,-,-
+,sorting,Sorting Network,scheduling,0.20885467529296875,-,-
+128,Object Detection,YOLOv3,detection,13.367414474487305,-,-
+128,from_numpy,YOLOv3,detection,0.019311904907226562,-,-
+128,image4yolo,YOLOv3,detection,0.6031990051269531,-,-
+128,pred,YOLOv3,detection,8.640289306640625,-,-
+128,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.057407379150391,-,-
+128,End-to-End,N/A,e2e_latency,44.83318328857422,60a35c66e03531831d1e8082,1
+129,Scheduling,dynamic_round_robin,scheduling,26.08633041381836,60a35c66e03531831d1e8082,1
+129,Pre-processing,N/A,preproc_det,19.329309463500977,-,-
+129,Object Detection,YOLOv3,detection,13.216972351074219,-,-
+129,from_numpy,YOLOv3,detection,0.014066696166992188,-,-
+129,image4yolo,YOLOv3,detection,0.5962848663330078,-,-
+129,pred,YOLOv3,detection,8.446931838989258,-,-
+129,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.810405731201172,-,-
+129,End-to-End,N/A,e2e_latency,42.240142822265625,60a35c66e03531831d1e8082,1
+130,Scheduling,dynamic_round_robin,scheduling,51.22232437133789,60a35c66e03531831d1e8082,1
+130,Pre-processing,N/A,preproc_det,17.101526260375977,-,-
+130,Object Detection,YOLOv3,detection,13.418436050415039,-,-
+130,from_numpy,YOLOv3,detection,0.02288818359375,-,-
+130,image4yolo,YOLOv3,detection,0.6308555603027344,-,-
+130,pred,YOLOv3,detection,8.867740631103516,-,-
+130,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.180669784545898,-,-
+130,End-to-End,N/A,e2e_latency,45.23324966430664,60a35c66e03531831d1e8082,1
+131,Scheduling,dynamic_round_robin,scheduling,71.82836532592773,60a35c66e03531831d1e8082,1
+131,Pre-processing,N/A,preproc_det,17.119407653808594,-,-
+131,Object Detection,YOLOv3,detection,13.613700866699219,-,-
+131,from_numpy,YOLOv3,detection,0.03337860107421875,-,-
+131,image4yolo,YOLOv3,detection,0.6823539733886719,-,-
+131,pred,YOLOv3,detection,9.204864501953125,-,-
+131,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.9627552032470703,-,-
+131,End-to-End,N/A,e2e_latency,46.517372131347656,60a35c66e03531831d1e8082,1
+132,Scheduling,dynamic_round_robin,scheduling,88.67573738098145,60a35c66e03531831d1e8082,1
+132,Pre-processing,N/A,preproc_det,19.165754318237305,-,-
+,sorting,Sorting Network,scheduling,0.1201629638671875,-,-
+132,Object Detection,YOLOv3,detection,21.587848663330078,-,-
+132,from_numpy,YOLOv3,detection,0.034332275390625,-,-
+132,image4yolo,YOLOv3,detection,0.47206878662109375,-,-
+132,pred,YOLOv3,detection,19.073963165283203,-,-
+132,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.4111480712890625,-,-
+132,End-to-End,N/A,e2e_latency,58.18819999694824,60a35c66e03531831d1e8082,1
+133,Scheduling,dynamic_round_robin,scheduling,88.65642547607422,60a35c66e03531831d1e8082,1
+133,Pre-processing,N/A,preproc_det,20.081043243408203,-,-
+133,Object Detection,YOLOv3,detection,20.035743713378906,-,-
+133,from_numpy,YOLOv3,detection,0.030040740966796875,-,-
+133,image4yolo,YOLOv3,detection,0.9977817535400391,-,-
+133,pred,YOLOv3,detection,17.28034019470215,-,-
+133,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.156827926635742,-,-
+133,End-to-End,N/A,e2e_latency,56.421518325805664,60a35c66e03531831d1e8082,1
+134,Scheduling,dynamic_round_robin,scheduling,88.63019943237305,60a35c66e03531831d1e8082,1
+134,Pre-processing,N/A,preproc_det,14.125585556030273,-,-
+134,Object Detection,YOLOv3,detection,14.70327377319336,-,-
+134,from_numpy,YOLOv3,detection,0.018596649169921875,-,-
+134,image4yolo,YOLOv3,detection,0.6437301635742188,-,-
+134,pred,YOLOv3,detection,12.392282485961914,-,-
+134,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.108190536499023,-,-
+134,End-to-End,N/A,e2e_latency,38.78331184387207,60a35c66e03531831d1e8082,1
+135,Scheduling,dynamic_round_robin,scheduling,88.60349655151367,60a35c66e03531831d1e8082,1
+135,Pre-processing,N/A,preproc_det,13.432741165161133,-,-
+135,Object Detection,YOLOv3,detection,17.867565155029297,-,-
+135,from_numpy,YOLOv3,detection,0.025987625122070312,-,-
+135,image4yolo,YOLOv3,detection,2.401590347290039,-,-
+135,pred,YOLOv3,detection,13.599157333374023,-,-
+135,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.420446395874023,-,-
+135,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.07271766662597656,-,-
+135,End-to-End,N/A,e2e_latency,48.598527908325195,60a35c66e03531831d1e8082,1
+136,Scheduling,dynamic_round_robin,scheduling,88.67812156677246,60a35c66e03531831d1e8082,1
+136,Pre-processing,N/A,preproc_det,12.94565200805664,-,-
+,sorting,Sorting Network,scheduling,0.19407272338867188,-,-
+136,Object Detection,YOLOv3,detection,13.845443725585938,-,-
+136,from_numpy,YOLOv3,detection,0.07367134094238281,-,-
+136,image4yolo,YOLOv3,detection,0.6868839263916016,-,-
+136,pred,YOLOv3,detection,9.388208389282227,-,-
+136,Extra Pipeline,PiH Candidate Selection,candidate_selection,8.956432342529297,-,-
+136,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.05316734313964844,-,-
+136,End-to-End,N/A,e2e_latency,53.5280704498291,60a35c66e03531831d1e8082,1
+137,Scheduling,dynamic_round_robin,scheduling,88.2880687713623,60a35c66e03531831d1e8082,1
+137,Pre-processing,N/A,preproc_det,17.132282257080078,-,-
+137,Object Detection,YOLOv3,detection,13.944149017333984,-,-
+137,from_numpy,YOLOv3,detection,0.046253204345703125,-,-
+137,image4yolo,YOLOv3,detection,0.7989406585693359,-,-
+137,pred,YOLOv3,detection,9.95635986328125,-,-
+137,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.961894989013672,-,-
+137,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.04863739013671875,-,-
+137,End-to-End,N/A,e2e_latency,54.952383041381836,60a35c66e03531831d1e8082,1
+138,Scheduling,dynamic_round_robin,scheduling,88.653564453125,60a35c66e03531831d1e8082,1
+138,Pre-processing,N/A,preproc_det,17.665863037109375,-,-
+138,Object Detection,YOLOv3,detection,13.333320617675781,-,-
+138,from_numpy,YOLOv3,detection,0.017404556274414062,-,-
+138,image4yolo,YOLOv3,detection,0.6158351898193359,-,-
+138,pred,YOLOv3,detection,8.719444274902344,-,-
+138,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.918886184692383,-,-
+138,End-to-End,N/A,e2e_latency,45.6392765045166,60a35c66e03531831d1e8082,1
+139,Scheduling,dynamic_round_robin,scheduling,88.59872817993164,60a35c66e03531831d1e8082,1
+139,Pre-processing,N/A,preproc_det,17.74311065673828,-,-
+139,Object Detection,YOLOv3,detection,13.395071029663086,-,-
+139,from_numpy,YOLOv3,detection,0.030755996704101562,-,-
+139,image4yolo,YOLOv3,detection,0.4551410675048828,-,-
+139,pred,YOLOv3,detection,9.948253631591797,-,-
+139,Extra Pipeline,PiH Candidate Selection,candidate_selection,17.578125,-,-
+139,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.059604644775390625,-,-
+139,End-to-End,N/A,e2e_latency,62.16025352478027,60a35c66e03531831d1e8082,1
+140,Scheduling,dynamic_round_robin,scheduling,88.31095695495605,60a35c66e03531831d1e8082,1
+140,Pre-processing,N/A,preproc_det,18.4934139251709,-,-
+,sorting,Sorting Network,scheduling,0.2377033233642578,-,-
+140,Object Detection,YOLOv3,detection,13.490915298461914,-,-
+140,from_numpy,YOLOv3,detection,0.019550323486328125,-,-
+140,image4yolo,YOLOv3,detection,0.6008148193359375,-,-
+140,pred,YOLOv3,detection,9.300470352172852,-,-
+140,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.136323928833008,-,-
+140,End-to-End,N/A,e2e_latency,53.985595703125,60a35c66e03531831d1e8082,1
+141,Scheduling,dynamic_round_robin,scheduling,93.14537048339844,60a35c66e03531831d1e8082,1
+141,Pre-processing,N/A,preproc_det,17.258405685424805,-,-
+141,Object Detection,YOLOv3,detection,13.543367385864258,-,-
+141,from_numpy,YOLOv3,detection,0.02956390380859375,-,-
+141,image4yolo,YOLOv3,detection,0.6632804870605469,-,-
+141,pred,YOLOv3,detection,9.086132049560547,-,-
+141,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.0130615234375,-,-
+141,End-to-End,N/A,e2e_latency,50.417184829711914,60a35c66e03531831d1e8082,1
+142,Scheduling,dynamic_round_robin,scheduling,88.1187915802002,60a35c66e03531831d1e8082,1
+142,Pre-processing,N/A,preproc_det,19.59967613220215,-,-
+142,Object Detection,YOLOv3,detection,13.52548599243164,-,-
+142,from_numpy,YOLOv3,detection,0.03457069396972656,-,-
+142,image4yolo,YOLOv3,detection,0.659942626953125,-,-
+142,pred,YOLOv3,detection,9.160757064819336,-,-
+142,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.313468933105469,-,-
+142,End-to-End,N/A,e2e_latency,48.42519760131836,60a35c66e03531831d1e8082,1
+143,Scheduling,dynamic_round_robin,scheduling,88.64712715148926,60a35c66e03531831d1e8082,1
+143,Pre-processing,N/A,preproc_det,17.938852310180664,-,-
+143,Object Detection,YOLOv3,detection,13.593673706054688,-,-
+143,from_numpy,YOLOv3,detection,0.03266334533691406,-,-
+143,image4yolo,YOLOv3,detection,0.6468296051025391,-,-
+143,pred,YOLOv3,detection,9.08660888671875,-,-
+143,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.520416259765625,-,-
+143,End-to-End,N/A,e2e_latency,46.94318771362305,60a35c66e03531831d1e8082,1
+144,Scheduling,dynamic_round_robin,scheduling,87.96358108520508,60a35c66e03531831d1e8082,1
+144,Pre-processing,N/A,preproc_det,17.15397834777832,-,-
+,sorting,Sorting Network,scheduling,0.21195411682128906,-,-
+144,Object Detection,YOLOv3,detection,13.381481170654297,-,-
+144,from_numpy,YOLOv3,detection,0.015020370483398438,-,-
+144,image4yolo,YOLOv3,detection,0.5903244018554688,-,-
+144,pred,YOLOv3,detection,8.944272994995117,-,-
+144,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.718303680419922,-,-
+144,End-to-End,N/A,e2e_latency,51.470041275024414,60a35c66e03531831d1e8082,1
+145,Scheduling,dynamic_round_robin,scheduling,88.30380439758301,60a35c66e03531831d1e8082,1
+145,Pre-processing,N/A,preproc_det,18.819570541381836,-,-
+145,Object Detection,YOLOv3,detection,21.281003952026367,-,-
+145,from_numpy,YOLOv3,detection,0.028371810913085938,-,-
+145,image4yolo,YOLOv3,detection,1.049041748046875,-,-
+145,pred,YOLOv3,detection,18.336772918701172,-,-
+145,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.430294036865234,-,-
+145,End-to-End,N/A,e2e_latency,58.188438415527344,60a35c66e03531831d1e8082,1
+146,Scheduling,dynamic_round_robin,scheduling,87.92567253112793,60a35c66e03531831d1e8082,1
+146,Pre-processing,N/A,preproc_det,18.264055252075195,-,-
+146,Object Detection,YOLOv3,detection,14.126777648925781,-,-
+146,from_numpy,YOLOv3,detection,0.030040740966796875,-,-
+146,image4yolo,YOLOv3,detection,0.6430149078369141,-,-
+146,pred,YOLOv3,detection,11.567354202270508,-,-
+146,Extra Pipeline,PiH Candidate Selection,candidate_selection,9.648561477661133,-,-
+146,End-to-End,N/A,e2e_latency,60.47987937927246,60a35c66e03531831d1e8082,1
+147,Scheduling,dynamic_round_robin,scheduling,93.20735931396484,60a35c66e03531831d1e8082,1
+147,Pre-processing,N/A,preproc_det,17.793893814086914,-,-
+147,Object Detection,YOLOv3,detection,13.510704040527344,-,-
+147,from_numpy,YOLOv3,detection,0.018596649169921875,-,-
+147,image4yolo,YOLOv3,detection,0.6203651428222656,-,-
+147,pred,YOLOv3,detection,8.94021987915039,-,-
+147,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.310369491577148,-,-
+147,End-to-End,N/A,e2e_latency,48.70915412902832,60a35c66e03531831d1e8082,1
+148,Scheduling,dynamic_round_robin,scheduling,88.01794052124023,60a35c66e03531831d1e8082,1
+148,Pre-processing,N/A,preproc_det,17.385005950927734,-,-
+148,Object Detection,YOLOv3,detection,13.400793075561523,-,-
+,sorting,Sorting Network,scheduling,0.2155303955078125,-,-
+148,from_numpy,YOLOv3,detection,0.023365020751953125,-,-
+148,image4yolo,YOLOv3,detection,0.6105899810791016,-,-
+148,pred,YOLOv3,detection,8.941411972045898,-,-
+148,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.49371337890625,-,-
+148,End-to-End,N/A,e2e_latency,47.41549491882324,60a35c66e03531831d1e8082,1
+149,Scheduling,dynamic_round_robin,scheduling,88.37008476257324,60a35c66e03531831d1e8082,1
+149,Pre-processing,N/A,preproc_det,19.199371337890625,-,-
+149,Object Detection,YOLOv3,detection,21.199703216552734,-,-
+149,from_numpy,YOLOv3,detection,0.029802322387695312,-,-
+149,image4yolo,YOLOv3,detection,0.9858608245849609,-,-
+149,pred,YOLOv3,detection,18.452882766723633,-,-
+149,Extra Pipeline,PiH Candidate Selection,candidate_selection,7.67207145690918,-,-
+149,End-to-End,N/A,e2e_latency,65.40560722351074,60a35c66e03531831d1e8082,1
+150,Scheduling,dynamic_round_robin,scheduling,88.07611465454102,60a35c66e03531831d1e8082,1
+150,Pre-processing,N/A,preproc_det,17.639636993408203,-,-
+150,Object Detection,YOLOv3,detection,13.344287872314453,-,-
+150,from_numpy,YOLOv3,detection,0.0152587890625,-,-
+150,image4yolo,YOLOv3,detection,0.60272216796875,-,-
+150,pred,YOLOv3,detection,8.966207504272461,-,-
+150,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.248857498168945,-,-
+150,End-to-End,N/A,e2e_latency,47.04570770263672,60a35c66e03531831d1e8082,1
+151,Scheduling,dynamic_round_robin,scheduling,88.20176124572754,60a35c66e03531831d1e8082,1
+151,Pre-processing,N/A,preproc_det,18.80621910095215,-,-
+151,Object Detection,YOLOv3,detection,22.711515426635742,-,-
+151,from_numpy,YOLOv3,detection,0.031948089599609375,-,-
+151,image4yolo,YOLOv3,detection,0.4596710205078125,-,-
+151,pred,YOLOv3,detection,20.516395568847656,-,-
+151,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.6634674072265625,-,-
+151,End-to-End,N/A,e2e_latency,69.33879852294922,60a35c66e03531831d1e8082,1
+152,Scheduling,dynamic_round_robin,scheduling,88.42182159423828,60a35c66e03531831d1e8082,1
+152,Pre-processing,N/A,preproc_det,18.66006851196289,-,-
+,sorting,Sorting Network,scheduling,0.13899803161621094,-,-
+152,Object Detection,YOLOv3,detection,21.8808650970459,-,-
+152,from_numpy,YOLOv3,detection,0.027894973754882812,-,-
+152,image4yolo,YOLOv3,detection,0.438690185546875,-,-
+152,pred,YOLOv3,detection,19.76776123046875,-,-
+152,Extra Pipeline,PiH Candidate Selection,candidate_selection,2.560853958129883,-,-
+152,End-to-End,N/A,e2e_latency,54.37278747558594,60a35c66e03531831d1e8082,1
+153,Scheduling,dynamic_round_robin,scheduling,88.08708190917969,60a35c66e03531831d1e8082,1
+153,Pre-processing,N/A,preproc_det,18.424510955810547,-,-
+153,Object Detection,YOLOv3,detection,13.686656951904297,-,-
+153,from_numpy,YOLOv3,detection,0.024080276489257812,-,-
+153,image4yolo,YOLOv3,detection,0.6203651428222656,-,-
+153,pred,YOLOv3,detection,10.773181915283203,-,-
+153,Extra Pipeline,PiH Candidate Selection,candidate_selection,6.583690643310547,-,-
+153,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.0457763671875,-,-
+153,End-to-End,N/A,e2e_latency,54.26764488220215,60a35c66e03531831d1e8082,1
+154,Scheduling,dynamic_round_robin,scheduling,88.56058120727539,60a35c66e03531831d1e8082,1
+154,Pre-processing,N/A,preproc_det,19.81663703918457,-,-
+154,Object Detection,YOLOv3,detection,13.947248458862305,-,-
+154,from_numpy,YOLOv3,detection,0.0209808349609375,-,-
+154,image4yolo,YOLOv3,detection,0.6401538848876953,-,-
+154,pred,YOLOv3,detection,11.212348937988281,-,-
+154,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.206180572509766,-,-
+154,End-to-End,N/A,e2e_latency,48.87819290161133,60a35c66e03531831d1e8082,1
+155,Scheduling,dynamic_round_robin,scheduling,88.27376365661621,60a35c66e03531831d1e8082,1
+155,Pre-processing,N/A,preproc_det,17.400264739990234,-,-
+155,Object Detection,YOLOv3,detection,13.42630386352539,-,-
+155,from_numpy,YOLOv3,detection,0.022172927856445312,-,-
+155,image4yolo,YOLOv3,detection,0.6279945373535156,-,-
+155,pred,YOLOv3,detection,9.094953536987305,-,-
+155,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.148006439208984,-,-
+155,End-to-End,N/A,e2e_latency,48.64239692687988,60a35c66e03531831d1e8082,1
+156,Scheduling,dynamic_round_robin,scheduling,88.66667747497559,60a35c66e03531831d1e8082,1
+156,Pre-processing,N/A,preproc_det,17.517805099487305,-,-
+,sorting,Sorting Network,scheduling,0.20360946655273438,-,-
+156,Object Detection,YOLOv3,detection,13.354778289794922,-,-
+156,from_numpy,YOLOv3,detection,0.01811981201171875,-,-
+156,image4yolo,YOLOv3,detection,0.6008148193359375,-,-
+156,pred,YOLOv3,detection,8.83793830871582,-,-
+156,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.9780139923095703,-,-
+156,End-to-End,N/A,e2e_latency,57.16204643249512,60a35c66e03531831d1e8082,1
+157,Scheduling,dynamic_round_robin,scheduling,88.59944343566895,60a35c66e03531831d1e8082,1
+157,Pre-processing,N/A,preproc_det,18.319368362426758,-,-
+157,Object Detection,YOLOv3,detection,13.65804672241211,-,-
+157,from_numpy,YOLOv3,detection,0.06961822509765625,-,-
+157,image4yolo,YOLOv3,detection,0.652313232421875,-,-
+157,pred,YOLOv3,detection,9.113311767578125,-,-
+157,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.432201385498047,-,-
+157,End-to-End,N/A,e2e_latency,48.6607551574707,60a35c66e03531831d1e8082,1
+158,Scheduling,dynamic_round_robin,scheduling,88.5305404663086,60a35c66e03531831d1e8082,1
+158,Pre-processing,N/A,preproc_det,18.42045783996582,-,-
+158,Object Detection,YOLOv3,detection,13.359308242797852,-,-
+158,from_numpy,YOLOv3,detection,0.020503997802734375,-,-
+158,image4yolo,YOLOv3,detection,0.6101131439208984,-,-
+158,pred,YOLOv3,detection,8.960485458374023,-,-
+158,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.963947296142578,-,-
+158,End-to-End,N/A,e2e_latency,47.46413230895996,60a35c66e03531831d1e8082,1
+159,Scheduling,dynamic_round_robin,scheduling,87.96977996826172,60a35c66e03531831d1e8082,1
+159,Pre-processing,N/A,preproc_det,17.61913299560547,-,-
+159,Object Detection,YOLOv3,detection,14.748334884643555,-,-
+159,from_numpy,YOLOv3,detection,0.033855438232421875,-,-
+159,image4yolo,YOLOv3,detection,0.6759166717529297,-,-
+159,pred,YOLOv3,detection,9.303569793701172,-,-
+159,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.215883255004883,-,-
+159,End-to-End,N/A,e2e_latency,49.81184005737305,60a35c66e03531831d1e8082,1
+160,Scheduling,dynamic_round_robin,scheduling,88.70911598205566,60a35c66e03531831d1e8082,1
+160,Pre-processing,N/A,preproc_det,17.77815818786621,-,-
+,sorting,Sorting Network,scheduling,0.20933151245117188,-,-
+160,Object Detection,YOLOv3,detection,13.519525527954102,-,-
+160,from_numpy,YOLOv3,detection,0.03266334533691406,-,-
+160,image4yolo,YOLOv3,detection,0.6787776947021484,-,-
+160,pred,YOLOv3,detection,9.206056594848633,-,-
+160,Extra Pipeline,PiH Candidate Selection,candidate_selection,2.8219223022460938,-,-
+160,End-to-End,N/A,e2e_latency,45.84550857543945,60a35c66e03531831d1e8082,1
+161,Scheduling,dynamic_round_robin,scheduling,88.55295181274414,60a35c66e03531831d1e8082,1
+161,Pre-processing,N/A,preproc_det,17.948627471923828,-,-
+161,Object Detection,YOLOv3,detection,13.448476791381836,-,-
+161,from_numpy,YOLOv3,detection,0.026941299438476562,-,-
+161,image4yolo,YOLOv3,detection,0.6279945373535156,-,-
+161,pred,YOLOv3,detection,8.96310806274414,-,-
+161,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.9396286010742188,-,-
+161,End-to-End,N/A,e2e_latency,45.928239822387695,60a35c66e03531831d1e8082,1
+162,Scheduling,dynamic_round_robin,scheduling,88.73558044433594,60a35c66e03531831d1e8082,1
+162,Pre-processing,N/A,preproc_det,19.188404083251953,-,-
+162,Object Detection,YOLOv3,detection,13.499021530151367,-,-
+162,from_numpy,YOLOv3,detection,0.030517578125,-,-
+162,image4yolo,YOLOv3,detection,0.6394386291503906,-,-
+162,pred,YOLOv3,detection,9.131431579589844,-,-
+162,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.9043426513671875,-,-
+162,End-to-End,N/A,e2e_latency,48.39324951171875,60a35c66e03531831d1e8082,1
+163,Scheduling,dynamic_round_robin,scheduling,88.01031112670898,60a35c66e03531831d1e8082,1
+163,Pre-processing,N/A,preproc_det,18.483400344848633,-,-
+163,Object Detection,YOLOv3,detection,13.290166854858398,-,-
+163,from_numpy,YOLOv3,detection,0.018358230590820312,-,-
+163,image4yolo,YOLOv3,detection,0.5962848663330078,-,-
+163,pred,YOLOv3,detection,8.853673934936523,-,-
+163,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.943920135498047,-,-
+163,End-to-End,N/A,e2e_latency,47.582149505615234,60a35c66e03531831d1e8082,1
+164,Scheduling,dynamic_round_robin,scheduling,88.22965621948242,60a35c66e03531831d1e8082,1
+164,Pre-processing,N/A,preproc_det,17.120361328125,-,-
+,sorting,Sorting Network,scheduling,0.21314620971679688,-,-
+164,Object Detection,YOLOv3,detection,13.383865356445312,-,-
+164,from_numpy,YOLOv3,detection,0.024557113647460938,-,-
+164,image4yolo,YOLOv3,detection,0.6222724914550781,-,-
+164,pred,YOLOv3,detection,8.951902389526367,-,-
+164,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.02522087097168,-,-
+164,End-to-End,N/A,e2e_latency,45.148611068725586,60a35c66e03531831d1e8082,1
+165,Scheduling,dynamic_round_robin,scheduling,88.62185478210449,60a35c66e03531831d1e8082,1
+165,Pre-processing,N/A,preproc_det,18.397808074951172,-,-
+165,Object Detection,YOLOv3,detection,13.527154922485352,-,-
+165,from_numpy,YOLOv3,detection,0.030279159545898438,-,-
+165,image4yolo,YOLOv3,detection,0.6344318389892578,-,-
+165,pred,YOLOv3,detection,9.06682014465332,-,-
+165,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.966093063354492,-,-
+165,End-to-End,N/A,e2e_latency,46.55885696411133,60a35c66e03531831d1e8082,1
+166,Scheduling,dynamic_round_robin,scheduling,88.4559154510498,60a35c66e03531831d1e8082,1
+166,Pre-processing,N/A,preproc_det,18.581867218017578,-,-
+166,Object Detection,YOLOv3,detection,13.37742805480957,-,-
+166,from_numpy,YOLOv3,detection,0.019073486328125,-,-
+166,image4yolo,YOLOv3,detection,0.606536865234375,-,-
+166,pred,YOLOv3,detection,8.864402770996094,-,-
+166,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.8671493530273438,-,-
+166,End-to-End,N/A,e2e_latency,46.430110931396484,60a35c66e03531831d1e8082,1
+167,Scheduling,dynamic_round_robin,scheduling,88.29092979431152,60a35c66e03531831d1e8082,1
+167,Pre-processing,N/A,preproc_det,17.676830291748047,-,-
+167,Object Detection,YOLOv3,detection,13.488292694091797,-,-
+167,from_numpy,YOLOv3,detection,0.029325485229492188,-,-
+167,image4yolo,YOLOv3,detection,0.6515979766845703,-,-
+167,pred,YOLOv3,detection,8.977890014648438,-,-
+167,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.432605743408203,-,-
+167,End-to-End,N/A,e2e_latency,47.21999168395996,60a35c66e03531831d1e8082,1
+168,Scheduling,dynamic_round_robin,scheduling,87.9659652709961,60a35c66e03531831d1e8082,1
+168,Pre-processing,N/A,preproc_det,17.385482788085938,-,-
+,sorting,Sorting Network,scheduling,0.21982192993164062,-,-
+168,Object Detection,YOLOv3,detection,13.527154922485352,-,-
+168,from_numpy,YOLOv3,detection,0.030755996704101562,-,-
+168,image4yolo,YOLOv3,detection,0.6630420684814453,-,-
+168,pred,YOLOv3,detection,9.259223937988281,-,-
+168,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.8726329803466797,-,-
+168,End-to-End,N/A,e2e_latency,45.38702964782715,60a35c66e03531831d1e8082,1
+169,Scheduling,dynamic_round_robin,scheduling,88.67955207824707,60a35c66e03531831d1e8082,1
+169,Pre-processing,N/A,preproc_det,18.308162689208984,-,-
+169,Object Detection,YOLOv3,detection,13.415336608886719,-,-
+169,from_numpy,YOLOv3,detection,0.025510787963867188,-,-
+169,image4yolo,YOLOv3,detection,0.6215572357177734,-,-
+169,pred,YOLOv3,detection,9.027481079101562,-,-
+169,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.018617630004883,-,-
+169,End-to-End,N/A,e2e_latency,45.267343521118164,60a35c66e03531831d1e8082,1
+170,Scheduling,dynamic_round_robin,scheduling,88.17338943481445,60a35c66e03531831d1e8082,1
+170,Pre-processing,N/A,preproc_det,18.62335205078125,-,-
+170,Object Detection,YOLOv3,detection,13.456106185913086,-,-
+170,from_numpy,YOLOv3,detection,0.025510787963867188,-,-
+170,image4yolo,YOLOv3,detection,0.6268024444580078,-,-
+170,pred,YOLOv3,detection,8.936882019042969,-,-
+170,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.662513732910156,-,-
+170,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.06580352783203125,-,-
+170,End-to-End,N/A,e2e_latency,47.87302017211914,60a35c66e03531831d1e8082,1
+171,Scheduling,dynamic_round_robin,scheduling,88.17839622497559,60a35c66e03531831d1e8082,1
+171,Pre-processing,N/A,preproc_det,17.71712303161621,-,-
+171,Object Detection,YOLOv3,detection,13.496637344360352,-,-
+171,from_numpy,YOLOv3,detection,0.027418136596679688,-,-
+171,image4yolo,YOLOv3,detection,0.6327629089355469,-,-
+171,pred,YOLOv3,detection,8.985519409179688,-,-
+171,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.498409271240234,-,-
+171,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.04506111145019531,-,-
+171,End-to-End,N/A,e2e_latency,48.54869842529297,60a35c66e03531831d1e8082,1
+172,Scheduling,dynamic_round_robin,scheduling,88.2863998413086,60a35c66e03531831d1e8082,1
+172,Pre-processing,N/A,preproc_det,18.518447875976562,-,-
+172,Object Detection,YOLOv3,detection,13.41390609741211,-,-
+,sorting,Sorting Network,scheduling,0.2048015594482422,-,-
+172,from_numpy,YOLOv3,detection,0.025987625122070312,-,-
+172,image4yolo,YOLOv3,detection,0.6287097930908203,-,-
+172,pred,YOLOv3,detection,8.97836685180664,-,-
+172,Extra Pipeline,PiH Candidate Selection,candidate_selection,6.09898567199707,-,-
+172,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.04553794860839844,-,-
+172,End-to-End,N/A,e2e_latency,50.64129829406738,60a35c66e03531831d1e8082,1
+173,Scheduling,dynamic_round_robin,scheduling,87.97955513000488,60a35c66e03531831d1e8082,1
+173,Pre-processing,N/A,preproc_det,19.04582977294922,-,-
+173,Object Detection,YOLOv3,detection,13.452529907226562,-,-
+173,from_numpy,YOLOv3,detection,0.030994415283203125,-,-
+173,image4yolo,YOLOv3,detection,0.4487037658691406,-,-
+173,pred,YOLOv3,detection,9.823799133300781,-,-
+173,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.8231353759765625,-,-
+173,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.051975250244140625,-,-
+173,End-to-End,N/A,e2e_latency,54.17060852050781,60a35c66e03531831d1e8082,1
+174,Scheduling,dynamic_round_robin,scheduling,87.94331550598145,60a35c66e03531831d1e8082,1
+174,Pre-processing,N/A,preproc_det,19.140243530273438,-,-
+174,Object Detection,YOLOv3,detection,13.55743408203125,-,-
+174,from_numpy,YOLOv3,detection,0.03314018249511719,-,-
+174,image4yolo,YOLOv3,detection,0.6513595581054688,-,-
+174,pred,YOLOv3,detection,9.546518325805664,-,-
+174,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.834890365600586,-,-
+174,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.05412101745605469,-,-
+174,End-to-End,N/A,e2e_latency,49.338340759277344,60a35c66e03531831d1e8082,1
+175,Scheduling,dynamic_round_robin,scheduling,88.09161186218262,60a35c66e03531831d1e8082,1
+175,Pre-processing,N/A,preproc_det,19.270658493041992,-,-
+175,Object Detection,YOLOv3,detection,13.380050659179688,-,-
+175,from_numpy,YOLOv3,detection,0.019788742065429688,-,-
+175,image4yolo,YOLOv3,detection,0.60272216796875,-,-
+175,pred,YOLOv3,detection,9.009599685668945,-,-
+175,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.046367645263672,-,-
+175,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.04553794860839844,-,-
+175,End-to-End,N/A,e2e_latency,48.66600036621094,60a35c66e03531831d1e8082,1
+176,Scheduling,dynamic_round_robin,scheduling,88.0274772644043,60a35c66e03531831d1e8082,1
+176,Pre-processing,N/A,preproc_det,19.43039894104004,-,-
+,sorting,Sorting Network,scheduling,0.19693374633789062,-,-
+176,Object Detection,YOLOv3,detection,13.615608215332031,-,-
+176,from_numpy,YOLOv3,detection,0.024080276489257812,-,-
+176,image4yolo,YOLOv3,detection,0.6358623504638672,-,-
+176,pred,YOLOv3,detection,9.038925170898438,-,-
+176,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.907442092895508,-,-
+176,End-to-End,N/A,e2e_latency,48.032522201538086,60a35c66e03531831d1e8082,1
+177,Scheduling,dynamic_round_robin,scheduling,88.61422538757324,60a35c66e03531831d1e8082,1
+177,Pre-processing,N/A,preproc_det,19.04916763305664,-,-
+177,Object Detection,YOLOv3,detection,13.4124755859375,-,-
+177,from_numpy,YOLOv3,detection,0.01811981201171875,-,-
+177,image4yolo,YOLOv3,detection,0.5970001220703125,-,-
+177,pred,YOLOv3,detection,9.133338928222656,-,-
+177,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.007577896118164,-,-
+177,End-to-End,N/A,e2e_latency,47.13153839111328,60a35c66e03531831d1e8082,1
+178,Scheduling,dynamic_round_robin,scheduling,88.48381042480469,60a35c66e03531831d1e8082,1
+178,Pre-processing,N/A,preproc_det,18.00537109375,-,-
+178,Object Detection,YOLOv3,detection,13.383150100708008,-,-
+178,from_numpy,YOLOv3,detection,0.020742416381835938,-,-
+178,image4yolo,YOLOv3,detection,0.6136894226074219,-,-
+178,pred,YOLOv3,detection,8.835315704345703,-,-
+178,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.606081008911133,-,-
+178,End-to-End,N/A,e2e_latency,45.944929122924805,60a35c66e03531831d1e8082,1
+179,Scheduling,dynamic_round_robin,scheduling,88.59395980834961,60a35c66e03531831d1e8082,1
+179,Pre-processing,N/A,preproc_det,19.679784774780273,-,-
+179,Object Detection,YOLOv3,detection,13.527154922485352,-,-
+179,from_numpy,YOLOv3,detection,0.03361701965332031,-,-
+179,image4yolo,YOLOv3,detection,0.6415843963623047,-,-
+179,pred,YOLOv3,detection,9.133338928222656,-,-
+179,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.4716129302978516,-,-
+179,End-to-End,N/A,e2e_latency,47.418832778930664,60a35c66e03531831d1e8082,1
+180,Scheduling,dynamic_round_robin,scheduling,88.54341506958008,60a35c66e03531831d1e8082,1
+180,Pre-processing,N/A,preproc_det,18.796682357788086,-,-
+,sorting,Sorting Network,scheduling,0.2665519714355469,-,-
+180,Object Detection,YOLOv3,detection,13.660669326782227,-,-
+180,from_numpy,YOLOv3,detection,0.03218650817871094,-,-
+180,image4yolo,YOLOv3,detection,0.6477832794189453,-,-
+180,pred,YOLOv3,detection,9.101629257202148,-,-
+180,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.9768218994140625,-,-
+180,End-to-End,N/A,e2e_latency,46.91600799560547,60a35c66e03531831d1e8082,1
+181,Scheduling,dynamic_round_robin,scheduling,93.8112735748291,60a35c66e03531831d1e8082,1
+181,Pre-processing,N/A,preproc_det,18.97406578063965,-,-
+181,Object Detection,YOLOv3,detection,13.347864151000977,-,-
+181,from_numpy,YOLOv3,detection,0.022411346435546875,-,-
+181,image4yolo,YOLOv3,detection,0.6155967712402344,-,-
+181,pred,YOLOv3,detection,8.940935134887695,-,-
+181,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.055261611938477,-,-
+181,End-to-End,N/A,e2e_latency,47.45030403137207,60a35c66e03531831d1e8082,1
+182,Scheduling,dynamic_round_robin,scheduling,88.81640434265137,60a35c66e03531831d1e8082,1
+182,Pre-processing,N/A,preproc_det,18.26000213623047,-,-
+182,Object Detection,YOLOv3,detection,13.538599014282227,-,-
+182,from_numpy,YOLOv3,detection,0.026464462280273438,-,-
+182,image4yolo,YOLOv3,detection,0.6434917449951172,-,-
+182,pred,YOLOv3,detection,9.067535400390625,-,-
+182,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.8568973541259766,-,-
+182,End-to-End,N/A,e2e_latency,46.3101863861084,60a35c66e03531831d1e8082,1
+183,Scheduling,dynamic_round_robin,scheduling,88.65189552307129,60a35c66e03531831d1e8082,1
+183,Pre-processing,N/A,preproc_det,18.85390281677246,-,-
+183,Object Detection,YOLOv3,detection,13.371467590332031,-,-
+183,from_numpy,YOLOv3,detection,0.02002716064453125,-,-
+183,image4yolo,YOLOv3,detection,0.6079673767089844,-,-
+183,pred,YOLOv3,detection,8.936405181884766,-,-
+183,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.9980411529541016,-,-
+183,End-to-End,N/A,e2e_latency,46.903371810913086,60a35c66e03531831d1e8082,1
+184,Scheduling,dynamic_round_robin,scheduling,88.65952491760254,60a35c66e03531831d1e8082,1
+184,Pre-processing,N/A,preproc_det,17.889976501464844,-,-
+,sorting,Sorting Network,scheduling,0.2086162567138672,-,-
+184,Object Detection,YOLOv3,detection,13.774394989013672,-,-
+184,from_numpy,YOLOv3,detection,0.03647804260253906,-,-
+184,image4yolo,YOLOv3,detection,0.6823539733886719,-,-
+184,pred,YOLOv3,detection,9.856700897216797,-,-
+184,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.817319869995117,-,-
+184,End-to-End,N/A,e2e_latency,49.279212951660156,60a35c66e03531831d1e8082,1
+185,Scheduling,dynamic_round_robin,scheduling,88.61279487609863,60a35c66e03531831d1e8082,1
+185,Pre-processing,N/A,preproc_det,17.57955551147461,-,-
+185,Object Detection,YOLOv3,detection,13.492107391357422,-,-
+185,from_numpy,YOLOv3,detection,0.025272369384765625,-,-
+185,image4yolo,YOLOv3,detection,0.6215572357177734,-,-
+185,pred,YOLOv3,detection,8.991479873657227,-,-
+185,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.022287368774414,-,-
+185,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.05793571472167969,-,-
+185,End-to-End,N/A,e2e_latency,51.184654235839844,60a35c66e03531831d1e8082,1
+186,Scheduling,dynamic_round_robin,scheduling,88.66119384765625,60a35c66e03531831d1e8082,1
+186,Pre-processing,N/A,preproc_det,18.92995834350586,-,-
+186,Object Detection,YOLOv3,detection,13.431549072265625,-,-
+186,from_numpy,YOLOv3,detection,0.02288818359375,-,-
+186,image4yolo,YOLOv3,detection,0.6170272827148438,-,-
+186,pred,YOLOv3,detection,9.060859680175781,-,-
+186,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.380941390991211,-,-
+186,End-to-End,N/A,e2e_latency,42.273759841918945,60a35c66e03531831d1e8082,1
+187,Scheduling,dynamic_round_robin,scheduling,88.56749534606934,60a35c66e03531831d1e8082,1
+187,Pre-processing,N/A,preproc_det,19.448518753051758,-,-
+187,Object Detection,YOLOv3,detection,13.58485221862793,-,-
+187,from_numpy,YOLOv3,detection,0.06127357482910156,-,-
+187,image4yolo,YOLOv3,detection,0.6499290466308594,-,-
+187,pred,YOLOv3,detection,9.157419204711914,-,-
+187,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.892110824584961,-,-
+187,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.051975250244140625,-,-
+187,End-to-End,N/A,e2e_latency,53.08175086975098,60a35c66e03531831d1e8082,1
+188,Scheduling,dynamic_round_robin,scheduling,93.82128715515137,60a35c66e03531831d1e8082,1
+188,Pre-processing,N/A,preproc_det,17.88783073425293,-,-
+188,Object Detection,YOLOv3,detection,13.475179672241211,-,-
+188,from_numpy,YOLOv3,detection,0.030755996704101562,-,-
+,sorting,Sorting Network,scheduling,0.2529621124267578,-,-
+188,image4yolo,YOLOv3,detection,0.6849765777587891,-,-
+188,pred,YOLOv3,detection,9.122848510742188,-,-
+188,Extra Pipeline,PiH Candidate Selection,candidate_selection,12.060403823852539,-,-
+188,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.04506111145019531,-,-
+188,End-to-End,N/A,e2e_latency,71.51126861572266,60a35c66e03531831d1e8082,1
+189,Scheduling,dynamic_round_robin,scheduling,93.50204467773438,60a35c66e03531831d1e8082,1
+189,Pre-processing,N/A,preproc_det,17.30966567993164,-,-
+189,Object Detection,YOLOv3,detection,13.449907302856445,-,-
+189,from_numpy,YOLOv3,detection,0.022649765014648438,-,-
+189,image4yolo,YOLOv3,detection,0.6358623504638672,-,-
+189,pred,YOLOv3,detection,9.04536247253418,-,-
+189,Extra Pipeline,PiH Candidate Selection,candidate_selection,9.382963180541992,-,-
+189,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.05435943603515625,-,-
+189,End-to-End,N/A,e2e_latency,53.38168144226074,60a35c66e03531831d1e8082,1
+190,Scheduling,dynamic_round_robin,scheduling,88.64498138427734,60a35c66e03531831d1e8082,1
+190,Pre-processing,N/A,preproc_det,17.578125,-,-
+190,Object Detection,YOLOv3,detection,13.727664947509766,-,-
+190,from_numpy,YOLOv3,detection,0.036716461181640625,-,-
+190,image4yolo,YOLOv3,detection,0.652313232421875,-,-
+190,pred,YOLOv3,detection,9.341955184936523,-,-
+190,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.238771438598633,-,-
+190,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.046253204345703125,-,-
+190,End-to-End,N/A,e2e_latency,51.50604248046875,60a35c66e03531831d1e8082,1
+191,Scheduling,dynamic_round_robin,scheduling,88.64116668701172,60a35c66e03531831d1e8082,1
+191,Pre-processing,N/A,preproc_det,17.672061920166016,-,-
+191,Object Detection,YOLOv3,detection,13.375520706176758,-,-
+191,from_numpy,YOLOv3,detection,0.025272369384765625,-,-
+191,image4yolo,YOLOv3,detection,0.6265640258789062,-,-
+191,pred,YOLOv3,detection,9.054183959960938,-,-
+191,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.731250762939453,-,-
+191,End-to-End,N/A,e2e_latency,51.1932373046875,60a35c66e03531831d1e8082,1
+192,Scheduling,dynamic_round_robin,scheduling,88.67216110229492,60a35c66e03531831d1e8082,1
+192,Pre-processing,N/A,preproc_det,17.790794372558594,-,-
+,sorting,Sorting Network,scheduling,0.20170211791992188,-,-
+192,Object Detection,YOLOv3,detection,13.488292694091797,-,-
+192,from_numpy,YOLOv3,detection,0.02765655517578125,-,-
+192,image4yolo,YOLOv3,detection,0.6482601165771484,-,-
+192,pred,YOLOv3,detection,9.115457534790039,-,-
+192,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.5326480865478516,-,-
+192,End-to-End,N/A,e2e_latency,45.62091827392578,60a35c66e03531831d1e8082,1
+193,Scheduling,dynamic_round_robin,scheduling,88.63115310668945,60a35c66e03531831d1e8082,1
+193,Pre-processing,N/A,preproc_det,18.24188232421875,-,-
+193,Object Detection,YOLOv3,detection,13.494729995727539,-,-
+193,from_numpy,YOLOv3,detection,0.027418136596679688,-,-
+193,image4yolo,YOLOv3,detection,0.63323974609375,-,-
+193,pred,YOLOv3,detection,9.040594100952148,-,-
+193,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.3884048461914062,-,-
+193,End-to-End,N/A,e2e_latency,45.34912109375,60a35c66e03531831d1e8082,1
+194,Scheduling,dynamic_round_robin,scheduling,88.57178688049316,60a35c66e03531831d1e8082,1
+194,Pre-processing,N/A,preproc_det,17.55547523498535,-,-
+194,Object Detection,YOLOv3,detection,13.522148132324219,-,-
+194,from_numpy,YOLOv3,detection,0.030994415283203125,-,-
+194,image4yolo,YOLOv3,detection,0.6546974182128906,-,-
+194,pred,YOLOv3,detection,9.029865264892578,-,-
+194,Extra Pipeline,PiH Candidate Selection,candidate_selection,2.4352073669433594,-,-
+194,End-to-End,N/A,e2e_latency,45.81880569458008,60a35c66e03531831d1e8082,1
+195,Scheduling,dynamic_round_robin,scheduling,88.49501609802246,60a35c66e03531831d1e8082,1
+195,Pre-processing,N/A,preproc_det,17.91071891784668,-,-
+195,Object Detection,YOLOv3,detection,13.550281524658203,-,-
+195,from_numpy,YOLOv3,detection,0.027894973754882812,-,-
+195,image4yolo,YOLOv3,detection,0.6487369537353516,-,-
+195,pred,YOLOv3,detection,9.048700332641602,-,-
+195,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.759145736694336,-,-
+195,End-to-End,N/A,e2e_latency,46.15902900695801,60a35c66e03531831d1e8082,1
+196,Scheduling,dynamic_round_robin,scheduling,88.64998817443848,60a35c66e03531831d1e8082,1
+196,Pre-processing,N/A,preproc_det,18.526792526245117,-,-
+,sorting,Sorting Network,scheduling,0.2086162567138672,-,-
+196,Object Detection,YOLOv3,detection,13.454437255859375,-,-
+196,from_numpy,YOLOv3,detection,0.030040740966796875,-,-
+196,image4yolo,YOLOv3,detection,0.6434917449951172,-,-
+196,pred,YOLOv3,detection,9.083747863769531,-,-
+196,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.7217140197753906,-,-
+196,End-to-End,N/A,e2e_latency,46.95868492126465,60a35c66e03531831d1e8082,1
+197,Scheduling,dynamic_round_robin,scheduling,88.78111839294434,60a35c66e03531831d1e8082,1
+197,Pre-processing,N/A,preproc_det,18.675565719604492,-,-
+197,Object Detection,YOLOv3,detection,13.440847396850586,-,-
+197,from_numpy,YOLOv3,detection,0.028848648071289062,-,-
+197,image4yolo,YOLOv3,detection,0.6325244903564453,-,-
+197,pred,YOLOv3,detection,9.175300598144531,-,-
+197,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.076242446899414,-,-
+197,End-to-End,N/A,e2e_latency,65.4137134552002,60a35c66e03531831d1e8082,1
+198,Scheduling,dynamic_round_robin,scheduling,88.6540412902832,60a35c66e03531831d1e8082,1
+198,Pre-processing,N/A,preproc_det,19.473552703857422,-,-
+198,Object Detection,YOLOv3,detection,13.40484619140625,-,-
+198,from_numpy,YOLOv3,detection,0.022411346435546875,-,-
+198,image4yolo,YOLOv3,detection,0.6198883056640625,-,-
+198,pred,YOLOv3,detection,8.994102478027344,-,-
+198,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.9396286010742188,-,-
+198,End-to-End,N/A,e2e_latency,47.50227928161621,60a35c66e03531831d1e8082,1
+199,Scheduling,dynamic_round_robin,scheduling,88.69194984436035,60a35c66e03531831d1e8082,1
+199,Pre-processing,N/A,preproc_det,19.114971160888672,-,-
+199,Object Detection,YOLOv3,detection,13.381242752075195,-,-
+199,from_numpy,YOLOv3,detection,0.027179718017578125,-,-
+199,image4yolo,YOLOv3,detection,0.6210803985595703,-,-
+199,pred,YOLOv3,detection,8.954286575317383,-,-
+199,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.9446353912353516,-,-
+199,End-to-End,N/A,e2e_latency,46.944618225097656,60a35c66e03531831d1e8082,1
+200,Scheduling,dynamic_round_robin,scheduling,88.63043785095215,60a35c66e03531831d1e8082,1
+200,Pre-processing,N/A,preproc_det,17.345666885375977,-,-
+,sorting,Sorting Network,scheduling,0.2110004425048828,-,-
+200,Object Detection,YOLOv3,detection,13.430595397949219,-,-
+200,from_numpy,YOLOv3,detection,0.027418136596679688,-,-
+200,image4yolo,YOLOv3,detection,0.652313232421875,-,-
+200,pred,YOLOv3,detection,9.040594100952148,-,-
+200,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.316019058227539,-,-
+200,End-to-End,N/A,e2e_latency,46.91767692565918,60a35c66e03531831d1e8082,1
+201,Scheduling,dynamic_round_robin,scheduling,88.64617347717285,60a35c66e03531831d1e8082,1
+201,Pre-processing,N/A,preproc_det,17.580270767211914,-,-
+201,Object Detection,YOLOv3,detection,13.494729995727539,-,-
+201,from_numpy,YOLOv3,detection,0.02384185791015625,-,-
+201,image4yolo,YOLOv3,detection,0.6275177001953125,-,-
+201,pred,YOLOv3,detection,9.041070938110352,-,-
+201,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.9565563201904297,-,-
+201,End-to-End,N/A,e2e_latency,45.61758041381836,60a35c66e03531831d1e8082,1
+202,Scheduling,dynamic_round_robin,scheduling,88.61827850341797,60a35c66e03531831d1e8082,1
+202,Pre-processing,N/A,preproc_det,19.05536651611328,-,-
+202,Object Detection,YOLOv3,detection,13.420581817626953,-,-
+202,from_numpy,YOLOv3,detection,0.023365020751953125,-,-
+202,image4yolo,YOLOv3,detection,0.6260871887207031,-,-
+202,pred,YOLOv3,detection,8.936643600463867,-,-
+202,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.946065902709961,-,-
+202,End-to-End,N/A,e2e_latency,47.911882400512695,60a35c66e03531831d1e8082,1
+203,Scheduling,dynamic_round_robin,scheduling,88.70673179626465,60a35c66e03531831d1e8082,1
+203,Pre-processing,N/A,preproc_det,17.40574836730957,-,-
+203,Object Detection,YOLOv3,detection,13.473272323608398,-,-
+203,from_numpy,YOLOv3,detection,0.023126602172851562,-,-
+203,image4yolo,YOLOv3,detection,0.6449222564697266,-,-
+203,pred,YOLOv3,detection,8.933782577514648,-,-
+203,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.875255584716797,-,-
+203,End-to-End,N/A,e2e_latency,45.45092582702637,60a35c66e03531831d1e8082,1
+204,Scheduling,dynamic_round_robin,scheduling,88.42825889587402,60a35c66e03531831d1e8082,1
+204,Pre-processing,N/A,preproc_det,17.894268035888672,-,-
+,sorting,Sorting Network,scheduling,0.2124309539794922,-,-
+204,Object Detection,YOLOv3,detection,13.533353805541992,-,-
+204,from_numpy,YOLOv3,detection,0.029087066650390625,-,-
+204,image4yolo,YOLOv3,detection,0.6577968597412109,-,-
+204,pred,YOLOv3,detection,9.092569351196289,-,-
+204,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.429412841796875,-,-
+204,End-to-End,N/A,e2e_latency,50.84514617919922,60a35c66e03531831d1e8082,1
+205,Scheduling,dynamic_round_robin,scheduling,88.5932445526123,60a35c66e03531831d1e8082,1
+205,Pre-processing,N/A,preproc_det,17.725229263305664,-,-
+205,Object Detection,YOLOv3,detection,13.359308242797852,-,-
+205,from_numpy,YOLOv3,detection,0.020742416381835938,-,-
+205,image4yolo,YOLOv3,detection,0.6239414215087891,-,-
+205,pred,YOLOv3,detection,8.898735046386719,-,-
+205,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.5965442657470703,-,-
+205,End-to-End,N/A,e2e_latency,45.64476013183594,60a35c66e03531831d1e8082,1
+206,Scheduling,dynamic_round_robin,scheduling,88.64569664001465,60a35c66e03531831d1e8082,1
+206,Pre-processing,N/A,preproc_det,17.97628402709961,-,-
+206,Object Detection,YOLOv3,detection,13.504266738891602,-,-
+206,from_numpy,YOLOv3,detection,0.02956390380859375,-,-
+206,image4yolo,YOLOv3,detection,0.6422996520996094,-,-
+206,pred,YOLOv3,detection,8.971691131591797,-,-
+206,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.462169647216797,-,-
+206,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.04601478576660156,-,-
+206,End-to-End,N/A,e2e_latency,49.60203170776367,60a35c66e03531831d1e8082,1
+207,Scheduling,dynamic_round_robin,scheduling,73.30107688903809,60a35c66e03531831d1e8082,1
+207,Pre-processing,N/A,preproc_det,17.756223678588867,-,-
+207,Object Detection,YOLOv3,detection,13.507843017578125,-,-
+207,from_numpy,YOLOv3,detection,0.028133392333984375,-,-
+207,image4yolo,YOLOv3,detection,0.6284713745117188,-,-
+207,pred,YOLOv3,detection,9.077310562133789,-,-
+207,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.988908767700195,-,-
+207,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.04649162292480469,-,-
+207,End-to-End,N/A,e2e_latency,47.68085479736328,60a35c66e03531831d1e8082,1
+208,Scheduling,dynamic_round_robin,scheduling,88.64831924438477,60a35c66e03531831d1e8082,1
+208,Pre-processing,N/A,preproc_det,19.072532653808594,-,-
+208,Object Detection,YOLOv3,detection,13.404607772827148,-,-
+,sorting,Sorting Network,scheduling,0.21314620971679688,-,-
+208,from_numpy,YOLOv3,detection,0.030994415283203125,-,-
+208,image4yolo,YOLOv3,detection,0.6341934204101562,-,-
+208,pred,YOLOv3,detection,9.070634841918945,-,-
+208,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.721164703369141,-,-
+208,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.04506111145019531,-,-
+208,End-to-End,N/A,e2e_latency,48.16126823425293,60a35c66e03531831d1e8082,1
+209,Scheduling,dynamic_round_robin,scheduling,88.69814872741699,60a35c66e03531831d1e8082,1
+209,Pre-processing,N/A,preproc_det,19.475698471069336,-,-
+209,Object Detection,YOLOv3,detection,13.606071472167969,-,-
+209,from_numpy,YOLOv3,detection,0.029802322387695312,-,-
+209,image4yolo,YOLOv3,detection,0.6365776062011719,-,-
+209,pred,YOLOv3,detection,9.172439575195312,-,-
+209,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.860877990722656,-,-
+209,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.04482269287109375,-,-
+209,End-to-End,N/A,e2e_latency,49.44252967834473,60a35c66e03531831d1e8082,1
+210,Scheduling,dynamic_round_robin,scheduling,88.64212036132812,60a35c66e03531831d1e8082,1
+210,Pre-processing,N/A,preproc_det,11.551141738891602,-,-
+210,Object Detection,YOLOv3,detection,13.410806655883789,-,-
+210,from_numpy,YOLOv3,detection,0.026702880859375,-,-
+210,image4yolo,YOLOv3,detection,0.6270408630371094,-,-
+210,pred,YOLOv3,detection,8.963584899902344,-,-
+210,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.613637924194336,-,-
+210,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.05626678466796875,-,-
+210,End-to-End,N/A,e2e_latency,40.318965911865234,60a35c66e03531831d1e8082,1
+211,Scheduling,dynamic_round_robin,scheduling,88.64593505859375,60a35c66e03531831d1e8082,1
+211,Pre-processing,N/A,preproc_det,17.26818084716797,-,-
+211,Object Detection,YOLOv3,detection,13.498306274414062,-,-
+211,from_numpy,YOLOv3,detection,0.03266334533691406,-,-
+211,image4yolo,YOLOv3,detection,0.6613731384277344,-,-
+211,pred,YOLOv3,detection,9.23776626586914,-,-
+211,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.4168701171875,-,-
+211,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.04458427429199219,-,-
+211,End-to-End,N/A,e2e_latency,47.553300857543945,60a35c66e03531831d1e8082,1
+212,Scheduling,dynamic_round_robin,scheduling,88.67073059082031,60a35c66e03531831d1e8082,1
+212,Pre-processing,N/A,preproc_det,18.393993377685547,-,-
+212,Object Detection,YOLOv3,detection,13.454437255859375,-,-
+,sorting,Sorting Network,scheduling,0.20575523376464844,-,-
+212,from_numpy,YOLOv3,detection,0.0247955322265625,-,-
+212,image4yolo,YOLOv3,detection,0.6222724914550781,-,-
+212,pred,YOLOv3,detection,8.988380432128906,-,-
+212,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.25355339050293,-,-
+212,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.04482269287109375,-,-
+212,End-to-End,N/A,e2e_latency,48.889875411987305,60a35c66e03531831d1e8082,1
+213,Scheduling,dynamic_round_robin,scheduling,83.6946964263916,60a35c66e03531831d1e8082,1
+213,Pre-processing,N/A,preproc_det,16.777515411376953,-,-
+213,Object Detection,YOLOv3,detection,13.437032699584961,-,-
+213,from_numpy,YOLOv3,detection,0.026941299438476562,-,-
+213,image4yolo,YOLOv3,detection,0.6268024444580078,-,-
+213,pred,YOLOv3,detection,9.062051773071289,-,-
+213,Extra Pipeline,PiH Candidate Selection,candidate_selection,11.400699615478516,-,-
+213,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.041961669921875,-,-
+213,End-to-End,N/A,e2e_latency,52.85382270812988,60a35c66e03531831d1e8082,1
+214,Scheduling,dynamic_round_robin,scheduling,88.67216110229492,60a35c66e03531831d1e8082,1
+214,Pre-processing,N/A,preproc_det,19.472837448120117,-,-
+214,Object Detection,YOLOv3,detection,13.576030731201172,-,-
+214,from_numpy,YOLOv3,detection,0.030517578125,-,-
+214,image4yolo,YOLOv3,detection,0.6356239318847656,-,-
+214,pred,YOLOv3,detection,9.12022590637207,-,-
+214,Extra Pipeline,PiH Candidate Selection,candidate_selection,6.012201309204102,-,-
+214,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.0457763671875,-,-
+214,End-to-End,N/A,e2e_latency,53.656816482543945,60a35c66e03531831d1e8082,1
+215,Scheduling,dynamic_round_robin,scheduling,88.61207962036133,60a35c66e03531831d1e8082,1
+215,Pre-processing,N/A,preproc_det,16.82138442993164,-,-
+215,Object Detection,YOLOv3,detection,13.374805450439453,-,-
+215,from_numpy,YOLOv3,detection,0.018596649169921875,-,-
+215,image4yolo,YOLOv3,detection,0.5936622619628906,-,-
+215,pred,YOLOv3,detection,8.818864822387695,-,-
+215,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.802061080932617,-,-
+215,End-to-End,N/A,e2e_latency,44.42191123962402,60a35c66e03531831d1e8082,1
+216,Scheduling,dynamic_round_robin,scheduling,88.6383056640625,60a35c66e03531831d1e8082,1
+216,Pre-processing,N/A,preproc_det,18.862247467041016,-,-
+,sorting,Sorting Network,scheduling,0.20837783813476562,-,-
+216,Object Detection,YOLOv3,detection,13.47970962524414,-,-
+216,from_numpy,YOLOv3,detection,0.029087066650390625,-,-
+216,image4yolo,YOLOv3,detection,0.6380081176757812,-,-
+216,pred,YOLOv3,detection,8.965492248535156,-,-
+216,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.8721561431884766,-,-
+216,End-to-End,N/A,e2e_latency,46.56243324279785,60a35c66e03531831d1e8082,1
+217,Scheduling,dynamic_round_robin,scheduling,88.04202079772949,60a35c66e03531831d1e8082,1
+217,Pre-processing,N/A,preproc_det,18.466711044311523,-,-
+217,Object Detection,YOLOv3,detection,13.427019119262695,-,-
+217,from_numpy,YOLOv3,detection,0.028848648071289062,-,-
+217,image4yolo,YOLOv3,detection,0.6272792816162109,-,-
+217,pred,YOLOv3,detection,8.968114852905273,-,-
+217,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.830121994018555,-,-
+217,End-to-End,N/A,e2e_latency,47.821998596191406,60a35c66e03531831d1e8082,1
+218,Scheduling,dynamic_round_robin,scheduling,88.41609954833984,60a35c66e03531831d1e8082,1
+218,Pre-processing,N/A,preproc_det,18.992900848388672,-,-
+218,Object Detection,YOLOv3,detection,13.420581817626953,-,-
+218,from_numpy,YOLOv3,detection,0.022172927856445312,-,-
+218,image4yolo,YOLOv3,detection,0.6175041198730469,-,-
+218,pred,YOLOv3,detection,9.040594100952148,-,-
+218,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.988981246948242,-,-
+218,End-to-End,N/A,e2e_latency,52.12140083312988,60a35c66e03531831d1e8082,1
+219,Scheduling,dynamic_round_robin,scheduling,88.3944034576416,60a35c66e03531831d1e8082,1
+219,Pre-processing,N/A,preproc_det,18.138408660888672,-,-
+219,Object Detection,YOLOv3,detection,13.333797454833984,-,-
+219,from_numpy,YOLOv3,detection,0.018358230590820312,-,-
+219,image4yolo,YOLOv3,detection,0.5946159362792969,-,-
+219,pred,YOLOv3,detection,8.790254592895508,-,-
+219,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.8022994995117188,-,-
+219,End-to-End,N/A,e2e_latency,45.360565185546875,60a35c66e03531831d1e8082,1
+220,Scheduling,dynamic_round_robin,scheduling,88.66548538208008,60a35c66e03531831d1e8082,1
+220,Pre-processing,N/A,preproc_det,21.474838256835938,-,-
+,sorting,Sorting Network,scheduling,0.21600723266601562,-,-
+220,Object Detection,YOLOv3,detection,13.69786262512207,-,-
+220,from_numpy,YOLOv3,detection,0.03409385681152344,-,-
+220,image4yolo,YOLOv3,detection,0.6651878356933594,-,-
+220,pred,YOLOv3,detection,9.704351425170898,-,-
+220,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.557132720947266,-,-
+220,End-to-End,N/A,e2e_latency,49.645185470581055,60a35c66e03531831d1e8082,1
+221,Scheduling,dynamic_round_robin,scheduling,88.61064910888672,60a35c66e03531831d1e8082,1
+221,Pre-processing,N/A,preproc_det,18.07689666748047,-,-
+221,Object Detection,YOLOv3,detection,13.418197631835938,-,-
+221,from_numpy,YOLOv3,detection,0.030040740966796875,-,-
+221,image4yolo,YOLOv3,detection,0.6430149078369141,-,-
+221,pred,YOLOv3,detection,9.087562561035156,-,-
+221,Extra Pipeline,PiH Candidate Selection,candidate_selection,12.123346328735352,-,-
+221,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.05435943603515625,-,-
+221,End-to-End,N/A,e2e_latency,57.298898696899414,60a35c66e03531831d1e8082,1
+222,Scheduling,dynamic_round_robin,scheduling,88.5918140411377,60a35c66e03531831d1e8082,1
+222,Pre-processing,N/A,preproc_det,17.551183700561523,-,-
+222,Object Detection,YOLOv3,detection,13.400077819824219,-,-
+222,from_numpy,YOLOv3,detection,0.023126602172851562,-,-
+222,image4yolo,YOLOv3,detection,0.6358623504638672,-,-
+222,pred,YOLOv3,detection,8.849859237670898,-,-
+222,Extra Pipeline,PiH Candidate Selection,candidate_selection,6.458044052124023,-,-
+222,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.04506111145019531,-,-
+222,End-to-End,N/A,e2e_latency,49.128055572509766,60a35c66e03531831d1e8082,1
+223,Scheduling,dynamic_round_robin,scheduling,88.57965469360352,60a35c66e03531831d1e8082,1
+223,Pre-processing,N/A,preproc_det,18.11075210571289,-,-
+223,Object Detection,YOLOv3,detection,13.360261917114258,-,-
+223,from_numpy,YOLOv3,detection,0.01811981201171875,-,-
+223,image4yolo,YOLOv3,detection,0.5960464477539062,-,-
+223,pred,YOLOv3,detection,8.92782211303711,-,-
+223,Extra Pipeline,PiH Candidate Selection,candidate_selection,10.143280029296875,-,-
+223,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.0457763671875,-,-
+223,End-to-End,N/A,e2e_latency,52.28471755981445,60a35c66e03531831d1e8082,1
+224,Scheduling,dynamic_round_robin,scheduling,88.50741386413574,60a35c66e03531831d1e8082,1
+224,Pre-processing,N/A,preproc_det,17.8377628326416,-,-
+224,Object Detection,YOLOv3,detection,13.341188430786133,-,-
+,sorting,Sorting Network,scheduling,0.2162456512451172,-,-
+224,from_numpy,YOLOv3,detection,0.023126602172851562,-,-
+224,image4yolo,YOLOv3,detection,0.6144046783447266,-,-
+224,pred,YOLOv3,detection,8.89730453491211,-,-
+224,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.9152374267578125,-,-
+224,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.04315376281738281,-,-
+224,End-to-End,N/A,e2e_latency,47.29604721069336,60a35c66e03531831d1e8082,1
+225,Scheduling,dynamic_round_robin,scheduling,77.50153541564941,60a35c66e03531831d1e8082,1
+225,Pre-processing,N/A,preproc_det,17.492294311523438,-,-
+225,Object Detection,YOLOv3,detection,13.394594192504883,-,-
+225,from_numpy,YOLOv3,detection,0.025987625122070312,-,-
+225,image4yolo,YOLOv3,detection,0.6251335144042969,-,-
+225,pred,YOLOv3,detection,8.987903594970703,-,-
+225,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.019426345825195,-,-
+225,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.043392181396484375,-,-
+225,End-to-End,N/A,e2e_latency,46.764373779296875,60a35c66e03531831d1e8082,1
+226,Scheduling,dynamic_round_robin,scheduling,88.67907524108887,60a35c66e03531831d1e8082,1
+226,Pre-processing,N/A,preproc_det,18.714189529418945,-,-
+226,Object Detection,YOLOv3,detection,13.445138931274414,-,-
+226,from_numpy,YOLOv3,detection,0.029325485229492188,-,-
+226,image4yolo,YOLOv3,detection,0.6291866302490234,-,-
+226,pred,YOLOv3,detection,8.983373641967773,-,-
+226,Extra Pipeline,PiH Candidate Selection,candidate_selection,16.981124877929688,-,-
+226,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.05602836608886719,-,-
+226,End-to-End,N/A,e2e_latency,61.19394302368164,60a35c66e03531831d1e8082,1
+227,Scheduling,dynamic_round_robin,scheduling,88.61637115478516,60a35c66e03531831d1e8082,1
+227,Pre-processing,N/A,preproc_det,18.56541633605957,-,-
+227,Object Detection,YOLOv3,detection,13.471126556396484,-,-
+227,from_numpy,YOLOv3,detection,0.021457672119140625,-,-
+227,image4yolo,YOLOv3,detection,0.6165504455566406,-,-
+227,pred,YOLOv3,detection,9.083032608032227,-,-
+227,Extra Pipeline,PiH Candidate Selection,candidate_selection,6.049156188964844,-,-
+227,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.04410743713378906,-,-
+227,End-to-End,N/A,e2e_latency,52.65188217163086,60a35c66e03531831d1e8082,1
+228,Scheduling,dynamic_round_robin,scheduling,88.68861198425293,60a35c66e03531831d1e8082,1
+228,Pre-processing,N/A,preproc_det,11.909008026123047,-,-
+228,Object Detection,YOLOv3,detection,13.48257064819336,-,-
+,sorting,Sorting Network,scheduling,0.213623046875,-,-
+228,from_numpy,YOLOv3,detection,0.025033950805664062,-,-
+228,image4yolo,YOLOv3,detection,0.6277561187744141,-,-
+228,pred,YOLOv3,detection,8.919477462768555,-,-
+228,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.017757415771484,-,-
+228,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.044345855712890625,-,-
+228,End-to-End,N/A,e2e_latency,42.63949394226074,60a35c66e03531831d1e8082,1
+229,Scheduling,dynamic_round_robin,scheduling,88.60039710998535,60a35c66e03531831d1e8082,1
+229,Pre-processing,N/A,preproc_det,18.772602081298828,-,-
+229,Object Detection,YOLOv3,detection,13.352632522583008,-,-
+229,from_numpy,YOLOv3,detection,0.017881393432617188,-,-
+229,image4yolo,YOLOv3,detection,0.5908012390136719,-,-
+229,pred,YOLOv3,detection,8.723974227905273,-,-
+229,Extra Pipeline,PiH Candidate Selection,candidate_selection,6.299495697021484,-,-
+229,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.04410743713378906,-,-
+229,End-to-End,N/A,e2e_latency,58.783531188964844,60a35c66e03531831d1e8082,1
+230,Scheduling,dynamic_round_robin,scheduling,88.67907524108887,60a35c66e03531831d1e8082,1
+230,Pre-processing,N/A,preproc_det,17.578840255737305,-,-
+230,Object Detection,YOLOv3,detection,13.337373733520508,-,-
+230,from_numpy,YOLOv3,detection,0.016450881958007812,-,-
+230,image4yolo,YOLOv3,detection,0.5948543548583984,-,-
+230,pred,YOLOv3,detection,8.935928344726562,-,-
+230,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.358125686645508,-,-
+230,End-to-End,N/A,e2e_latency,44.83222961425781,60a35c66e03531831d1e8082,1
+231,Scheduling,dynamic_round_robin,scheduling,93.77384185791016,60a35c66e03531831d1e8082,1
+231,Pre-processing,N/A,preproc_det,18.998146057128906,-,-
+231,Object Detection,YOLOv3,detection,13.302087783813477,-,-
+231,from_numpy,YOLOv3,detection,0.017404556274414062,-,-
+231,image4yolo,YOLOv3,detection,0.5891323089599609,-,-
+231,pred,YOLOv3,detection,8.756399154663086,-,-
+231,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.674030303955078,-,-
+231,End-to-End,N/A,e2e_latency,47.239065170288086,60a35c66e03531831d1e8082,1
+232,Scheduling,dynamic_round_robin,scheduling,88.60421180725098,60a35c66e03531831d1e8082,1
+232,Pre-processing,N/A,preproc_det,17.757892608642578,-,-
+,sorting,Sorting Network,scheduling,0.21338462829589844,-,-
+232,Object Detection,YOLOv3,detection,13.795852661132812,-,-
+232,from_numpy,YOLOv3,detection,0.038623809814453125,-,-
+232,image4yolo,YOLOv3,detection,0.774383544921875,-,-
+232,pred,YOLOv3,detection,9.607791900634766,-,-
+232,Extra Pipeline,PiH Candidate Selection,candidate_selection,2.619028091430664,-,-
+232,End-to-End,N/A,e2e_latency,44.76356506347656,60a35c66e03531831d1e8082,1
+233,Scheduling,dynamic_round_robin,scheduling,88.63329887390137,60a35c66e03531831d1e8082,1
+233,Pre-processing,N/A,preproc_det,18.224477767944336,-,-
+233,Object Detection,YOLOv3,detection,13.45968246459961,-,-
+233,from_numpy,YOLOv3,detection,0.027894973754882812,-,-
+233,image4yolo,YOLOv3,detection,0.6322860717773438,-,-
+233,pred,YOLOv3,detection,9.072065353393555,-,-
+233,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.4193267822265625,-,-
+233,End-to-End,N/A,e2e_latency,46.94795608520508,60a35c66e03531831d1e8082,1
+234,Scheduling,dynamic_round_robin,scheduling,88.68741989135742,60a35c66e03531831d1e8082,1
+234,Pre-processing,N/A,preproc_det,17.18306541442871,-,-
+234,Object Detection,YOLOv3,detection,13.463020324707031,-,-
+234,from_numpy,YOLOv3,detection,0.027418136596679688,-,-
+234,image4yolo,YOLOv3,detection,0.6375312805175781,-,-
+234,pred,YOLOv3,detection,9.132146835327148,-,-
+234,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.402088165283203,-,-
+234,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.05125999450683594,-,-
+234,End-to-End,N/A,e2e_latency,50.391435623168945,60a35c66e03531831d1e8082,1
+235,Scheduling,dynamic_round_robin,scheduling,88.65642547607422,60a35c66e03531831d1e8082,1
+235,Pre-processing,N/A,preproc_det,17.267942428588867,-,-
+235,Object Detection,YOLOv3,detection,13.377666473388672,-,-
+235,from_numpy,YOLOv3,detection,0.016927719116210938,-,-
+235,image4yolo,YOLOv3,detection,0.6029605865478516,-,-
+235,pred,YOLOv3,detection,8.949518203735352,-,-
+235,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.635883331298828,-,-
+235,End-to-End,N/A,e2e_latency,45.17054557800293,60a35c66e03531831d1e8082,1
+236,Scheduling,dynamic_round_robin,scheduling,88.60182762145996,60a35c66e03531831d1e8082,1
+236,Pre-processing,N/A,preproc_det,18.392324447631836,-,-
+,sorting,Sorting Network,scheduling,0.2090930938720703,-,-
+236,Object Detection,YOLOv3,detection,13.484001159667969,-,-
+236,from_numpy,YOLOv3,detection,0.02574920654296875,-,-
+236,image4yolo,YOLOv3,detection,0.6225109100341797,-,-
+236,pred,YOLOv3,detection,8.914709091186523,-,-
+236,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.8945674896240234,-,-
+236,End-to-End,N/A,e2e_latency,46.216487884521484,60a35c66e03531831d1e8082,1
+237,Scheduling,dynamic_round_robin,scheduling,88.53745460510254,60a35c66e03531831d1e8082,1
+237,Pre-processing,N/A,preproc_det,17.77482032775879,-,-
+237,Object Detection,YOLOv3,detection,13.432741165161133,-,-
+237,from_numpy,YOLOv3,detection,0.01811981201171875,-,-
+237,image4yolo,YOLOv3,detection,0.5950927734375,-,-
+237,pred,YOLOv3,detection,8.902788162231445,-,-
+237,Extra Pipeline,PiH Candidate Selection,candidate_selection,10.678529739379883,-,-
+237,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.045299530029296875,-,-
+237,End-to-End,N/A,e2e_latency,59.05866622924805,60a35c66e03531831d1e8082,1
+238,Scheduling,dynamic_round_robin,scheduling,88.62471580505371,60a35c66e03531831d1e8082,1
+238,Pre-processing,N/A,preproc_det,19.339323043823242,-,-
+238,Object Detection,YOLOv3,detection,13.336181640625,-,-
+238,from_numpy,YOLOv3,detection,0.01811981201171875,-,-
+238,image4yolo,YOLOv3,detection,0.6022453308105469,-,-
+238,pred,YOLOv3,detection,8.816242218017578,-,-
+238,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.1713714599609375,-,-
+238,End-to-End,N/A,e2e_latency,47.431230545043945,60a35c66e03531831d1e8082,1
+239,Scheduling,dynamic_round_robin,scheduling,88.4556770324707,60a35c66e03531831d1e8082,1
+239,Pre-processing,N/A,preproc_det,14.584779739379883,-,-
+239,Object Detection,YOLOv3,detection,15.217065811157227,-,-
+239,from_numpy,YOLOv3,detection,0.03147125244140625,-,-
+239,image4yolo,YOLOv3,detection,0.70953369140625,-,-
+239,pred,YOLOv3,detection,12.751102447509766,-,-
+239,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.552364349365234,-,-
+239,End-to-End,N/A,e2e_latency,45.358896255493164,60a35c66e03531831d1e8082,1
+240,Scheduling,dynamic_round_robin,scheduling,88.48452568054199,60a35c66e03531831d1e8082,1
+240,Pre-processing,N/A,preproc_det,17.412424087524414,-,-
+,sorting,Sorting Network,scheduling,0.20575523376464844,-,-
+240,Object Detection,YOLOv3,detection,13.537406921386719,-,-
+240,from_numpy,YOLOv3,detection,0.03170967102050781,-,-
+240,image4yolo,YOLOv3,detection,0.6544589996337891,-,-
+240,pred,YOLOv3,detection,9.07278060913086,-,-
+240,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.033327102661133,-,-
+240,End-to-End,N/A,e2e_latency,45.41802406311035,60a35c66e03531831d1e8082,1
+241,Scheduling,dynamic_round_robin,scheduling,88.6232852935791,60a35c66e03531831d1e8082,1
+241,Pre-processing,N/A,preproc_det,18.91493797302246,-,-
+241,Object Detection,YOLOv3,detection,13.422012329101562,-,-
+241,from_numpy,YOLOv3,detection,0.029325485229492188,-,-
+241,image4yolo,YOLOv3,detection,0.6325244903564453,-,-
+241,pred,YOLOv3,detection,9.035348892211914,-,-
+241,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.3762454986572266,-,-
+241,End-to-End,N/A,e2e_latency,46.20361328125,60a35c66e03531831d1e8082,1
+242,Scheduling,dynamic_round_robin,scheduling,88.47260475158691,60a35c66e03531831d1e8082,1
+242,Pre-processing,N/A,preproc_det,18.732547760009766,-,-
+242,Object Detection,YOLOv3,detection,13.379573822021484,-,-
+242,from_numpy,YOLOv3,detection,0.024557113647460938,-,-
+242,image4yolo,YOLOv3,detection,0.6196498870849609,-,-
+242,pred,YOLOv3,detection,8.916854858398438,-,-
+242,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.595207214355469,-,-
+242,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.0457763671875,-,-
+242,End-to-End,N/A,e2e_latency,52.016496658325195,60a35c66e03531831d1e8082,1
+243,Scheduling,dynamic_round_robin,scheduling,88.6845588684082,60a35c66e03531831d1e8082,1
+243,Pre-processing,N/A,preproc_det,17.856836318969727,-,-
+243,Object Detection,YOLOv3,detection,13.459444046020508,-,-
+243,from_numpy,YOLOv3,detection,0.021696090698242188,-,-
+243,image4yolo,YOLOv3,detection,0.6034374237060547,-,-
+243,pred,YOLOv3,detection,8.916854858398438,-,-
+243,Extra Pipeline,PiH Candidate Selection,candidate_selection,18.57447624206543,-,-
+243,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.051021575927734375,-,-
+243,End-to-End,N/A,e2e_latency,58.59208106994629,60a35c66e03531831d1e8082,1
+244,Scheduling,dynamic_round_robin,scheduling,88.60945701599121,60a35c66e03531831d1e8082,1
+244,Pre-processing,N/A,preproc_det,16.971111297607422,-,-
+244,Object Detection,YOLOv3,detection,13.397455215454102,-,-
+244,from_numpy,YOLOv3,detection,0.022411346435546875,-,-
+,sorting,Sorting Network,scheduling,0.20766258239746094,-,-
+244,image4yolo,YOLOv3,detection,0.6299018859863281,-,-
+244,pred,YOLOv3,detection,9.148359298706055,-,-
+244,Extra Pipeline,PiH Candidate Selection,candidate_selection,12.255668640136719,-,-
+244,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.04649162292480469,-,-
+244,End-to-End,N/A,e2e_latency,54.31509017944336,60a35c66e03531831d1e8082,1
+245,Scheduling,dynamic_round_robin,scheduling,88.27638626098633,60a35c66e03531831d1e8082,1
+245,Pre-processing,N/A,preproc_det,19.240617752075195,-,-
+245,Object Detection,YOLOv3,detection,13.34524154663086,-,-
+245,from_numpy,YOLOv3,detection,0.016450881958007812,-,-
+245,image4yolo,YOLOv3,detection,0.5908012390136719,-,-
+245,pred,YOLOv3,detection,8.72802734375,-,-
+245,Extra Pipeline,PiH Candidate Selection,candidate_selection,12.60066032409668,-,-
+245,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.0457763671875,-,-
+245,End-to-End,N/A,e2e_latency,59.11540985107422,60a35c66e03531831d1e8082,1
+246,Scheduling,dynamic_round_robin,scheduling,88.52243423461914,60a35c66e03531831d1e8082,1
+246,Pre-processing,N/A,preproc_det,18.86439323425293,-,-
+246,Object Detection,YOLOv3,detection,13.53597640991211,-,-
+246,from_numpy,YOLOv3,detection,0.029087066650390625,-,-
+246,image4yolo,YOLOv3,detection,0.6477832794189453,-,-
+246,pred,YOLOv3,detection,8.953332901000977,-,-
+246,Extra Pipeline,PiH Candidate Selection,candidate_selection,20.037412643432617,-,-
+246,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.04553794860839844,-,-
+246,End-to-End,N/A,e2e_latency,70.3880786895752,60a35c66e03531831d1e8082,1
+247,Scheduling,dynamic_round_robin,scheduling,88.66477012634277,60a35c66e03531831d1e8082,1
+247,Pre-processing,N/A,preproc_det,17.864227294921875,-,-
+247,Object Detection,YOLOv3,detection,13.471841812133789,-,-
+247,from_numpy,YOLOv3,detection,0.02384185791015625,-,-
+247,image4yolo,YOLOv3,detection,0.6246566772460938,-,-
+247,pred,YOLOv3,detection,8.891820907592773,-,-
+247,Extra Pipeline,PiH Candidate Selection,candidate_selection,18.07689666748047,-,-
+247,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.0438690185546875,-,-
+247,End-to-End,N/A,e2e_latency,61.126708984375,60a35c66e03531831d1e8082,1
+248,Scheduling,dynamic_round_robin,scheduling,88.63997459411621,60a35c66e03531831d1e8082,1
+248,Pre-processing,N/A,preproc_det,18.682003021240234,-,-
+248,Object Detection,YOLOv3,detection,13.35287094116211,-,-
+,sorting,Sorting Network,scheduling,0.22864341735839844,-,-
+248,from_numpy,YOLOv3,detection,0.019550323486328125,-,-
+248,image4yolo,YOLOv3,detection,0.6051063537597656,-,-
+248,pred,YOLOv3,detection,8.902311325073242,-,-
+248,Extra Pipeline,PiH Candidate Selection,candidate_selection,7.613658905029297,-,-
+248,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.047206878662109375,-,-
+248,End-to-End,N/A,e2e_latency,52.87814140319824,60a35c66e03531831d1e8082,1
+249,Scheduling,dynamic_round_robin,scheduling,88.66596221923828,60a35c66e03531831d1e8082,1
+249,Pre-processing,N/A,preproc_det,19.152164459228516,-,-
+249,Object Detection,YOLOv3,detection,13.408422470092773,-,-
+249,from_numpy,YOLOv3,detection,0.027179718017578125,-,-
+249,image4yolo,YOLOv3,detection,0.6318092346191406,-,-
+249,pred,YOLOv3,detection,9.03177261352539,-,-
+249,Extra Pipeline,PiH Candidate Selection,candidate_selection,11.02137565612793,-,-
+249,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.046253204345703125,-,-
+249,End-to-End,N/A,e2e_latency,55.39131164550781,60a35c66e03531831d1e8082,1
+250,Scheduling,dynamic_round_robin,scheduling,88.6545181274414,60a35c66e03531831d1e8082,1
+250,Pre-processing,N/A,preproc_det,19.15597915649414,-,-
+250,Object Detection,YOLOv3,detection,13.385534286499023,-,-
+250,from_numpy,YOLOv3,detection,0.021219253540039062,-,-
+250,image4yolo,YOLOv3,detection,0.6194114685058594,-,-
+250,pred,YOLOv3,detection,8.917808532714844,-,-
+250,Extra Pipeline,PiH Candidate Selection,candidate_selection,12.296915054321289,-,-
+250,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.04458427429199219,-,-
+250,End-to-End,N/A,e2e_latency,56.069135665893555,60a35c66e03531831d1e8082,1
+251,Scheduling,dynamic_round_robin,scheduling,88.67454528808594,60a35c66e03531831d1e8082,1
+251,Pre-processing,N/A,preproc_det,18.44334602355957,-,-
+251,Object Detection,YOLOv3,detection,13.45372200012207,-,-
+251,from_numpy,YOLOv3,detection,0.027418136596679688,-,-
+251,image4yolo,YOLOv3,detection,0.6346702575683594,-,-
+251,pred,YOLOv3,detection,8.983373641967773,-,-
+251,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.976106643676758,-,-
+251,End-to-End,N/A,e2e_latency,46.324968338012695,60a35c66e03531831d1e8082,1
+252,Scheduling,dynamic_round_robin,scheduling,93.79458427429199,60a35c66e03531831d1e8082,1
+252,Pre-processing,N/A,preproc_det,17.810344696044922,-,-
+,sorting,Sorting Network,scheduling,0.24175643920898438,-,-
+252,Object Detection,YOLOv3,detection,13.446807861328125,-,-
+252,from_numpy,YOLOv3,detection,0.028371810913085938,-,-
+252,image4yolo,YOLOv3,detection,0.6351470947265625,-,-
+252,pred,YOLOv3,detection,8.992433547973633,-,-
+252,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.361225128173828,-,-
+252,End-to-End,N/A,e2e_latency,45.439958572387695,60a35c66e03531831d1e8082,1
+253,Scheduling,dynamic_round_robin,scheduling,88.72580528259277,60a35c66e03531831d1e8082,1
+253,Pre-processing,N/A,preproc_det,17.2574520111084,-,-
+253,Object Detection,YOLOv3,detection,13.406991958618164,-,-
+253,from_numpy,YOLOv3,detection,0.029325485229492188,-,-
+253,image4yolo,YOLOv3,detection,0.6427764892578125,-,-
+253,pred,YOLOv3,detection,9.009361267089844,-,-
+253,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.963874816894531,-,-
+253,End-to-End,N/A,e2e_latency,45.52006721496582,60a35c66e03531831d1e8082,1
+254,Scheduling,dynamic_round_robin,scheduling,88.58489990234375,60a35c66e03531831d1e8082,1
+254,Pre-processing,N/A,preproc_det,19.201278686523438,-,-
+254,Object Detection,YOLOv3,detection,13.424158096313477,-,-
+254,from_numpy,YOLOv3,detection,0.026226043701171875,-,-
+254,image4yolo,YOLOv3,detection,0.6282329559326172,-,-
+254,pred,YOLOv3,detection,9.003877639770508,-,-
+254,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.168510437011719,-,-
+254,End-to-End,N/A,e2e_latency,46.91290855407715,60a35c66e03531831d1e8082,1
+255,Scheduling,dynamic_round_robin,scheduling,77.20589637756348,60a35c66e03531831d1e8082,1
+255,Pre-processing,N/A,preproc_det,17.817258834838867,-,-
+255,Object Detection,YOLOv3,detection,13.279438018798828,-,-
+255,from_numpy,YOLOv3,detection,0.016927719116210938,-,-
+255,image4yolo,YOLOv3,detection,0.5893707275390625,-,-
+255,pred,YOLOv3,detection,8.800506591796875,-,-
+255,Extra Pipeline,PiH Candidate Selection,candidate_selection,10.843992233276367,-,-
+255,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.04458427429199219,-,-
+255,End-to-End,N/A,e2e_latency,52.56986618041992,60a35c66e03531831d1e8082,1
+256,Scheduling,dynamic_round_robin,scheduling,88.18554878234863,60a35c66e03531831d1e8082,1
+256,Pre-processing,N/A,preproc_det,18.22948455810547,-,-
+256,Object Detection,YOLOv3,detection,13.475894927978516,-,-
+256,from_numpy,YOLOv3,detection,0.031948089599609375,-,-
+,sorting,Sorting Network,scheduling,0.2079010009765625,-,-
+256,image4yolo,YOLOv3,detection,0.6465911865234375,-,-
+256,pred,YOLOv3,detection,9.048700332641602,-,-
+256,Extra Pipeline,PiH Candidate Selection,candidate_selection,10.533571243286133,-,-
+256,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.044345855712890625,-,-
+256,End-to-End,N/A,e2e_latency,58.90011787414551,60a35c66e03531831d1e8082,1
+257,Scheduling,dynamic_round_robin,scheduling,88.67716789245605,60a35c66e03531831d1e8082,1
+257,Pre-processing,N/A,preproc_det,18.352508544921875,-,-
+257,Object Detection,YOLOv3,detection,13.51785659790039,-,-
+257,from_numpy,YOLOv3,detection,0.026464462280273438,-,-
+257,image4yolo,YOLOv3,detection,0.6306171417236328,-,-
+257,pred,YOLOv3,detection,8.960247039794922,-,-
+257,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.999326705932617,-,-
+257,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.04673004150390625,-,-
+257,End-to-End,N/A,e2e_latency,52.72626876831055,60a35c66e03531831d1e8082,1
+258,Scheduling,dynamic_round_robin,scheduling,83.83965492248535,60a35c66e03531831d1e8082,1
+258,Pre-processing,N/A,preproc_det,17.01951026916504,-,-
+258,Object Detection,YOLOv3,detection,13.506412506103516,-,-
+258,from_numpy,YOLOv3,detection,0.03552436828613281,-,-
+258,image4yolo,YOLOv3,detection,0.6558895111083984,-,-
+258,pred,YOLOv3,detection,9.211540222167969,-,-
+258,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.650997161865234,-,-
+258,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.0457763671875,-,-
+258,End-to-End,N/A,e2e_latency,56.88977241516113,60a35c66e03531831d1e8082,1
+259,Scheduling,dynamic_round_robin,scheduling,88.64188194274902,60a35c66e03531831d1e8082,1
+259,Pre-processing,N/A,preproc_det,18.869638442993164,-,-
+259,Object Detection,YOLOv3,detection,13.346195220947266,-,-
+259,from_numpy,YOLOv3,detection,0.016689300537109375,-,-
+259,image4yolo,YOLOv3,detection,0.5946159362792969,-,-
+259,pred,YOLOv3,detection,8.827447891235352,-,-
+259,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.949974060058594,-,-
+259,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.043392181396484375,-,-
+259,End-to-End,N/A,e2e_latency,51.82337760925293,60a35c66e03531831d1e8082,1
+260,Scheduling,dynamic_round_robin,scheduling,72.78299331665039,60a35c66e03531831d1e8082,1
+260,Pre-processing,N/A,preproc_det,16.843795776367188,-,-
+260,Object Detection,YOLOv3,detection,13.449907302856445,-,-
+,sorting,Sorting Network,scheduling,0.20956993103027344,-,-
+260,from_numpy,YOLOv3,detection,0.026941299438476562,-,-
+260,image4yolo,YOLOv3,detection,0.6525516510009766,-,-
+260,pred,YOLOv3,detection,9.019613265991211,-,-
+260,Extra Pipeline,PiH Candidate Selection,candidate_selection,10.112762451171875,-,-
+260,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.047206878662109375,-,-
+260,End-to-End,N/A,e2e_latency,51.04374885559082,60a35c66e03531831d1e8082,1
+261,Scheduling,dynamic_round_robin,scheduling,73.00353050231934,60a35c66e03531831d1e8082,1
+261,Pre-processing,N/A,preproc_det,18.321752548217773,-,-
+261,Object Detection,YOLOv3,detection,13.453245162963867,-,-
+261,from_numpy,YOLOv3,detection,0.021696090698242188,-,-
+261,image4yolo,YOLOv3,detection,0.6148815155029297,-,-
+261,pred,YOLOv3,detection,9.040117263793945,-,-
+261,Extra Pipeline,PiH Candidate Selection,candidate_selection,10.680675506591797,-,-
+261,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.04410743713378906,-,-
+261,End-to-End,N/A,e2e_latency,53.57217788696289,60a35c66e03531831d1e8082,1
+262,Scheduling,dynamic_round_robin,scheduling,88.52839469909668,60a35c66e03531831d1e8082,1
+262,Pre-processing,N/A,preproc_det,17.258644104003906,-,-
+262,Object Detection,YOLOv3,detection,13.47804069519043,-,-
+262,from_numpy,YOLOv3,detection,0.026226043701171875,-,-
+262,image4yolo,YOLOv3,detection,0.6427764892578125,-,-
+262,pred,YOLOv3,detection,9.839296340942383,-,-
+262,Extra Pipeline,PiH Candidate Selection,candidate_selection,11.974811553955078,-,-
+262,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.04649162292480469,-,-
+262,End-to-End,N/A,e2e_latency,54.181814193725586,60a35c66e03531831d1e8082,1
+263,Scheduling,dynamic_round_robin,scheduling,88.40727806091309,60a35c66e03531831d1e8082,1
+263,Pre-processing,N/A,preproc_det,18.51630210876465,-,-
+263,Object Detection,YOLOv3,detection,13.459205627441406,-,-
+263,from_numpy,YOLOv3,detection,0.019788742065429688,-,-
+263,image4yolo,YOLOv3,detection,0.5979537963867188,-,-
+263,pred,YOLOv3,detection,8.881092071533203,-,-
+263,Extra Pipeline,PiH Candidate Selection,candidate_selection,9.892940521240234,-,-
+263,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.0476837158203125,-,-
+263,End-to-End,N/A,e2e_latency,53.067684173583984,60a35c66e03531831d1e8082,1
+264,Scheduling,dynamic_round_robin,scheduling,93.57571601867676,60a35c66e03531831d1e8082,1
+264,Pre-processing,N/A,preproc_det,13.728141784667969,-,-
+264,Object Detection,YOLOv3,detection,13.818740844726562,-,-
+,sorting,Sorting Network,scheduling,0.2067089080810547,-,-
+264,from_numpy,YOLOv3,detection,0.019311904907226562,-,-
+264,image4yolo,YOLOv3,detection,0.6604194641113281,-,-
+264,pred,YOLOv3,detection,10.616064071655273,-,-
+264,Extra Pipeline,PiH Candidate Selection,candidate_selection,6.072521209716797,-,-
+264,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.04696846008300781,-,-
+264,End-to-End,N/A,e2e_latency,47.63388633728027,60a35c66e03531831d1e8082,1
+265,Scheduling,dynamic_round_robin,scheduling,88.34266662597656,60a35c66e03531831d1e8082,1
+265,Pre-processing,N/A,preproc_det,13.555765151977539,-,-
+265,Object Detection,YOLOv3,detection,15.027284622192383,-,-
+265,from_numpy,YOLOv3,detection,0.022172927856445312,-,-
+265,image4yolo,YOLOv3,detection,0.6690025329589844,-,-
+265,pred,YOLOv3,detection,12.63880729675293,-,-
+265,Extra Pipeline,PiH Candidate Selection,candidate_selection,12.767553329467773,-,-
+265,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.047206878662109375,-,-
+265,End-to-End,N/A,e2e_latency,56.040287017822266,60a35c66e03531831d1e8082,1
+266,Scheduling,dynamic_round_robin,scheduling,88.62900733947754,60a35c66e03531831d1e8082,1
+266,Pre-processing,N/A,preproc_det,19.278287887573242,-,-
+266,Object Detection,YOLOv3,detection,13.397216796875,-,-
+266,from_numpy,YOLOv3,detection,0.019788742065429688,-,-
+266,image4yolo,YOLOv3,detection,0.6008148193359375,-,-
+266,pred,YOLOv3,detection,8.838415145874023,-,-
+266,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.053520202636719,-,-
+266,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.044345855712890625,-,-
+266,End-to-End,N/A,e2e_latency,48.73204231262207,60a35c66e03531831d1e8082,1
+267,Scheduling,dynamic_round_robin,scheduling,88.03153038024902,60a35c66e03531831d1e8082,1
+267,Pre-processing,N/A,preproc_det,18.07403564453125,-,-
+267,Object Detection,YOLOv3,detection,13.37742805480957,-,-
+267,from_numpy,YOLOv3,detection,0.020742416381835938,-,-
+267,image4yolo,YOLOv3,detection,0.6101131439208984,-,-
+267,pred,YOLOv3,detection,8.899450302124023,-,-
+267,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.751039505004883,-,-
+267,End-to-End,N/A,e2e_latency,46.06318473815918,60a35c66e03531831d1e8082,1
+268,Scheduling,dynamic_round_robin,scheduling,88.3185863494873,60a35c66e03531831d1e8082,1
+268,Pre-processing,N/A,preproc_det,10.74528694152832,-,-
+,sorting,Sorting Network,scheduling,0.2262592315673828,-,-
+268,Object Detection,YOLOv3,detection,13.473033905029297,-,-
+268,from_numpy,YOLOv3,detection,0.031232833862304688,-,-
+268,image4yolo,YOLOv3,detection,0.652313232421875,-,-
+268,pred,YOLOv3,detection,9.043216705322266,-,-
+268,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.9768218994140625,-,-
+268,End-to-End,N/A,e2e_latency,38.46859931945801,60a35c66e03531831d1e8082,1
+269,Scheduling,dynamic_round_robin,scheduling,88.50359916687012,60a35c66e03531831d1e8082,1
+269,Pre-processing,N/A,preproc_det,17.91524887084961,-,-
+269,Object Detection,YOLOv3,detection,13.576269149780273,-,-
+269,from_numpy,YOLOv3,detection,0.03314018249511719,-,-
+269,image4yolo,YOLOv3,detection,0.6573200225830078,-,-
+269,pred,YOLOv3,detection,8.998870849609375,-,-
+269,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.403591156005859,-,-
+269,End-to-End,N/A,e2e_latency,46.72122001647949,60a35c66e03531831d1e8082,1
+270,Scheduling,dynamic_round_robin,scheduling,88.44923973083496,60a35c66e03531831d1e8082,1
+270,Pre-processing,N/A,preproc_det,18.998384475708008,-,-
+270,Object Detection,YOLOv3,detection,13.451814651489258,-,-
+270,from_numpy,YOLOv3,detection,0.028371810913085938,-,-
+270,image4yolo,YOLOv3,detection,0.6301403045654297,-,-
+270,pred,YOLOv3,detection,9.093284606933594,-,-
+270,Extra Pipeline,PiH Candidate Selection,candidate_selection,2.7930736541748047,-,-
+270,End-to-End,N/A,e2e_latency,45.957326889038086,60a35c66e03531831d1e8082,1
+271,Scheduling,dynamic_round_robin,scheduling,83.84990692138672,60a35c66e03531831d1e8082,1
+271,Pre-processing,N/A,preproc_det,19.031047821044922,-,-
+271,Object Detection,YOLOv3,detection,13.522863388061523,-,-
+271,from_numpy,YOLOv3,detection,0.033855438232421875,-,-
+271,image4yolo,YOLOv3,detection,0.6580352783203125,-,-
+271,pred,YOLOv3,detection,9.074926376342773,-,-
+271,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.142999649047852,-,-
+271,End-to-End,N/A,e2e_latency,53.017616271972656,60a35c66e03531831d1e8082,1
+272,Scheduling,dynamic_round_robin,scheduling,88.60182762145996,60a35c66e03531831d1e8082,1
+272,Pre-processing,N/A,preproc_det,19.210338592529297,-,-
+,sorting,Sorting Network,scheduling,0.209808349609375,-,-
+272,Object Detection,YOLOv3,detection,13.397932052612305,-,-
+272,from_numpy,YOLOv3,detection,0.0209808349609375,-,-
+272,image4yolo,YOLOv3,detection,0.6067752838134766,-,-
+272,pred,YOLOv3,detection,9.08041000366211,-,-
+272,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.7882328033447266,-,-
+272,End-to-End,N/A,e2e_latency,47.087907791137695,60a35c66e03531831d1e8082,1
+273,Scheduling,dynamic_round_robin,scheduling,88.5467529296875,60a35c66e03531831d1e8082,1
+273,Pre-processing,N/A,preproc_det,18.891334533691406,-,-
+273,Object Detection,YOLOv3,detection,13.354301452636719,-,-
+273,from_numpy,YOLOv3,detection,0.01811981201171875,-,-
+273,image4yolo,YOLOv3,detection,0.5962848663330078,-,-
+273,pred,YOLOv3,detection,8.82863998413086,-,-
+273,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.446268081665039,-,-
+273,End-to-End,N/A,e2e_latency,48.532724380493164,60a35c66e03531831d1e8082,1
+274,Pre-processing,N/A,preproc_det,19.306421279907227,-,-
+274,Object Detection,YOLOv3,detection,13.444662094116211,-,-
+274,from_numpy,YOLOv3,detection,0.019550323486328125,-,-
+274,image4yolo,YOLOv3,detection,0.6062984466552734,-,-
+274,pred,YOLOv3,detection,8.918285369873047,-,-
+274,Scheduling,dynamic_round_robin,scheduling,51.7735481262207,60a35c66e03531831d1e8082,1
+274,Extra Pipeline,PiH Candidate Selection,candidate_selection,12.483835220336914,-,-
+274,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.06651878356933594,-,-
+274,End-to-End,N/A,e2e_latency,56.642770767211914,60a35c66e03531831d1e8082,1
+275,Scheduling,dynamic_round_robin,scheduling,66.66326522827148,60a35c66e03531831d1e8082,1
+275,Pre-processing,N/A,preproc_det,19.194602966308594,-,-
+275,Object Detection,YOLOv3,detection,13.635396957397461,-,-
+275,from_numpy,YOLOv3,detection,0.034332275390625,-,-
+275,image4yolo,YOLOv3,detection,0.6482601165771484,-,-
+275,pred,YOLOv3,detection,9.665489196777344,-,-
+275,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.529476165771484,-,-
+275,End-to-End,N/A,e2e_latency,50.79078674316406,60a35c66e03531831d1e8082,1
+276,Pre-processing,N/A,preproc_det,16.807079315185547,-,-
+,sorting,Sorting Network,scheduling,0.21004676818847656,-,-
+276,Object Detection,YOLOv3,detection,13.437747955322266,-,-
+276,from_numpy,YOLOv3,detection,0.03314018249511719,-,-
+276,image4yolo,YOLOv3,detection,0.6551742553710938,-,-
+276,pred,YOLOv3,detection,9.124040603637695,-,-
+276,Scheduling,dynamic_round_robin,scheduling,61.74492835998535,60a35c66e03531831d1e8082,1
+276,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.665851593017578,-,-
+276,End-to-End,N/A,e2e_latency,48.638105392456055,60a35c66e03531831d1e8082,1
+277,Scheduling,dynamic_round_robin,scheduling,71.88034057617188,60a35c66e03531831d1e8082,1
+277,Pre-processing,N/A,preproc_det,19.153356552124023,-,-
+277,Object Detection,YOLOv3,detection,13.491392135620117,-,-
+277,from_numpy,YOLOv3,detection,0.027418136596679688,-,-
+277,image4yolo,YOLOv3,detection,0.6358623504638672,-,-
+277,pred,YOLOv3,detection,9.020090103149414,-,-
+277,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.393100738525391,-,-
+277,End-to-End,N/A,e2e_latency,48.528194427490234,60a35c66e03531831d1e8082,1
+278,Scheduling,dynamic_round_robin,scheduling,57.41405487060547,60a35c66e03531831d1e8082,1
+278,Pre-processing,N/A,preproc_det,18.871545791625977,-,-
+278,Object Detection,YOLOv3,detection,13.437509536743164,-,-
+278,from_numpy,YOLOv3,detection,0.030994415283203125,-,-
+278,image4yolo,YOLOv3,detection,0.640869140625,-,-
+278,pred,YOLOv3,detection,9.067773818969727,-,-
+278,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.124641418457031,-,-
+278,End-to-End,N/A,e2e_latency,47.09506034851074,60a35c66e03531831d1e8082,1
+279,Scheduling,dynamic_round_robin,scheduling,88.61064910888672,60a35c66e03531831d1e8082,1
+279,Pre-processing,N/A,preproc_det,18.491506576538086,-,-
+279,Object Detection,YOLOv3,detection,13.49186897277832,-,-
+279,from_numpy,YOLOv3,detection,0.030279159545898438,-,-
+279,image4yolo,YOLOv3,detection,0.6475448608398438,-,-
+279,pred,YOLOv3,detection,9.009599685668945,-,-
+279,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.323720932006836,-,-
+279,End-to-End,N/A,e2e_latency,47.95265197753906,60a35c66e03531831d1e8082,1
+280,Scheduling,dynamic_round_robin,scheduling,67.97957420349121,60a35c66e03531831d1e8082,1
+280,Pre-processing,N/A,preproc_det,17.163515090942383,-,-
+280,Object Detection,YOLOv3,detection,13.625144958496094,-,-
+,sorting,Sorting Network,scheduling,0.209808349609375,-,-
+280,from_numpy,YOLOv3,detection,0.06556510925292969,-,-
+280,image4yolo,YOLOv3,detection,0.6575584411621094,-,-
+280,pred,YOLOv3,detection,9.245157241821289,-,-
+280,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.29170036315918,-,-
+280,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.051021575927734375,-,-
+280,End-to-End,N/A,e2e_latency,49.508094787597656,60a35c66e03531831d1e8082,1
+281,Scheduling,dynamic_round_robin,scheduling,88.68765830993652,60a35c66e03531831d1e8082,1
+281,Pre-processing,N/A,preproc_det,17.606019973754883,-,-
+281,Object Detection,YOLOv3,detection,13.470172882080078,-,-
+281,from_numpy,YOLOv3,detection,0.029087066650390625,-,-
+281,image4yolo,YOLOv3,detection,0.6361007690429688,-,-
+281,pred,YOLOv3,detection,9.135961532592773,-,-
+281,Extra Pipeline,PiH Candidate Selection,candidate_selection,10.475397109985352,-,-
+281,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.046253204345703125,-,-
+281,End-to-End,N/A,e2e_latency,53.35521697998047,60a35c66e03531831d1e8082,1
+282,Scheduling,dynamic_round_robin,scheduling,88.68527412414551,60a35c66e03531831d1e8082,1
+282,Pre-processing,N/A,preproc_det,17.763853073120117,-,-
+282,Object Detection,YOLOv3,detection,13.422012329101562,-,-
+282,from_numpy,YOLOv3,detection,0.021219253540039062,-,-
+282,image4yolo,YOLOv3,detection,0.6496906280517578,-,-
+282,pred,YOLOv3,detection,9.172677993774414,-,-
+282,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.909276962280273,-,-
+282,End-to-End,N/A,e2e_latency,47.55544662475586,60a35c66e03531831d1e8082,1
+283,Scheduling,dynamic_round_robin,scheduling,88.61422538757324,60a35c66e03531831d1e8082,1
+283,Pre-processing,N/A,preproc_det,17.88496971130371,-,-
+283,Object Detection,YOLOv3,detection,13.315439224243164,-,-
+283,from_numpy,YOLOv3,detection,0.01811981201171875,-,-
+283,image4yolo,YOLOv3,detection,0.6072521209716797,-,-
+283,pred,YOLOv3,detection,8.87155532836914,-,-
+283,Extra Pipeline,PiH Candidate Selection,candidate_selection,9.95779037475586,-,-
+283,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.04696846008300781,-,-
+283,End-to-End,N/A,e2e_latency,52.8111457824707,60a35c66e03531831d1e8082,1
+284,Scheduling,dynamic_round_robin,scheduling,88.6240005493164,60a35c66e03531831d1e8082,1
+284,Pre-processing,N/A,preproc_det,18.872499465942383,-,-
+284,Object Detection,YOLOv3,detection,13.42630386352539,-,-
+,sorting,Sorting Network,scheduling,0.20694732666015625,-,-
+284,from_numpy,YOLOv3,detection,0.025987625122070312,-,-
+284,image4yolo,YOLOv3,detection,0.629425048828125,-,-
+284,pred,YOLOv3,detection,8.960723876953125,-,-
+284,Extra Pipeline,PiH Candidate Selection,candidate_selection,11.238336563110352,-,-
+284,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.04363059997558594,-,-
+284,End-to-End,N/A,e2e_latency,55.136680603027344,60a35c66e03531831d1e8082,1
+285,Scheduling,dynamic_round_robin,scheduling,88.57917785644531,60a35c66e03531831d1e8082,1
+285,Pre-processing,N/A,preproc_det,18.687725067138672,-,-
+285,Object Detection,YOLOv3,detection,13.387918472290039,-,-
+285,from_numpy,YOLOv3,detection,0.017881393432617188,-,-
+285,image4yolo,YOLOv3,detection,0.5986690521240234,-,-
+285,pred,YOLOv3,detection,9.005308151245117,-,-
+285,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.119800567626953,-,-
+285,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.04410743713378906,-,-
+285,End-to-End,N/A,e2e_latency,55.90629577636719,60a35c66e03531831d1e8082,1
+286,Scheduling,dynamic_round_robin,scheduling,88.61899375915527,60a35c66e03531831d1e8082,1
+286,Pre-processing,N/A,preproc_det,18.78190040588379,-,-
+286,Object Detection,YOLOv3,detection,13.335704803466797,-,-
+286,from_numpy,YOLOv3,detection,0.021219253540039062,-,-
+286,image4yolo,YOLOv3,detection,0.6082057952880859,-,-
+286,pred,YOLOv3,detection,8.824825286865234,-,-
+286,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.380941390991211,-,-
+286,End-to-End,N/A,e2e_latency,47.36447334289551,60a35c66e03531831d1e8082,1
+287,Scheduling,dynamic_round_robin,scheduling,88.77348899841309,60a35c66e03531831d1e8082,1
+287,Pre-processing,N/A,preproc_det,18.981456756591797,-,-
+287,Object Detection,YOLOv3,detection,13.477325439453125,-,-
+287,from_numpy,YOLOv3,detection,0.02956390380859375,-,-
+287,image4yolo,YOLOv3,detection,0.6418228149414062,-,-
+287,pred,YOLOv3,detection,8.96596908569336,-,-
+287,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.3468475341796875,-,-
+287,End-to-End,N/A,e2e_latency,52.666425704956055,60a35c66e03531831d1e8082,1
+288,Scheduling,dynamic_round_robin,scheduling,88.60015869140625,60a35c66e03531831d1e8082,1
+288,Pre-processing,N/A,preproc_det,18.052101135253906,-,-
+288,Object Detection,YOLOv3,detection,13.399124145507812,-,-
+,sorting,Sorting Network,scheduling,0.21696090698242188,-,-
+288,from_numpy,YOLOv3,detection,0.019550323486328125,-,-
+288,image4yolo,YOLOv3,detection,0.5998611450195312,-,-
+288,pred,YOLOv3,detection,8.929252624511719,-,-
+288,Extra Pipeline,PiH Candidate Selection,candidate_selection,9.59920883178711,-,-
+288,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.04863739013671875,-,-
+288,End-to-End,N/A,e2e_latency,52.79874801635742,60a35c66e03531831d1e8082,1
+289,Scheduling,dynamic_round_robin,scheduling,88.69814872741699,60a35c66e03531831d1e8082,1
+289,Pre-processing,N/A,preproc_det,17.87257194519043,-,-
+289,Object Detection,YOLOv3,detection,13.444900512695312,-,-
+289,from_numpy,YOLOv3,detection,0.0247955322265625,-,-
+289,image4yolo,YOLOv3,detection,0.6172657012939453,-,-
+289,pred,YOLOv3,detection,8.917808532714844,-,-
+289,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.170656204223633,-,-
+289,End-to-End,N/A,e2e_latency,46.29993438720703,60a35c66e03531831d1e8082,1
+290,Scheduling,dynamic_round_robin,scheduling,88.5772705078125,60a35c66e03531831d1e8082,1
+290,Pre-processing,N/A,preproc_det,18.731355667114258,-,-
+290,Object Detection,YOLOv3,detection,13.390541076660156,-,-
+290,from_numpy,YOLOv3,detection,0.028371810913085938,-,-
+290,image4yolo,YOLOv3,detection,0.6375312805175781,-,-
+290,pred,YOLOv3,detection,8.97979736328125,-,-
+290,Extra Pipeline,PiH Candidate Selection,candidate_selection,8.232831954956055,-,-
+290,End-to-End,N/A,e2e_latency,51.450252532958984,60a35c66e03531831d1e8082,1
+291,Scheduling,dynamic_round_robin,scheduling,88.59467506408691,60a35c66e03531831d1e8082,1
+291,Pre-processing,N/A,preproc_det,19.00506019592285,-,-
+291,Object Detection,YOLOv3,detection,13.628482818603516,-,-
+291,from_numpy,YOLOv3,detection,0.034809112548828125,-,-
+291,image4yolo,YOLOv3,detection,0.6461143493652344,-,-
+291,pred,YOLOv3,detection,9.283781051635742,-,-
+291,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.1103363037109375,-,-
+291,End-to-End,N/A,e2e_latency,53.91860008239746,60a35c66e03531831d1e8082,1
+292,Scheduling,dynamic_round_robin,scheduling,88.59705924987793,60a35c66e03531831d1e8082,1
+292,Pre-processing,N/A,preproc_det,12.556791305541992,-,-
+,sorting,Sorting Network,scheduling,0.2231597900390625,-,-
+292,Object Detection,YOLOv3,detection,13.509988784790039,-,-
+292,from_numpy,YOLOv3,detection,0.022411346435546875,-,-
+292,image4yolo,YOLOv3,detection,0.6287097930908203,-,-
+292,pred,YOLOv3,detection,9.084224700927734,-,-
+292,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.080938339233398,-,-
+292,End-to-End,N/A,e2e_latency,42.635202407836914,60a35c66e03531831d1e8082,1
+293,Scheduling,dynamic_round_robin,scheduling,88.63592147827148,60a35c66e03531831d1e8082,1
+293,Pre-processing,N/A,preproc_det,16.82257652282715,-,-
+293,Object Detection,YOLOv3,detection,13.40794563293457,-,-
+293,from_numpy,YOLOv3,detection,0.021457672119140625,-,-
+293,image4yolo,YOLOv3,detection,0.6113052368164062,-,-
+293,pred,YOLOv3,detection,8.879661560058594,-,-
+293,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.044532775878906,-,-
+293,End-to-End,N/A,e2e_latency,46.03290557861328,60a35c66e03531831d1e8082,1
+294,Scheduling,dynamic_round_robin,scheduling,88.63282203674316,60a35c66e03531831d1e8082,1
+294,Pre-processing,N/A,preproc_det,16.091108322143555,-,-
+294,Object Detection,YOLOv3,detection,13.33165168762207,-,-
+294,from_numpy,YOLOv3,detection,0.016927719116210938,-,-
+294,image4yolo,YOLOv3,detection,0.6000995635986328,-,-
+294,pred,YOLOv3,detection,8.858680725097656,-,-
+294,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.1370391845703125,-,-
+294,End-to-End,N/A,e2e_latency,44.220924377441406,60a35c66e03531831d1e8082,1
+295,Scheduling,dynamic_round_robin,scheduling,88.60373497009277,60a35c66e03531831d1e8082,1
+295,Pre-processing,N/A,preproc_det,16.698837280273438,-,-
+295,Object Detection,YOLOv3,detection,13.41557502746582,-,-
+295,from_numpy,YOLOv3,detection,0.023126602172851562,-,-
+295,image4yolo,YOLOv3,detection,0.6127357482910156,-,-
+295,pred,YOLOv3,detection,9.019851684570312,-,-
+295,Extra Pipeline,PiH Candidate Selection,candidate_selection,10.850667953491211,-,-
+295,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.059604644775390625,-,-
+295,End-to-End,N/A,e2e_latency,59.21792984008789,60a35c66e03531831d1e8082,1
+296,Scheduling,dynamic_round_robin,scheduling,93.68753433227539,60a35c66e03531831d1e8082,1
+296,Pre-processing,N/A,preproc_det,16.573190689086914,-,-
+296,Object Detection,YOLOv3,detection,13.31019401550293,-,-
+296,from_numpy,YOLOv3,detection,0.017404556274414062,-,-
+,sorting,Sorting Network,scheduling,0.2224445343017578,-,-
+296,image4yolo,YOLOv3,detection,0.5896091461181641,-,-
+296,pred,YOLOv3,detection,8.715629577636719,-,-
+296,Extra Pipeline,PiH Candidate Selection,candidate_selection,12.563943862915039,-,-
+296,Extra Pipeline,PiH Persistence Validation,persistence_validation,0.04315376281738281,-,-
+296,End-to-End,N/A,e2e_latency,53.74288558959961,60a35c66e03531831d1e8082,1
+297,Scheduling,dynamic_round_robin,scheduling,88.6688232421875,60a35c66e03531831d1e8082,1
+297,Pre-processing,N/A,preproc_det,19.620180130004883,-,-
+297,Object Detection,YOLOv3,detection,13.510704040527344,-,-
+297,from_numpy,YOLOv3,detection,0.022411346435546875,-,-
+297,image4yolo,YOLOv3,detection,0.6041526794433594,-,-
+297,pred,YOLOv3,detection,8.895397186279297,-,-
+297,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.80286979675293,-,-
+297,End-to-End,N/A,e2e_latency,52.60109901428223,60a35c66e03531831d1e8082,1
