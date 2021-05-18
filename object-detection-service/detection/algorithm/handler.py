@@ -186,12 +186,16 @@ class ObjectDetectionHandler(MyRedis):
 
 		# build & submit latency data: YOLO
 		L.warning("build & submit latency data: YOLO")
-		await self._save_latency(frame_id, yolo_lat, image_info["algorithm"], "detection", "Object Detection")
+		await self._save_latency(frame_id, yolo_lat, image_info["algorithm"], "detection", "Object Detection",
+								 node_id=str(self.node_id), node_name=str(self.node_name))
 
 		# save other proc. latency
-		await self._save_latency(frame_id, from_numpy_lat, image_info["algorithm"], "detection", "from_numpy")
-		await self._save_latency(frame_id, image4yolo_lat, image_info["algorithm"], "detection", "image4yolo")
-		await self._save_latency(frame_id, pred_lat, image_info["algorithm"], "detection", "pred")
+		await self._save_latency(frame_id, from_numpy_lat, image_info["algorithm"], "detection", "from_numpy",
+								 node_id=str(self.node_id), node_name=str(self.node_name))
+		await self._save_latency(frame_id, image4yolo_lat, image_info["algorithm"], "detection", "image4yolo",
+								 node_id=str(self.node_id), node_name=str(self.node_name))
+		await self._save_latency(frame_id, pred_lat, image_info["algorithm"], "detection", "pred",
+								 node_id=str(self.node_id), node_name=str(self.node_name))
 
 	async def _exec_extra_pipeline(self, img, bbox_data, mbbox_data, plot_info, det, names, frame_id):
 		# Get img information
