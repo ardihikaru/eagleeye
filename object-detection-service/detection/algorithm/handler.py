@@ -179,7 +179,7 @@ class ObjectDetectionHandler(MyRedis):
 			return [], []
 
 	async def _save_detection_related_latency(self, pre_proc_lat, yolo_lat, from_numpy_lat,
-														 image4yolo_lat, pred_lat):
+														 image4yolo_lat, pred_lat, frame_id, image_info):
 		# build & submit latency data: Pre-processing
 		L.warning("build & submit latency data: Pre-processing")
 		await self._save_latency(frame_id, pre_proc_lat, "N/A", "preproc_det", "Pre-processing")
@@ -193,7 +193,7 @@ class ObjectDetectionHandler(MyRedis):
 		await self._save_latency(frame_id, image4yolo_lat, image_info["algorithm"], "detection", "image4yolo")
 		await self._save_latency(frame_id, pred_lat, image_info["algorithm"], "detection", "pred")
 
-	async def _exec_extra_pipeline(self, img, bbox_data, mbbox_data, plot_info):
+	async def _exec_extra_pipeline(self, img, bbox_data, mbbox_data, plot_info, det, names, frame_id):
 		# Get img information
 		h, w, c = img.shape
 
@@ -281,6 +281,7 @@ class ObjectDetectionHandler(MyRedis):
 					"label": label,
 					"gps_data": gps_data
 				}
+				L.warning("[PCS_RESULT] detected PiH object(s) in frame-{}".format(frame_id))
 			else:
 				L.warning("[PCS_RESULT] Unable to detect any PiH objects in frame-{}".format(frame_id))
 
@@ -365,9 +366,10 @@ class ObjectDetectionHandler(MyRedis):
 				if len(bbox_data) > 0:  # detected objects
 					# save latecny
 					await self._save_detection_related_latency(pre_proc_lat, yolo_lat, from_numpy_lat,
-														 image4yolo_lat, pred_lat)
+														 image4yolo_lat, pred_lat, frame_id, image_info)
 					# execute PiH Candidate Selection & PiH Persitance Validation
-					mbbox_data, plot_info = await self._exec_extra_pipeline(img, bbox_data, mbbox_data, plot_info)
+					mbbox_data, plot_info = await self._exec_extra_pipeline(img, bbox_data, mbbox_data, plot_info,
+																			det, names, frame_id)
 
 				# Else, No object detected!
 				else:
