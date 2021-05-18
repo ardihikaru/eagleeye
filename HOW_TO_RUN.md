@@ -12,6 +12,7 @@
                 `$ python data_publisher.py -e tcp/localhost:7446 --cvout -v /home/ardi/devel/nctu/IBM-Lab/eaglestitch/data/videos/samer/0312_1_LtoR_1.mp4`
             - LittleBoy (server with no GUI): 
                 `$ python data_publisher.py -e tcp/localhost:7446 -v /home/s010132/devel/eaglestitch/data/videos/samer/0312_1_LtoR_1.mp4`
+                `$ python data_publisher.py -e tcp/localhost:7446 -v /home/s010132/devel/eagleeye/data/5g-dive/videos/customTest_MIRC-Roadside-20s.mp4`
         - PC/Laptop's video stream:
             `$ python data_publisher.py -e tcp/localhost:7446 --cvout`
 
@@ -64,3 +65,17 @@
     `$ ffmpeg -re -i /home/ardi/devel/nctu/IBM-Lab/eaglestitch/data/videos/samer/0312_2_RtoL.mp4 -rtsp_transport tcp -vcodec h264 -f rtsp rtsp://140.113.86.92/test`
 - open video:
     `$ ffplay -rtsp_transport tcp -i rtsp://140.113.86.92/test`
+    
+## MISC
+- Run: `export PYTHONPATH=:/home/s010132/devel/eagleeye/core-service/eagleeye`
+- Database related
+    - Install mongo tools (to enable `$ mongodump` and `$ mongoexport` command):
+        `$ sudo apt install mongo-tools`
+    - Install mongo client (to enable `$ mongo` command):
+        `$ sudo apt install mongodb-clients`
+    - Export database:
+        `$ mongodump -h 127.0.0.1 -d eagleeyeDB --out ./db/ --forceTableScan`
+    - Export to CSV:
+        `$ mongoexport --host localhost --db eagleeyeDB --collection Latency --type=csv --out latency.csv --fields frame_id,category,algorithm,section,latency,node_id,node_name --forceTableScan`
+    - Export to JSON:
+        `$ mongoexport --host localhost --db eagleeyeDB --collection Latency --type=json --out latency.json --fields frame_id,category,algorithm,section,latency,node_id,node_name --forceTableScan`
