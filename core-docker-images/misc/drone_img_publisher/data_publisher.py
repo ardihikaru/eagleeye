@@ -197,14 +197,21 @@ while get_capture_camera(cap, args.camera):
 		# t1_decoding = (time.time() - t0_decoding) * 1000
 		# print(('\n[%s] Latency tagging (%.3f ms) \n' % (datetime.now().strftime("%H:%M:%S"), t1_decoding)))
 
-		# publish in every 2 frames
-		if ret and _frame_id % 2 == 0:
-			# publish data
-			z_svc.publish(
-				_val=val,
-				_itype=itype,
-				_encoder=encoder_format,
-			)
+		# # publish in every 2 frames
+		# if ret and _frame_id % 2 == 0:
+		# 	# publish data
+		# 	z_svc.publish(
+		# 		_val=val,
+		# 		_itype=itype,
+		# 		_encoder=encoder_format,
+		# 	)
+
+		# publish data
+		z_svc.publish(
+			_val=val,
+			_itype=itype,
+			_encoder=encoder_format,
+		)
 
 		# time.sleep(1)
 
