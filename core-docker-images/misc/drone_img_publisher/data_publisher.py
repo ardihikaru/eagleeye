@@ -208,7 +208,7 @@ while get_capture_camera(cap, args.camera):
 				_itype=itype,
 			)
 
-			exit()
+			# exit()
 		else:
 			# OLD enconding method
 			val = [('Drone 1', time.time(), frame.tobytes())]
