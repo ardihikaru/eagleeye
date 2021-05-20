@@ -716,6 +716,7 @@ class ExtractorService(asab.Service):
 		self.received_frame_id += 1
 		self.skip_count += 1
 
+		# success, t0_zenoh_source, frame = True, img_info["timestamp"], img_info["img"]
 		success, t0_zenoh_source, frame = True, img_info["timestamp"], img_info["img"]
 
 		# try skipping frames
