@@ -357,6 +357,9 @@ class ObjectDetectionHandler(MyRedis):
 				# BUG FIX: Start t0 e2e frame from here (later on, PLUS with `t1_zmq` latency)
 				t0_e2e_latency = time.time()
 
+				# flag to set whether the PiH detection can capture any PiH object or not!
+				detection_status = False
+
 				# Start performing object detection
 				L.warning("Start performing object detection")
 				# bbox_data, det, names, (tdiff_inference + tdiff_nms), tdiff_from_numpy, tdiff_image4yolo, tdiff_pred
@@ -374,6 +377,12 @@ class ObjectDetectionHandler(MyRedis):
 					# execute PiH Candidate Selection & PiH Persitance Validation
 					mbbox_data, plot_info = await self._exec_extra_pipeline(img, bbox_data, mbbox_data, plot_info,
 																			det, names, frame_id)
+
+					# print(" ## mbbox_data ## ")
+					# print(mbbox_data)
+
+					if len(mbbox_data) > 0:
+						detection_status = True
 
 				# Else, No object detected!
 				else:
@@ -400,6 +409,30 @@ class ObjectDetectionHandler(MyRedis):
 					# IMPORTANT: it will send the detection result (plot_info) once sorted
 
 				elif self.cv_out and self.viz_com_mode == self.VizCommunicationMode.DIRECT.value:
+					# Inform visualizer!
+					t0_plotinfo_saving = time.time()
+					drone_id = asab.Config["stream:config"]["drone_id"]
+					plot_info_key = "plotinfo-drone-%s-frame-%s" % (drone_id, str(frame_id))
+					redis_set(self.rc, plot_info_key, plot_info, expired=10)  # delete value after 10 seconds
+					t1_plotinfo_saving = (time.time() - t0_plotinfo_saving) * 1000
+					L.warning('\n[%s] Latency of Storing Plot info in redisDB (%.3f ms)' %
+							  (get_current_time(), t1_plotinfo_saving))
+
+				# when no BBox not PiH detected, directly inform Visualizer service!
+				if self.cv_out and not detection_status:
+					# build plot_info
+					# collect latest GPS Data
+					gps_data = await self.GPSCollectorService.get_gps_data()
+
+					plot_info = {
+						"bbox": [],
+						"mbbox": [],
+						"color": "",
+						"label": "Pih not found",
+						"gps_data": gps_data
+					}
+
+					# Inform visualizer!
 					t0_plotinfo_saving = time.time()
 					drone_id = asab.Config["stream:config"]["drone_id"]
 					plot_info_key = "plotinfo-drone-%s-frame-%s" % (drone_id, str(frame_id))
