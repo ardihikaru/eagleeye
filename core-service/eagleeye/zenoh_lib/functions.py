@@ -19,11 +19,14 @@ def extract_compressed_tagged_img(consumed_data):
 			[drone_id],  # extra tag 01
 			[t0_part_1],  # extra tag 02
 			[t0_part_2],  # extra tag 03
+			[frame_id],  # extra tag 04
 			[total_number_of_tag],
 			[tagged_data_len],  # total array size: `img_data` + `total_number_of_tag` + 1
 		]
 	"""
 	# print(" #### LISTENER ..")
+
+	t1_zenoh_pubsub = time.time()
 
 	t0_decode = time.time()
 
@@ -40,18 +43,29 @@ def extract_compressed_tagged_img(consumed_data):
 	# Extract information
 	t0_tag_extraction = time.time()
 	drone_id = extract_drone_id(decoded_data, encoded_img_len)
-	t0 = extract_t0(decoded_data, encoded_img_len)
+	t0_zenoh_pubsub = extract_t0(decoded_data, encoded_img_len)
+	frame_id = extract_frame_id(decoded_data, encoded_img_len)
 	# print(" ----- drone_id:", drone_id, type(drone_id))
 	# print(" ----- t0:", t0, type(t0))
+	# print(" ----- frame_id:", frame_id, type(frame_id))
 	t1_tag_extraction = (time.time() - t0_tag_extraction) * 1000
 	L.warning(('[%s] Latency Tag Extraction (%.3f ms) ' % ("ZENOH CONSUMER", t1_tag_extraction)))
+
+	# calculate zenoh pubsub
+	zenoh_pubsub_latency = (t1_zenoh_pubsub - t0_zenoh_pubsub) * 1000
+	L.warning(('[%s] Latency Zenoh Comm. PubSub (%.3f ms) ' % ("ZENOH CONSUMER", zenoh_pubsub_latency)))
 
 	# popping tagged information
 	t0_non_img_cleaning = time.time()
 	# print(" ----- OLD SHAPE decoded_data:", decoded_data.shape)
 	for i in range(extra_tag_len):
 		decoded_data = np.delete(decoded_data, -1)
-	decoded_data = decoded_data.reshape(decoded_data_len - 5, 1)
+	# decoded_data = decoded_data.reshape(decoded_data_len - 5, 1)
+	# IMPORTANT: value `6` is the value of
+	# decoded_data = decoded_data.reshape(decoded_data_len - 6, 1)
+	# print(" ## extra_tag_len:", type(extra_tag_len), extra_tag_len)
+	decoded_data = decoded_data.reshape(decoded_data_len - extra_tag_len, 1)
+
 	# print(" ----- NEWWWW SHAPE decoded_data:", decoded_data.shape)
 	# print(" ##### decoded_data[-1][0] = ", decoded_data[-1][0])  # tagged_data_len
 	t1_non_img_cleaning = (time.time() - t0_non_img_cleaning) * 1000
@@ -79,14 +93,22 @@ def extract_compressed_tagged_img(consumed_data):
 	# cv2.imwrite("decompressed_img.jpg", decompressed_img)
 	# cv2.imwrite("decompressed_img_{}.jpg".format(str(t0_decompress_img)), decompressed_img)
 
+	latency_data = {
+		"decoding_payload": t1_decode,
+		"clean_decoded_payload": t1_non_img_cleaning,
+		"extract_img_data": t1_img_extraction,
+		"decompress_img": t1_decompress_img,
+		"zenoh_pubsub_latency": zenoh_pubsub_latency,
+	}
+
 	# decode data
 	img_info = {
 		"id": drone_id,
 		"img": decompressed_img,
-		"timestamp": t0,
+		"frame_id": frame_id,
 	}
 
-	return img_info
+	return img_info, latency_data
 
 
 def decode_payload(payload):
@@ -113,14 +135,20 @@ def extract_drone_id(data, img_len):
 
 def extract_t0(data, img_len):
 	""" Extract timestamp (t0) captured by Zenoh's Consumer """
-	to_p1_idx = img_len + 2
-	to_p2_idx = img_len + 3
+	to_p1_idx = img_len + 1
+	to_p2_idx = img_len + 2
 
 	t0 = "{}.{}".format(
 		data[to_p1_idx][0],
 		data[to_p2_idx][0],
 	)
 	return float(t0)
+
+
+def extract_frame_id(data, img_len):
+	""" Extract drone_id captured by Zenoh's Consumer """
+	frame_idx = img_len + 3
+	return decrypt_str(int(data[frame_idx][0]))
 
 
 def decrypt_str(int_val, byteorder="little"):
