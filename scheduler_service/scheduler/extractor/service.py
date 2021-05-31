@@ -660,6 +660,13 @@ class ExtractorService(asab.Service):
 		if 0 < self._num_skipped_frames < self.skip_count:
 			self.skip_count = 0
 
+	def save_zenoh_related_latency(self, frame_id, latency_data):
+		for cat, lat in latency_data.items():
+			# Save latency
+			self._sync_save_latency(
+				frame_id, lat, "N/A", cat, "Zenoh"
+			)
+
 	def img_listener_v2(self, consumed_data):
 		# Pre-process consumed data
 		img_info = None
@@ -672,7 +679,21 @@ class ExtractorService(asab.Service):
 
 		# it is expected to come into this logic
 		elif self.comsumer_type == self.ZenohConsumerType.COMPRESSION_TAGGED_IMAGE:
-			img_info = extract_compressed_tagged_img(consumed_data)
+			img_info, latency_data = extract_compressed_tagged_img(consumed_data)
+
+			# save latency data
+			self.save_zenoh_related_latency(img_info["frame_id"], latency_data)
+
+			# print(" ## latency_data ## ")
+			# print(latency_data)
+
+			# print(" ## img_info ## ")
+			# print(img_info)
+
+		# # Save latency data
+			# self._sync_save_latency(
+			# 	self.frame_id, t1_sched_lat, "Round-Robin", "scheduling", "Scheduling", node_id, node_name
+			# )
 
 		else:
 			_err_msg = ">>>>> [ZENOH Consumer] Invalid Zenoh consumer type"
@@ -695,6 +716,7 @@ class ExtractorService(asab.Service):
 		self.received_frame_id += 1
 		self.skip_count += 1
 
+		# success, t0_zenoh_source, frame = True, img_info["timestamp"], img_info["img"]
 		success, t0_zenoh_source, frame = True, img_info["timestamp"], img_info["img"]
 
 		# try skipping frames

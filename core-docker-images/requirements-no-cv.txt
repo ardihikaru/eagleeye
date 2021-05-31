@@ -1,5 +1,5 @@
 wheel
-asab
+asab==20.7.28  # has latest version, instead of `asab`
 mongoengine
 aiohttp_jwt
 aiohttp_middlewares
@@ -13,15 +13,12 @@ requests
 matplotlib
 scipy
 seaborn
-requests
 window-slider
-aiortc
 suds-py3
 kubernetes
 tqdm
 torch
 torchvision
 imutils
-eclipse-zenoh
 aiounittest
 nose2

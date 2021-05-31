@@ -179,21 +179,25 @@ class ObjectDetectionHandler(MyRedis):
 			return [], []
 
 	async def _save_detection_related_latency(self, pre_proc_lat, yolo_lat, from_numpy_lat,
-														 image4yolo_lat, pred_lat):
+														 image4yolo_lat, pred_lat, frame_id, image_info):
 		# build & submit latency data: Pre-processing
 		L.warning("build & submit latency data: Pre-processing")
 		await self._save_latency(frame_id, pre_proc_lat, "N/A", "preproc_det", "Pre-processing")
 
 		# build & submit latency data: YOLO
 		L.warning("build & submit latency data: YOLO")
-		await self._save_latency(frame_id, yolo_lat, image_info["algorithm"], "detection", "Object Detection")
+		await self._save_latency(frame_id, yolo_lat, image_info["algorithm"], "detection", "Object Detection",
+								 node_id=str(self.node_id), node_name=str(self.node_name))
 
 		# save other proc. latency
-		await self._save_latency(frame_id, from_numpy_lat, image_info["algorithm"], "detection", "from_numpy")
-		await self._save_latency(frame_id, image4yolo_lat, image_info["algorithm"], "detection", "image4yolo")
-		await self._save_latency(frame_id, pred_lat, image_info["algorithm"], "detection", "pred")
+		await self._save_latency(frame_id, from_numpy_lat, image_info["algorithm"], "detection", "from_numpy",
+								 node_id=str(self.node_id), node_name=str(self.node_name))
+		await self._save_latency(frame_id, image4yolo_lat, image_info["algorithm"], "detection", "image4yolo",
+								 node_id=str(self.node_id), node_name=str(self.node_name))
+		await self._save_latency(frame_id, pred_lat, image_info["algorithm"], "detection", "pred",
+								 node_id=str(self.node_id), node_name=str(self.node_name))
 
-	async def _exec_extra_pipeline(self, img, bbox_data, mbbox_data, plot_info):
+	async def _exec_extra_pipeline(self, img, bbox_data, mbbox_data, plot_info, det, names, frame_id):
 		# Get img information
 		h, w, c = img.shape
 
@@ -281,6 +285,7 @@ class ObjectDetectionHandler(MyRedis):
 					"label": label,
 					"gps_data": gps_data
 				}
+				L.warning("[PCS_RESULT] detected PiH object(s) in frame-{}".format(frame_id))
 			else:
 				L.warning("[PCS_RESULT] Unable to detect any PiH objects in frame-{}".format(frame_id))
 
@@ -352,6 +357,9 @@ class ObjectDetectionHandler(MyRedis):
 				# BUG FIX: Start t0 e2e frame from here (later on, PLUS with `t1_zmq` latency)
 				t0_e2e_latency = time.time()
 
+				# flag to set whether the PiH detection can capture any PiH object or not!
+				detection_status = False
+
 				# Start performing object detection
 				L.warning("Start performing object detection")
 				# bbox_data, det, names, (tdiff_inference + tdiff_nms), tdiff_from_numpy, tdiff_image4yolo, tdiff_pred
@@ -365,9 +373,16 @@ class ObjectDetectionHandler(MyRedis):
 				if len(bbox_data) > 0:  # detected objects
 					# save latecny
 					await self._save_detection_related_latency(pre_proc_lat, yolo_lat, from_numpy_lat,
-														 image4yolo_lat, pred_lat)
+														 image4yolo_lat, pred_lat, frame_id, image_info)
 					# execute PiH Candidate Selection & PiH Persitance Validation
-					mbbox_data, plot_info = await self._exec_extra_pipeline(img, bbox_data, mbbox_data, plot_info)
+					mbbox_data, plot_info = await self._exec_extra_pipeline(img, bbox_data, mbbox_data, plot_info,
+																			det, names, frame_id)
+
+					# print(" ## mbbox_data ## ")
+					# print(mbbox_data)
+
+					if len(mbbox_data) > 0:
+						detection_status = True
 
 				# Else, No object detected!
 				else:
@@ -394,6 +409,30 @@ class ObjectDetectionHandler(MyRedis):
 					# IMPORTANT: it will send the detection result (plot_info) once sorted
 
 				elif self.cv_out and self.viz_com_mode == self.VizCommunicationMode.DIRECT.value:
+					# Inform visualizer!
+					t0_plotinfo_saving = time.time()
+					drone_id = asab.Config["stream:config"]["drone_id"]
+					plot_info_key = "plotinfo-drone-%s-frame-%s" % (drone_id, str(frame_id))
+					redis_set(self.rc, plot_info_key, plot_info, expired=10)  # delete value after 10 seconds
+					t1_plotinfo_saving = (time.time() - t0_plotinfo_saving) * 1000
+					L.warning('\n[%s] Latency of Storing Plot info in redisDB (%.3f ms)' %
+							  (get_current_time(), t1_plotinfo_saving))
+
+				# when no BBox not PiH detected, directly inform Visualizer service!
+				if self.cv_out and not detection_status:
+					# build plot_info
+					# collect latest GPS Data
+					gps_data = await self.GPSCollectorService.get_gps_data()
+
+					plot_info = {
+						"bbox": [],
+						"mbbox": [],
+						"color": "",
+						"label": "Pih not found",
+						"gps_data": gps_data
+					}
+
+					# Inform visualizer!
 					t0_plotinfo_saving = time.time()
 					drone_id = asab.Config["stream:config"]["drone_id"]
 					plot_info_key = "plotinfo-drone-%s-frame-%s" % (drone_id, str(frame_id))

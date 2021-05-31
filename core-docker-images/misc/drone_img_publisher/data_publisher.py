@@ -89,13 +89,6 @@ publisher = z_svc.get_publisher()
 
 #########################
 # Zenoh related variables
-itype = 3
-encoder_format = [
-	('id', 'U10'),
-	('timestamp', 'f'),
-	('data', [('flatten', 'i')], (1, 6220800)),
-	('store_enabled', '?'),
-]
 
 window_title = "output-raw"
 if args.camera == 1:
@@ -126,12 +119,19 @@ _is_compressed = True  # it enables/disables image compression when sending imag
 
 # Extra information (to be tagged into the frame)
 int_drone_id = encrypt_str("1")  # contains 1 extra slot
-t0_array = str(time.time()).split(".")  # contains 2 extra slots
-extra_len = 5  # contains 1 extra slot; another one slot is from `tagged_data_len` variable
+print(" ## int_drone_id:", int_drone_id)
+# t0_array = str(time.time()).split(".")  # contains 2 extra slots  # MOVED TO EACH FRAME
+# extra_len = 5  # contains 1 extra slot; another one slot is from `tagged_data_len` variable
+# extra_len = 6  # contains 1 extra slot; another one slot is from `tagged_data_len` variable
+extra_len = 8  # contains 1 extra slot; another one slot is from `tagged_data_len` variable
 
 # while cap.isOpened():
 while get_capture_camera(cap, args.camera):
 	_frame_id += 1
+
+	# generate encrypted frame_id
+	eframe_id = encrypt_str(str(_frame_id))
+
 	# ret = a boolean return value from getting the frame, frame = the current frame being projected in the video
 	try:
 		if args.camera == 1:  # jetson nano
@@ -162,13 +162,28 @@ while get_capture_camera(cap, args.camera):
 			_, compressed_img = cv2.imencode('.jpg', frame, encode_param)
 			compressed_img_len, _ = compressed_img.shape
 			t1_img_compression = (time.time() - t0_img_compression) * 1000
+			t1_img_compression = round(t1_img_compression, 3)
 			print(('[%s] Latency Image Compression (%.3f ms) ' % (
 				datetime.now().strftime("%H:%M:%S"), t1_img_compression)))
 			tagged_data_len = compressed_img_len + extra_len  # `tagged_data_len` itself contains 1 extra slot
+			# print(" ## tagged_data_len:", tagged_data_len)
+			# print(" ## compressed_img_len:", compressed_img_len)
+			# print(" ## extra_len:", extra_len)
 			# cv2.imwrite("hasil.jpg", decimg)
 
 			# print size
-			print(" >>> FRAME Size AFTER compression: {} or {}".format(compressed_img.nbytes, fsize(compressed_img.nbytes)))
+			# print(" >>> FRAME Size AFTER compression: {} or {}".format(compressed_img.nbytes, fsize(compressed_img.nbytes)))
+
+			# create t0
+			t0_array = str(time.time()).split(".")  # contains 2 extra slots
+
+			# generate img compression latency
+			# eimg_compression_lat = encrypt_str(str(t1_img_compression))
+			# print(" ## t1_img_compression:", t1_img_compression)
+			img_compr_lat_arr = str(t1_img_compression).split(".")  # contains 2 extra slots
+
+			# generate encrypted frame_id
+			eframe_id = encrypt_str(str(_frame_id))
 
 			# vertically tag this frame with an extra inforamtion
 			t0_tag_extraction = time.time()
@@ -176,6 +191,9 @@ while get_capture_camera(cap, args.camera):
 				[int_drone_id],
 				[int(t0_array[0])],
 				[int(t0_array[1])],
+				[eframe_id],
+				[int(img_compr_lat_arr[0])],
+				[int(img_compr_lat_arr[1])],
 				[extra_len],
 				[tagged_data_len],
 			]
@@ -183,6 +201,14 @@ while get_capture_camera(cap, args.camera):
 			val = np.vstack([compressed_img, tagged_info])
 			t1_tag_extraction = (time.time() - t0_tag_extraction) * 1000
 			print(('[%s] Latency Image Taging (%.3f ms) ' % (datetime.now().strftime("%H:%M:%S"), t1_tag_extraction)))
+
+			# publish data
+			z_svc.publish(
+				_val=val,
+				_itype=itype,
+			)
+
+			# exit()
 		else:
 			# OLD enconding method
 			val = [('Drone 1', time.time(), frame.tobytes())]
@@ -197,14 +223,22 @@ while get_capture_camera(cap, args.camera):
 		# t1_decoding = (time.time() - t0_decoding) * 1000
 		# print(('\n[%s] Latency tagging (%.3f ms) \n' % (datetime.now().strftime("%H:%M:%S"), t1_decoding)))
 
-		# publish in every 2 frames
-		if ret and _frame_id % 2 == 0:
-			# publish data
-			z_svc.publish(
-				_val=val,
-				_itype=itype,
-				_encoder=encoder_format,
-			)
+		# # publish in every 2 frames
+		# if ret and _frame_id % 2 == 0:
+		# 	# publish data
+		# 	z_svc.publish(
+		# 		_val=val,
+		# 		_itype=itype,
+		# 		_encoder=encoder_format,
+		# 	)
+		#
+		# # publish data
+		# z_svc.publish(
+		# 	_val=val,
+		# 	_itype=itype,
+		# )
+		#
+		# exit()
 
 		# time.sleep(1)
 
