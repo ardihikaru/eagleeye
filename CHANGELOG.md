@@ -1,3 +1,43 @@
+## 7.1.8-native (May 20, 2021)
+  - Merge branch 'feature/send-visualizer-service-once-no-detected-objects' into develop
+  - inform visualizer when there is no detected object
+  - Merge branch 'feature/experiment-2021-05-20' into develop
+  - experiment data
+  - Merge branch 'bugfix/remove-debugging-mode' into develop
+  - commented
+  - Merge branch 'feature/enrich-published-data-with-img-compression-latency' into develop
+  - enrich published data with img compression latency
+  - Merge branch 'feature/enrich-published-data-with-frame-id' into develop
+  - enable consumer to extract frame_id
+  - Merge branch 'feature/enrich-published-data-with-frame-id' into develop
+  - enrich published data with frame_id
+  - Merge branch 'feature/add-doc-how-to-user-rtsp-ffplay' into develop
+  - update doc: how to use RTSP and FFplay; send data through RTSP input
+  - Merge branch 'feature/add-experiment-data' into develop
+  - add experiment data
+  - Merge branch 'bugfix/disable-frame-skip-sending' into develop
+  - bugfix: no need to skip frames to be sent to the edge
+  - Merge pull request #36 from ardihikaru/bugfix/node-id-is-not-saved-in-detection-latency-data
+  - add node_id and node_name in detection section latency
+  - Merge branch 'feature/experiment-2021-05-18' into develop
+  - add experimental results with worker 1 and 3
+  - Merge branch 'feature/update-doc-on-how-to-run' into develop
+  - update doc
+  - Merge branch 'feature/move-site-conf-to-etc-folder' into develop
+  - move `site.conf` to `./etc` folder
+  - Merge branch 'develop' of github.com:ardihikaru/eagleeye into develop
+  - Merge branch 'bugfix/unable-to-detect-objects' into develop
+  - add deprecated comment
+  - Merge pull request #35 from ardihikaru/bugfix/unable-to-detect-objects
+  - bugfix: do nothing if there is no prediction found
+  - bugfix: add missing parameters
+  - bugfix: unable to convert xyxy from torch to numpy array
+  - change site.conf path; add config for rtsp mode
+  - update doc
+  - remove some unused packages
+  - ignore some files
+  - Merge branch 'release/v7.1.7-native' into develop
+
 ## 7.1.7-native (May 09, 2021)
   - Merge pull request #34 from ardihikaru/feature/sorter-latency-measurement
   - code refactor: set Latency Collector Module as generalized module for other microservices
