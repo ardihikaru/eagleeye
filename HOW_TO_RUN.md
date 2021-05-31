@@ -1,5 +1,9 @@
 # How to run EagleEYE system
 
+## Enviroment in LittleBoy Server
+- Tunnel to enable Remmina:
+    `$ ssh -L 5901:127.0.0.1:5901 -C -N -l s010132 140.113.86.92`
+
 ## Sample Zenoh PubSub
 1. Run Zenoh consumer
     - Root dir: `./core-docker-images/misc/drone_img_publisher`
