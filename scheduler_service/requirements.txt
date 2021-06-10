@@ -1,8 +1,0 @@
-asab
-redis
-opencv-python
-mongoengine
-imutils
-simplejson
-imagezmq
-requests
