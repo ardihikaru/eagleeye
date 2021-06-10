@@ -77,6 +77,9 @@
         `$ ffplay -rtsp_transport tcp -i rtsp://localhost/test`
     
 ## MISC
+- Tunnel to LittleBoy:
+    `$ ssh -L 5901:127.0.0.1:5901 -C -N -l s010132 192.168.1.10`
+    - password: `s010132`
 - Run: `export PYTHONPATH=:/home/s010132/devel/eagleeye/core-service/eagleeye`
 - Database related
     - Install mongo tools (to enable `$ mongodump` and `$ mongoexport` command):
