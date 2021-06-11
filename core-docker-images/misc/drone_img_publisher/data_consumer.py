@@ -6,6 +6,10 @@ from datetime import datetime
 import logging
 import numpy as np
 from zenoh_lib.functions import extract_compressed_tagged_img
+try:
+	import imagezmq
+except Exception as e:
+	pass
 
 ###
 
@@ -14,27 +18,14 @@ L = logging.getLogger(__name__)
 
 ###
 
-
-def decrypt_str(int_val, byteorder="little"):
-	decrypted_bytes = int_val.to_bytes((int_val.bit_length() + 7) // 8, byteorder)  # byteorder must be either 'little' or 'big'
-	decrypted_str = decrypted_bytes.decode('utf-8')
-	return decrypted_str
-
-
-def extract_drone_id(data, img_len):
-	drone_idx = img_len
-	return decrypt_str(int(data[drone_idx][0]))
-
-
-def extract_t0(data, img_len):
-	to_p1_idx = img_len + 2
-	to_p2_idx = img_len + 3
-
-	t0 = "{}.{}".format(
-		data[to_p1_idx][0],
-		data[to_p2_idx][0],
-	)
-	return float(t0)
+# Setup ZMQ Sender
+enable_zmq = False
+# enable_zmq = True
+if enable_zmq:
+	frame_id = 0
+	# uri = 'tcp://127.0.0.1:5550'
+	uri = 'tcp://*:5548'
+	sender = imagezmq.ImageSender(connect_to=uri, REQ_REP=False)
 
 
 def listener_v2(consumed_data):
@@ -51,16 +42,34 @@ def listener_v2(consumed_data):
 	"""
 	img_info, latency_data = extract_compressed_tagged_img(consumed_data)
 
+	global enable_zmq
+	global uri
+	global sender
+	global frame_id
+
+	# print(" --- ")
+	#
+	# cv.imshow("window_title", img_info["img"])
+	#
+	# print(" SELESAI")
+
 	# decompressed_img = img_info["img"]
 	# identifier = latency_data["decoding_payload"]
 
 	# cv2.imwrite("decompressed_img.jpg", decompressed_img)
 	# cv2.imwrite("decompressed_img_{}.jpg".format(str(identifier)), decompressed_img)
 
-# # Scenario 1: Simple Pub/Sub with a single PC
-# selector = "/demo/**"
+	# print(" >>> enable_zmq:", enable_zmq)
 
-# Scenario 2: Pub/Sub with two hosts
+	if enable_zmq:
+		frame_id += 1
+		print(">>> Sending frame-{} ..".format(frame_id))
+		t0_zmq = time.time()
+		zmq_id = str(frame_id) + "-" + str(t0_zmq)
+		sender.send_image(zmq_id, img_info["img"])
+		t1_zmq = (time.time() - t0_zmq) * 1000
+		L.warning('Latency [Send imagezmq] of frame-%s: (%.5fms)' % (str(frame_id), t1_zmq))
+
 """
 	Simulated scenario:
 	- `Host #01` will has IP `192.168.1.110`
@@ -71,6 +80,7 @@ def listener_v2(consumed_data):
 selector = "/eagleeye/svc/**"
 # listener = "tcp/140.113.86.92:7446"
 listener = "tcp/localhost:7446"
+# listener = "tcp/192.168.1.232:7446"
 
 sub = ZenohNetSubscriber(
 	_selector=selector, _session_type="SUBSCRIBER", _listener=listener
