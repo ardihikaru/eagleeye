@@ -22,7 +22,6 @@ L = logging.getLogger(__name__)
 enable_zmq = False
 # enable_zmq = True
 if enable_zmq:
-	frame_id = 0
 	# uri = 'tcp://127.0.0.1:5550'
 	uri = 'tcp://*:5548'
 	sender = imagezmq.ImageSender(connect_to=uri, REQ_REP=False)
@@ -45,7 +44,6 @@ def listener_v2(consumed_data):
 	global enable_zmq
 	global uri
 	global sender
-	global frame_id
 
 	# print(" --- ")
 	#
@@ -62,7 +60,7 @@ def listener_v2(consumed_data):
 	# print(" >>> enable_zmq:", enable_zmq)
 
 	if enable_zmq:
-		frame_id += 1
+		frame_id = int(img_info["frame_id"])
 		print(">>> Sending frame-{} ..".format(frame_id))
 		t0_zmq = time.time()
 		zmq_id = str(frame_id) + "-" + str(t0_zmq)
@@ -79,8 +77,9 @@ def listener_v2(consumed_data):
 """
 selector = "/eagleeye/svc/**"
 # listener = "tcp/140.113.86.92:7446"
-listener = "tcp/localhost:7446"
 # listener = "tcp/192.168.1.232:7446"
+# listener = "tcp/192.168.1.10:7446"
+listener = "tcp/localhost:7446"
 
 sub = ZenohNetSubscriber(
 	_selector=selector, _session_type="SUBSCRIBER", _listener=listener

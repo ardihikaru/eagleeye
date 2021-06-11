@@ -10,6 +10,7 @@ L = logging.getLogger(__name__)
 
 ###
 
+# image_hub = imagezmq.ImageHub(open_port='tcp://192.168.1.10:5548', REQ_REP=False)
 image_hub = imagezmq.ImageHub(open_port='tcp://localhost:5548', REQ_REP=False)
 
 window_title = "CV Output"
