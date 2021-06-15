@@ -34,9 +34,10 @@ class ZMQService(asab.Service):
         self.zmq_receiver = imagezmq.ImageHub(open_port=uri, REQ_REP=False)
 
     async def set_zmq_output_publisher(self):
-        uri = "tcp://%s:%s" % (asab.Config["stream:config"]["zeromq_host"], asab.Config["stream:config"]["zeromq_port"])
-        L.warning("[IMPORTANT] Publish Image into this URL: %s" % uri)
-        self.zmq_publisher = imagezmq.ImageSender(connect_to=uri, REQ_REP=False)
+        if self._mode == "zeromq":
+            uri = "tcp://%s:%s" % (asab.Config["stream:config"]["zeromq_host"], asab.Config["stream:config"]["zeromq_port"])
+            L.warning("[IMPORTANT] Publish Image into this URL: %s" % uri)
+            self.zmq_publisher = imagezmq.ImageSender(connect_to=uri, REQ_REP=False)
 
     def get_zmq_receiver(self):
         return self.zmq_receiver
