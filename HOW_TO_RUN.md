@@ -92,3 +92,52 @@
         `$ mongoexport --host localhost --db eagleeyeDB --collection Latency --type=csv --out latency.csv --fields frame_id,category,algorithm,section,latency,node_id,node_name --forceTableScan`
     - Export to JSON:
         `$ mongoexport --host localhost --db eagleeyeDB --collection Latency --type=json --out latency.json --fields frame_id,category,algorithm,section,latency,node_id,node_name --forceTableScan`
+- When error in Jetson nano:
+  ```
+  >>> import numpy                                                                                                                                                                       
+    Traceback (most recent call last):                                                                                                                                                     
+      File "/usr/lib/python3/dist-packages/numpy/core/__init__.py", line 16, in <module>                                                                                                   
+        from . import multiarray                                                                                                                                                           
+    ImportError: cannot import name 'multiarray' from partially initialized module 'numpy.core' (most likely due to a circular import) (/usr/lib/python3/dist-packages/numpy/core/__init__.
+    py)                                                                                                                                                                                    
+                                                                                                                                                                                           
+    During handling of the above exception, another exception occurred:                                                                                                                    
+                                                                                                                                                                                           
+    Traceback (most recent call last):                                                                                                                                                     
+      File "<stdin>", line 1, in <module>                                                                                                                                                  
+      File "/usr/lib/python3/dist-packages/numpy/__init__.py", line 142, in <module>                                                                                                       
+        from . import add_newdocs                                                                                                                                                          
+      File "/usr/lib/python3/dist-packages/numpy/add_newdocs.py", line 13, in <module>                                                                                                     
+        from numpy.lib import add_newdoc                                                                                                                                                   
+      File "/usr/lib/python3/dist-packages/numpy/lib/__init__.py", line 8, in <module>                                                                                                     
+        from .type_check import *                                                                                                                                                          
+      File "/usr/lib/python3/dist-packages/numpy/lib/type_check.py", line 11, in <module>                                                                                                  
+        import numpy.core.numeric as _nx                                                                                                                                                   
+      File "/usr/lib/python3/dist-packages/numpy/core/__init__.py", line 26, in <module>                                                                                                   
+        raise ImportError(msg)
+  
+    ImportError: 
+    Importing the multiarray numpy extension module failed.  Most
+    likely you are trying to import a failed build of numpy.
+    If you're working with a numpy git repo, try `git clean -xdf` (removes all
+    files not under version control).  Otherwise reinstall numpy.
+    
+    Original error was: cannot import name 'multiarray' from partially initialized module 'numpy.core' (most likely due to a circular import) (/usr/lib/python3/dist-packages/numpy/core/__
+    init__.py)
+  ```
+  - Solution [here](https://stackoverflow.com/questions/53135410/importerror-cannot-import-name-multiarray):   
+    - Step 1: `$ sudo -H python3 -m pip uninstall numpy`
+        - When this issue happens: `Not uninstalling numpy at /usr/lib/python3/dist-packages, outside environment /usr`
+        - Then, **SKIP** step 1.
+    - Step 2: `$ sudo apt purge python3-numpy`
+    - Step 3: `$ sudo -H python3 -m pip install --upgrade pip`
+    - Step 4: `$ sudo -H python3 -m pip install numpy`
+- Install JTOP in Jetson Nano: `$ sudo -H pip3 install jetson-stats`
+    - how to use: `$ sudo jtop`
+- How to [check camera's specification](https://www.twblogs.net/a/5d6687a0bd9eee5327feb721):
+    - Run: `$ v4l2-ctl --list-formats-ext`
+- How to use [compressed version/MJPEG](https://github.com/opencv/opencv/issues/11324#issuecomment-436016969):
+    - dxxx
+- How to use [EasyDarwin RTSP Server](https://github.com/EasyDarwin/EasyDarwin):
+    - Start server: `$ ./start.sh`
+    - Stop server: `$ ./stop.sh`
