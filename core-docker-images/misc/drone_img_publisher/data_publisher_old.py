@@ -8,8 +8,13 @@ import simplejson as json
 from enum import Enum
 import logging
 import argparse
+# from hurry.filesize import size as fsize
 from extras.functions import humanbytes as fsize
 
+try:
+	import nanocamera as nano
+except:
+	print("[WARNING] Unable to load `nanocamera` module")
 
 # Encoding parameter
 encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 70]  # The default value for IMWRITE_JPEG_QUALITY is 95
@@ -17,6 +22,10 @@ encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 70]  # The default value for IMWR
 # --- [START] Command line argument parsing --- --- --- --- --- ---
 parser = argparse.ArgumentParser(
 	description='Zenoh Publisher example')
+parser.add_argument('--camera', '-m', dest='camera',  # e.g. 140.113.193.134 (Little Boy)
+                    default=2,  # `1`=JetsonNano; `2`=Normal Camera (PC/Laptop/etc)
+                    type=int,
+                    help='The name of the resource to publish.')
 parser.add_argument('--peer', '-e', dest='peer',  # e.g. 140.113.193.134 (Little Boy)
                     metavar='LOCATOR',
                     action='append',
@@ -30,8 +39,6 @@ parser.add_argument('--video', '-v', dest='video',
                     default="0",
                     type=str,
                     help='The name of the resource to publish.')
-parser.add_argument('--pwidth', dest='pwidth', default=1920, type=int, help='Target width to publish')
-parser.add_argument('--pheight', dest='pheight', default=1024, type=int, help='Target height to publish')
 parser.add_argument('--cvout', dest='cvout', action='store_true', help="Use CV Out")
 parser.add_argument('--resize', dest='resize', action='store_true', help="Force resize to FullHD")
 parser.set_defaults(cvout=False)
@@ -52,6 +59,13 @@ def encrypt_str(str_val, byteorder="little"):
 	encrypted_bytes = str_val.encode('utf-8')
 	encrypted_val = int.from_bytes(encrypted_bytes, byteorder)  # `byteorder` must be either 'little' or 'big'
 	return encrypted_val  # max 19 digit
+
+
+def get_capture_camera(capt, cam_mode):
+	if cam_mode == 1:
+		return capt.isReady()
+	else:
+		return cap.isOpened()
 
 
 peer = args.peer
@@ -79,18 +93,18 @@ publisher = z_svc.get_publisher()
 #########################
 # Zenoh related variables
 
-window_title = "img-data-publisher"
-
-published_height, published_weight = args.pheight, args.pwidth  # target width and height
-cam_weight, cam_height = None, None  # default detected width and height
-
-cap = cv2.VideoCapture(video_path)
-
-# change the image property
-# use `$ v4l2-ctl --list-formats-ext` to check the available format!
-# install first (if not yet): `$ sudo apt install v4l-utils`
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, published_weight)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, published_height)
+window_title = "output-raw"
+if args.camera == 1:
+	try:
+		cap = nano.Camera(camera_type=1)
+	except:
+		print("[ERROR] Unable to load `nano` package")
+		exit(0)
+elif args.camera == 2:
+	cap = cv2.VideoCapture(video_path)
+else:
+	print("[ERROR] Unrecognized camera mode")
+	exit(0)
 
 if _enable_cv_out:
 	cv2.namedWindow(window_title, cv2.WND_PROP_FULLSCREEN)
@@ -98,11 +112,14 @@ if _enable_cv_out:
 	cv2.resizeWindow(window_title, 800, 550)  # Enter your size
 _frame_id = 0
 
+_wt, _ht = 1080, 1920  # target width and height
+_w, _h = None, None  # default detected width and height
+
 # Extra information (to be tagged into the frame)
 int_drone_id = encrypt_str("1")  # contains 1 extra slot
 extra_len = 8  # contains 1 extra slot; another one slot is from `tagged_data_len` variable
 
-while cap.isOpened():
+while get_capture_camera(cap, args.camera):
 	_frame_id += 1
 
 	# generate encrypted frame_id
@@ -110,21 +127,21 @@ while cap.isOpened():
 
 	# ret = a boolean return value from getting the frame, frame = the current frame being projected in the video
 	try:
-		ret, frame = cap.read()
+		if args.camera == 1:  # jetson nano
+			ret, frame = True, cap.read()
+		else:
+			ret, frame = cap.read()
 
 		# do it ONCE
 		# detect width and height
-		if cam_weight is None:
-			cam_height, cam_weight, _ = frame.shape
-
-		print(" ## Initial image SHAPE:", frame.shape)
+		if _w is None:
+			_w, _h, _ = frame.shape
 
 		t0_decoding = time.time()
 		# resize the frame; Default VGA (640 x 480) for Laptop camera
-		if cam_weight != published_weight and args.resize:
-			frame = cv2.resize(frame, (published_weight, published_height))
+		if _w != _wt and args.resize:
+			frame = cv2.resize(frame, (1920, 1080))
 
-		print(" ## Final image SHAPE:", frame.shape)
 		# compress image
 		# NEW encoding method
 		encoder_format = None  # disable custom encoder
