@@ -71,6 +71,11 @@ Provided by cturra: [https://hub.docker.com/r/cturra/ntp ]()
     - Check query time a host machine to the specific NTP Server's IP:
         `$ ntpdate -q 172.17.0.2`
          - In this example, LB is calling container-based NTP Server (`172.17.0.2`)
+         - Result will be like this:
+           ``` 
+           server 172.17.0.2, stratum 3, offset -0.001869, delay 0.02571
+           17 Jun 08:56:48 ntpdate[5444]: adjust time server 172.17.0.2 offset -0.001869 sec 
+           ```
     - Turn off system's NTP sync: `$ timedatectl set-ntp off`
     - Then, set this Host Machine to sync with its container-based NTP Server
         `$ sudo ntpdate -u 172.17.0.2`
