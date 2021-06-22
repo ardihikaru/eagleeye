@@ -71,7 +71,7 @@ class SchedulingPolicyService(asab.Service):
 		if sch_policy == "round_robin":
 			self.exec_round_robin(frame_id)
 		elif sch_policy == "dynamic_round_robin":
-			self.exec_dynamic_round_robin()
+			self.exec_dynamic_round_robin(frame_id)
 
 		# default policy
 		else:
@@ -82,7 +82,7 @@ class SchedulingPolicyService(asab.Service):
 	def _get_selected_node(self):
 		return self.selected_node_id
 
-	def exec_dynamic_round_robin(self):
+	def exec_dynamic_round_robin(self, frame_id):
 		L.warning("[SYNC] I am using Dynamic Round-Robin")
 		L.warning("[self.selected_node_id]: `{}`".format(self.selected_node_id))
 
@@ -107,7 +107,7 @@ class SchedulingPolicyService(asab.Service):
 		L.warning("#### ***** checking the status of selected node_id:")
 		t1_wait_node = (time.time() - t0_wait_node) * 1000
 
-		L.warning('Latency [Waiting node to be ready] in: (%.5f ms)' % t1_wait_node)
+		L.warning('[Frame-{}] Latency [Waiting node to be ready] in: (%.5f ms)'.format(frame_id) % t1_wait_node)
 
 		# Set selected node as busy (idle=False); "0" == False
 		self._sync_set_idle_status(self.selected_node_id, False)
