@@ -94,8 +94,8 @@ def extract_compressed_tagged_img(consumed_data):
 	decompressed_img = cv2.imdecode(decoded_img, 1)  # decompress
 	# print(" ----- SHAPE decompressed_img:", decompressed_img.shape)
 	t1_decompress_img = (time.time() - t0_decompress_img) * 1000
-	L.warning(('[%s] Latency COMPRESSING IMG (%.3f ms) \n' % ("ZENOH CONSUMER", img_compr_lat)))
-	L.warning(('[%s] Latency DE-COMPRESSING IMG (%.3f ms) \n' % ("ZENOH CONSUMER", t1_decompress_img)))
+	L.warning(('[%s] Latency COMPRESSING IMG (%.3f ms)' % ("ZENOH CONSUMER", img_compr_lat)))
+	L.warning(('[%s] Latency DE-COMPRESSING IMG (%.3f ms)' % ("ZENOH CONSUMER", t1_decompress_img)))
 
 	# cv2.imwrite("decompressed_img.jpg", decompressed_img)
 	# cv2.imwrite("decompressed_img_{}.jpg".format(str(t0_decompress_img)), decompressed_img)

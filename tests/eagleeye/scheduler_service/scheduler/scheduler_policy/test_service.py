@@ -219,7 +219,7 @@ class TestSchedulingPolicyService(aiounittest.AsyncTestCase, SchedulingPolicySer
 				})
 
 		t1_shm = time.time() - t0_shm
-		L.warning('\nLatency [Creating Redis variable] in: (%.5f ms)' % (t1_shm * 1000))
+		L.warning('Latency [Creating Redis variable] in: (%.5f ms)' % (t1_shm * 1000))
 
 
 if __name__ == '__main__':

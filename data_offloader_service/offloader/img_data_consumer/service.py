@@ -106,11 +106,16 @@ class ImgConsumerService(ZenohImageSubscriberService):
 				"t0": t0_e2e_lat
 			}
 			self.executor.submit(self._save_e2e_lat, **kwargs)
-		except:
-			L.warning("\n[%s] Somehow we unable to Start the Thread of e2e Latency Collector" % get_current_time())
+		except Exception as e:
+			L.error("\n[%s][{}] Somehow we unable to Start the Thread of "
+					"e2e Latency Collector: `{}`".format(frame_id, str(e)) % get_current_time())
+
 		t1_thread = (time.time() - t0_thread) * 1000
-		L.warning('\n[%s] Latency for Start threading (%.3f ms)' % (get_current_time(), t1_thread))
+		L.warning('[%s] Latency for Start threading (%.3f ms)' % (get_current_time(), t1_thread))
 		# TODO: Save the latency into ElasticSearchDB for the real-time monitoring
+
+	def _save_e2e_lat(self, lat_key, t0):
+		redis_set(self.redis.get_rc(), lat_key, t0, expired=30)  # set expired in 30 second
 
 	# OVERRIDE Child function
 	def img_listener(self, consumed_data):
@@ -188,7 +193,7 @@ class ImgConsumerService(ZenohImageSubscriberService):
 			self._sync_save_latency(
 				self.frame_id, t1_sched_lat, self.scheduler_policy, "scheduling", "Scheduling", node_id, node_name
 			)
-			L.warning('\n[%s] Proc. Latency of %s for frame-%s (%.3f ms)' % (
+			L.warning('[%s] Proc. Latency of %s for frame-%s (%.3f ms)' % (
 				get_current_time(), "scheduling", str(self.frame_id), t1_sched_lat))
 
 			# Save e2e latency

@@ -415,7 +415,7 @@ class ObjectDetectionHandler(MyRedis):
 					plot_info_key = "plotinfo-drone-%s-frame-%s" % (drone_id, str(frame_id))
 					redis_set(self.rc, plot_info_key, plot_info, expired=10)  # delete value after 10 seconds
 					t1_plotinfo_saving = (time.time() - t0_plotinfo_saving) * 1000
-					L.warning('\n[%s] Latency of Storing Plot info in redisDB (%.3f ms)' %
+					L.warning('[%s] Latency of Storing Plot info in redisDB (%.3f ms)' %
 							  (get_current_time(), t1_plotinfo_saving))
 
 				# when no BBox not PiH detected, directly inform Visualizer service!
@@ -438,10 +438,10 @@ class ObjectDetectionHandler(MyRedis):
 					plot_info_key = "plotinfo-drone-%s-frame-%s" % (drone_id, str(frame_id))
 					redis_set(self.rc, plot_info_key, plot_info, expired=10)  # delete value after 10 seconds
 					t1_plotinfo_saving = (time.time() - t0_plotinfo_saving) * 1000
-					L.warning('\n[%s] Latency of Storing Plot info in redisDB (%.3f ms)' %
+					L.warning('[%s] Latency of Storing Plot info in redisDB (%.3f ms)' %
 							  (get_current_time(), t1_plotinfo_saving))
 
-				L.warning("\n[%s][%s][%s] Store BBox INTO Visualizer Service!" %
+				L.warning("[%s][%s][%s] Store BBox INTO Visualizer Service!" %
 						  (get_current_time(), self.node_alias, str(frame_id)))
 
 				# Set this node as available again
@@ -458,12 +458,9 @@ class ObjectDetectionHandler(MyRedis):
 				#     t_start = t1_e2e_latency
 				await self._store_e2e_latency(str(frame_id), t1_e2e_latency)
 
-			# print("\n[%s] Node-%s is ready to serve." % (get_current_time(), self.node_name))
-			L.warning("\n[%s] Node-%s is ready to serve." % (get_current_time(), self.node_name))
+			L.warning("[%s] Node-%s is ready to serve." % (get_current_time(), self.node_name))
 
-		# print("\n[%s][%s] YOLOv3Handler stopped listening to [Scheduler Service]" %
-		#       (get_current_time(), self.node_alias))
-		L.warning("\n[%s][%s] YOLOv3Handler stopped listening to [Scheduler Service]" %
+		L.warning("[%s][%s] YOLOv3Handler stopped listening to [Scheduler Service]" %
 			  (get_current_time(), self.node_alias))
 		# Call stop function since it no longers listening
 		await self.stop()
@@ -510,8 +507,7 @@ class ObjectDetectionHandler(MyRedis):
 		if not await self.lat_collector_svc.store_latency_data_thread(preproc_latency_data):
 			await self.stop()
 		t1_preproc = (time.time() - t0_preproc) * 1000
-		# print('\n[%s] Proc. Latency of %s (%.3f ms)' % (get_current_time(), section, t1_preproc))
-		L.warning('\n[%s] Proc. Latency of %s (%.3f ms)' % (get_current_time(), section, t1_preproc))
+		L.warning('[%s] Proc. Latency of %s (%.3f ms)' % (get_current_time(), section, t1_preproc))
 
 	async def _maintaince_period_pih_cand(self):
 		if len(self.period_pih_candidates) > self.persistence_window:
