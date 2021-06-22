@@ -167,7 +167,7 @@ class ImgConsumerService(ZenohImageSubscriberService):
 			# Start t0_e2e_lat: To calculate the e2e processing & comm. latency
 			t0_e2e_lat = time.time()
 
-			# Perform scheduling based on Round-Robin fasion (Default)
+			# Perform scheduling based on Round-Robin fashion (Default)
 			t0_sched_lat = time.time()
 			try:
 				if bool(int(asab.Config["stream:config"]["test_mode"])):
@@ -175,11 +175,13 @@ class ImgConsumerService(ZenohImageSubscriberService):
 				else:
 					sel_node_id = self.SchPolicyService.find_idle_node(
 						max_node=len(_senders["node"]),
-						sch_policy=self.scheduler_policy
+						sch_policy=self.scheduler_policy,
+						frame_id=self.frame_id,
 					)
 				L.warning("Selected Node idx: %s" % str(sel_node_id))
 			except Exception as e:
 				L.error("[ERROR]: %s" % str(e))
+				sel_node_id = 0
 			t1_sched_lat = (time.time() - t0_sched_lat) * 1000
 
 			# First, notify the Object Detection Service to get ready (publish)
