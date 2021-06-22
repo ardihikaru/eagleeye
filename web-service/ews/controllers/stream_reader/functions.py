@@ -59,7 +59,8 @@ def config_to_mongodb(executor, request_json):
 		}
 		executor.submit(threaded_insertion, **kwargs)
 	except:
-		print("Somehow we unable to Start the Thread of TaskScheduler")
+		L.error("Somehow we unable to Start the Thread of TaskScheduler")
+
 	t1_thread = (time.time() - t0_thread) * 1000
 	L.warning('#### [%s] Latency for Start threading (%.3f ms)' % (get_current_time(), t1_thread))
 

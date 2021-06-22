@@ -126,7 +126,8 @@ class Node(MyRedis):
             }
             self.executor.submit(self._spawn_config_builder, **kwargs)
         except:
-            print("\n[%s] Somehow we unable to Start the Thread of NodeGenerator" % get_current_time())
+            L.error("[%s] Somehow we unable to Start the Thread of NodeGenerator" % get_current_time())
+
         t1_thread = (time.time() - t0_thread) * 1000
         L.warning('[%s] Latency for Start threading (%.3f ms)' % (get_current_time(), t1_thread))
 

@@ -107,7 +107,7 @@ class ImgConsumerService(ZenohImageSubscriberService):
 			}
 			self.executor.submit(self._save_e2e_lat, **kwargs)
 		except Exception as e:
-			L.error("\n[%s][{}] Somehow we unable to Start the Thread of "
+			L.error("[%s][{}] Somehow we unable to Start the Thread of "
 					"e2e Latency Collector: `{}`".format(frame_id, str(e)) % get_current_time())
 
 		t1_thread = (time.time() - t0_thread) * 1000
