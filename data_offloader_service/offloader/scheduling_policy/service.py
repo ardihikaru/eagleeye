@@ -64,12 +64,12 @@ class SchedulingPolicyService(asab.Service):
 		t1_shm = time.time() - t0_shm
 		L.warning('Latency [Creating Redis variable] in: (%.5f ms)' % (t1_shm * 1000))
 
-	def find_idle_node(self, max_node=1, sch_policy="round_robin"):
+	def find_idle_node(self, max_node=1, sch_policy="round_robin", frame_id=None):
 		L.warning("[sync_SCHEDULING_POLICY]: `{}`".format(sch_policy))
 		L.warning("[max_node]: `{}`".format(max_node))
 		self.max_node = max_node
 		if sch_policy == "round_robin":
-			self.exec_round_robin()
+			self.exec_round_robin(frame_id)
 		elif sch_policy == "dynamic_round_robin":
 			self.exec_dynamic_round_robin()
 
@@ -112,19 +112,19 @@ class SchedulingPolicyService(asab.Service):
 		# Set selected node as busy (idle=False); "0" == False
 		self._sync_set_idle_status(self.selected_node_id, False)
 
-	def exec_round_robin(self):
+	def exec_round_robin(self, frame_id):
 		L.warning("[SYNC] I am using Round-Robin")
 		self.selected_node_id += 1
 
 		if self.selected_node_id >= self.max_node:
-			# self.selected_node_id = 0  # Reset
-			self.selected_node_id = 1  # Reset
+			self.selected_node_id = 0  # Reset
+			# self.selected_node_id = 1  # Reset
 
 		L.warning("#### ***** checking the status of selected node_id:")
 		t0_wait_node = time.time()
 		self._sync_wait_until_ready(self.selected_node_id)
 		t1_wait_node = (time.time() - t0_wait_node) * 1000
-		L.warning('Latency [Waiting node to be ready] in: (%.5f ms)' % t1_wait_node)
+		L.warning('[{}] Latency [Waiting node to be ready] in: (%.5f ms)'.format(frame_id) % t1_wait_node)
 
 		# Set selected node as busy (idle=False); "0" == False
 		self._sync_set_idle_status(self.selected_node_id, False)
