@@ -75,7 +75,7 @@ class SchedulingPolicyService(asab.Service):
 
 		# default policy
 		else:
-			self.exec_dynamic_round_robin()
+			self.exec_dynamic_round_robin(frame_id)
 
 		return self._get_selected_node()
 
@@ -88,6 +88,46 @@ class SchedulingPolicyService(asab.Service):
 
 		# perform a close loop to find an available worker node
 		t0_wait_node = time.time()
+		self._dynamic_round_robin_wait_until_ready()
+		t1_wait_node = (time.time() - t0_wait_node) * 1000
+
+		L.warning('[Frame-{}] Latency [Waiting node to be ready] in: (%.5f ms)'.format(frame_id) % t1_wait_node)
+
+		# Set selected node as busy (idle=False); "0" == False
+		self._sync_set_idle_status(self.selected_node_id, False)
+
+	def exec_round_robin(self, frame_id):
+		L.warning("[SYNC] I am using Round-Robin")
+		self.selected_node_id += 1
+
+		if self.selected_node_id >= self.max_node:
+			self.selected_node_id = 0  # Reset
+
+		L.warning("#### ***** checking the status of selected node_id:")
+		t0_wait_node = time.time()
+		self._round_robin_wait_until_ready(self.selected_node_id)
+		t1_wait_node = (time.time() - t0_wait_node) * 1000
+		L.warning('[{}] Latency [Waiting node to be ready] in: (%.5f ms)'.format(frame_id) % t1_wait_node)
+
+		# Set selected node as busy (idle=False); "0" == False
+		self._sync_set_idle_status(self.selected_node_id, False)
+
+	def _sync_set_idle_status(self, snode_id, status):
+		redis_key = self.avail_nodes[snode_id]["redis_key"]
+		redis_set(self.rd.get_rc(), redis_key, status)
+		self.avail_nodes[snode_id]["value"] = status
+
+	def _round_robin_wait_until_ready(self, snode_id):
+		redis_key = self.avail_nodes[snode_id]["redis_key"]
+		# L.warning("[sync_DEBUG] redis_key: %s" % str(redis_key))
+		# L.warning("[sync_DEBUG] snode_id: %s" % str(snode_id))
+		# L.warning("[sync_DEBUG] Redis key (wait until ready): %s" % str(redis_key))
+		# L.warning("[sync_DEBUG] Redis > Node STATUS: %s" % str(redis_get(self.rd.get_rc(), redis_key)))
+		while not redis_get(self.rd.get_rc(), redis_key):
+			continue
+		return True
+
+	def _dynamic_round_robin_wait_until_ready(self):
 		_node_searching = True
 		while _node_searching:
 			self.selected_node_id += 1
@@ -103,43 +143,3 @@ class SchedulingPolicyService(asab.Service):
 			# L.warning(" >>> [redis_key VALUE]: `{}`\n\n".format(redis_get(self.rd.get_rc(), redis_key)))
 			if redis_get(self.rd.get_rc(), redis_key):
 				_node_searching = False
-
-		L.warning("#### ***** checking the status of selected node_id:")
-		t1_wait_node = (time.time() - t0_wait_node) * 1000
-
-		L.warning('[Frame-{}] Latency [Waiting node to be ready] in: (%.5f ms)'.format(frame_id) % t1_wait_node)
-
-		# Set selected node as busy (idle=False); "0" == False
-		self._sync_set_idle_status(self.selected_node_id, False)
-
-	def exec_round_robin(self, frame_id):
-		L.warning("[SYNC] I am using Round-Robin")
-		self.selected_node_id += 1
-
-		if self.selected_node_id >= self.max_node:
-			self.selected_node_id = 0  # Reset
-			# self.selected_node_id = 1  # Reset
-
-		L.warning("#### ***** checking the status of selected node_id:")
-		t0_wait_node = time.time()
-		self._sync_wait_until_ready(self.selected_node_id)
-		t1_wait_node = (time.time() - t0_wait_node) * 1000
-		L.warning('[{}] Latency [Waiting node to be ready] in: (%.5f ms)'.format(frame_id) % t1_wait_node)
-
-		# Set selected node as busy (idle=False); "0" == False
-		self._sync_set_idle_status(self.selected_node_id, False)
-
-	def _sync_set_idle_status(self, snode_id, status):
-		redis_key = self.avail_nodes[snode_id]["redis_key"]
-		redis_set(self.rd.get_rc(), redis_key, status)
-		self.avail_nodes[snode_id]["value"] = status
-
-	def _sync_wait_until_ready(self, snode_id):
-		redis_key = self.avail_nodes[snode_id]["redis_key"]
-		L.warning("[sync_DEBUG] redis_key: %s" % str(redis_key))
-		L.warning("[sync_DEBUG] snode_id: %s" % str(snode_id))
-		L.warning("[sync_DEBUG] Redis key (wait until ready): %s" % str(redis_key))
-		L.warning("[sync_DEBUG] Redis > Node STATUS: %s" % str(redis_get(self.rd.get_rc(), redis_key)))
-		while not redis_get(self.rd.get_rc(), redis_key):
-			continue
-		return True
