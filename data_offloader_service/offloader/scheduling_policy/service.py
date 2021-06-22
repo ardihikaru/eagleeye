@@ -118,7 +118,6 @@ class SchedulingPolicyService(asab.Service):
 
 		if self.selected_node_id >= self.max_node:
 			self.selected_node_id = 0  # Reset
-			# self.selected_node_id = 1  # Reset
 
 		L.warning("#### ***** checking the status of selected node_id:")
 		t0_wait_node = time.time()
