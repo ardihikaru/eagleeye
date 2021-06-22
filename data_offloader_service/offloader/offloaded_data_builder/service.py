@@ -100,7 +100,7 @@ class OffloadedDataBuilderService(asab.Service):
 					# Run ONCE due to the current capability to capture only one video stream
 					t0_data = config["timestamp"]
 					t1_data = (time.time() - t0_data) * 1000
-					L.log(LOG_NOTICE, '\n #### [%s] Latency for Start threading (%.3f ms)' % (get_current_time(), t1_data))
+					L.log(LOG_NOTICE, '#### [%s] Latency for Start threading (%.3f ms)' % (get_current_time(), t1_data))
 					# TODO: Saving latency for offloader:consumer
 
 					# TODO: to re-implement other protocols: (1) ZeroMQ and (2) Plain TCP

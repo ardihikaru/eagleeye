@@ -128,9 +128,9 @@ class GPSCollectorService(asab.Service):
             }
             self._executor.submit(self._spawn_gps_collector_worker, **kwargs)
         except:
-            L.warning("\n[%s] Somehow we unable to Start the Thread of NodeGenerator" % get_current_time())
+            L.warning("[%s] Somehow we unable to Start the Thread of NodeGenerator" % get_current_time())
         t1_thread = (time.time() - t0_thread) * 1000
-        L.warning('\n[%s] Latency for Start threading (%.3f ms)' % (get_current_time(), t1_thread))
+        L.warning('[%s] Latency for Start threading (%.3f ms)' % (get_current_time(), t1_thread))
         # TODO: Save the latency into ElasticSearchDB for the real-time monitoring
 
     def _spawn_gps_collector_worker(self, pool_name):

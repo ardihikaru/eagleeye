@@ -62,7 +62,7 @@ class SchedulingPolicyService(asab.Service):
 			# L.warning(self.avail_nodes)
 
 		t1_shm = time.time() - t0_shm
-		L.warning('\nLatency [Creating Redis variable] in: (%.5f ms)' % (t1_shm * 1000))
+		L.warning('Latency [Creating Redis variable] in: (%.5f ms)' % (t1_shm * 1000))
 
 	def find_idle_node(self, max_node=1, sch_policy="round_robin"):
 		L.warning("[sync_SCHEDULING_POLICY]: `{}`".format(sch_policy))
@@ -107,7 +107,7 @@ class SchedulingPolicyService(asab.Service):
 		L.warning("#### ***** checking the status of selected node_id:")
 		t1_wait_node = (time.time() - t0_wait_node) * 1000
 
-		L.warning('\nLatency [Waiting node to be ready] in: (%.5f ms)' % t1_wait_node)
+		L.warning('Latency [Waiting node to be ready] in: (%.5f ms)' % t1_wait_node)
 
 		# Set selected node as busy (idle=False); "0" == False
 		self._sync_set_idle_status(self.selected_node_id, False)
@@ -124,8 +124,7 @@ class SchedulingPolicyService(asab.Service):
 		t0_wait_node = time.time()
 		self._sync_wait_until_ready(self.selected_node_id)
 		t1_wait_node = (time.time() - t0_wait_node) * 1000
-		# print('\nLatency [Waiting node to be ready] in: (%.5f ms)' % t1_wait_node)
-		L.warning('\nLatency [Waiting node to be ready] in: (%.5f ms)' % t1_wait_node)
+		L.warning('Latency [Waiting node to be ready] in: (%.5f ms)' % t1_wait_node)
 
 		# Set selected node as busy (idle=False); "0" == False
 		self._sync_set_idle_status(self.selected_node_id, False)
