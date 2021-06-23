@@ -10,6 +10,9 @@ import logging
 import argparse
 from extras.functions import humanbytes as fsize
 
+# FullHD Format; fixed value, as per required in 5G-DIVE Project
+FULLHD_WIDTH = 1920
+FULLHD_HEIGHT = 1024
 
 # Encoding parameter
 encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 70]  # The default value for IMWRITE_JPEG_QUALITY is 95
@@ -31,7 +34,7 @@ parser.add_argument('--video', '-v', dest='video',
                     type=str,
                     help='The name of the resource to publish.')
 parser.add_argument('--pwidth', dest='pwidth', default=1920, type=int, help='Target width to publish')
-parser.add_argument('--pheight', dest='pheight', default=1024, type=int, help='Target height to publish')
+parser.add_argument('--pheight', dest='pheight', default=1080, type=int, help='Target height to publish')
 parser.add_argument('--cvout', dest='cvout', action='store_true', help="Use CV Out")
 parser.add_argument('--resize', dest='resize', action='store_true', help="Force resize to FullHD")
 parser.set_defaults(cvout=False)
@@ -121,8 +124,8 @@ while cap.isOpened():
 
 		t0_decoding = time.time()
 		# resize the frame; Default VGA (640 x 480) for Laptop camera
-		if cam_weight != published_weight and args.resize:
-			frame = cv2.resize(frame, (published_weight, published_height))
+		if cam_weight != FULLHD_WIDTH and args.resize:
+			frame = cv2.resize(frame, (FULLHD_WIDTH, FULLHD_HEIGHT))
 
 		print(" ## Final image SHAPE:", frame.shape)
 		# compress image
