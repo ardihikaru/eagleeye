@@ -84,3 +84,48 @@ Provided by cturra: [https://hub.docker.com/r/cturra/ntp ]()
         - In this case, we use name `ntp`, so we can run:
         `$ docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ntp`
             - here, we got `172.17.0.2` as the IP of the NTP Server container
+    - How to Drone connects to the Server's NTP Server
+        1. Check current time status: `$ timedatectl status`
+           ```
+           Local time: 三 2021-06-23 12:14:48 CST
+           Universal time: 三 2021-06-23 04:14:48 UTC
+           RTC time: 三 2021-06-23 04:14:48
+           Time zone: Asia/Taipei (CST, +0800)
+           System clock synchronized: yes
+           systemd-timesyncd.service active: yes   ---------------> We plan to turn off this one!
+           RTC in local TZ: no
+           ```
+        2. Turn off system's NTP sync: `$ timedatectl set-ntp off`
+           ``` 
+           $ timedatectl set-ntp off
+           ==== AUTHENTICATING FOR org.freedesktop.timedate1.set-ntp ===
+                           network time synchronization shall be enabled.
+           Authenticating as: popeye,,, (popeye)
+           Password: 
+           ==== AUTHENTICATION COMPLETE ===  
+           ```
+        3. Once turned off, check again: `$ timedatectl status`
+           ```
+           Local time: 三 2021-06-23 12:18:41 CST
+           Universal time: 三 2021-06-23 04:18:41 UTC
+           RTC time: 三 2021-06-23 04:18:41
+           Time zone: Asia/Taipei (CST, +0800)
+           System clock synchronized: yes  --------------------> we need this to be turned off as well!
+           systemd-timesyncd.service active: no   ---------------> It is turned off now!
+           RTC in local TZ: no
+           ```
+        4. Install ntp client: `$ sudo apt install ntpdate`
+        5. Update the NTP to the target NTP Server: `$ sudo ntpdate -u 192.168.1.10`
+           ```
+           Local time: 三 2021-06-23 12:18:41 CST
+           Universal time: 三 2021-06-23 04:18:41 UTC
+           RTC time: 三 2021-06-23 04:18:41
+           Time zone: Asia/Taipei (CST, +0800)
+           System clock synchronized: no  --------------------> we need this to be turned off as well!
+           systemd-timesyncd.service active: no   ---------------> It is turned off now!
+           RTC in local TZ: no
+           ```
+           - If you also have `NTP service: active`, this should be `NTP service: inactive`.
+        6. If the offset time still vary, try to restart the dockerized NTP Server, and perform **step-5** again.
+        7. Do not forget to run the bash script: `$ . sync_time.sh`
+            - IP `192.168.1.10` is the Server IP of the NTP Server. Please change it accordingly. :)
