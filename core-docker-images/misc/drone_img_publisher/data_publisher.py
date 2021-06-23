@@ -8,7 +8,13 @@ import simplejson as json
 from enum import Enum
 import logging
 import argparse
+# from hurry.filesize import size as fsizeb
 from extras.functions import humanbytes as fsize
+import csv
+import os
+
+# PATH TO Save CSV File
+CSV_FILE_PATH = "./bandwidth_usage.csv"
 
 # FullHD Format; fixed value, as per required in 5G-DIVE Project
 FULLHD_WIDTH = 1920
@@ -50,6 +56,14 @@ L = logging.getLogger(__name__)
 
 
 ###
+
+def get_img_fsize_in_float(img_bytes):
+	img_size_raw = fsize(img_bytes)
+	img_size_arr = img_size_raw.split(" ")
+	img_size = float(img_size_arr[0])
+
+	return img_size
+
 
 def encrypt_str(str_val, byteorder="little"):
 	encrypted_bytes = str_val.encode('utf-8')
@@ -105,83 +119,111 @@ _frame_id = 0
 int_drone_id = encrypt_str("1")  # contains 1 extra slot
 extra_len = 8  # contains 1 extra slot; another one slot is from `tagged_data_len` variable
 
-while cap.isOpened():
-	_frame_id += 1
+# create an empty array
+bw_usage_header = ['Bandwidth_Usage']
+bw_usage = []
 
-	# generate encrypted frame_id
-	eframe_id = encrypt_str(str(_frame_id))
-
-	# ret = a boolean return value from getting the frame, frame = the current frame being projected in the video
-	try:
-		ret, frame = cap.read()
-
-		# do it ONCE
-		# detect width and height
-		if cam_weight is None:
-			cam_height, cam_weight, _ = frame.shape
-
-		print(" ## Initial image SHAPE:", frame.shape)
-
-		t0_decoding = time.time()
-		# resize the frame; Default VGA (640 x 480) for Laptop camera
-		if cam_weight != FULLHD_WIDTH and args.resize:
-			frame = cv2.resize(frame, (FULLHD_WIDTH, FULLHD_HEIGHT))
-
-		print(" ## Final image SHAPE:", frame.shape)
-		# compress image
-		# NEW encoding method
-		encoder_format = None  # disable custom encoder
-		itype = 4  # new type specially for compressed image
-		t0_img_compression = time.time()
-		_, compressed_img = cv2.imencode('.jpg', frame, encode_param)
-		compressed_img_len, _ = compressed_img.shape
-		t1_img_compression = (time.time() - t0_img_compression) * 1000
-		t1_img_compression = round(t1_img_compression, 3)
-		print(('[%s] Latency Image Compression (%.3f ms) ' % (
-			datetime.now().strftime("%H:%M:%S"), t1_img_compression)))
-		tagged_data_len = compressed_img_len + extra_len  # `tagged_data_len` itself contains 1 extra slot
-
-		# create t0
-		t0_array = str(time.time()).split(".")  # contains 2 extra slots
-
-		# generate img compression latency
-		img_compr_lat_arr = str(t1_img_compression).split(".")  # contains 2 extra slots
+try:
+	while cap.isOpened():
+		_frame_id += 1
 
 		# generate encrypted frame_id
 		eframe_id = encrypt_str(str(_frame_id))
 
-		# vertically tag this frame with an extra inforamtion
-		t0_tag_extraction = time.time()
-		tagged_info = [
-			[int_drone_id],
-			[int(t0_array[0])],
-			[int(t0_array[1])],
-			[eframe_id],
-			[int(img_compr_lat_arr[0])],
-			[int(img_compr_lat_arr[1])],
-			[extra_len],
-			[tagged_data_len],
-		]
-		val = np.vstack([compressed_img, tagged_info])
-		t1_tag_extraction = (time.time() - t0_tag_extraction) * 1000
-		print(('[%s] Latency Image Taging (%.3f ms) ' % (datetime.now().strftime("%H:%M:%S"), t1_tag_extraction)))
+		# ret = a boolean return value from getting the frame, frame = the current frame being projected in the video
+		try:
+			ret, frame = cap.read()
 
-		# publish data
-		z_svc.publish(
-			_val=val,
-			_itype=itype,
-		)
+			# do it ONCE
+			# detect width and height
+			if cam_weight is None:
+				cam_height, cam_weight, _ = frame.shape
+
+			img_size = get_img_fsize_in_float(frame.nbytes)
+			# bw_usage.append(img_size)
+			bw_usage.append([img_size])
+			print(" ## Image Size: {} Mb".format(img_size))
+			# print(" ## Image Size Bytes:", fsizeb(frame.nbytes))
+			print(" ## Initial image SHAPE:", frame.shape)
+
+			t0_decoding = time.time()
+			# resize the frame; Default VGA (640 x 480) for Laptop camera
+			if cam_weight != FULLHD_WIDTH and args.resize:
+				frame = cv2.resize(frame, (FULLHD_WIDTH, FULLHD_HEIGHT))
+
+			print(" ## Final image SHAPE:", frame.shape)
+			# compress image
+			# NEW encoding method
+			encoder_format = None  # disable custom encoder
+			itype = 4  # new type specially for compressed image
+			t0_img_compression = time.time()
+			_, compressed_img = cv2.imencode('.jpg', frame, encode_param)
+			compressed_img_len, _ = compressed_img.shape
+			t1_img_compression = (time.time() - t0_img_compression) * 1000
+			t1_img_compression = round(t1_img_compression, 3)
+			print(('[%s] Latency Image Compression (%.3f ms) ' % (
+				datetime.now().strftime("%H:%M:%S"), t1_img_compression)))
+			tagged_data_len = compressed_img_len + extra_len  # `tagged_data_len` itself contains 1 extra slot
+
+			# create t0
+			t0_array = str(time.time()).split(".")  # contains 2 extra slots
+
+			# generate img compression latency
+			img_compr_lat_arr = str(t1_img_compression).split(".")  # contains 2 extra slots
+
+			# generate encrypted frame_id
+			eframe_id = encrypt_str(str(_frame_id))
+
+			# vertically tag this frame with an extra inforamtion
+			t0_tag_extraction = time.time()
+			tagged_info = [
+				[int_drone_id],
+				[int(t0_array[0])],
+				[int(t0_array[1])],
+				[eframe_id],
+				[int(img_compr_lat_arr[0])],
+				[int(img_compr_lat_arr[1])],
+				[extra_len],
+				[tagged_data_len],
+			]
+			val = np.vstack([compressed_img, tagged_info])
+			t1_tag_extraction = (time.time() - t0_tag_extraction) * 1000
+			print(('[%s] Latency Image Taging (%.3f ms) ' % (datetime.now().strftime("%H:%M:%S"), t1_tag_extraction)))
+
+			# publish data
+			z_svc.publish(
+				_val=val,
+				_itype=itype,
+			)
+
+			if _enable_cv_out:
+				cv2.imshow(window_title, frame)
+			print()
+		except Exception as e:
+			print("No more frame to show: `{}`".format(e))
+			break
 
 		if _enable_cv_out:
-			cv2.imshow(window_title, frame)
-		print()
-	except Exception as e:
-		print("No more frame to show: `{}`".format(e))
-		break
+			if cv2.waitKey(1) & 0xFF == ord('q'):
+				break
 
-	if _enable_cv_out:
-		if cv2.waitKey(1) & 0xFF == ord('q'):
-			break
+# when stopped, start saving the CSV files
+except KeyboardInterrupt:
+	print("[STOPPING] Start storing CSV Files")
+	# if file exist, delete it first!
+	if os.path.isfile(CSV_FILE_PATH):
+		os.remove(CSV_FILE_PATH)
+
+	# # open the file in the write mode
+	with open(CSV_FILE_PATH, 'w', encoding='UTF8', newline='') as f:
+		# create the csv writer
+		writer = csv.writer(f)
+
+		# write the header
+		writer.writerow(bw_usage_header)
+
+		# write a row to the csv file
+		writer.writerows(bw_usage)
 
 if _enable_cv_out:
 	# The following frees up resources and closes all windows
