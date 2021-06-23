@@ -2,7 +2,8 @@ import ntplib  # pip install ntplib
 from datetime import datetime, timezone
 
 # NTP_SERVERS = ['140.113.86.92']  # IP Docker Container
-NTP_SERVERS = ['localhost']  # IP Docker Container
+# NTP_SERVERS = ['localhost']  # IP Docker Container
+NTP_SERVERS = ['192.168.1.10']  # IP Docker Container
 
 for server in NTP_SERVERS:
 	client = ntplib.NTPClient()
