@@ -1,0 +1,1547 @@
+frame_id,category,algorithm,section,latency,node_id,node_name
+1,decoding_payload,,preproc,3.1659603118896484,,
+1,clean_decoded_payload,,preproc,3.694772720336914,,
+1,extract_img_data,,preproc,1.6107559204101562,,
+1,decompress_img,,preproc,24.123430252075195,,
+1,zenoh_pubsub,,preproc,28.981447219848633,,
+1,End-to-End,N/A,e2e_latency,54.91018295288086,60d2e89df5a7223a3678fc4e,1
+1,compress_img,,preproc,32.18,,
+1,Scheduling,dynamic_round_robin,scheduling,1.8258094787597656,60d2e89df5a7223a3678fc4e,1
+2,decoding_payload,,preproc,1.1014938354492188,,
+2,clean_decoded_payload,,preproc,1.5590190887451172,,
+2,extract_img_data,,preproc,0.308990478515625,,
+2,decompress_img,,preproc,26.62515640258789,,
+2,zenoh_pubsub,,preproc,26.46183967590332,,
+2,compress_img,,preproc,31.95,,
+2,Scheduling,dynamic_round_robin,scheduling,4.868745803833008,60d2e89df5a7223a3678fc4e,1
+2,End-to-End,N/A,e2e_latency,40.45367240905762,60d2e89df5a7223a3678fc4e,1
+3,decoding_payload,,preproc,2.908468246459961,,
+3,clean_decoded_payload,,preproc,1.5408992767333984,,
+3,extract_img_data,,preproc,0.4782676696777344,,
+3,decompress_img,,preproc,24.956464767456055,,
+3,zenoh_pubsub,,preproc,26.499509811401367,,
+3,compress_img,,preproc,31.322,,
+3,Scheduling,dynamic_round_robin,scheduling,3.6411285400390625,60d2e89df5a7223a3678fc4e,1
+3,End-to-End,N/A,e2e_latency,37.3687744140625,60d2e89df5a7223a3678fc4e,1
+4,decoding_payload,,preproc,3.037691116333008,,
+4,clean_decoded_payload,,preproc,1.6031265258789062,,
+4,extract_img_data,,preproc,0.4990100860595703,,
+4,decompress_img,,preproc,25.385379791259766,,
+4,zenoh_pubsub,,preproc,-305.7231903076172,,
+4,compress_img,,preproc,31.472,,
+4,Scheduling,dynamic_round_robin,scheduling,3.674030303955078,60d2e89df5a7223a3678fc4e,1
+4,Pre-processing,N/A,preproc_det,17.798423767089844,-,-
+,sorting,Sorting Network,scheduling,0.19240379333496094,-,-
+4,Object Detection,YOLOv3,detection,14.594793319702148,60d2e89df5a7223a3678fc4e,1
+4,from_numpy,YOLOv3,detection,0.029802322387695312,60d2e89df5a7223a3678fc4e,1
+4,image4yolo,YOLOv3,detection,0.9162425994873047,60d2e89df5a7223a3678fc4e,1
+4,pred,YOLOv3,detection,9.434700012207031,60d2e89df5a7223a3678fc4e,1
+4,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.2470226287841797,-,-
+4,End-to-End,N/A,e2e_latency,42.700767517089844,60d2e89df5a7223a3678fc4e,1
+5,decoding_payload,,preproc,3.0019283294677734,,
+5,clean_decoded_payload,,preproc,1.558065414428711,,
+5,extract_img_data,,preproc,0.48065185546875,,
+5,decompress_img,,preproc,24.95598793029785,,
+5,zenoh_pubsub,,preproc,26.691198348999023,,
+5,compress_img,,preproc,31.369,,
+5,Scheduling,dynamic_round_robin,scheduling,3.548145294189453,60d2e89df5a7223a3678fc4e,1
+5,End-to-End,N/A,e2e_latency,43.482303619384766,60d2e89df5a7223a3678fc4e,1
+6,decoding_payload,,preproc,3.0527114868164062,,
+6,clean_decoded_payload,,preproc,1.6558170318603516,,
+6,extract_img_data,,preproc,0.47707557678222656,,
+6,decompress_img,,preproc,24.924516677856445,,
+6,zenoh_pubsub,,preproc,26.899099349975586,,
+6,compress_img,,preproc,31.58,,
+6,Scheduling,dynamic_round_robin,scheduling,3.656148910522461,60d2e89df5a7223a3678fc4e,1
+6,End-to-End,N/A,e2e_latency,37.340402603149414,60d2e89df5a7223a3678fc4e,1
+7,decoding_payload,,preproc,2.941608428955078,,
+7,clean_decoded_payload,,preproc,1.5895366668701172,,
+7,extract_img_data,,preproc,0.4582405090332031,,
+7,decompress_img,,preproc,24.474143981933594,,
+7,zenoh_pubsub,,preproc,26.775360107421875,,
+7,compress_img,,preproc,31.197,,
+7,End-to-End,N/A,e2e_latency,39.0620231628418,60d2e89df5a7223a3678fc4e,1
+7,Scheduling,dynamic_round_robin,scheduling,4.072904586791992,60d2e89df5a7223a3678fc4e,1
+8,decoding_payload,,preproc,2.9888153076171875,,
+8,clean_decoded_payload,,preproc,1.5549659729003906,,
+8,extract_img_data,,preproc,0.47588348388671875,,
+8,decompress_img,,preproc,25.71582794189453,,
+8,zenoh_pubsub,,preproc,26.482105255126953,,
+8,compress_img,,preproc,31.318,,
+8,Scheduling,dynamic_round_robin,scheduling,3.5200119018554688,60d2e89df5a7223a3678fc4e,1
+8,End-to-End,N/A,e2e_latency,37.63151168823242,60d2e89df5a7223a3678fc4e,1
+,sorting,Sorting Network,scheduling,0.202178955078125,-,-
+9,decoding_payload,,preproc,2.633810043334961,,
+9,clean_decoded_payload,,preproc,1.3363361358642578,,
+9,extract_img_data,,preproc,0.4241466522216797,,
+9,decompress_img,,preproc,24.773836135864258,,
+9,zenoh_pubsub,,preproc,-300.9448051452637,,
+9,compress_img,,preproc,31.148,,
+9,End-to-End,N/A,e2e_latency,34.3170166015625,60d2e89df5a7223a3678fc4e,1
+9,Scheduling,dynamic_round_robin,scheduling,1.992940902709961,60d2e89df5a7223a3678fc4e,1
+10,decoding_payload,,preproc,2.728700637817383,,
+10,clean_decoded_payload,,preproc,1.4011859893798828,,
+10,extract_img_data,,preproc,0.4489421844482422,,
+10,decompress_img,,preproc,23.206233978271484,,
+10,zenoh_pubsub,,preproc,26.744604110717773,,
+10,compress_img,,preproc,31.276,,
+10,Scheduling,dynamic_round_robin,scheduling,3.208637237548828,60d2e89df5a7223a3678fc4e,1
+10,Pre-processing,N/A,preproc_det,18.4781551361084,-,-
+10,Object Detection,YOLOv3,detection,13.57579231262207,60d2e89df5a7223a3678fc4e,1
+10,from_numpy,YOLOv3,detection,0.02193450927734375,60d2e89df5a7223a3678fc4e,1
+10,image4yolo,YOLOv3,detection,0.7054805755615234,60d2e89df5a7223a3678fc4e,1
+10,pred,YOLOv3,detection,8.672475814819336,60d2e89df5a7223a3678fc4e,1
+10,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.9784908294677734,-,-
+10,End-to-End,N/A,e2e_latency,42.05131530761719,60d2e89df5a7223a3678fc4e,1
+11,decoding_payload,,preproc,2.9654502868652344,,
+11,clean_decoded_payload,,preproc,1.588582992553711,,
+11,extract_img_data,,preproc,0.49495697021484375,,
+11,decompress_img,,preproc,24.331092834472656,,
+11,zenoh_pubsub,,preproc,26.66020393371582,,
+11,compress_img,,preproc,31.585,,
+11,Scheduling,dynamic_round_robin,scheduling,3.598451614379883,60d2e89df5a7223a3678fc4e,1
+11,Pre-processing,N/A,preproc_det,19.249677658081055,-,-
+11,Object Detection,YOLOv3,detection,14.009237289428711,60d2e89df5a7223a3678fc4e,1
+11,from_numpy,YOLOv3,detection,0.03147125244140625,60d2e89df5a7223a3678fc4e,1
+11,image4yolo,YOLOv3,detection,0.9198188781738281,60d2e89df5a7223a3678fc4e,1
+11,pred,YOLOv3,detection,10.12873649597168,60d2e89df5a7223a3678fc4e,1
+11,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.9985179901123047,-,-
+11,End-to-End,N/A,e2e_latency,44.00753974914551,60d2e89df5a7223a3678fc4e,1
+12,decoding_payload,,preproc,3.0052661895751953,,
+12,clean_decoded_payload,,preproc,1.581430435180664,,
+12,extract_img_data,,preproc,0.49877166748046875,,
+12,decompress_img,,preproc,26.13544464111328,,
+12,zenoh_pubsub,,preproc,26.590585708618164,,
+12,compress_img,,preproc,31.709,,
+12,Scheduling,dynamic_round_robin,scheduling,3.6725997924804688,60d2e89df5a7223a3678fc4e,1
+12,Pre-processing,N/A,preproc_det,17.860889434814453,-,-
+,sorting,Sorting Network,scheduling,0.21719932556152344,-,-
+12,Object Detection,YOLOv3,detection,13.76795768737793,60d2e89df5a7223a3678fc4e,1
+12,from_numpy,YOLOv3,detection,0.04792213439941406,60d2e89df5a7223a3678fc4e,1
+12,image4yolo,YOLOv3,detection,0.6318092346191406,60d2e89df5a7223a3678fc4e,1
+12,pred,YOLOv3,detection,10.029792785644531,60d2e89df5a7223a3678fc4e,1
+12,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.47845458984375,-,-
+12,End-to-End,N/A,e2e_latency,44.119834899902344,60d2e89df5a7223a3678fc4e,1
+13,decoding_payload,,preproc,2.8464794158935547,,
+13,clean_decoded_payload,,preproc,1.5301704406738281,,
+13,extract_img_data,,preproc,0.45752525329589844,,
+13,decompress_img,,preproc,25.002717971801758,,
+13,zenoh_pubsub,,preproc,26.540279388427734,,
+13,compress_img,,preproc,31.217,,
+13,Pre-processing,N/A,preproc_det,18.88751983642578,-,-
+13,Scheduling,dynamic_round_robin,scheduling,1.0290145874023438,60d2e89df5a7223a3678fc4e,1
+13,Object Detection,YOLOv3,detection,13.788938522338867,60d2e89df5a7223a3678fc4e,1
+13,from_numpy,YOLOv3,detection,0.03695487976074219,60d2e89df5a7223a3678fc4e,1
+13,image4yolo,YOLOv3,detection,0.5967617034912109,60d2e89df5a7223a3678fc4e,1
+13,pred,YOLOv3,detection,10.01286506652832,60d2e89df5a7223a3678fc4e,1
+13,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.829479217529297,-,-
+13,End-to-End,N/A,e2e_latency,44.76571083068848,60d2e89df5a7223a3678fc4e,1
+14,decoding_payload,,preproc,2.7265548706054688,,
+14,clean_decoded_payload,,preproc,1.4719963073730469,,
+14,extract_img_data,,preproc,0.4296302795410156,,
+14,decompress_img,,preproc,24.388551712036133,,
+14,zenoh_pubsub,,preproc,-266.07298851013184,,
+14,compress_img,,preproc,31.358,,
+14,Pre-processing,N/A,preproc_det,17.417192459106445,-,-
+14,Scheduling,dynamic_round_robin,scheduling,0.9596347808837891,60d2e89df5a7223a3678fc4e,1
+14,Object Detection,YOLOv3,detection,13.638734817504883,60d2e89df5a7223a3678fc4e,1
+14,from_numpy,YOLOv3,detection,0.0324249267578125,60d2e89df5a7223a3678fc4e,1
+14,image4yolo,YOLOv3,detection,0.5283355712890625,60d2e89df5a7223a3678fc4e,1
+14,pred,YOLOv3,detection,9.836673736572266,60d2e89df5a7223a3678fc4e,1
+14,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.079341888427734,-,-
+14,End-to-End,N/A,e2e_latency,43.24197769165039,60d2e89df5a7223a3678fc4e,1
+15,decoding_payload,,preproc,2.7310848236083984,,
+15,clean_decoded_payload,,preproc,1.4498233795166016,,
+15,extract_img_data,,preproc,0.4260540008544922,,
+15,decompress_img,,preproc,23.693561553955078,,
+15,zenoh_pubsub,,preproc,26.416301727294922,,
+15,compress_img,,preproc,31.81,,
+15,End-to-End,N/A,e2e_latency,34.29365158081055,60d2e89df5a7223a3678fc4e,1
+15,Scheduling,dynamic_round_robin,scheduling,3.1321048736572266,60d2e89df5a7223a3678fc4e,1
+16,decoding_payload,,preproc,2.8383731842041016,,
+16,clean_decoded_payload,,preproc,1.5206336975097656,,
+16,extract_img_data,,preproc,0.4622936248779297,,
+16,decompress_img,,preproc,23.583412170410156,,
+16,zenoh_pubsub,,preproc,26.373863220214844,,
+16,compress_img,,preproc,31.518,,
+,sorting,Sorting Network,scheduling,0.22649765014648438,-,-
+16,End-to-End,N/A,e2e_latency,38.37394714355469,60d2e89df5a7223a3678fc4e,1
+16,Scheduling,dynamic_round_robin,scheduling,3.112316131591797,60d2e89df5a7223a3678fc4e,1
+17,decoding_payload,,preproc,2.634763717651367,,
+17,clean_decoded_payload,,preproc,1.4300346374511719,,
+17,extract_img_data,,preproc,0.4374980926513672,,
+17,decompress_img,,preproc,24.864912033081055,,
+17,zenoh_pubsub,,preproc,26.502132415771484,,
+17,compress_img,,preproc,31.383,,
+17,End-to-End,N/A,e2e_latency,36.65518760681152,60d2e89df5a7223a3678fc4e,1
+17,Scheduling,dynamic_round_robin,scheduling,3.1774044036865234,60d2e89df5a7223a3678fc4e,1
+18,decoding_payload,,preproc,2.759218215942383,,
+18,clean_decoded_payload,,preproc,1.48773193359375,,
+18,extract_img_data,,preproc,0.44536590576171875,,
+18,decompress_img,,preproc,24.51634407043457,,
+18,zenoh_pubsub,,preproc,26.488542556762695,,
+18,compress_img,,preproc,31.81,,
+18,Scheduling,dynamic_round_robin,scheduling,3.2744407653808594,60d2e89df5a7223a3678fc4e,1
+18,End-to-End,N/A,e2e_latency,41.38994216918945,60d2e89df5a7223a3678fc4e,1
+19,decoding_payload,,preproc,2.776622772216797,,
+19,clean_decoded_payload,,preproc,1.458883285522461,,
+19,extract_img_data,,preproc,0.4343986511230469,,
+19,decompress_img,,preproc,23.784875869750977,,
+19,zenoh_pubsub,,preproc,-230.2684783935547,,
+19,compress_img,,preproc,31.214,,
+19,End-to-End,N/A,e2e_latency,37.65296936035156,60d2e89df5a7223a3678fc4e,1
+19,Scheduling,dynamic_round_robin,scheduling,0.8924007415771484,60d2e89df5a7223a3678fc4e,1
+20,decoding_payload,,preproc,2.8498172760009766,,
+20,clean_decoded_payload,,preproc,1.4765262603759766,,
+20,extract_img_data,,preproc,0.4363059997558594,,
+20,decompress_img,,preproc,24.457216262817383,,
+20,zenoh_pubsub,,preproc,26.424884796142578,,
+20,compress_img,,preproc,31.304,,
+20,Scheduling,dynamic_round_robin,scheduling,3.11279296875,60d2e89df5a7223a3678fc4e,1
+20,Pre-processing,N/A,preproc_det,18.735647201538086,-,-
+,sorting,Sorting Network,scheduling,0.15783309936523438,-,-
+20,Object Detection,YOLOv3,detection,13.908863067626953,60d2e89df5a7223a3678fc4e,1
+20,from_numpy,YOLOv3,detection,0.02765655517578125,60d2e89df5a7223a3678fc4e,1
+20,image4yolo,YOLOv3,detection,0.8435249328613281,60d2e89df5a7223a3678fc4e,1
+20,pred,YOLOv3,detection,9.284496307373047,60d2e89df5a7223a3678fc4e,1
+20,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.659486770629883,-,-
+20,End-to-End,N/A,e2e_latency,42.925357818603516,60d2e89df5a7223a3678fc4e,1
+21,decoding_payload,,preproc,2.895832061767578,,
+21,clean_decoded_payload,,preproc,1.5382766723632812,,
+21,extract_img_data,,preproc,0.4544258117675781,,
+21,decompress_img,,preproc,25.037527084350586,,
+21,zenoh_pubsub,,preproc,26.401519775390625,,
+21,compress_img,,preproc,31.153,,
+21,Scheduling,dynamic_round_robin,scheduling,3.4792423248291016,60d2e89df5a7223a3678fc4e,1
+21,Pre-processing,N/A,preproc_det,18.831729888916016,-,-
+21,Object Detection,YOLOv3,detection,13.883590698242188,60d2e89df5a7223a3678fc4e,1
+21,from_numpy,YOLOv3,detection,0.0324249267578125,60d2e89df5a7223a3678fc4e,1
+21,image4yolo,YOLOv3,detection,0.8985996246337891,60d2e89df5a7223a3678fc4e,1
+21,pred,YOLOv3,detection,9.437799453735352,60d2e89df5a7223a3678fc4e,1
+21,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.703594207763672,-,-
+21,End-to-End,N/A,e2e_latency,43.45226287841797,60d2e89df5a7223a3678fc4e,1
+22,decoding_payload,,preproc,2.9125213623046875,,
+22,clean_decoded_payload,,preproc,1.4984607696533203,,
+22,extract_img_data,,preproc,0.4410743713378906,,
+22,decompress_img,,preproc,25.853633880615234,,
+22,zenoh_pubsub,,preproc,26.242494583129883,,
+22,compress_img,,preproc,31.111,,
+22,Pre-processing,N/A,preproc_det,18.158674240112305,-,-
+22,Scheduling,dynamic_round_robin,scheduling,3.3109188079833984,60d2e89df5a7223a3678fc4e,1
+22,Object Detection,YOLOv3,detection,14.095544815063477,60d2e89df5a7223a3678fc4e,1
+22,from_numpy,YOLOv3,detection,0.04124641418457031,60d2e89df5a7223a3678fc4e,1
+22,image4yolo,YOLOv3,detection,0.9732246398925781,60d2e89df5a7223a3678fc4e,1
+22,pred,YOLOv3,detection,9.78708267211914,60d2e89df5a7223a3678fc4e,1
+22,Extra Pipeline,PiH Candidate Selection,candidate_selection,2.808809280395508,-,-
+22,End-to-End,N/A,e2e_latency,42.34600067138672,60d2e89df5a7223a3678fc4e,1
+23,decoding_payload,,preproc,2.8955936431884766,,
+23,clean_decoded_payload,,preproc,1.504659652709961,,
+23,extract_img_data,,preproc,0.4477500915527344,,
+23,decompress_img,,preproc,25.541067123413086,,
+23,zenoh_pubsub,,preproc,26.151180267333984,,
+23,compress_img,,preproc,31.44,,
+23,Pre-processing,N/A,preproc_det,17.775297164916992,-,-
+23,Scheduling,dynamic_round_robin,scheduling,3.309488296508789,60d2e89df5a7223a3678fc4e,1
+23,Object Detection,YOLOv3,detection,14.097929000854492,60d2e89df5a7223a3678fc4e,1
+23,from_numpy,YOLOv3,detection,0.030755996704101562,60d2e89df5a7223a3678fc4e,1
+23,image4yolo,YOLOv3,detection,0.95367431640625,60d2e89df5a7223a3678fc4e,1
+23,pred,YOLOv3,detection,9.477615356445312,60d2e89df5a7223a3678fc4e,1
+23,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.128456115722656,-,-
+23,End-to-End,N/A,e2e_latency,42.897939682006836,60d2e89df5a7223a3678fc4e,1
+24,decoding_payload,,preproc,2.8285980224609375,,
+24,clean_decoded_payload,,preproc,1.462697982788086,,
+24,extract_img_data,,preproc,0.43487548828125,,
+24,decompress_img,,preproc,24.87921714782715,,
+24,zenoh_pubsub,,preproc,-195.11651992797852,,
+24,compress_img,,preproc,31.401,,
+24,Pre-processing,N/A,preproc_det,19.07515525817871,-,-
+24,Scheduling,dynamic_round_robin,scheduling,3.4551620483398438,60d2e89df5a7223a3678fc4e,1
+,sorting,Sorting Network,scheduling,0.22745132446289062,-,-
+24,Object Detection,YOLOv3,detection,13.822317123413086,60d2e89df5a7223a3678fc4e,1
+24,from_numpy,YOLOv3,detection,0.031232833862304688,60d2e89df5a7223a3678fc4e,1
+24,image4yolo,YOLOv3,detection,0.8518695831298828,60d2e89df5a7223a3678fc4e,1
+24,pred,YOLOv3,detection,9.476423263549805,60d2e89df5a7223a3678fc4e,1
+24,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.619670867919922,-,-
+24,End-to-End,N/A,e2e_latency,43.10965538024902,60d2e89df5a7223a3678fc4e,1
+25,decoding_payload,,preproc,2.8176307678222656,,
+25,clean_decoded_payload,,preproc,1.4986991882324219,,
+25,extract_img_data,,preproc,0.4456043243408203,,
+25,decompress_img,,preproc,25.376319885253906,,
+25,zenoh_pubsub,,preproc,26.250362396240234,,
+25,compress_img,,preproc,31.423,,
+25,Scheduling,dynamic_round_robin,scheduling,3.2606124877929688,60d2e89df5a7223a3678fc4e,1
+25,Pre-processing,N/A,preproc_det,18.850088119506836,-,-
+25,Object Detection,YOLOv3,detection,16.744613647460938,60d2e89df5a7223a3678fc4e,1
+25,from_numpy,YOLOv3,detection,0.02956390380859375,60d2e89df5a7223a3678fc4e,1
+25,image4yolo,YOLOv3,detection,0.8962154388427734,60d2e89df5a7223a3678fc4e,1
+25,pred,YOLOv3,detection,14.197111129760742,60d2e89df5a7223a3678fc4e,1
+25,Extra Pipeline,PiH Candidate Selection,candidate_selection,2.650737762451172,-,-
+25,End-to-End,N/A,e2e_latency,48.036813735961914,60d2e89df5a7223a3678fc4e,1
+26,decoding_payload,,preproc,2.592802047729492,,
+26,clean_decoded_payload,,preproc,1.3239383697509766,,
+26,extract_img_data,,preproc,0.36406517028808594,,
+26,decompress_img,,preproc,25.033950805664062,,
+26,zenoh_pubsub,,preproc,26.064157485961914,,
+26,compress_img,,preproc,31.65,,
+26,Pre-processing,N/A,preproc_det,18.441438674926758,-,-
+26,Scheduling,dynamic_round_robin,scheduling,3.603219985961914,60d2e89df5a7223a3678fc4e,1
+26,Object Detection,YOLOv3,detection,13.748645782470703,60d2e89df5a7223a3678fc4e,1
+26,from_numpy,YOLOv3,detection,0.030517578125,60d2e89df5a7223a3678fc4e,1
+26,image4yolo,YOLOv3,detection,0.7796287536621094,60d2e89df5a7223a3678fc4e,1
+26,pred,YOLOv3,detection,9.23919677734375,60d2e89df5a7223a3678fc4e,1
+26,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.753662109375,-,-
+26,End-to-End,N/A,e2e_latency,42.243003845214844,60d2e89df5a7223a3678fc4e,1
+27,decoding_payload,,preproc,2.742767333984375,,
+27,clean_decoded_payload,,preproc,1.516103744506836,,
+27,extract_img_data,,preproc,0.43272972106933594,,
+27,decompress_img,,preproc,25.009870529174805,,
+27,zenoh_pubsub,,preproc,25.907516479492188,,
+27,compress_img,,preproc,31.3,,
+27,Pre-processing,N/A,preproc_det,17.5931453704834,-,-
+27,Scheduling,dynamic_round_robin,scheduling,3.615140914916992,60d2e89df5a7223a3678fc4e,1
+27,Object Detection,YOLOv3,detection,13.918876647949219,60d2e89df5a7223a3678fc4e,1
+27,from_numpy,YOLOv3,detection,0.030755996704101562,60d2e89df5a7223a3678fc4e,1
+27,image4yolo,YOLOv3,detection,0.8645057678222656,60d2e89df5a7223a3678fc4e,1
+27,pred,YOLOv3,detection,9.282588958740234,60d2e89df5a7223a3678fc4e,1
+27,Extra Pipeline,PiH Candidate Selection,candidate_selection,2.4008750915527344,-,-
+27,End-to-End,N/A,e2e_latency,40.854454040527344,60d2e89df5a7223a3678fc4e,1
+28,decoding_payload,,preproc,2.6586055755615234,,
+28,clean_decoded_payload,,preproc,1.3985633850097656,,
+28,extract_img_data,,preproc,0.4184246063232422,,
+28,decompress_img,,preproc,24.45077896118164,,
+28,zenoh_pubsub,,preproc,26.021480560302734,,
+28,Pre-processing,N/A,preproc_det,10.828495025634766,-,-
+,sorting,Sorting Network,scheduling,0.22792816162109375,-,-
+28,compress_img,,preproc,31.197,,
+28,Object Detection,YOLOv3,detection,13.748884201049805,60d2e89df5a7223a3678fc4e,1
+28,Scheduling,dynamic_round_robin,scheduling,1.5974044799804688,60d2e89df5a7223a3678fc4e,1
+28,from_numpy,YOLOv3,detection,0.02765655517578125,60d2e89df5a7223a3678fc4e,1
+28,image4yolo,YOLOv3,detection,0.7863044738769531,60d2e89df5a7223a3678fc4e,1
+28,pred,YOLOv3,detection,9.14907455444336,60d2e89df5a7223a3678fc4e,1
+28,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.553152084350586,-,-
+28,End-to-End,N/A,e2e_latency,35.46786308288574,60d2e89df5a7223a3678fc4e,1
+29,decoding_payload,,preproc,2.780914306640625,,
+29,clean_decoded_payload,,preproc,1.4014244079589844,,
+29,extract_img_data,,preproc,0.42176246643066406,,
+29,decompress_img,,preproc,23.962736129760742,,
+29,zenoh_pubsub,,preproc,-185.6687068939209,,
+29,Pre-processing,N/A,preproc_det,16.509294509887695,-,-
+29,compress_img,,preproc,30.982,,
+29,Object Detection,YOLOv3,detection,13.490676879882812,60d2e89df5a7223a3678fc4e,1
+29,Scheduling,dynamic_round_robin,scheduling,3.7832260131835938,60d2e89df5a7223a3678fc4e,1
+29,from_numpy,YOLOv3,detection,0.014781951904296875,60d2e89df5a7223a3678fc4e,1
+29,image4yolo,YOLOv3,detection,0.7469654083251953,60d2e89df5a7223a3678fc4e,1
+29,pred,YOLOv3,detection,8.782625198364258,60d2e89df5a7223a3678fc4e,1
+29,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.266572952270508,-,-
+29,End-to-End,N/A,e2e_latency,39.53266143798828,60d2e89df5a7223a3678fc4e,1
+30,decoding_payload,,preproc,2.7360916137695312,,
+30,clean_decoded_payload,,preproc,1.4770030975341797,,
+30,extract_img_data,,preproc,0.4279613494873047,,
+30,decompress_img,,preproc,24.670839309692383,,
+30,zenoh_pubsub,,preproc,25.907039642333984,,
+30,compress_img,,preproc,31.255,,
+30,Pre-processing,N/A,preproc_det,18.397092819213867,-,-
+30,Scheduling,dynamic_round_robin,scheduling,3.351926803588867,60d2e89df5a7223a3678fc4e,1
+30,Object Detection,YOLOv3,detection,14.025211334228516,60d2e89df5a7223a3678fc4e,1
+30,from_numpy,YOLOv3,detection,0.028371810913085938,60d2e89df5a7223a3678fc4e,1
+30,image4yolo,YOLOv3,detection,0.9653568267822266,60d2e89df5a7223a3678fc4e,1
+30,pred,YOLOv3,detection,9.904861450195312,60d2e89df5a7223a3678fc4e,1
+30,Extra Pipeline,PiH Candidate Selection,candidate_selection,2.763509750366211,-,-
+30,End-to-End,N/A,e2e_latency,43.180227279663086,60d2e89df5a7223a3678fc4e,1
+31,decoding_payload,,preproc,2.7964115142822266,,
+31,clean_decoded_payload,,preproc,1.4986991882324219,,
+31,extract_img_data,,preproc,0.4382133483886719,,
+31,decompress_img,,preproc,28.30052375793457,,
+31,zenoh_pubsub,,preproc,25.90203285217285,,
+31,compress_img,,preproc,31.366,,
+31,Scheduling,dynamic_round_robin,scheduling,4.366636276245117,60d2e89df5a7223a3678fc4e,1
+31,Pre-processing,N/A,preproc_det,18.650054931640625,-,-
+31,Object Detection,YOLOv3,detection,13.796567916870117,60d2e89df5a7223a3678fc4e,1
+31,from_numpy,YOLOv3,detection,0.028133392333984375,60d2e89df5a7223a3678fc4e,1
+31,image4yolo,YOLOv3,detection,0.8225440979003906,60d2e89df5a7223a3678fc4e,1
+31,pred,YOLOv3,detection,9.689092636108398,60d2e89df5a7223a3678fc4e,1
+31,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.5784244537353516,-,-
+31,End-to-End,N/A,e2e_latency,42.86599159240723,60d2e89df5a7223a3678fc4e,1
+32,decoding_payload,,preproc,3.158092498779297,,
+32,clean_decoded_payload,,preproc,1.6300678253173828,,
+32,extract_img_data,,preproc,0.48851966857910156,,
+32,decompress_img,,preproc,24.02019500732422,,
+32,zenoh_pubsub,,preproc,25.95233917236328,,
+32,compress_img,,preproc,31.47,,
+32,Scheduling,dynamic_round_robin,scheduling,1.0440349578857422,60d2e89df5a7223a3678fc4e,1
+32,Pre-processing,N/A,preproc_det,16.664743423461914,-,-
+,sorting,Sorting Network,scheduling,0.22482872009277344,-,-
+32,Object Detection,YOLOv3,detection,19.121408462524414,60d2e89df5a7223a3678fc4e,1
+32,from_numpy,YOLOv3,detection,0.03910064697265625,60d2e89df5a7223a3678fc4e,1
+32,image4yolo,YOLOv3,detection,1.047372817993164,60d2e89df5a7223a3678fc4e,1
+32,pred,YOLOv3,detection,16.65782928466797,60d2e89df5a7223a3678fc4e,1
+32,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.3788681030273438,-,-
+32,End-to-End,N/A,e2e_latency,46.21529579162598,60d2e89df5a7223a3678fc4e,1
+33,decoding_payload,,preproc,2.7222633361816406,,
+33,clean_decoded_payload,,preproc,1.462697982788086,,
+33,extract_img_data,,preproc,0.4489421844482422,,
+33,decompress_img,,preproc,24.702787399291992,,
+33,zenoh_pubsub,,preproc,25.81024169921875,,
+33,compress_img,,preproc,31.38,,
+33,Pre-processing,N/A,preproc_det,18.9056396484375,-,-
+33,Scheduling,dynamic_round_robin,scheduling,3.400087356567383,60d2e89df5a7223a3678fc4e,1
+33,Object Detection,YOLOv3,detection,14.014005661010742,60d2e89df5a7223a3678fc4e,1
+33,from_numpy,YOLOv3,detection,0.03409385681152344,60d2e89df5a7223a3678fc4e,1
+33,image4yolo,YOLOv3,detection,0.9336471557617188,60d2e89df5a7223a3678fc4e,1
+33,pred,YOLOv3,detection,9.847164154052734,60d2e89df5a7223a3678fc4e,1
+33,Extra Pipeline,PiH Candidate Selection,candidate_selection,2.700328826904297,-,-
+33,End-to-End,N/A,e2e_latency,42.9685115814209,60d2e89df5a7223a3678fc4e,1
+34,decoding_payload,,preproc,2.5663375854492188,,
+34,clean_decoded_payload,,preproc,1.428365707397461,,
+34,extract_img_data,,preproc,0.43511390686035156,,
+34,decompress_img,,preproc,24.545669555664062,,
+34,zenoh_pubsub,,preproc,-163.7442111968994,,
+34,compress_img,,preproc,31.786,,
+34,Scheduling,dynamic_round_robin,scheduling,3.97491455078125,60d2e89df5a7223a3678fc4e,1
+34,Pre-processing,N/A,preproc_det,19.402742385864258,-,-
+34,Object Detection,YOLOv3,detection,15.098810195922852,60d2e89df5a7223a3678fc4e,1
+34,from_numpy,YOLOv3,detection,0.04601478576660156,60d2e89df5a7223a3678fc4e,1
+34,image4yolo,YOLOv3,detection,0.6444454193115234,60d2e89df5a7223a3678fc4e,1
+34,pred,YOLOv3,detection,11.820793151855469,60d2e89df5a7223a3678fc4e,1
+34,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.69660758972168,-,-
+34,End-to-End,N/A,e2e_latency,48.51865768432617,60d2e89df5a7223a3678fc4e,1
+35,decoding_payload,,preproc,2.813577651977539,,
+35,clean_decoded_payload,,preproc,1.4045238494873047,,
+35,extract_img_data,,preproc,0.42057037353515625,,
+35,decompress_img,,preproc,25.022029876708984,,
+35,zenoh_pubsub,,preproc,25.593996047973633,,
+35,compress_img,,preproc,30.838,,
+35,Pre-processing,N/A,preproc_det,19.110679626464844,-,-
+35,Scheduling,dynamic_round_robin,scheduling,3.9446353912353516,60d2e89df5a7223a3678fc4e,1
+35,Object Detection,YOLOv3,detection,13.979911804199219,60d2e89df5a7223a3678fc4e,1
+35,from_numpy,YOLOv3,detection,0.0362396240234375,60d2e89df5a7223a3678fc4e,1
+35,image4yolo,YOLOv3,detection,0.5340576171875,60d2e89df5a7223a3678fc4e,1
+35,pred,YOLOv3,detection,10.018110275268555,60d2e89df5a7223a3678fc4e,1
+35,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.302190780639648,-,-
+35,End-to-End,N/A,e2e_latency,50.36211013793945,60d2e89df5a7223a3678fc4e,1
+36,decoding_payload,,preproc,2.418994903564453,,
+36,clean_decoded_payload,,preproc,1.2733936309814453,,
+36,extract_img_data,,preproc,0.3936290740966797,,
+36,decompress_img,,preproc,24.84297752380371,,
+36,zenoh_pubsub,,preproc,25.41351318359375,,
+36,compress_img,,preproc,31.399,,
+36,Pre-processing,N/A,preproc_det,20.716190338134766,-,-
+36,Scheduling,dynamic_round_robin,scheduling,3.2320022583007812,60d2e89df5a7223a3678fc4e,1
+,sorting,Sorting Network,scheduling,0.1971721649169922,-,-
+36,Object Detection,YOLOv3,detection,13.71002197265625,60d2e89df5a7223a3678fc4e,1
+36,from_numpy,YOLOv3,detection,0.023603439331054688,60d2e89df5a7223a3678fc4e,1
+36,image4yolo,YOLOv3,detection,0.7216930389404297,60d2e89df5a7223a3678fc4e,1
+36,pred,YOLOv3,detection,9.486913681030273,60d2e89df5a7223a3678fc4e,1
+36,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.5543441772460938,-,-
+36,End-to-End,N/A,e2e_latency,45.35794258117676,60d2e89df5a7223a3678fc4e,1
+37,decoding_payload,,preproc,2.424955368041992,,
+37,clean_decoded_payload,,preproc,1.3966560363769531,,
+37,extract_img_data,,preproc,0.41747093200683594,,
+37,decompress_img,,preproc,24.853944778442383,,
+37,zenoh_pubsub,,preproc,25.31909942626953,,
+37,compress_img,,preproc,31.103,,
+37,Pre-processing,N/A,preproc_det,17.813920974731445,-,-
+37,Scheduling,dynamic_round_robin,scheduling,1.8000602722167969,60d2e89df5a7223a3678fc4e,1
+37,Object Detection,YOLOv3,detection,13.539552688598633,60d2e89df5a7223a3678fc4e,1
+37,from_numpy,YOLOv3,detection,0.03147125244140625,60d2e89df5a7223a3678fc4e,1
+37,image4yolo,YOLOv3,detection,0.5102157592773438,60d2e89df5a7223a3678fc4e,1
+37,pred,YOLOv3,detection,9.880542755126953,60d2e89df5a7223a3678fc4e,1
+37,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.846406936645508,-,-
+37,End-to-End,N/A,e2e_latency,42.119503021240234,60d2e89df5a7223a3678fc4e,1
+38,decoding_payload,,preproc,2.8073787689208984,,
+38,clean_decoded_payload,,preproc,1.3592243194580078,,
+38,extract_img_data,,preproc,0.4134178161621094,,
+38,decompress_img,,preproc,24.86443519592285,,
+38,zenoh_pubsub,,preproc,25.42901039123535,,
+38,compress_img,,preproc,30.966,,
+38,Scheduling,dynamic_round_robin,scheduling,3.3979415893554688,60d2e89df5a7223a3678fc4e,1
+38,Pre-processing,N/A,preproc_det,17.979860305786133,-,-
+38,Object Detection,YOLOv3,detection,13.75722885131836,60d2e89df5a7223a3678fc4e,1
+38,from_numpy,YOLOv3,detection,0.030279159545898438,60d2e89df5a7223a3678fc4e,1
+38,image4yolo,YOLOv3,detection,0.7045269012451172,60d2e89df5a7223a3678fc4e,1
+38,pred,YOLOv3,detection,9.24062728881836,60d2e89df5a7223a3678fc4e,1
+38,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.8781166076660156,-,-
+38,End-to-End,N/A,e2e_latency,45.80259323120117,60d2e89df5a7223a3678fc4e,1
+39,decoding_payload,,preproc,2.6764869689941406,,
+39,clean_decoded_payload,,preproc,1.3051033020019531,,
+39,extract_img_data,,preproc,0.3876686096191406,,
+39,decompress_img,,preproc,24.404525756835938,,
+39,zenoh_pubsub,,preproc,-120.74804306030273,,
+39,compress_img,,preproc,30.813,,
+39,Scheduling,dynamic_round_robin,scheduling,3.343820571899414,60d2e89df5a7223a3678fc4e,1
+39,Pre-processing,N/A,preproc_det,20.14446258544922,-,-
+39,Object Detection,YOLOv3,detection,18.126487731933594,60d2e89df5a7223a3678fc4e,1
+39,from_numpy,YOLOv3,detection,0.03170967102050781,60d2e89df5a7223a3678fc4e,1
+39,image4yolo,YOLOv3,detection,0.46324729919433594,60d2e89df5a7223a3678fc4e,1
+39,pred,YOLOv3,detection,16.06464385986328,60d2e89df5a7223a3678fc4e,1
+39,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.9288997650146484,-,-
+39,End-to-End,N/A,e2e_latency,49.78799819946289,60d2e89df5a7223a3678fc4e,1
+40,decoding_payload,,preproc,2.6869773864746094,,
+40,clean_decoded_payload,,preproc,1.2383460998535156,,
+40,extract_img_data,,preproc,0.392913818359375,,
+40,decompress_img,,preproc,25.066375732421875,,
+40,zenoh_pubsub,,preproc,25.677919387817383,,
+40,compress_img,,preproc,31.9,,
+40,Scheduling,dynamic_round_robin,scheduling,3.900766372680664,60d2e89df5a7223a3678fc4e,1
+40,Pre-processing,N/A,preproc_det,18.03445816040039,-,-
+,sorting,Sorting Network,scheduling,0.21457672119140625,-,-
+40,Object Detection,YOLOv3,detection,14.57977294921875,60d2e89df5a7223a3678fc4e,1
+40,from_numpy,YOLOv3,detection,0.028848648071289062,60d2e89df5a7223a3678fc4e,1
+40,image4yolo,YOLOv3,detection,0.4458427429199219,60d2e89df5a7223a3678fc4e,1
+40,pred,YOLOv3,detection,9.992122650146484,60d2e89df5a7223a3678fc4e,1
+40,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.070831298828125,-,-
+40,End-to-End,N/A,e2e_latency,44.985294342041016,60d2e89df5a7223a3678fc4e,1
+41,decoding_payload,,preproc,2.7577877044677734,,
+41,clean_decoded_payload,,preproc,1.27410888671875,,
+41,extract_img_data,,preproc,0.3979206085205078,,
+41,decompress_img,,preproc,23.554563522338867,,
+41,zenoh_pubsub,,preproc,25.712251663208008,,
+41,compress_img,,preproc,30.825,,
+41,Scheduling,dynamic_round_robin,scheduling,3.2486915588378906,60d2e89df5a7223a3678fc4e,1
+41,Pre-processing,N/A,preproc_det,20.699739456176758,-,-
+41,Object Detection,YOLOv3,detection,13.93270492553711,60d2e89df5a7223a3678fc4e,1
+41,from_numpy,YOLOv3,detection,0.031948089599609375,60d2e89df5a7223a3678fc4e,1
+41,image4yolo,YOLOv3,detection,0.48160552978515625,60d2e89df5a7223a3678fc4e,1
+41,pred,YOLOv3,detection,10.566949844360352,60d2e89df5a7223a3678fc4e,1
+41,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.191564559936523,-,-
+41,End-to-End,N/A,e2e_latency,52.44922637939453,60d2e89df5a7223a3678fc4e,1
+42,decoding_payload,,preproc,2.9077529907226562,,
+42,clean_decoded_payload,,preproc,1.3904571533203125,,
+42,extract_img_data,,preproc,0.41794776916503906,,
+42,decompress_img,,preproc,25.265216827392578,,
+42,zenoh_pubsub,,preproc,25.70629119873047,,
+42,compress_img,,preproc,30.946,,
+42,Scheduling,dynamic_round_robin,scheduling,3.192424774169922,60d2e89df5a7223a3678fc4e,1
+42,Pre-processing,N/A,preproc_det,19.102096557617188,-,-
+42,Object Detection,YOLOv3,detection,13.550281524658203,60d2e89df5a7223a3678fc4e,1
+42,from_numpy,YOLOv3,detection,0.015974044799804688,60d2e89df5a7223a3678fc4e,1
+42,image4yolo,YOLOv3,detection,0.7033348083496094,60d2e89df5a7223a3678fc4e,1
+42,pred,YOLOv3,detection,9.051084518432617,60d2e89df5a7223a3678fc4e,1
+42,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.6268234252929688,-,-
+42,End-to-End,N/A,e2e_latency,47.148704528808594,60d2e89df5a7223a3678fc4e,1
+43,decoding_payload,,preproc,2.9265880584716797,,
+43,clean_decoded_payload,,preproc,1.4352798461914062,,
+43,extract_img_data,,preproc,0.4239082336425781,,
+43,decompress_img,,preproc,25.162220001220703,,
+43,zenoh_pubsub,,preproc,25.6807804107666,,
+43,compress_img,,preproc,30.835,,
+43,Scheduling,dynamic_round_robin,scheduling,3.317594528198242,60d2e89df5a7223a3678fc4e,1
+43,Pre-processing,N/A,preproc_det,17.838239669799805,-,-
+43,Object Detection,YOLOv3,detection,13.544082641601562,60d2e89df5a7223a3678fc4e,1
+43,from_numpy,YOLOv3,detection,0.03600120544433594,60d2e89df5a7223a3678fc4e,1
+43,image4yolo,YOLOv3,detection,0.4973411560058594,60d2e89df5a7223a3678fc4e,1
+43,pred,YOLOv3,detection,9.79924201965332,60d2e89df5a7223a3678fc4e,1
+43,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.06336784362793,-,-
+43,End-to-End,N/A,e2e_latency,45.47405242919922,60d2e89df5a7223a3678fc4e,1
+44,decoding_payload,,preproc,2.8586387634277344,,
+44,clean_decoded_payload,,preproc,1.310110092163086,,
+44,extract_img_data,,preproc,0.40459632873535156,,
+44,decompress_img,,preproc,24.843692779541016,,
+44,zenoh_pubsub,,preproc,-129.23169136047363,,
+44,compress_img,,preproc,31.866,,
+44,Scheduling,dynamic_round_robin,scheduling,3.1859874725341797,60d2e89df5a7223a3678fc4e,1
+44,Pre-processing,N/A,preproc_det,18.767833709716797,-,-
+,sorting,Sorting Network,scheduling,0.21266937255859375,-,-
+44,Object Detection,YOLOv3,detection,16.845226287841797,60d2e89df5a7223a3678fc4e,1
+44,from_numpy,YOLOv3,detection,0.027418136596679688,60d2e89df5a7223a3678fc4e,1
+44,image4yolo,YOLOv3,detection,0.7190704345703125,60d2e89df5a7223a3678fc4e,1
+44,pred,YOLOv3,detection,9.29403305053711,60d2e89df5a7223a3678fc4e,1
+44,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.894256591796875,-,-
+44,End-to-End,N/A,e2e_latency,51.82170867919922,60d2e89df5a7223a3678fc4e,1
+45,decoding_payload,,preproc,2.655029296875,,
+45,clean_decoded_payload,,preproc,1.2774467468261719,,
+45,extract_img_data,,preproc,0.3800392150878906,,
+45,decompress_img,,preproc,23.98371696472168,,
+45,zenoh_pubsub,,preproc,25.490760803222656,,
+45,compress_img,,preproc,30.982,,
+45,Scheduling,dynamic_round_robin,scheduling,3.7326812744140625,60d2e89df5a7223a3678fc4e,1
+45,Pre-processing,N/A,preproc_det,16.919612884521484,-,-
+45,Object Detection,YOLOv3,detection,13.720273971557617,60d2e89df5a7223a3678fc4e,1
+45,from_numpy,YOLOv3,detection,0.024318695068359375,60d2e89df5a7223a3678fc4e,1
+45,image4yolo,YOLOv3,detection,0.7455348968505859,60d2e89df5a7223a3678fc4e,1
+45,pred,YOLOv3,detection,9.211540222167969,60d2e89df5a7223a3678fc4e,1
+45,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.052877426147461,-,-
+45,End-to-End,N/A,e2e_latency,44.95859146118164,60d2e89df5a7223a3678fc4e,1
+46,decoding_payload,,preproc,2.8922557830810547,,
+46,clean_decoded_payload,,preproc,1.4085769653320312,,
+46,extract_img_data,,preproc,0.38552284240722656,,
+46,decompress_img,,preproc,25.526046752929688,,
+46,zenoh_pubsub,,preproc,25.526046752929688,,
+46,compress_img,,preproc,30.959,,
+46,Scheduling,dynamic_round_robin,scheduling,3.4165382385253906,60d2e89df5a7223a3678fc4e,1
+46,Pre-processing,N/A,preproc_det,17.81487464904785,-,-
+46,Object Detection,YOLOv3,detection,13.490915298461914,60d2e89df5a7223a3678fc4e,1
+46,from_numpy,YOLOv3,detection,0.03147125244140625,60d2e89df5a7223a3678fc4e,1
+46,image4yolo,YOLOv3,detection,0.4715919494628906,60d2e89df5a7223a3678fc4e,1
+46,pred,YOLOv3,detection,9.791135787963867,60d2e89df5a7223a3678fc4e,1
+46,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.3792724609375,-,-
+46,End-to-End,N/A,e2e_latency,47.53732681274414,60d2e89df5a7223a3678fc4e,1
+47,decoding_payload,,preproc,2.8505325317382812,,
+47,clean_decoded_payload,,preproc,1.3751983642578125,,
+47,extract_img_data,,preproc,0.4100799560546875,,
+47,decompress_img,,preproc,25.19845962524414,,
+47,zenoh_pubsub,,preproc,25.31743049621582,,
+47,compress_img,,preproc,30.779,,
+47,Scheduling,dynamic_round_robin,scheduling,3.2281875610351562,60d2e89df5a7223a3678fc4e,1
+47,Pre-processing,N/A,preproc_det,18.605947494506836,-,-
+47,Object Detection,YOLOv3,detection,16.82305335998535,60d2e89df5a7223a3678fc4e,1
+47,from_numpy,YOLOv3,detection,0.023365020751953125,60d2e89df5a7223a3678fc4e,1
+47,image4yolo,YOLOv3,detection,0.8230209350585938,60d2e89df5a7223a3678fc4e,1
+47,pred,YOLOv3,detection,12.92562484741211,60d2e89df5a7223a3678fc4e,1
+47,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.4215450286865234,-,-
+47,End-to-End,N/A,e2e_latency,47.54924774169922,60d2e89df5a7223a3678fc4e,1
+48,decoding_payload,,preproc,2.759695053100586,,
+48,clean_decoded_payload,,preproc,1.344442367553711,,
+48,extract_img_data,,preproc,0.40078163146972656,,
+48,decompress_img,,preproc,26.137113571166992,,
+48,zenoh_pubsub,,preproc,25.376558303833008,,
+48,compress_img,,preproc,30.921,,
+48,Scheduling,dynamic_round_robin,scheduling,3.386259078979492,60d2e89df5a7223a3678fc4e,1
+48,Pre-processing,N/A,preproc_det,18.52893829345703,-,-
+,sorting,Sorting Network,scheduling,0.21386146545410156,-,-
+48,Object Detection,YOLOv3,detection,13.978004455566406,60d2e89df5a7223a3678fc4e,1
+48,from_numpy,YOLOv3,detection,0.03147125244140625,60d2e89df5a7223a3678fc4e,1
+48,image4yolo,YOLOv3,detection,0.4820823669433594,60d2e89df5a7223a3678fc4e,1
+48,pred,YOLOv3,detection,9.5672607421875,60d2e89df5a7223a3678fc4e,1
+48,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.566835403442383,-,-
+48,End-to-End,N/A,e2e_latency,51.46145820617676,60d2e89df5a7223a3678fc4e,1
+49,decoding_payload,,preproc,2.6619434356689453,,
+49,clean_decoded_payload,,preproc,1.2516975402832031,,
+49,extract_img_data,,preproc,0.4031658172607422,,
+49,decompress_img,,preproc,23.7576961517334,,
+49,zenoh_pubsub,,preproc,-874.8805522918701,,
+49,compress_img,,preproc,31.384,,
+49,Pre-processing,N/A,preproc_det,19.294023513793945,-,-
+49,Scheduling,dynamic_round_robin,scheduling,3.299236297607422,60d2e89df5a7223a3678fc4e,1
+49,Object Detection,YOLOv3,detection,14.475345611572266,60d2e89df5a7223a3678fc4e,1
+49,from_numpy,YOLOv3,detection,0.02956390380859375,60d2e89df5a7223a3678fc4e,1
+49,image4yolo,YOLOv3,detection,0.4551410675048828,60d2e89df5a7223a3678fc4e,1
+49,pred,YOLOv3,detection,9.529829025268555,60d2e89df5a7223a3678fc4e,1
+49,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.877494812011719,-,-
+49,End-to-End,N/A,e2e_latency,52.857398986816406,60d2e89df5a7223a3678fc4e,1
+50,decoding_payload,,preproc,2.674102783203125,,
+50,clean_decoded_payload,,preproc,1.4202594757080078,,
+50,extract_img_data,,preproc,0.44536590576171875,,
+50,decompress_img,,preproc,22.63355255126953,,
+50,zenoh_pubsub,,preproc,25.57682991027832,,
+50,compress_img,,preproc,31.771,,
+50,Scheduling,dynamic_round_robin,scheduling,3.1948089599609375,60d2e89df5a7223a3678fc4e,1
+50,Pre-processing,N/A,preproc_det,17.544984817504883,-,-
+50,Object Detection,YOLOv3,detection,13.816356658935547,60d2e89df5a7223a3678fc4e,1
+50,from_numpy,YOLOv3,detection,0.02765655517578125,60d2e89df5a7223a3678fc4e,1
+50,image4yolo,YOLOv3,detection,0.7853507995605469,60d2e89df5a7223a3678fc4e,1
+50,pred,YOLOv3,detection,9.51528549194336,60d2e89df5a7223a3678fc4e,1
+50,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.350185394287109,-,-
+50,End-to-End,N/A,e2e_latency,46.63372039794922,60d2e89df5a7223a3678fc4e,1
+51,decoding_payload,,preproc,2.9129981994628906,,
+51,clean_decoded_payload,,preproc,1.4111995697021484,,
+51,extract_img_data,,preproc,0.43010711669921875,,
+51,decompress_img,,preproc,24.53780174255371,,
+51,zenoh_pubsub,,preproc,25.241613388061523,,
+51,compress_img,,preproc,30.867,,
+51,Scheduling,dynamic_round_robin,scheduling,3.265380859375,60d2e89df5a7223a3678fc4e,1
+51,Pre-processing,N/A,preproc_det,18.518924713134766,-,-
+51,Object Detection,YOLOv3,detection,13.472318649291992,60d2e89df5a7223a3678fc4e,1
+51,from_numpy,YOLOv3,detection,0.03457069396972656,60d2e89df5a7223a3678fc4e,1
+51,image4yolo,YOLOv3,detection,0.4699230194091797,60d2e89df5a7223a3678fc4e,1
+51,pred,YOLOv3,detection,9.619951248168945,60d2e89df5a7223a3678fc4e,1
+51,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.9262771606445312,-,-
+51,End-to-End,N/A,e2e_latency,45.455217361450195,60d2e89df5a7223a3678fc4e,1
+52,decoding_payload,,preproc,2.79998779296875,,
+52,clean_decoded_payload,,preproc,1.3027191162109375,,
+52,extract_img_data,,preproc,0.4024505615234375,,
+52,decompress_img,,preproc,25.519609451293945,,
+52,zenoh_pubsub,,preproc,25.530338287353516,,
+52,compress_img,,preproc,31.663,,
+52,Scheduling,dynamic_round_robin,scheduling,3.712177276611328,60d2e89df5a7223a3678fc4e,1
+52,Pre-processing,N/A,preproc_det,18.484830856323242,-,-
+,sorting,Sorting Network,scheduling,0.20766258239746094,-,-
+52,Object Detection,YOLOv3,detection,13.56649398803711,60d2e89df5a7223a3678fc4e,1
+52,from_numpy,YOLOv3,detection,0.033855438232421875,60d2e89df5a7223a3678fc4e,1
+52,image4yolo,YOLOv3,detection,0.4935264587402344,60d2e89df5a7223a3678fc4e,1
+52,pred,YOLOv3,detection,10.527372360229492,60d2e89df5a7223a3678fc4e,1
+52,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.330158233642578,-,-
+52,End-to-End,N/A,e2e_latency,43.53213310241699,60d2e89df5a7223a3678fc4e,1
+53,decoding_payload,,preproc,2.7616024017333984,,
+53,clean_decoded_payload,,preproc,1.2836456298828125,,
+53,extract_img_data,,preproc,0.4024505615234375,,
+53,decompress_img,,preproc,24.533748626708984,,
+53,zenoh_pubsub,,preproc,25.493144989013672,,
+53,compress_img,,preproc,30.908,,
+53,Scheduling,dynamic_round_robin,scheduling,3.419637680053711,60d2e89df5a7223a3678fc4e,1
+53,Pre-processing,N/A,preproc_det,17.366409301757812,-,-
+53,Object Detection,YOLOv3,detection,13.52834701538086,60d2e89df5a7223a3678fc4e,1
+53,from_numpy,YOLOv3,detection,0.030279159545898438,60d2e89df5a7223a3678fc4e,1
+53,image4yolo,YOLOv3,detection,0.476837158203125,60d2e89df5a7223a3678fc4e,1
+53,pred,YOLOv3,detection,9.749174118041992,60d2e89df5a7223a3678fc4e,1
+53,Extra Pipeline,PiH Candidate Selection,candidate_selection,5.021095275878906,-,-
+53,End-to-End,N/A,e2e_latency,45.86219787597656,60d2e89df5a7223a3678fc4e,1
+54,decoding_payload,,preproc,2.7923583984375,,
+54,clean_decoded_payload,,preproc,1.3217926025390625,,
+54,extract_img_data,,preproc,0.40340423583984375,,
+54,decompress_img,,preproc,24.89304542541504,,
+54,zenoh_pubsub,,preproc,-830.3074836730957,,
+54,compress_img,,preproc,31.54,,
+54,Scheduling,dynamic_round_robin,scheduling,3.5419464111328125,60d2e89df5a7223a3678fc4e,1
+54,Pre-processing,N/A,preproc_det,18.08309555053711,-,-
+54,Object Detection,YOLOv3,detection,13.618946075439453,60d2e89df5a7223a3678fc4e,1
+54,from_numpy,YOLOv3,detection,0.0209808349609375,60d2e89df5a7223a3678fc4e,1
+54,image4yolo,YOLOv3,detection,0.7102489471435547,60d2e89df5a7223a3678fc4e,1
+54,pred,YOLOv3,detection,9.15074348449707,60d2e89df5a7223a3678fc4e,1
+54,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.138946533203125,-,-
+54,End-to-End,N/A,e2e_latency,47.48082160949707,60d2e89df5a7223a3678fc4e,1
+55,decoding_payload,,preproc,2.915620803833008,,
+55,clean_decoded_payload,,preproc,1.4264583587646484,,
+55,extract_img_data,,preproc,0.41484832763671875,,
+55,decompress_img,,preproc,24.198532104492188,,
+55,zenoh_pubsub,,preproc,25.46834945678711,,
+55,compress_img,,preproc,30.947,,
+55,Pre-processing,N/A,preproc_det,17.42386817932129,-,-
+55,Scheduling,dynamic_round_robin,scheduling,3.4928321838378906,60d2e89df5a7223a3678fc4e,1
+55,Object Detection,YOLOv3,detection,13.9007568359375,60d2e89df5a7223a3678fc4e,1
+55,from_numpy,YOLOv3,detection,0.024557113647460938,60d2e89df5a7223a3678fc4e,1
+55,image4yolo,YOLOv3,detection,0.8656978607177734,60d2e89df5a7223a3678fc4e,1
+55,pred,YOLOv3,detection,9.517669677734375,60d2e89df5a7223a3678fc4e,1
+55,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.2095184326171875,-,-
+55,End-to-End,N/A,e2e_latency,43.7312126159668,60d2e89df5a7223a3678fc4e,1
+56,decoding_payload,,preproc,1.7402172088623047,,
+56,clean_decoded_payload,,preproc,1.1129379272460938,,
+56,extract_img_data,,preproc,0.3223419189453125,,
+56,decompress_img,,preproc,22.13907241821289,,
+56,zenoh_pubsub,,preproc,25.247812271118164,,
+56,compress_img,,preproc,31.331,,
+56,Scheduling,dynamic_round_robin,scheduling,1.773834228515625,60d2e89df5a7223a3678fc4e,1
+56,Pre-processing,N/A,preproc_det,17.826318740844727,-,-
+,sorting,Sorting Network,scheduling,0.20623207092285156,-,-
+56,Object Detection,YOLOv3,detection,19.263029098510742,60d2e89df5a7223a3678fc4e,1
+56,from_numpy,YOLOv3,detection,0.041961669921875,60d2e89df5a7223a3678fc4e,1
+56,image4yolo,YOLOv3,detection,1.4836788177490234,60d2e89df5a7223a3678fc4e,1
+56,pred,YOLOv3,detection,16.34955406188965,60d2e89df5a7223a3678fc4e,1
+56,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.503561019897461,-,-
+56,End-to-End,N/A,e2e_latency,51.8798828125,60d2e89df5a7223a3678fc4e,1
+57,decoding_payload,,preproc,2.923250198364258,,
+57,clean_decoded_payload,,preproc,1.3849735260009766,,
+57,extract_img_data,,preproc,0.42247772216796875,,
+57,decompress_img,,preproc,25.625228881835938,,
+57,zenoh_pubsub,,preproc,25.430679321289062,,
+57,compress_img,,preproc,31.133,,
+57,Scheduling,dynamic_round_robin,scheduling,3.2351016998291016,60d2e89df5a7223a3678fc4e,1
+57,Pre-processing,N/A,preproc_det,18.147945404052734,-,-
+57,Object Detection,YOLOv3,detection,14.037132263183594,60d2e89df5a7223a3678fc4e,1
+57,from_numpy,YOLOv3,detection,0.029325485229492188,60d2e89df5a7223a3678fc4e,1
+57,image4yolo,YOLOv3,detection,0.4763603210449219,60d2e89df5a7223a3678fc4e,1
+57,pred,YOLOv3,detection,11.520147323608398,60d2e89df5a7223a3678fc4e,1
+57,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.050731658935547,-,-
+57,End-to-End,N/A,e2e_latency,48.06804656982422,60d2e89df5a7223a3678fc4e,1
+58,decoding_payload,,preproc,3.025531768798828,,
+58,clean_decoded_payload,,preproc,1.4438629150390625,,
+58,extract_img_data,,preproc,0.44608116149902344,,
+58,decompress_img,,preproc,25.617361068725586,,
+58,zenoh_pubsub,,preproc,25.615215301513672,,
+58,compress_img,,preproc,31.162,,
+58,Scheduling,dynamic_round_robin,scheduling,3.5338401794433594,60d2e89df5a7223a3678fc4e,1
+58,Pre-processing,N/A,preproc_det,11.078119277954102,-,-
+58,Object Detection,YOLOv3,detection,18.818140029907227,60d2e89df5a7223a3678fc4e,1
+58,from_numpy,YOLOv3,detection,0.031232833862304688,60d2e89df5a7223a3678fc4e,1
+58,image4yolo,YOLOv3,detection,0.4756450653076172,60d2e89df5a7223a3678fc4e,1
+58,pred,YOLOv3,detection,16.97063446044922,60d2e89df5a7223a3678fc4e,1
+58,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.904581069946289,-,-
+58,End-to-End,N/A,e2e_latency,44.85487937927246,60d2e89df5a7223a3678fc4e,1
+59,decoding_payload,,preproc,2.777099609375,,
+59,clean_decoded_payload,,preproc,1.3244152069091797,,
+59,extract_img_data,,preproc,0.4067420959472656,,
+59,decompress_img,,preproc,25.67434310913086,,
+59,zenoh_pubsub,,preproc,-654.7174453735352,,
+59,compress_img,,preproc,30.834,,
+59,Scheduling,dynamic_round_robin,scheduling,3.4236907958984375,60d2e89df5a7223a3678fc4e,1
+59,Pre-processing,N/A,preproc_det,19.27328109741211,-,-
+59,Object Detection,YOLOv3,detection,13.579368591308594,60d2e89df5a7223a3678fc4e,1
+59,from_numpy,YOLOv3,detection,0.029802322387695312,60d2e89df5a7223a3678fc4e,1
+59,image4yolo,YOLOv3,detection,0.7069110870361328,60d2e89df5a7223a3678fc4e,1
+59,pred,YOLOv3,detection,8.912324905395508,60d2e89df5a7223a3678fc4e,1
+59,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.6139488220214844,-,-
+59,End-to-End,N/A,e2e_latency,44.07858848571777,60d2e89df5a7223a3678fc4e,1
+60,decoding_payload,,preproc,2.8944015502929688,,
+60,clean_decoded_payload,,preproc,1.4166831970214844,,
+60,extract_img_data,,preproc,0.4146099090576172,,
+60,decompress_img,,preproc,23.47564697265625,,
+60,zenoh_pubsub,,preproc,25.61044692993164,,
+60,compress_img,,preproc,31.327,,
+60,Scheduling,dynamic_round_robin,scheduling,3.3528804779052734,60d2e89df5a7223a3678fc4e,1
+60,Pre-processing,N/A,preproc_det,18.73636245727539,-,-
+,sorting,Sorting Network,scheduling,0.202178955078125,-,-
+60,Object Detection,YOLOv3,detection,18.719196319580078,60d2e89df5a7223a3678fc4e,1
+60,from_numpy,YOLOv3,detection,0.033855438232421875,60d2e89df5a7223a3678fc4e,1
+60,image4yolo,YOLOv3,detection,0.4889965057373047,60d2e89df5a7223a3678fc4e,1
+60,pred,YOLOv3,detection,16.68071746826172,60d2e89df5a7223a3678fc4e,1
+60,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.576517105102539,-,-
+60,End-to-End,N/A,e2e_latency,51.93638801574707,60d2e89df5a7223a3678fc4e,1
+61,decoding_payload,,preproc,2.8853416442871094,,
+61,clean_decoded_payload,,preproc,1.3823509216308594,,
+61,extract_img_data,,preproc,0.4169940948486328,,
+61,decompress_img,,preproc,24.60503578186035,,
+61,zenoh_pubsub,,preproc,25.660276412963867,,
+61,compress_img,,preproc,30.856,,
+61,Scheduling,dynamic_round_robin,scheduling,3.3898353576660156,60d2e89df5a7223a3678fc4e,1
+61,Pre-processing,N/A,preproc_det,18.770456314086914,-,-
+61,Object Detection,YOLOv3,detection,13.506650924682617,60d2e89df5a7223a3678fc4e,1
+61,from_numpy,YOLOv3,detection,0.01621246337890625,60d2e89df5a7223a3678fc4e,1
+61,image4yolo,YOLOv3,detection,0.6990432739257812,60d2e89df5a7223a3678fc4e,1
+61,pred,YOLOv3,detection,11.07478141784668,60d2e89df5a7223a3678fc4e,1
+61,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.4704208374023438,-,-
+61,End-to-End,N/A,e2e_latency,46.022653579711914,60d2e89df5a7223a3678fc4e,1
+62,decoding_payload,,preproc,2.957582473754883,,
+62,clean_decoded_payload,,preproc,1.4519691467285156,,
+62,extract_img_data,,preproc,0.3952980041503906,,
+62,decompress_img,,preproc,40.8780574798584,,
+62,zenoh_pubsub,,preproc,25.78425407409668,,
+62,compress_img,,preproc,33.603,,
+62,Scheduling,dynamic_round_robin,scheduling,2.3005008697509766,60d2e89df5a7223a3678fc4e,1
+62,Pre-processing,N/A,preproc_det,18.024206161499023,-,-
+62,Object Detection,YOLOv3,detection,18.59307289123535,60d2e89df5a7223a3678fc4e,1
+62,from_numpy,YOLOv3,detection,0.04673004150390625,60d2e89df5a7223a3678fc4e,1
+62,image4yolo,YOLOv3,detection,0.6444454193115234,60d2e89df5a7223a3678fc4e,1
+62,pred,YOLOv3,detection,16.37578010559082,60d2e89df5a7223a3678fc4e,1
+62,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.8657188415527344,-,-
+62,End-to-End,N/A,e2e_latency,52.28281021118164,60d2e89df5a7223a3678fc4e,1
+63,decoding_payload,,preproc,2.8285980224609375,,
+63,clean_decoded_payload,,preproc,1.5723705291748047,,
+63,extract_img_data,,preproc,0.4677772521972656,,
+63,decompress_img,,preproc,25.247812271118164,,
+63,zenoh_pubsub,,preproc,25.8638858795166,,
+63,compress_img,,preproc,33.156,,
+63,Scheduling,dynamic_round_robin,scheduling,3.7186145782470703,60d2e89df5a7223a3678fc4e,1
+63,Pre-processing,N/A,preproc_det,19.251346588134766,-,-
+63,Object Detection,YOLOv3,detection,13.988971710205078,60d2e89df5a7223a3678fc4e,1
+63,from_numpy,YOLOv3,detection,0.028848648071289062,60d2e89df5a7223a3678fc4e,1
+63,image4yolo,YOLOv3,detection,0.8666515350341797,60d2e89df5a7223a3678fc4e,1
+63,pred,YOLOv3,detection,9.517431259155273,60d2e89df5a7223a3678fc4e,1
+63,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.348516464233398,-,-
+63,End-to-End,N/A,e2e_latency,48.8889217376709,60d2e89df5a7223a3678fc4e,1
+64,decoding_payload,,preproc,2.9871463775634766,,
+64,clean_decoded_payload,,preproc,1.4524459838867188,,
+64,extract_img_data,,preproc,0.4687309265136719,,
+64,decompress_img,,preproc,24.37138557434082,,
+64,zenoh_pubsub,,preproc,-204.15759086608887,,
+64,compress_img,,preproc,33.258,,
+64,Scheduling,dynamic_round_robin,scheduling,3.4182071685791016,60d2e89df5a7223a3678fc4e,1
+64,Pre-processing,N/A,preproc_det,23.17953109741211,-,-
+,sorting,Sorting Network,scheduling,0.21839141845703125,-,-
+64,Object Detection,YOLOv3,detection,13.939857482910156,60d2e89df5a7223a3678fc4e,1
+64,from_numpy,YOLOv3,detection,0.026464462280273438,60d2e89df5a7223a3678fc4e,1
+64,image4yolo,YOLOv3,detection,0.9150505065917969,60d2e89df5a7223a3678fc4e,1
+64,pred,YOLOv3,detection,9.934186935424805,60d2e89df5a7223a3678fc4e,1
+64,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.908395767211914,-,-
+64,End-to-End,N/A,e2e_latency,49.99542236328125,60d2e89df5a7223a3678fc4e,1
+65,decoding_payload,,preproc,2.9947757720947266,,
+65,clean_decoded_payload,,preproc,1.4362335205078125,,
+65,extract_img_data,,preproc,0.4394054412841797,,
+65,decompress_img,,preproc,24.051666259765625,,
+65,zenoh_pubsub,,preproc,25.4061222076416,,
+65,compress_img,,preproc,30.837,,
+65,Scheduling,dynamic_round_robin,scheduling,3.7615299224853516,60d2e89df5a7223a3678fc4e,1
+65,Pre-processing,N/A,preproc_det,18.21613311767578,-,-
+65,Object Detection,YOLOv3,detection,18.09215545654297,60d2e89df5a7223a3678fc4e,1
+65,from_numpy,YOLOv3,detection,0.04410743713378906,60d2e89df5a7223a3678fc4e,1
+65,image4yolo,YOLOv3,detection,0.6067752838134766,60d2e89df5a7223a3678fc4e,1
+65,pred,YOLOv3,detection,16.111135482788086,60d2e89df5a7223a3678fc4e,1
+65,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.7004947662353516,-,-
+65,End-to-End,N/A,e2e_latency,51.94878578186035,60d2e89df5a7223a3678fc4e,1
+66,decoding_payload,,preproc,2.7501583099365234,,
+66,clean_decoded_payload,,preproc,1.30462646484375,,
+66,extract_img_data,,preproc,0.39196014404296875,,
+66,decompress_img,,preproc,24.866342544555664,,
+66,zenoh_pubsub,,preproc,25.37083625793457,,
+66,compress_img,,preproc,31.389,,
+66,Scheduling,dynamic_round_robin,scheduling,3.2453536987304688,60d2e89df5a7223a3678fc4e,1
+66,Pre-processing,N/A,preproc_det,19.12522315979004,-,-
+66,Object Detection,YOLOv3,detection,20.078659057617188,60d2e89df5a7223a3678fc4e,1
+66,from_numpy,YOLOv3,detection,0.03314018249511719,60d2e89df5a7223a3678fc4e,1
+66,image4yolo,YOLOv3,detection,0.47850608825683594,60d2e89df5a7223a3678fc4e,1
+66,pred,YOLOv3,detection,18.143177032470703,60d2e89df5a7223a3678fc4e,1
+66,Extra Pipeline,PiH Candidate Selection,candidate_selection,2.6192665100097656,-,-
+66,End-to-End,N/A,e2e_latency,53.13372611999512,60d2e89df5a7223a3678fc4e,1
+67,decoding_payload,,preproc,2.868175506591797,,
+67,clean_decoded_payload,,preproc,1.3630390167236328,,
+67,extract_img_data,,preproc,0.4150867462158203,,
+67,decompress_img,,preproc,24.98006820678711,,
+67,zenoh_pubsub,,preproc,25.608062744140625,,
+67,compress_img,,preproc,30.948,,
+67,Scheduling,dynamic_round_robin,scheduling,3.4346580505371094,60d2e89df5a7223a3678fc4e,1
+67,Pre-processing,N/A,preproc_det,17.783164978027344,-,-
+67,Object Detection,YOLOv3,detection,13.492107391357422,60d2e89df5a7223a3678fc4e,1
+67,from_numpy,YOLOv3,detection,0.022172927856445312,60d2e89df5a7223a3678fc4e,1
+67,image4yolo,YOLOv3,detection,0.6735324859619141,60d2e89df5a7223a3678fc4e,1
+67,pred,YOLOv3,detection,9.17196273803711,60d2e89df5a7223a3678fc4e,1
+67,Extra Pipeline,PiH Candidate Selection,candidate_selection,2.4352073669433594,-,-
+67,End-to-End,N/A,e2e_latency,43.39766502380371,60d2e89df5a7223a3678fc4e,1
+68,decoding_payload,,preproc,2.7763843536376953,,
+68,clean_decoded_payload,,preproc,1.3642311096191406,,
+68,extract_img_data,,preproc,0.41031837463378906,,
+68,decompress_img,,preproc,24.386167526245117,,
+68,zenoh_pubsub,,preproc,25.597572326660156,,
+68,compress_img,,preproc,30.984,,
+68,Scheduling,dynamic_round_robin,scheduling,3.2935142517089844,60d2e89df5a7223a3678fc4e,1
+68,Pre-processing,N/A,preproc_det,18.527984619140625,-,-
+68,Object Detection,YOLOv3,detection,18.599987030029297,60d2e89df5a7223a3678fc4e,1
+,sorting,Sorting Network,scheduling,0.2067089080810547,-,-
+68,from_numpy,YOLOv3,detection,0.03147125244140625,60d2e89df5a7223a3678fc4e,1
+68,image4yolo,YOLOv3,detection,0.4696846008300781,60d2e89df5a7223a3678fc4e,1
+68,pred,YOLOv3,detection,15.473365783691406,60d2e89df5a7223a3678fc4e,1
+68,Extra Pipeline,PiH Candidate Selection,candidate_selection,2.87628173828125,-,-
+68,End-to-End,N/A,e2e_latency,51.270484924316406,60d2e89df5a7223a3678fc4e,1
+69,decoding_payload,,preproc,2.7604103088378906,,
+69,clean_decoded_payload,,preproc,1.3394355773925781,,
+69,extract_img_data,,preproc,0.41604042053222656,,
+69,decompress_img,,preproc,23.972749710083008,,
+69,zenoh_pubsub,,preproc,25.593996047973633,,
+69,compress_img,,preproc,30.871,,
+69,Scheduling,dynamic_round_robin,scheduling,3.3416748046875,60d2e89df5a7223a3678fc4e,1
+69,Pre-processing,N/A,preproc_det,20.04265785217285,-,-
+69,Object Detection,YOLOv3,detection,13.823747634887695,60d2e89df5a7223a3678fc4e,1
+69,from_numpy,YOLOv3,detection,0.040531158447265625,60d2e89df5a7223a3678fc4e,1
+69,image4yolo,YOLOv3,detection,0.7898807525634766,60d2e89df5a7223a3678fc4e,1
+69,pred,YOLOv3,detection,9.586334228515625,60d2e89df5a7223a3678fc4e,1
+69,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.370450973510742,-,-
+69,End-to-End,N/A,e2e_latency,50.946712493896484,60d2e89df5a7223a3678fc4e,1
+70,decoding_payload,,preproc,2.733945846557617,,
+70,clean_decoded_payload,,preproc,1.4412403106689453,,
+70,extract_img_data,,preproc,0.42176246643066406,,
+70,decompress_img,,preproc,23.80228042602539,,
+70,zenoh_pubsub,,preproc,25.671005249023438,,
+70,compress_img,,preproc,32.567,,
+70,Scheduling,dynamic_round_robin,scheduling,3.2129287719726562,60d2e89df5a7223a3678fc4e,1
+70,Pre-processing,N/A,preproc_det,18.548965454101562,-,-
+70,Object Detection,YOLOv3,detection,18.95761489868164,60d2e89df5a7223a3678fc4e,1
+70,from_numpy,YOLOv3,detection,0.03814697265625,60d2e89df5a7223a3678fc4e,1
+70,image4yolo,YOLOv3,detection,0.5450248718261719,60d2e89df5a7223a3678fc4e,1
+70,pred,YOLOv3,detection,16.445398330688477,60d2e89df5a7223a3678fc4e,1
+70,Extra Pipeline,PiH Candidate Selection,candidate_selection,2.4487972259521484,-,-
+70,End-to-End,N/A,e2e_latency,49.83663558959961,60d2e89df5a7223a3678fc4e,1
+71,decoding_payload,,preproc,2.6595592498779297,,
+71,clean_decoded_payload,,preproc,1.2941360473632812,,
+71,extract_img_data,,preproc,0.36525726318359375,,
+71,decompress_img,,preproc,24.690628051757812,,
+71,zenoh_pubsub,,preproc,25.734901428222656,,
+71,compress_img,,preproc,30.912,,
+71,Scheduling,dynamic_round_robin,scheduling,0.9882450103759766,60d2e89df5a7223a3678fc4e,1
+71,Pre-processing,N/A,preproc_det,17.83442497253418,-,-
+71,Object Detection,YOLOv3,detection,22.0184326171875,60d2e89df5a7223a3678fc4e,1
+71,from_numpy,YOLOv3,detection,0.045299530029296875,60d2e89df5a7223a3678fc4e,1
+71,image4yolo,YOLOv3,detection,0.5242824554443359,60d2e89df5a7223a3678fc4e,1
+71,pred,YOLOv3,detection,18.181324005126953,60d2e89df5a7223a3678fc4e,1
+71,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.152536392211914,-,-
+71,End-to-End,N/A,e2e_latency,51.06544494628906,60d2e89df5a7223a3678fc4e,1
+72,decoding_payload,,preproc,2.9761791229248047,,
+72,clean_decoded_payload,,preproc,1.4421939849853516,,
+72,extract_img_data,,preproc,0.4019737243652344,,
+72,decompress_img,,preproc,26.05748176574707,,
+72,zenoh_pubsub,,preproc,25.725841522216797,,
+72,compress_img,,preproc,31.468,,
+72,Scheduling,dynamic_round_robin,scheduling,3.454446792602539,60d2e89df5a7223a3678fc4e,1
+72,Pre-processing,N/A,preproc_det,18.252134323120117,-,-
+,sorting,Sorting Network,scheduling,0.1251697540283203,-,-
+72,Object Detection,YOLOv3,detection,19.049882888793945,60d2e89df5a7223a3678fc4e,1
+72,from_numpy,YOLOv3,detection,0.03504753112792969,60d2e89df5a7223a3678fc4e,1
+72,image4yolo,YOLOv3,detection,0.514984130859375,60d2e89df5a7223a3678fc4e,1
+72,pred,YOLOv3,detection,16.62755012512207,60d2e89df5a7223a3678fc4e,1
+72,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.553628921508789,-,-
+72,End-to-End,N/A,e2e_latency,52.495718002319336,60d2e89df5a7223a3678fc4e,1
+73,decoding_payload,,preproc,2.694368362426758,,
+73,clean_decoded_payload,,preproc,1.291036605834961,,
+73,extract_img_data,,preproc,0.41985511779785156,,
+73,decompress_img,,preproc,30.36189079284668,,
+73,zenoh_pubsub,,preproc,25.70176124572754,,
+73,compress_img,,preproc,30.874,,
+73,Scheduling,dynamic_round_robin,scheduling,1.7261505126953125,60d2e89df5a7223a3678fc4e,1
+73,Pre-processing,N/A,preproc_det,13.418197631835938,-,-
+73,Object Detection,YOLOv3,detection,16.5708065032959,60d2e89df5a7223a3678fc4e,1
+73,from_numpy,YOLOv3,detection,0.0362396240234375,60d2e89df5a7223a3678fc4e,1
+73,image4yolo,YOLOv3,detection,0.5009174346923828,60d2e89df5a7223a3678fc4e,1
+73,pred,YOLOv3,detection,13.547658920288086,60d2e89df5a7223a3678fc4e,1
+73,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.124641418457031,-,-
+73,End-to-End,N/A,e2e_latency,45.2425479888916,60d2e89df5a7223a3678fc4e,1
+74,decoding_payload,,preproc,2.733469009399414,,
+74,clean_decoded_payload,,preproc,1.2731552124023438,,
+74,extract_img_data,,preproc,0.39505958557128906,,
+74,decompress_img,,preproc,24.263381958007812,,
+74,zenoh_pubsub,,preproc,25.789499282836914,,
+74,compress_img,,preproc,31.25,,
+74,Scheduling,dynamic_round_robin,scheduling,3.5626888275146484,60d2e89df5a7223a3678fc4e,1
+74,Pre-processing,N/A,preproc_det,11.131525039672852,-,-
+74,Object Detection,YOLOv3,detection,20.073652267456055,60d2e89df5a7223a3678fc4e,1
+74,from_numpy,YOLOv3,detection,0.02956390380859375,60d2e89df5a7223a3678fc4e,1
+74,image4yolo,YOLOv3,detection,0.46133995056152344,60d2e89df5a7223a3678fc4e,1
+74,pred,YOLOv3,detection,17.493486404418945,60d2e89df5a7223a3678fc4e,1
+74,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.978729248046875,-,-
+74,End-to-End,N/A,e2e_latency,45.83859443664551,60d2e89df5a7223a3678fc4e,1
+75,decoding_payload,,preproc,2.7022361755371094,,
+75,clean_decoded_payload,,preproc,1.2981891632080078,,
+75,extract_img_data,,preproc,0.3993511199951172,,
+75,decompress_img,,preproc,25.087833404541016,,
+75,zenoh_pubsub,,preproc,25.73370933532715,,
+75,compress_img,,preproc,30.924,,
+75,Scheduling,dynamic_round_robin,scheduling,3.9336681365966797,60d2e89df5a7223a3678fc4e,1
+75,Pre-processing,N/A,preproc_det,18.736839294433594,-,-
+75,Object Detection,YOLOv3,detection,13.443231582641602,60d2e89df5a7223a3678fc4e,1
+75,from_numpy,YOLOv3,detection,0.015020370483398438,60d2e89df5a7223a3678fc4e,1
+75,image4yolo,YOLOv3,detection,0.7088184356689453,60d2e89df5a7223a3678fc4e,1
+75,pred,YOLOv3,detection,8.556365966796875,60d2e89df5a7223a3678fc4e,1
+75,Extra Pipeline,PiH Candidate Selection,candidate_selection,7.169961929321289,-,-
+75,End-to-End,N/A,e2e_latency,49.54934120178223,60d2e89df5a7223a3678fc4e,1
+76,decoding_payload,,preproc,2.8336048126220703,,
+76,clean_decoded_payload,,preproc,1.4522075653076172,,
+76,extract_img_data,,preproc,0.4277229309082031,,
+76,decompress_img,,preproc,24.991750717163086,,
+76,zenoh_pubsub,,preproc,25.751113891601562,,
+76,Pre-processing,N/A,preproc_det,11.237621307373047,-,-
+76,compress_img,,preproc,30.996,,
+,sorting,Sorting Network,scheduling,0.18906593322753906,-,-
+76,Object Detection,YOLOv3,detection,15.44189453125,60d2e89df5a7223a3678fc4e,1
+76,Scheduling,dynamic_round_robin,scheduling,3.225564956665039,60d2e89df5a7223a3678fc4e,1
+76,from_numpy,YOLOv3,detection,0.03981590270996094,60d2e89df5a7223a3678fc4e,1
+76,image4yolo,YOLOv3,detection,0.5910396575927734,60d2e89df5a7223a3678fc4e,1
+76,pred,YOLOv3,detection,13.52071762084961,60d2e89df5a7223a3678fc4e,1
+76,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.6051273345947266,-,-
+76,End-to-End,N/A,e2e_latency,36.81612014770508,60d2e89df5a7223a3678fc4e,1
+77,decoding_payload,,preproc,2.694368362426758,,
+77,clean_decoded_payload,,preproc,1.3325214385986328,,
+77,extract_img_data,,preproc,0.39839744567871094,,
+77,decompress_img,,preproc,24.604320526123047,,
+77,zenoh_pubsub,,preproc,25.738239288330078,,
+77,compress_img,,preproc,30.918,,
+77,Scheduling,dynamic_round_robin,scheduling,3.5562515258789062,60d2e89df5a7223a3678fc4e,1
+77,Pre-processing,N/A,preproc_det,15.766620635986328,-,-
+77,Object Detection,YOLOv3,detection,14.993906021118164,60d2e89df5a7223a3678fc4e,1
+77,from_numpy,YOLOv3,detection,0.030994415283203125,60d2e89df5a7223a3678fc4e,1
+77,image4yolo,YOLOv3,detection,0.8218288421630859,60d2e89df5a7223a3678fc4e,1
+77,pred,YOLOv3,detection,11.344432830810547,60d2e89df5a7223a3678fc4e,1
+77,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.1540393829345703,-,-
+77,End-to-End,N/A,e2e_latency,43.259620666503906,60d2e89df5a7223a3678fc4e,1
+78,decoding_payload,,preproc,2.7472972869873047,,
+78,clean_decoded_payload,,preproc,1.4383792877197266,,
+78,extract_img_data,,preproc,0.4246234893798828,,
+78,decompress_img,,preproc,25.188446044921875,,
+78,zenoh_pubsub,,preproc,25.713682174682617,,
+78,Pre-processing,N/A,preproc_det,11.335611343383789,-,-
+78,compress_img,,preproc,31.292,,
+78,Object Detection,YOLOv3,detection,14.407157897949219,60d2e89df5a7223a3678fc4e,1
+78,Scheduling,dynamic_round_robin,scheduling,3.3032894134521484,60d2e89df5a7223a3678fc4e,1
+78,from_numpy,YOLOv3,detection,0.03743171691894531,60d2e89df5a7223a3678fc4e,1
+78,image4yolo,YOLOv3,detection,0.5590915679931641,60d2e89df5a7223a3678fc4e,1
+78,pred,YOLOv3,detection,12.022733688354492,60d2e89df5a7223a3678fc4e,1
+78,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.240823745727539,-,-
+78,End-to-End,N/A,e2e_latency,37.546396255493164,60d2e89df5a7223a3678fc4e,1
+79,decoding_payload,,preproc,2.689838409423828,,
+79,clean_decoded_payload,,preproc,1.2938976287841797,,
+79,extract_img_data,,preproc,0.4031658172607422,,
+79,decompress_img,,preproc,22.9952335357666,,
+79,zenoh_pubsub,,preproc,25.710344314575195,,
+79,compress_img,,preproc,30.863,,
+79,Scheduling,dynamic_round_robin,scheduling,3.2606124877929688,60d2e89df5a7223a3678fc4e,1
+79,Pre-processing,N/A,preproc_det,18.338680267333984,-,-
+79,Object Detection,YOLOv3,detection,19.0579891204834,60d2e89df5a7223a3678fc4e,1
+79,from_numpy,YOLOv3,detection,0.031948089599609375,60d2e89df5a7223a3678fc4e,1
+79,image4yolo,YOLOv3,detection,0.4909038543701172,60d2e89df5a7223a3678fc4e,1
+79,pred,YOLOv3,detection,17.21811294555664,60d2e89df5a7223a3678fc4e,1
+79,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.188060760498047,-,-
+79,End-to-End,N/A,e2e_latency,48.16102981567383,60d2e89df5a7223a3678fc4e,1
+80,decoding_payload,,preproc,2.9447078704833984,,
+80,clean_decoded_payload,,preproc,1.476287841796875,,
+80,extract_img_data,,preproc,0.44083595275878906,,
+80,decompress_img,,preproc,24.996042251586914,,
+80,zenoh_pubsub,,preproc,25.791645050048828,,
+80,compress_img,,preproc,31.139,,
+80,Scheduling,dynamic_round_robin,scheduling,3.6499500274658203,60d2e89df5a7223a3678fc4e,1
+80,Pre-processing,N/A,preproc_det,21.747589111328125,-,-
+,sorting,Sorting Network,scheduling,0.21696090698242188,-,-
+80,Object Detection,YOLOv3,detection,18.208742141723633,60d2e89df5a7223a3678fc4e,1
+80,from_numpy,YOLOv3,detection,0.03933906555175781,60d2e89df5a7223a3678fc4e,1
+80,image4yolo,YOLOv3,detection,0.6537437438964844,60d2e89df5a7223a3678fc4e,1
+80,pred,YOLOv3,detection,14.917612075805664,60d2e89df5a7223a3678fc4e,1
+80,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.467010498046875,-,-
+80,End-to-End,N/A,e2e_latency,51.70798301696777,60d2e89df5a7223a3678fc4e,1
+81,decoding_payload,,preproc,2.6400089263916016,,
+81,clean_decoded_payload,,preproc,1.4019012451171875,,
+81,extract_img_data,,preproc,0.42319297790527344,,
+81,decompress_img,,preproc,25.45332908630371,,
+81,zenoh_pubsub,,preproc,25.760173797607422,,
+81,compress_img,,preproc,30.916,,
+81,Pre-processing,N/A,preproc_det,10.982036590576172,-,-
+81,Scheduling,dynamic_round_robin,scheduling,3.425121307373047,60d2e89df5a7223a3678fc4e,1
+81,Object Detection,YOLOv3,detection,13.808012008666992,60d2e89df5a7223a3678fc4e,1
+81,from_numpy,YOLOv3,detection,0.02384185791015625,60d2e89df5a7223a3678fc4e,1
+81,image4yolo,YOLOv3,detection,0.8594989776611328,60d2e89df5a7223a3678fc4e,1
+81,pred,YOLOv3,detection,9.420394897460938,60d2e89df5a7223a3678fc4e,1
+81,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.647327423095703,-,-
+81,End-to-End,N/A,e2e_latency,36.9260311126709,60d2e89df5a7223a3678fc4e,1
+82,decoding_payload,,preproc,2.911806106567383,,
+82,clean_decoded_payload,,preproc,1.4269351959228516,,
+82,extract_img_data,,preproc,0.47707557678222656,,
+82,decompress_img,,preproc,24.17922019958496,,
+82,zenoh_pubsub,,preproc,25.90155601501465,,
+82,compress_img,,preproc,31.146,,
+82,Scheduling,dynamic_round_robin,scheduling,1.7077922821044922,60d2e89df5a7223a3678fc4e,1
+82,Pre-processing,N/A,preproc_det,17.52471923828125,-,-
+82,Object Detection,YOLOv3,detection,18.92685890197754,60d2e89df5a7223a3678fc4e,1
+82,from_numpy,YOLOv3,detection,0.05316734313964844,60d2e89df5a7223a3678fc4e,1
+82,image4yolo,YOLOv3,detection,1.4488697052001953,60d2e89df5a7223a3678fc4e,1
+82,pred,YOLOv3,detection,16.069889068603516,60d2e89df5a7223a3678fc4e,1
+82,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.3617019653320312,-,-
+82,End-to-End,N/A,e2e_latency,47.65748977661133,60d2e89df5a7223a3678fc4e,1
+83,decoding_payload,,preproc,2.7282238006591797,,
+83,clean_decoded_payload,,preproc,1.3208389282226562,,
+83,extract_img_data,,preproc,0.4050731658935547,,
+83,decompress_img,,preproc,24.07693862915039,,
+83,zenoh_pubsub,,preproc,25.532960891723633,,
+83,compress_img,,preproc,30.963,,
+83,Scheduling,dynamic_round_robin,scheduling,3.755331039428711,60d2e89df5a7223a3678fc4e,1
+83,Pre-processing,N/A,preproc_det,16.458749771118164,-,-
+83,Object Detection,YOLOv3,detection,14.690876007080078,60d2e89df5a7223a3678fc4e,1
+83,from_numpy,YOLOv3,detection,0.023365020751953125,60d2e89df5a7223a3678fc4e,1
+83,image4yolo,YOLOv3,detection,0.7722377777099609,60d2e89df5a7223a3678fc4e,1
+83,pred,YOLOv3,detection,12.114763259887695,60d2e89df5a7223a3678fc4e,1
+83,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.504037857055664,-,-
+83,End-to-End,N/A,e2e_latency,41.89300537109375,60d2e89df5a7223a3678fc4e,1
+84,decoding_payload,,preproc,1.8625259399414062,,
+84,clean_decoded_payload,,preproc,0.9133815765380859,,
+84,extract_img_data,,preproc,0.2989768981933594,,
+84,decompress_img,,preproc,22.820711135864258,,
+84,zenoh_pubsub,,preproc,24.604320526123047,,
+84,Pre-processing,N/A,preproc_det,17.464399337768555,-,-
+84,compress_img,,preproc,30.885,,
+,sorting,Sorting Network,scheduling,0.2300739288330078,-,-
+84,Object Detection,YOLOv3,detection,13.831138610839844,60d2e89df5a7223a3678fc4e,1
+84,Scheduling,dynamic_round_robin,scheduling,3.159046173095703,60d2e89df5a7223a3678fc4e,1
+84,from_numpy,YOLOv3,detection,0.02765655517578125,60d2e89df5a7223a3678fc4e,1
+84,image4yolo,YOLOv3,detection,0.8263587951660156,60d2e89df5a7223a3678fc4e,1
+84,pred,YOLOv3,detection,9.41777229309082,60d2e89df5a7223a3678fc4e,1
+84,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.1561851501464844,-,-
+84,End-to-End,N/A,e2e_latency,41.140079498291016,60d2e89df5a7223a3678fc4e,1
+85,decoding_payload,,preproc,2.2089481353759766,,
+85,clean_decoded_payload,,preproc,1.1649131774902344,,
+85,extract_img_data,,preproc,0.2620220184326172,,
+85,decompress_img,,preproc,20.38884162902832,,
+85,zenoh_pubsub,,preproc,24.417638778686523,,
+85,compress_img,,preproc,30.683,,
+85,Scheduling,dynamic_round_robin,scheduling,0.9813308715820312,60d2e89df5a7223a3678fc4e,1
+85,Pre-processing,N/A,preproc_det,19.284725189208984,-,-
+85,Object Detection,YOLOv3,detection,17.74430274963379,60d2e89df5a7223a3678fc4e,1
+85,from_numpy,YOLOv3,detection,0.03910064697265625,60d2e89df5a7223a3678fc4e,1
+85,image4yolo,YOLOv3,detection,0.5347728729248047,60d2e89df5a7223a3678fc4e,1
+85,pred,YOLOv3,detection,15.619516372680664,60d2e89df5a7223a3678fc4e,1
+85,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.342079162597656,-,-
+85,End-to-End,N/A,e2e_latency,51.43117904663086,60d2e89df5a7223a3678fc4e,1
+86,decoding_payload,,preproc,2.205371856689453,,
+86,clean_decoded_payload,,preproc,1.2767314910888672,,
+86,extract_img_data,,preproc,0.35190582275390625,,
+86,decompress_img,,preproc,25.03514289855957,,
+86,zenoh_pubsub,,preproc,24.506330490112305,,
+86,compress_img,,preproc,30.91,,
+86,Scheduling,dynamic_round_robin,scheduling,3.7763118743896484,60d2e89df5a7223a3678fc4e,1
+86,Pre-processing,N/A,preproc_det,11.780261993408203,-,-
+86,Object Detection,YOLOv3,detection,13.948202133178711,60d2e89df5a7223a3678fc4e,1
+86,from_numpy,YOLOv3,detection,0.029087066650390625,60d2e89df5a7223a3678fc4e,1
+86,image4yolo,YOLOv3,detection,0.8502006530761719,60d2e89df5a7223a3678fc4e,1
+86,pred,YOLOv3,detection,10.170936584472656,60d2e89df5a7223a3678fc4e,1
+86,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.5538673400878906,-,-
+86,End-to-End,N/A,e2e_latency,41.255950927734375,60d2e89df5a7223a3678fc4e,1
+87,decoding_payload,,preproc,2.9366016387939453,,
+87,clean_decoded_payload,,preproc,1.4007091522216797,,
+87,extract_img_data,,preproc,0.4239082336425781,,
+87,decompress_img,,preproc,25.71725845336914,,
+87,zenoh_pubsub,,preproc,25.59208869934082,,
+87,compress_img,,preproc,31.8,,
+87,Scheduling,dynamic_round_robin,scheduling,4.1408538818359375,60d2e89df5a7223a3678fc4e,1
+87,Pre-processing,N/A,preproc_det,19.085407257080078,-,-
+87,Object Detection,YOLOv3,detection,14.303922653198242,60d2e89df5a7223a3678fc4e,1
+87,from_numpy,YOLOv3,detection,0.06937980651855469,60d2e89df5a7223a3678fc4e,1
+87,image4yolo,YOLOv3,detection,0.9906291961669922,60d2e89df5a7223a3678fc4e,1
+87,pred,YOLOv3,detection,10.15162467956543,60d2e89df5a7223a3678fc4e,1
+87,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.007577896118164,-,-
+87,End-to-End,N/A,e2e_latency,49.79205131530762,60d2e89df5a7223a3678fc4e,1
+88,decoding_payload,,preproc,2.7136802673339844,,
+88,clean_decoded_payload,,preproc,1.4750957489013672,,
+88,extract_img_data,,preproc,0.4475116729736328,,
+88,decompress_img,,preproc,25.238752365112305,,
+88,zenoh_pubsub,,preproc,25.79188346862793,,
+88,compress_img,,preproc,31.183,,
+88,Scheduling,dynamic_round_robin,scheduling,1.0802745819091797,60d2e89df5a7223a3678fc4e,1
+88,Pre-processing,N/A,preproc_det,16.896486282348633,-,-
+,sorting,Sorting Network,scheduling,0.18930435180664062,-,-
+88,Object Detection,YOLOv3,detection,13.740301132202148,60d2e89df5a7223a3678fc4e,1
+88,from_numpy,YOLOv3,detection,0.027894973754882812,60d2e89df5a7223a3678fc4e,1
+88,image4yolo,YOLOv3,detection,0.8168220520019531,60d2e89df5a7223a3678fc4e,1
+88,pred,YOLOv3,detection,9.479284286499023,60d2e89df5a7223a3678fc4e,1
+88,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.5479068756103516,-,-
+88,End-to-End,N/A,e2e_latency,42.469024658203125,60d2e89df5a7223a3678fc4e,1
+89,decoding_payload,,preproc,2.6700496673583984,,
+89,clean_decoded_payload,,preproc,1.4433860778808594,,
+89,extract_img_data,,preproc,0.4286766052246094,,
+89,decompress_img,,preproc,24.896860122680664,,
+89,zenoh_pubsub,,preproc,25.824546813964844,,
+89,compress_img,,preproc,31.68,,
+89,Pre-processing,N/A,preproc_det,20.009756088256836,-,-
+89,Scheduling,dynamic_round_robin,scheduling,3.2281875610351562,60d2e89df5a7223a3678fc4e,1
+89,Object Detection,YOLOv3,detection,14.257192611694336,60d2e89df5a7223a3678fc4e,1
+89,from_numpy,YOLOv3,detection,0.04458427429199219,60d2e89df5a7223a3678fc4e,1
+89,image4yolo,YOLOv3,detection,0.9922981262207031,60d2e89df5a7223a3678fc4e,1
+89,pred,YOLOv3,detection,10.138988494873047,60d2e89df5a7223a3678fc4e,1
+89,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.8344860076904297,-,-
+89,End-to-End,N/A,e2e_latency,45.81856727600098,60d2e89df5a7223a3678fc4e,1
+90,decoding_payload,,preproc,2.6082992553710938,,
+90,clean_decoded_payload,,preproc,1.4667510986328125,,
+90,extract_img_data,,preproc,0.43511390686035156,,
+90,decompress_img,,preproc,25.83456039428711,,
+90,zenoh_pubsub,,preproc,25.791168212890625,,
+90,compress_img,,preproc,31.211,,
+90,Pre-processing,N/A,preproc_det,18.674612045288086,-,-
+90,Scheduling,dynamic_round_robin,scheduling,1.066446304321289,60d2e89df5a7223a3678fc4e,1
+90,Object Detection,YOLOv3,detection,13.813972473144531,60d2e89df5a7223a3678fc4e,1
+90,from_numpy,YOLOv3,detection,0.021696090698242188,60d2e89df5a7223a3678fc4e,1
+90,image4yolo,YOLOv3,detection,0.8549690246582031,60d2e89df5a7223a3678fc4e,1
+90,pred,YOLOv3,detection,9.321451187133789,60d2e89df5a7223a3678fc4e,1
+90,Extra Pipeline,PiH Candidate Selection,candidate_selection,2.2466182708740234,-,-
+90,End-to-End,N/A,e2e_latency,42.510986328125,60d2e89df5a7223a3678fc4e,1
+91,decoding_payload,,preproc,2.586841583251953,,
+91,clean_decoded_payload,,preproc,1.4882087707519531,,
+91,extract_img_data,,preproc,0.3821849822998047,,
+91,decompress_img,,preproc,26.920318603515625,,
+91,zenoh_pubsub,,preproc,25.794506072998047,,
+91,compress_img,,preproc,31.71,,
+91,Scheduling,dynamic_round_robin,scheduling,3.6399364471435547,60d2e89df5a7223a3678fc4e,1
+91,Pre-processing,N/A,preproc_det,19.146442413330078,-,-
+91,Object Detection,YOLOv3,detection,13.7786865234375,60d2e89df5a7223a3678fc4e,1
+91,from_numpy,YOLOv3,detection,0.02193450927734375,60d2e89df5a7223a3678fc4e,1
+91,image4yolo,YOLOv3,detection,0.8609294891357422,60d2e89df5a7223a3678fc4e,1
+91,pred,YOLOv3,detection,9.325265884399414,60d2e89df5a7223a3678fc4e,1
+91,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.238677978515625,-,-
+91,End-to-End,N/A,e2e_latency,44.443368911743164,60d2e89df5a7223a3678fc4e,1
+92,decoding_payload,,preproc,2.6350021362304688,,
+92,clean_decoded_payload,,preproc,1.4884471893310547,,
+92,extract_img_data,,preproc,0.45752525329589844,,
+92,decompress_img,,preproc,21.362781524658203,,
+92,zenoh_pubsub,,preproc,25.739431381225586,,
+92,compress_img,,preproc,31.419,,
+92,Pre-processing,N/A,preproc_det,17.0285701751709,-,-
+92,Scheduling,dynamic_round_robin,scheduling,3.198385238647461,60d2e89df5a7223a3678fc4e,1
+,sorting,Sorting Network,scheduling,0.2601146697998047,-,-
+92,Object Detection,YOLOv3,detection,14.534235000610352,60d2e89df5a7223a3678fc4e,1
+92,from_numpy,YOLOv3,detection,0.024080276489257812,60d2e89df5a7223a3678fc4e,1
+92,image4yolo,YOLOv3,detection,0.7925033569335938,60d2e89df5a7223a3678fc4e,1
+92,pred,YOLOv3,detection,11.138439178466797,60d2e89df5a7223a3678fc4e,1
+92,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.112482070922852,-,-
+92,End-to-End,N/A,e2e_latency,43.82896423339844,60d2e89df5a7223a3678fc4e,1
+93,decoding_payload,,preproc,1.8765926361083984,,
+93,clean_decoded_payload,,preproc,1.2164115905761719,,
+93,extract_img_data,,preproc,0.34737586975097656,,
+93,decompress_img,,preproc,25.975465774536133,,
+93,zenoh_pubsub,,preproc,25.77805519104004,,
+93,compress_img,,preproc,30.989,,
+93,Pre-processing,N/A,preproc_det,17.966032028198242,-,-
+93,Scheduling,dynamic_round_robin,scheduling,4.640102386474609,60d2e89df5a7223a3678fc4e,1
+93,Object Detection,YOLOv3,detection,13.862133026123047,60d2e89df5a7223a3678fc4e,1
+93,from_numpy,YOLOv3,detection,0.030040740966796875,60d2e89df5a7223a3678fc4e,1
+93,image4yolo,YOLOv3,detection,0.8068084716796875,60d2e89df5a7223a3678fc4e,1
+93,pred,YOLOv3,detection,9.519100189208984,60d2e89df5a7223a3678fc4e,1
+93,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.913402557373047,-,-
+93,End-to-End,N/A,e2e_latency,43.13087463378906,60d2e89df5a7223a3678fc4e,1
+94,decoding_payload,,preproc,1.852273941040039,,
+94,clean_decoded_payload,,preproc,1.1584758758544922,,
+94,extract_img_data,,preproc,0.32591819763183594,,
+94,decompress_img,,preproc,22.69291877746582,,
+94,zenoh_pubsub,,preproc,25.837182998657227,,
+94,Pre-processing,N/A,preproc_det,17.364978790283203,-,-
+94,compress_img,,preproc,31.95,,
+94,Object Detection,YOLOv3,detection,13.495683670043945,60d2e89df5a7223a3678fc4e,1
+94,Scheduling,dynamic_round_robin,scheduling,0.9734630584716797,60d2e89df5a7223a3678fc4e,1
+94,from_numpy,YOLOv3,detection,0.03933906555175781,60d2e89df5a7223a3678fc4e,1
+94,image4yolo,YOLOv3,detection,0.5142688751220703,60d2e89df5a7223a3678fc4e,1
+94,pred,YOLOv3,detection,9.619712829589844,60d2e89df5a7223a3678fc4e,1
+94,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.148960113525391,-,-
+94,End-to-End,N/A,e2e_latency,42.275428771972656,60d2e89df5a7223a3678fc4e,1
+95,decoding_payload,,preproc,2.6574134826660156,,
+95,clean_decoded_payload,,preproc,1.4438629150390625,,
+95,extract_img_data,,preproc,0.4456043243408203,,
+95,decompress_img,,preproc,21.428823471069336,,
+95,zenoh_pubsub,,preproc,25.71272850036621,,
+95,compress_img,,preproc,31.49,,
+95,Scheduling,dynamic_round_robin,scheduling,3.0677318572998047,60d2e89df5a7223a3678fc4e,1
+95,Pre-processing,N/A,preproc_det,17.3184871673584,-,-
+95,Object Detection,YOLOv3,detection,17.063379287719727,60d2e89df5a7223a3678fc4e,1
+95,from_numpy,YOLOv3,detection,0.025510787963867188,60d2e89df5a7223a3678fc4e,1
+95,image4yolo,YOLOv3,detection,0.8249282836914062,60d2e89df5a7223a3678fc4e,1
+95,pred,YOLOv3,detection,13.054609298706055,60d2e89df5a7223a3678fc4e,1
+95,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.907442092895508,-,-
+95,End-to-End,N/A,e2e_latency,46.06771469116211,60d2e89df5a7223a3678fc4e,1
+96,decoding_payload,,preproc,2.657175064086914,,
+96,clean_decoded_payload,,preproc,1.4872550964355469,,
+96,extract_img_data,,preproc,0.44417381286621094,,
+96,decompress_img,,preproc,21.869182586669922,,
+96,zenoh_pubsub,,preproc,25.797367095947266,,
+96,compress_img,,preproc,31.14,,
+96,Scheduling,dynamic_round_robin,scheduling,3.055095672607422,60d2e89df5a7223a3678fc4e,1
+96,Pre-processing,N/A,preproc_det,17.632722854614258,-,-
+,sorting,Sorting Network,scheduling,0.2276897430419922,-,-
+96,Object Detection,YOLOv3,detection,13.683795928955078,60d2e89df5a7223a3678fc4e,1
+96,from_numpy,YOLOv3,detection,0.022411346435546875,60d2e89df5a7223a3678fc4e,1
+96,image4yolo,YOLOv3,detection,0.7929801940917969,60d2e89df5a7223a3678fc4e,1
+96,pred,YOLOv3,detection,9.098529815673828,60d2e89df5a7223a3678fc4e,1
+96,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.8356781005859375,-,-
+96,End-to-End,N/A,e2e_latency,42.479753494262695,60d2e89df5a7223a3678fc4e,1
+97,decoding_payload,,preproc,2.09808349609375,,
+97,clean_decoded_payload,,preproc,1.277923583984375,,
+97,extract_img_data,,preproc,0.3674030303955078,,
+97,decompress_img,,preproc,23.055315017700195,,
+97,zenoh_pubsub,,preproc,25.85124969482422,,
+97,compress_img,,preproc,31.297,,
+97,Scheduling,dynamic_round_robin,scheduling,3.256559371948242,60d2e89df5a7223a3678fc4e,1
+97,Pre-processing,N/A,preproc_det,17.998456954956055,-,-
+97,Object Detection,YOLOv3,detection,13.83829116821289,60d2e89df5a7223a3678fc4e,1
+97,from_numpy,YOLOv3,detection,0.029325485229492188,60d2e89df5a7223a3678fc4e,1
+97,image4yolo,YOLOv3,detection,0.8137226104736328,60d2e89df5a7223a3678fc4e,1
+97,pred,YOLOv3,detection,9.29880142211914,60d2e89df5a7223a3678fc4e,1
+97,Extra Pipeline,PiH Candidate Selection,candidate_selection,6.446599960327148,-,-
+97,End-to-End,N/A,e2e_latency,45.8683967590332,60d2e89df5a7223a3678fc4e,1
+98,decoding_payload,,preproc,1.912832260131836,,
+98,clean_decoded_payload,,preproc,1.1928081512451172,,
+98,extract_img_data,,preproc,0.34809112548828125,,
+98,decompress_img,,preproc,23.212671279907227,,
+98,zenoh_pubsub,,preproc,25.8331298828125,,
+98,compress_img,,preproc,31.136,,
+98,Scheduling,dynamic_round_robin,scheduling,1.0898113250732422,60d2e89df5a7223a3678fc4e,1
+98,Pre-processing,N/A,preproc_det,20.752668380737305,-,-
+98,Object Detection,YOLOv3,detection,13.931512832641602,60d2e89df5a7223a3678fc4e,1
+98,from_numpy,YOLOv3,detection,0.024557113647460938,60d2e89df5a7223a3678fc4e,1
+98,image4yolo,YOLOv3,detection,0.8258819580078125,60d2e89df5a7223a3678fc4e,1
+98,pred,YOLOv3,detection,9.399890899658203,60d2e89df5a7223a3678fc4e,1
+98,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.7796497344970703,-,-
+98,End-to-End,N/A,e2e_latency,46.137094497680664,60d2e89df5a7223a3678fc4e,1
+99,decoding_payload,,preproc,1.9803047180175781,,
+99,clean_decoded_payload,,preproc,1.1353492736816406,,
+99,extract_img_data,,preproc,0.316619873046875,,
+99,decompress_img,,preproc,22.596359252929688,,
+99,zenoh_pubsub,,preproc,25.741100311279297,,
+99,compress_img,,preproc,31.42,,
+99,Pre-processing,N/A,preproc_det,18.320322036743164,-,-
+99,Scheduling,dynamic_round_robin,scheduling,1.7137527465820312,60d2e89df5a7223a3678fc4e,1
+99,Object Detection,YOLOv3,detection,13.959169387817383,60d2e89df5a7223a3678fc4e,1
+99,from_numpy,YOLOv3,detection,0.026464462280273438,60d2e89df5a7223a3678fc4e,1
+99,image4yolo,YOLOv3,detection,0.9007453918457031,60d2e89df5a7223a3678fc4e,1
+99,pred,YOLOv3,detection,9.356260299682617,60d2e89df5a7223a3678fc4e,1
+99,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.195690155029297,-,-
+99,End-to-End,N/A,e2e_latency,44.65150833129883,60d2e89df5a7223a3678fc4e,1
+100,decoding_payload,,preproc,2.5179386138916016,,
+100,clean_decoded_payload,,preproc,1.0826587677001953,,
+100,extract_img_data,,preproc,0.30040740966796875,,
+100,decompress_img,,preproc,21.28744125366211,,
+100,zenoh_pubsub,,preproc,25.77662467956543,,
+100,compress_img,,preproc,31.118,,
+100,Scheduling,dynamic_round_robin,scheduling,3.0128955841064453,60d2e89df5a7223a3678fc4e,1
+100,Pre-processing,N/A,preproc_det,17.22407341003418,-,-
+,sorting,Sorting Network,scheduling,0.22649765014648438,-,-
+100,Object Detection,YOLOv3,detection,13.684749603271484,60d2e89df5a7223a3678fc4e,1
+100,from_numpy,YOLOv3,detection,0.024080276489257812,60d2e89df5a7223a3678fc4e,1
+100,image4yolo,YOLOv3,detection,0.8029937744140625,60d2e89df5a7223a3678fc4e,1
+100,pred,YOLOv3,detection,9.218692779541016,60d2e89df5a7223a3678fc4e,1
+100,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.7958621978759766,-,-
+100,End-to-End,N/A,e2e_latency,41.84126853942871,60d2e89df5a7223a3678fc4e,1
+101,decoding_payload,,preproc,1.9173622131347656,,
+101,clean_decoded_payload,,preproc,1.2447834014892578,,
+101,extract_img_data,,preproc,0.3490447998046875,,
+101,decompress_img,,preproc,23.265600204467773,,
+101,zenoh_pubsub,,preproc,25.809049606323242,,
+101,compress_img,,preproc,31.73,,
+101,Pre-processing,N/A,preproc_det,14.299154281616211,-,-
+101,Scheduling,dynamic_round_robin,scheduling,3.442525863647461,60d2e89df5a7223a3678fc4e,1
+101,Object Detection,YOLOv3,detection,13.933181762695312,60d2e89df5a7223a3678fc4e,1
+101,from_numpy,YOLOv3,detection,0.03361701965332031,60d2e89df5a7223a3678fc4e,1
+101,image4yolo,YOLOv3,detection,0.8802413940429688,60d2e89df5a7223a3678fc4e,1
+101,pred,YOLOv3,detection,9.59920883178711,60d2e89df5a7223a3678fc4e,1
+101,Extra Pipeline,PiH Candidate Selection,candidate_selection,4.574298858642578,-,-
+101,End-to-End,N/A,e2e_latency,39.38150405883789,60d2e89df5a7223a3678fc4e,1
+102,decoding_payload,,preproc,1.7600059509277344,,
+102,clean_decoded_payload,,preproc,0.9980201721191406,,
+102,extract_img_data,,preproc,0.29158592224121094,,
+102,decompress_img,,preproc,22.346973419189453,,
+102,zenoh_pubsub,,preproc,25.793790817260742,,
+102,compress_img,,preproc,31.217,,
+102,Scheduling,dynamic_round_robin,scheduling,2.980947494506836,60d2e89df5a7223a3678fc4e,1
+102,Pre-processing,N/A,preproc_det,17.36283302307129,-,-
+102,Object Detection,YOLOv3,detection,13.673067092895508,60d2e89df5a7223a3678fc4e,1
+102,from_numpy,YOLOv3,detection,0.03981590270996094,60d2e89df5a7223a3678fc4e,1
+102,image4yolo,YOLOv3,detection,0.5314350128173828,60d2e89df5a7223a3678fc4e,1
+102,pred,YOLOv3,detection,10.385513305664062,60d2e89df5a7223a3678fc4e,1
+102,Extra Pipeline,PiH Candidate Selection,candidate_selection,7.179975509643555,-,-
+102,End-to-End,N/A,e2e_latency,47.47414588928223,60d2e89df5a7223a3678fc4e,1
+103,decoding_payload,,preproc,2.228975296020508,,
+103,clean_decoded_payload,,preproc,1.0013580322265625,,
+103,extract_img_data,,preproc,0.29277801513671875,,
+103,decompress_img,,preproc,22.58443832397461,,
+103,zenoh_pubsub,,preproc,25.820493698120117,,
+103,compress_img,,preproc,31.343,,
+103,Pre-processing,N/A,preproc_det,17.730712890625,-,-
+103,Scheduling,dynamic_round_robin,scheduling,2.976655960083008,60d2e89df5a7223a3678fc4e,1
+103,Object Detection,YOLOv3,detection,13.78488540649414,60d2e89df5a7223a3678fc4e,1
+103,from_numpy,YOLOv3,detection,0.025272369384765625,60d2e89df5a7223a3678fc4e,1
+103,image4yolo,YOLOv3,detection,0.7524490356445312,60d2e89df5a7223a3678fc4e,1
+103,pred,YOLOv3,detection,9.45138931274414,60d2e89df5a7223a3678fc4e,1
+103,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.5467147827148438,-,-
+103,End-to-End,N/A,e2e_latency,41.26596450805664,60d2e89df5a7223a3678fc4e,1
+104,decoding_payload,,preproc,2.7379989624023438,,
+104,clean_decoded_payload,,preproc,1.1515617370605469,,
+104,extract_img_data,,preproc,0.3037452697753906,,
+104,decompress_img,,preproc,21.396398544311523,,
+104,zenoh_pubsub,,preproc,25.745391845703125,,
+104,compress_img,,preproc,31.115,,
+104,Scheduling,dynamic_round_robin,scheduling,3.2129287719726562,60d2e89df5a7223a3678fc4e,1
+104,Pre-processing,N/A,preproc_det,21.146059036254883,-,-
+,sorting,Sorting Network,scheduling,0.22721290588378906,-,-
+104,Object Detection,YOLOv3,detection,14.067888259887695,60d2e89df5a7223a3678fc4e,1
+104,from_numpy,YOLOv3,detection,0.031948089599609375,60d2e89df5a7223a3678fc4e,1
+104,image4yolo,YOLOv3,detection,0.8985996246337891,60d2e89df5a7223a3678fc4e,1
+104,pred,YOLOv3,detection,10.066986083984375,60d2e89df5a7223a3678fc4e,1
+104,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.8247108459472656,-,-
+104,End-to-End,N/A,e2e_latency,46.146392822265625,60d2e89df5a7223a3678fc4e,1
+105,decoding_payload,,preproc,2.6977062225341797,,
+105,clean_decoded_payload,,preproc,1.4946460723876953,,
+105,extract_img_data,,preproc,0.44608116149902344,,
+105,decompress_img,,preproc,26.668787002563477,,
+105,zenoh_pubsub,,preproc,25.738954544067383,,
+105,compress_img,,preproc,31.34,,
+105,Scheduling,dynamic_round_robin,scheduling,3.3180713653564453,60d2e89df5a7223a3678fc4e,1
+105,Pre-processing,N/A,preproc_det,18.187999725341797,-,-
+105,Object Detection,YOLOv3,detection,13.928890228271484,60d2e89df5a7223a3678fc4e,1
+105,from_numpy,YOLOv3,detection,0.030279159545898438,60d2e89df5a7223a3678fc4e,1
+105,image4yolo,YOLOv3,detection,0.8547306060791016,60d2e89df5a7223a3678fc4e,1
+105,pred,YOLOv3,detection,9.411334991455078,60d2e89df5a7223a3678fc4e,1
+105,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.9954185485839844,-,-
+105,End-to-End,N/A,e2e_latency,46.28276824951172,60d2e89df5a7223a3678fc4e,1
+106,decoding_payload,,preproc,2.216339111328125,,
+106,clean_decoded_payload,,preproc,1.3332366943359375,,
+106,extract_img_data,,preproc,0.3829002380371094,,
+106,decompress_img,,preproc,24.373531341552734,,
+106,zenoh_pubsub,,preproc,25.852203369140625,,
+106,compress_img,,preproc,31.149,,
+106,Scheduling,dynamic_round_robin,scheduling,3.178119659423828,60d2e89df5a7223a3678fc4e,1
+106,Pre-processing,N/A,preproc_det,17.37523078918457,-,-
+106,Object Detection,YOLOv3,detection,13.720512390136719,60d2e89df5a7223a3678fc4e,1
+106,from_numpy,YOLOv3,detection,0.027894973754882812,60d2e89df5a7223a3678fc4e,1
+106,image4yolo,YOLOv3,detection,0.7901191711425781,60d2e89df5a7223a3678fc4e,1
+106,pred,YOLOv3,detection,9.307384490966797,60d2e89df5a7223a3678fc4e,1
+106,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.804922103881836,-,-
+106,End-to-End,N/A,e2e_latency,43.121337890625,60d2e89df5a7223a3678fc4e,1
+107,decoding_payload,,preproc,2.0389556884765625,,
+107,clean_decoded_payload,,preproc,1.2698173522949219,,
+107,extract_img_data,,preproc,0.35691261291503906,,
+107,decompress_img,,preproc,22.884845733642578,,
+107,zenoh_pubsub,,preproc,25.88820457458496,,
+107,compress_img,,preproc,31.38,,
+107,Pre-processing,N/A,preproc_det,18.48006248474121,-,-
+107,Scheduling,dynamic_round_robin,scheduling,3.122568130493164,60d2e89df5a7223a3678fc4e,1
+107,Object Detection,YOLOv3,detection,14.153480529785156,60d2e89df5a7223a3678fc4e,1
+107,from_numpy,YOLOv3,detection,0.07224082946777344,60d2e89df5a7223a3678fc4e,1
+107,image4yolo,YOLOv3,detection,0.9472370147705078,60d2e89df5a7223a3678fc4e,1
+107,pred,YOLOv3,detection,9.753227233886719,60d2e89df5a7223a3678fc4e,1
+107,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.9925575256347656,-,-
+107,End-to-End,N/A,e2e_latency,43.91932487487793,60d2e89df5a7223a3678fc4e,1
+108,decoding_payload,,preproc,1.8742084503173828,,
+108,clean_decoded_payload,,preproc,1.168966293334961,,
+108,extract_img_data,,preproc,0.3371238708496094,,
+108,decompress_img,,preproc,23.043394088745117,,
+108,zenoh_pubsub,,preproc,25.50792694091797,,
+108,compress_img,,preproc,31.106,,
+108,Scheduling,dynamic_round_robin,scheduling,2.9745101928710938,60d2e89df5a7223a3678fc4e,1
+108,Pre-processing,N/A,preproc_det,19.520998001098633,-,-
+,sorting,Sorting Network,scheduling,0.22029876708984375,-,-
+108,Object Detection,YOLOv3,detection,13.99993896484375,60d2e89df5a7223a3678fc4e,1
+108,from_numpy,YOLOv3,detection,0.029802322387695312,60d2e89df5a7223a3678fc4e,1
+108,image4yolo,YOLOv3,detection,0.8683204650878906,60d2e89df5a7223a3678fc4e,1
+108,pred,YOLOv3,detection,9.798049926757812,60d2e89df5a7223a3678fc4e,1
+108,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.6840438842773438,-,-
+108,End-to-End,N/A,e2e_latency,43.94412040710449,60d2e89df5a7223a3678fc4e,1
+109,decoding_payload,,preproc,2.7081966400146484,,
+109,clean_decoded_payload,,preproc,1.435995101928711,,
+109,extract_img_data,,preproc,0.4336833953857422,,
+109,decompress_img,,preproc,21.8808650970459,,
+109,zenoh_pubsub,,preproc,25.54488182067871,,
+109,compress_img,,preproc,30.991,,
+109,Scheduling,dynamic_round_robin,scheduling,0.9717941284179688,60d2e89df5a7223a3678fc4e,1
+109,Pre-processing,N/A,preproc_det,17.979145050048828,-,-
+109,Object Detection,YOLOv3,detection,14.214277267456055,60d2e89df5a7223a3678fc4e,1
+109,from_numpy,YOLOv3,detection,0.046253204345703125,60d2e89df5a7223a3678fc4e,1
+109,image4yolo,YOLOv3,detection,0.9329319000244141,60d2e89df5a7223a3678fc4e,1
+109,pred,YOLOv3,detection,10.44917106628418,60d2e89df5a7223a3678fc4e,1
+109,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.5779476165771484,-,-
+109,End-to-End,N/A,e2e_latency,42.62948036193848,60d2e89df5a7223a3678fc4e,1
+110,decoding_payload,,preproc,2.192974090576172,,
+110,clean_decoded_payload,,preproc,1.3170242309570312,,
+110,extract_img_data,,preproc,0.3821849822998047,,
+110,decompress_img,,preproc,23.150205612182617,,
+110,zenoh_pubsub,,preproc,25.5584716796875,,
+110,compress_img,,preproc,31.53,,
+110,Scheduling,dynamic_round_robin,scheduling,0.9441375732421875,60d2e89df5a7223a3678fc4e,1
+110,Pre-processing,N/A,preproc_det,19.717693328857422,-,-
+110,Object Detection,YOLOv3,detection,13.973712921142578,60d2e89df5a7223a3678fc4e,1
+110,from_numpy,YOLOv3,detection,0.030755996704101562,60d2e89df5a7223a3678fc4e,1
+110,image4yolo,YOLOv3,detection,0.8487701416015625,60d2e89df5a7223a3678fc4e,1
+110,pred,YOLOv3,detection,9.682655334472656,60d2e89df5a7223a3678fc4e,1
+110,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.9453506469726562,-,-
+110,End-to-End,N/A,e2e_latency,44.26383972167969,60d2e89df5a7223a3678fc4e,1
+111,decoding_payload,,preproc,1.779317855834961,,
+111,clean_decoded_payload,,preproc,1.1560916900634766,,
+111,extract_img_data,,preproc,0.3440380096435547,,
+111,decompress_img,,preproc,22.841930389404297,,
+111,zenoh_pubsub,,preproc,25.622844696044922,,
+111,compress_img,,preproc,31.34,,
+111,Scheduling,dynamic_round_robin,scheduling,3.0739307403564453,60d2e89df5a7223a3678fc4e,1
+111,Pre-processing,N/A,preproc_det,18.31793785095215,-,-
+111,Object Detection,YOLOv3,detection,16.26443862915039,60d2e89df5a7223a3678fc4e,1
+111,from_numpy,YOLOv3,detection,0.04315376281738281,60d2e89df5a7223a3678fc4e,1
+111,image4yolo,YOLOv3,detection,0.5693435668945312,60d2e89df5a7223a3678fc4e,1
+111,pred,YOLOv3,detection,13.888835906982422,60d2e89df5a7223a3678fc4e,1
+111,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.6330223083496094,-,-
+111,End-to-End,N/A,e2e_latency,46.02313041687012,60d2e89df5a7223a3678fc4e,1
+112,decoding_payload,,preproc,2.498626708984375,,
+112,clean_decoded_payload,,preproc,0.8668899536132812,,
+112,extract_img_data,,preproc,0.2429485321044922,,
+112,decompress_img,,preproc,20.539045333862305,,
+112,zenoh_pubsub,,preproc,25.58422088623047,,
+112,compress_img,,preproc,31.166,,
+112,Scheduling,dynamic_round_robin,scheduling,3.0689239501953125,60d2e89df5a7223a3678fc4e,1
+112,Pre-processing,N/A,preproc_det,17.845630645751953,-,-
+,sorting,Sorting Network,scheduling,0.21719932556152344,-,-
+112,Object Detection,YOLOv3,detection,13.689756393432617,60d2e89df5a7223a3678fc4e,1
+112,from_numpy,YOLOv3,detection,0.025272369384765625,60d2e89df5a7223a3678fc4e,1
+112,image4yolo,YOLOv3,detection,0.720977783203125,60d2e89df5a7223a3678fc4e,1
+112,pred,YOLOv3,detection,11.152982711791992,60d2e89df5a7223a3678fc4e,1
+112,Extra Pipeline,PiH Candidate Selection,candidate_selection,2.3975372314453125,-,-
+112,End-to-End,N/A,e2e_latency,40.3285026550293,60d2e89df5a7223a3678fc4e,1
+113,decoding_payload,,preproc,2.5277137756347656,,
+113,clean_decoded_payload,,preproc,0.8988380432128906,,
+113,extract_img_data,,preproc,0.263214111328125,,
+113,decompress_img,,preproc,20.99442481994629,,
+113,zenoh_pubsub,,preproc,25.411128997802734,,
+113,compress_img,,preproc,31.228,,
+113,Pre-processing,N/A,preproc_det,16.861438751220703,-,-
+113,Scheduling,dynamic_round_robin,scheduling,3.0972957611083984,60d2e89df5a7223a3678fc4e,1
+113,Object Detection,YOLOv3,detection,13.79251480102539,60d2e89df5a7223a3678fc4e,1
+113,from_numpy,YOLOv3,detection,0.028371810913085938,60d2e89df5a7223a3678fc4e,1
+113,image4yolo,YOLOv3,detection,0.7772445678710938,60d2e89df5a7223a3678fc4e,1
+113,pred,YOLOv3,detection,9.404659271240234,60d2e89df5a7223a3678fc4e,1
+113,Extra Pipeline,PiH Candidate Selection,candidate_selection,2.5327205657958984,-,-
+113,End-to-End,N/A,e2e_latency,40.04693031311035,60d2e89df5a7223a3678fc4e,1
+114,decoding_payload,,preproc,2.468109130859375,,
+114,clean_decoded_payload,,preproc,1.2497901916503906,,
+114,extract_img_data,,preproc,0.3979206085205078,,
+114,decompress_img,,preproc,20.59006690979004,,
+114,zenoh_pubsub,,preproc,25.359153747558594,,
+114,compress_img,,preproc,30.973,,
+114,Scheduling,dynamic_round_robin,scheduling,3.058195114135742,60d2e89df5a7223a3678fc4e,1
+114,Pre-processing,N/A,preproc_det,18.282651901245117,-,-
+114,Object Detection,YOLOv3,detection,13.547658920288086,60d2e89df5a7223a3678fc4e,1
+114,from_numpy,YOLOv3,detection,0.02765655517578125,60d2e89df5a7223a3678fc4e,1
+114,image4yolo,YOLOv3,detection,0.6935596466064453,60d2e89df5a7223a3678fc4e,1
+114,pred,YOLOv3,detection,8.886337280273438,60d2e89df5a7223a3678fc4e,1
+114,Extra Pipeline,PiH Candidate Selection,candidate_selection,3.7839412689208984,-,-
+114,End-to-End,N/A,e2e_latency,41.89348220825195,60d2e89df5a7223a3678fc4e,1
