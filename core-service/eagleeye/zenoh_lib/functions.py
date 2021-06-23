@@ -59,7 +59,8 @@ def extract_compressed_tagged_img(consumed_data):
 
 	# calculate zenoh pubsub
 	zenoh_pubsub_latency = (t1_zenoh_pubsub - t0_zenoh_pubsub) * 1000
-	L.warning(('[%s] Latency Zenoh Comm. PubSub (%.3f ms) ' % ("ZENOH CONSUMER", zenoh_pubsub_latency)))
+	L.warning(('[%s][Frame-{}] Latency Zenoh Comm. PubSub (%.3f ms) '.format(frame_id) % ("ZENOH CONSUMER",
+																						  zenoh_pubsub_latency)))
 
 	# popping tagged information
 	t0_non_img_cleaning = time.time()
