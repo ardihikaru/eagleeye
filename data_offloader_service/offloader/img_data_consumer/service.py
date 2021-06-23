@@ -117,6 +117,15 @@ class ImgConsumerService(ZenohImageSubscriberService):
 	def _save_e2e_lat(self, lat_key, t0):
 		redis_set(self.redis.get_rc(), lat_key, t0, expired=30)  # set expired in 30 second
 
+	def save_all_captured_latency_data(self, frame_id, latency_data):
+		for cat, lat in latency_data.items():
+			# Save Scheduling latency
+			self._sync_save_latency(
+				frame_id, lat, "", "preproc", cat, "", ""
+			)
+			# L.warning('[%s] Proc. Latency of %s for frame-%s (%.3f ms)' % (
+			# 	get_current_time(), "preproc-{}".format(cat), str(frame_id), lat))
+
 	# OVERRIDE Child function
 	def img_listener(self, consumed_data):
 		img_info, latency_data = extract_compressed_tagged_img(consumed_data)
@@ -138,6 +147,8 @@ class ImgConsumerService(ZenohImageSubscriberService):
 			"frame_id": frame_id,
 		}
 		"""
+
+		self.save_all_captured_latency_data(img_info["frame_id"], latency_data)
 
 		# ########## Processing comsumed frame data
 		# print(" ## # ########## Processing comsumed frame data")
