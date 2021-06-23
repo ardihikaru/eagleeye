@@ -61,8 +61,14 @@ def get_img_fsize_in_float(img_bytes):
 	img_size_raw = fsize(img_bytes)
 	img_size_arr = img_size_raw.split(" ")
 	img_size_val = float(img_size_arr[0])
+	ext_txt = img_size_arr[1]
 
-	return img_size_val, img_size_arr[1]
+	# make sure to use the same measurement
+	if ext_txt == "KB":
+		img_size_val *= 1000
+		ext_txt = "MB"
+
+	return img_size_val, ext_txt
 
 
 def encrypt_str(str_val, byteorder="little"):
