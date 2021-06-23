@@ -65,7 +65,7 @@ def get_img_fsize_in_float(img_bytes):
 
 	# make sure to use the same measurement
 	if ext_txt == "KB":
-		img_size_val *= 1000
+		img_size_val /= 1000
 		ext_txt = "MB"
 
 	return img_size_val, ext_txt
