@@ -120,7 +120,7 @@ int_drone_id = encrypt_str("1")  # contains 1 extra slot
 extra_len = 8  # contains 1 extra slot; another one slot is from `tagged_data_len` variable
 
 # create an empty array
-bw_usage_header = ['Uncompressed', 'Compressed']
+bw_usage_header = ['FrameID', 'Uncompressed', 'Compressed']
 bw_usage = []
 bw_usage_compressed = []
 
@@ -191,7 +191,7 @@ try:
 
 			img_size_compressed, ext = get_img_fsize_in_float(val.nbytes)
 			print(" ## Image Size COMPRESSED + TAGGED: {} {}".format(img_size_compressed, ext))
-			bw_usage.append([img_size, img_size_compressed])
+			bw_usage.append([_frame_id, img_size, img_size_compressed])
 
 			# publish data
 			z_svc.publish(
