@@ -60,9 +60,9 @@ L = logging.getLogger(__name__)
 def get_img_fsize_in_float(img_bytes):
 	img_size_raw = fsize(img_bytes)
 	img_size_arr = img_size_raw.split(" ")
-	img_size = float(img_size_arr[0])
+	img_size_val = float(img_size_arr[0])
 
-	return img_size
+	return img_size_val, img_size_arr[1]
 
 
 def encrypt_str(str_val, byteorder="little"):
@@ -120,8 +120,9 @@ int_drone_id = encrypt_str("1")  # contains 1 extra slot
 extra_len = 8  # contains 1 extra slot; another one slot is from `tagged_data_len` variable
 
 # create an empty array
-bw_usage_header = ['Bandwidth_Usage']
+bw_usage_header = ['Uncompressed', 'Compressed']
 bw_usage = []
+bw_usage_compressed = []
 
 try:
 	while cap.isOpened():
@@ -139,10 +140,8 @@ try:
 			if cam_weight is None:
 				cam_height, cam_weight, _ = frame.shape
 
-			img_size = get_img_fsize_in_float(frame.nbytes)
-			# bw_usage.append(img_size)
-			bw_usage.append([img_size])
-			print(" ## Image Size: {} Mb".format(img_size))
+			img_size, ext = get_img_fsize_in_float(frame.nbytes)
+			print(" ## Image Size: {} {}".format(img_size, ext))
 			# print(" ## Image Size Bytes:", fsizeb(frame.nbytes))
 			print(" ## Initial image SHAPE:", frame.shape)
 
@@ -189,6 +188,10 @@ try:
 			val = np.vstack([compressed_img, tagged_info])
 			t1_tag_extraction = (time.time() - t0_tag_extraction) * 1000
 			print(('[%s] Latency Image Taging (%.3f ms) ' % (datetime.now().strftime("%H:%M:%S"), t1_tag_extraction)))
+
+			img_size_compressed, ext = get_img_fsize_in_float(val.nbytes)
+			print(" ## Image Size COMPRESSED + TAGGED: {} {}".format(img_size_compressed, ext))
+			bw_usage.append([img_size, img_size_compressed])
 
 			# publish data
 			z_svc.publish(
