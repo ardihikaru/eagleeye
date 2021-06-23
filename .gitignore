@@ -13,6 +13,7 @@ old_codes/hasil
 data
 output/
 ext_lib/
+core-docker-images/misc/drone_img_publisher/bandwidth_usage.csv
 
 # Ignore site.conf in each micro-service
 object-detection-service/etc.site.conf
