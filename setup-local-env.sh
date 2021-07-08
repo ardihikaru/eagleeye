@@ -16,7 +16,7 @@ docker run -d \
   --name redis-service \
   --restart always \
   --network eagleeye \
-  5g-dive/redis:1.0 /bin/sh -c 'redis-server --appendonly yes'
+  redis:5.0.5-alpine3.9 /bin/sh -c 'redis-server --appendonly yes'
 
 # Deploy mongo
 docker run -d -p 27017:27017 --name mongo-service --network eagleeye mongo

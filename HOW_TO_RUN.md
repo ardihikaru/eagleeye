@@ -184,3 +184,4 @@
 - How to use [EasyDarwin RTSP Server](https://github.com/EasyDarwin/EasyDarwin):
     - Start server: `$ ./start.sh`
     - Stop server: `$ ./stop.sh`
+- [Disable sudoers in docker command](https://www.codegrepper.com/code-examples/shell/how+to+remove+sudo+from+docker+command)

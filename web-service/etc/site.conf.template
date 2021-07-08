@@ -1,0 +1,9 @@
+[stream:gps]
+mode=online
+num_drones=1
+
+
+[eagleeye:api]
+listen=0.0.0.0:8079
+api_uri=http://localhost:8079/api/
+ews_host=localhost
