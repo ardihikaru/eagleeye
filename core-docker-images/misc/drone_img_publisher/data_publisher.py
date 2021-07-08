@@ -18,7 +18,7 @@ CSV_FILE_PATH = "./bandwidth_usage.csv"
 
 # FullHD Format; fixed value, as per required in 5G-DIVE Project
 FULLHD_WIDTH = 1920
-FULLHD_HEIGHT = 1024
+FULLHD_HEIGHT = 1080
 
 # Encoding parameter
 encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 70]  # The default value for IMWRITE_JPEG_QUALITY is 95
