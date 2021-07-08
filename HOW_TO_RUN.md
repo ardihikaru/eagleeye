@@ -21,6 +21,11 @@
           00e43f28aa67   mongo                  "docker-entrypoint.s…"   24 seconds ago   Up 22 seconds           0.0.0.0:27017->27017/tcp, :::27017->27017/tcp   mongo-service
           66012d6c6ba9   5g-dive/redis:1.0      "docker-entrypoint.s…"   24 seconds ago   Up 23 seconds           0.0.0.0:6379->6379/tcp, :::6379->6379/tcp       redis-service  
           ```
+        - If your server has no monitor (X Server), use following command instead:
+            `$ . setup-local-env.sh 0`
+            - Value `0` has no specific meaning. 
+            It simply try to trigger adding user `root` to the list of 
+            authorised access to the **X server**.
 2. Each configuration of the micro-service, should be updated accordingly by adding `etc/site.conf` file.
     - We prepared `etc/site.conf.template` file for reference
     - Change the values accordingly and rename them into `etc/site.conf` to apply the changes
