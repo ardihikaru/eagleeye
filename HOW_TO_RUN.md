@@ -102,7 +102,7 @@
     - Root dir: `$ ./data_offloader_service`
     - Command: `$ python3 offloader.py -c etc/offloader.conf`
 6. Running Sorter Service:
-    - Root dir: `$ ./data_offloader_service`
+    - Root dir: `$ ./sorter_service`
     - Command: `$ python3 sorter.py -c etc/sorter.conf`
 7. Running Visualizer Service:
     - Root dir: `$ ./visualizer-service`
