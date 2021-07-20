@@ -6,6 +6,7 @@ from .pv_api import PVApiModule
 from .algorithm import AlgorithmModule
 from ext_lib.utils import get_current_time
 import logging
+from dotenv import load_dotenv, find_dotenv
 
 ###
 
@@ -17,6 +18,15 @@ L = logging.getLogger(__name__)
 class PihPersistanceValidationApplication(asab.Application):
 	def __init__(self):
 		super().__init__()
+
+		# IMPORTANT: Load `.env` file
+		load_dotenv(find_dotenv(filename=asab.Config["commons"]["envfile"]))
+		# TODO: Update Dockerfile to COPY `.env` file to container
+
+		# # Testing:
+		# import os
+		# PYTHONPATH = os.getenv("PYTHONPATH")
+		# print(" this is PYTHONPATH:", PYTHONPATH)
 
 		# Web Module
 		self.add_module(asab.web.Module)

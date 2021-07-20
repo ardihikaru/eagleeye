@@ -1,9 +1,16 @@
 [stream:gps]
 mode=online
 num_drones=1
-
+# schema=http
+# host=192.168.1.231
+# port=36002
+# path=FlySocketWCF
 
 [eagleeye:api]
 listen=0.0.0.0:8079
 api_uri=http://localhost:8079/api/
 ews_host=localhost
+
+[commons]
+# PLEASE CHANGE THE VALUE ACCORDINGLY!
+envfile=/home/s010132/devel/eagleeye/.env

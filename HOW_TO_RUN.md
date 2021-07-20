@@ -11,8 +11,12 @@
 ## Project tree
 ...
 
-## In native mode (not containerized)
-1. Setup local environment (use `bash` shell):
+## Environment setup
+1. Install python library
+    - Upgrade pip version: `$ pip3 install --upgrade pip`
+    - Go to folder that contains the req file: `cd ./core-docker-images`
+    - Install library: `$ pip3 install -r requirements-no-cv.txt`
+2. Setup local environment (use `bash` shell):
     `$ . setup-local-env.sh`
     - You can run this following script to see whether mongo and redis services has been ready or not yet:
         - See running containers: `$ docker container ps | grep -service`
@@ -26,11 +30,20 @@
             - Value `0` has no specific meaning. 
             It simply try to trigger adding user `root` to the list of 
             authorised access to the **X server**.
-2. Each configuration of the micro-service, should be updated accordingly by adding `etc/site.conf` file.
+3. Download or clone [eagle data publisher](https://github.com/ardihikaru/eagle-data-publisher) project
+   - Place the project under the same ROOT directory with your `EagleEYE` project
+        - e.g. `/home/s010132/devel/<HERE>`
+4. Each configuration of the micro-service, should be updated accordingly by (1) adding `etc/site.conf` file and
+    (2) update `PYTHONPATH` value in file `.env`.
     - We prepared `etc/site.conf.template` file for reference
     - Change the values accordingly and rename them into `etc/site.conf` to apply the changes
     - **FYI**: This `site.conf` will overwrite the default config file (e.g. `etc/ews.conf`)
-3. Running EWS Service:
+    - File `.env` is located in the ROOT directory: `/home/s010132/devel/eagleeye/.env`
+        - `:/home/s010132/devel/eagleeye/core-service/eagleeye` is from `eagleeye` project
+        - `:/home/s010132/devel/eagle-data-publisher/pycore` is from `eagle-data-publisher` project
+
+## How to use in native mode (not containerized)
+1. Running EWS Service:
     - Root dir: `$ ./web-service`
     - Command: `$ python3 ews.py -c etc/ews.conf`
     - Wait until it is ready and will have following logs:
@@ -52,13 +65,13 @@
       07-Jul-2021 11:19:36.519868 WARNING ews.gps_collector.service [11:19:36][THREAD-7LWAE] Saving data in every 1 second; GPS data (drone_id=`1`; fly_no=`1`)={'long': 123.5641012, 'lat': 27.0334931, 'alt': 12.0}; Heading=360
       ```
         - You will see a log, such as, `... Saving data in every 1 second ...`.
-4. Running PiH Candidate Selection Service:
+2. Running PiH Candidate Selection Service:
     - Root dir: `$ ./pih-candidate-selection-service`
     - Command: `$ python3 pcs.py -c etc/pcs.conf`
-5. Running PiH Persistance Validation Service:
+3. Running PiH Persistance Validation Service:
     - Root dir: `$ ./pih-persistance-validation-service`
     - Command: `$ python3 pv.py -c etc/pv.conf`
-6. Running Detection Service:
+4. Running Detection Service:
     - Root dir: `$ ./object-detection-service`
     - Command: `$ python3 detection.py -c etc/detection.conf`
     - Wait until it is ready:
@@ -85,16 +98,16 @@
               ```
         2. Run detection service: `$ python3 detection.py -c etc/detection.conf`
         3. Repeat step-1 and step-2 to register another new nodes (e.g. `Node-3`)
-7. Running Data Offloader Service:
+5. Running Data Offloader Service:
     - Root dir: `$ ./data_offloader_service`
     - Command: `$ python3 offloader.py -c etc/offloader.conf`
-8. Running Sorter Service:
+6. Running Sorter Service:
     - Root dir: `$ ./data_offloader_service`
     - Command: `$ python3 sorter.py -c etc/sorter.conf`
-9. Running Visualizer Service:
+7. Running Visualizer Service:
     - Root dir: `$ ./visualizer-service`
     - Command: `$ python3 visualizer.py -c etc/visualizer.conf`
-10. Start EagleEYE drone data consumer:
+8. Start EagleEYE drone data consumer:
     - Run: `$ . start-eagleeye-consumer.sh`
         - File located in `<PROJECT_DIR>/start-eagleeye-consumer.sh`
     - Sample log:
@@ -107,10 +120,21 @@
        {"success": true, "message": "OK", "data": {"algorithm": "YOLOv3", "stream": "ZENOH", "uri": "tcp/localhost:7446", "scalable": true, "extras": {"selector": "/eagle/svc/**"}}, "status": 200}
        >>> Starting EagleEYE Drone Data Consumer
        ```
-11. Start publishing drone data:
-    - Download [data publisher](https://github.com/ardihikaru/eagle-data-publisher) project
-    - Place the project under the same ROOT directory with your `eagleeye` project
-        - e.g. `/home/<user>/devel/<HERE>`
+9. Start publishing drone data:
+    - Go to `eagle data publisher` project dir: `$ cd /home/s010132/devel/eagle-data-publisher`
+    - Run publisher: `$ env RUST_LOG=debug python3 data_publisher.py -e tcp/localhost:7446 --resize`
+        - If you try them in the same PC, you can use `localhost`
+        - If you use to test them to PubSub with different PCs, change them to **IP of the Consumer**
+        - By default, it read your local camera (video0).
+        - If you want to extract frames from a video file, use following command:
+            `$ env RUST_LOG=debug python3 data_publisher.py -e tcp/localhost:7446 --resize -v >your_video_path>`
+        - if you want to resize the video property, let say, to FullHD, follow this steps:
+            - Run this to know possible resolution and its FPS (In Linux only):
+                `$ v4l2-ctl --list-formats-ext`
+            - To apply the config, you can try following command:
+              ```
+              $ env RUST_LOG=debug python3 data_publisher.py -e tcp/localhost:7446 --resize --pwidth 1920 --pheight 1080 -v >your_video_path>
+              ```
 
 ## Running RTSP
 - Run: 
@@ -128,6 +152,9 @@
 - Tunnel to LittleBoy:
     `$ ssh -L 5901:127.0.0.1:5901 -C -N -l s010132 192.168.1.10`
     - password: `s010132`
+- Tunnel to Fatman:
+    `$ ssh -L 5901:127.0.0.1:5901 -C -N -l k200 192.168.1.60`
+    - password: `k200user`
 - Run: `export PYTHONPATH=:/home/s010132/devel/eagleeye/core-service/eagleeye`
 - Database related
     - Install mongo tools (to enable `$ mongodump` and `$ mongoexport` command):

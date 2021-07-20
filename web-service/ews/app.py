@@ -11,6 +11,7 @@ from mongoengine import connect
 from mongoengine.connection import _get_db
 import logging
 from ews.controllers.node.node import Node as NodeController
+from dotenv import load_dotenv, find_dotenv
 
 ###
 
@@ -24,6 +25,15 @@ class EagleEYEWebService(asab.Application):
 
 	def __init__(self):
 		super().__init__()
+
+		# IMPORTANT: Load `.env` file
+		load_dotenv(find_dotenv(filename=asab.Config["commons"]["envfile"]))
+		# TODO: Update Dockerfile to COPY `.env` file to container
+
+		# # Testing:
+		# import os
+		# PYTHONPATH = os.getenv("PYTHONPATH")
+		# print(" this is PYTHONPATH:", PYTHONPATH)
 
 		# Connect Database
 		connect('eagleeyeDB', host=asab.Config["asab:storage"]["mongodb_host"])
