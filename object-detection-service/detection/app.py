@@ -12,6 +12,7 @@ from ext_lib.utils import get_current_time
 import logging
 from ext_lib.redis.my_redis import MyRedis
 from ext_lib.redis.translator import redis_get
+from dotenv import load_dotenv, find_dotenv
 
 ###
 
@@ -25,6 +26,15 @@ class ObjectDetectionService(asab.Application):
 
 	def __init__(self):
 		super().__init__()
+
+		# IMPORTANT: Load `.env` file
+		load_dotenv(find_dotenv(filename=asab.Config["commons"]["envfile"]))
+		# TODO: Update Dockerfile to COPY `.env` file to container
+
+		# # Testing:
+		# import os
+		# PYTHONPATH = os.getenv("PYTHONPATH")
+		# print(" this is PYTHONPATH:", PYTHONPATH)
 
 		# Set node alias
 		redis = MyRedis(asab.Config)

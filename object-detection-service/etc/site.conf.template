@@ -1,0 +1,34 @@
+[objdet:yolo]
+names = /home/ardi/devel/nctu/IBM-Lab/eagleeye/object-detection-service/config_files/yolo/data/coco.names
+cfg = /home/ardi/devel/nctu/IBM-Lab/eagleeye/object-detection-service/config_files/yolo/cfg/yolo-obj-v5.cfg
+# weights = /home/ardi/devel/nctu/IBM-Lab/eagleeye/object-detection-service/config_files/yolo/weights/TW-01.weights
+weights = /home/ardi/devel/nctu/IBM-Lab/eagleeye/object-detection-service/config_files/yolo/weights/TM-07.weights
+device =
+#device=cpu
+conf_thres = 0.25
+
+[stream:config]
+drone_id=1
+
+[eagleeye:api]
+node = http://localhost:8079/api/nodes
+latency = http://localhost:8079/api/latency
+
+[pih_candidate_selection]
+is_microservice=false
+
+[persistence_detection]
+is_microservice=false
+
+[pih_candidate_selection]
+is_microservice=true
+
+[pcs:api]
+url=http://localhost:8082/pcs
+
+[pv:api]
+url=http://localhost:8083/pv
+
+[stream:config]
+drone_id=1
+gps_key_prefix=gps-data-

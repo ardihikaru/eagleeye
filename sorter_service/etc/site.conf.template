@@ -6,6 +6,10 @@
 # port=6379
 # password=
 
+[eagleeye:api]
+node = http://localhost:8079/api/nodes
+latency = http://localhost:8079/api/latency
+
 [strategy]
 # a full path where the Comparison Network's input model are stored
 # Filenames are: `4-input.cn`, `5-input.cn`, and `16-input.cn`

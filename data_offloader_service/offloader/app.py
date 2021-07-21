@@ -11,6 +11,7 @@ from offloader.img_data_consumer import ImgConsumerModule
 from ext_lib.utils import get_current_time
 import logging
 from my_logging.custom_logging import CustomLogging
+from dotenv import load_dotenv, find_dotenv
 
 ###
 
@@ -24,6 +25,15 @@ class OffloaderService(asab.Application):
 
 	def __init__(self):
 		super().__init__()
+
+		# IMPORTANT: Load `.env` file
+		load_dotenv(find_dotenv(filename=asab.Config["commons"]["envfile"]))
+		# TODO: Update Dockerfile to COPY `.env` file to container
+
+		# # Testing:
+		# import os
+		# PYTHONPATH = os.getenv("PYTHONPATH")
+		# print(" this is PYTHONPATH:", PYTHONPATH)
 
 		# Customized logging
 		if asab.Config["customized:log"].getboolean("enabled"):
