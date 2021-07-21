@@ -1,3 +1,96 @@
+## 7.2.0-native (July 21, 2021)
+  - Merge pull request #45 from ardihikaru/features/update-readme
+  - fix
+  - fix
+  - fix
+  - add and update site.conf files
+  - fix var name
+  - add missing `.env` file
+  - - code refactor: read `.env` file for easier way to export `PYTHONPATH` environment variable - update missing information in README file
+  - fix: make X Server overwriting as optional
+  - update
+  - bugfix
+  - update readme
+  - Merge pull request #44 from ardihikaru/features/experiment-2021-06-23-cont
+  - add bw usage latency
+  - add exp results
+  - Merge pull request #43 from ardihikaru/feature/experiment-2021-06-23
+  - add bw usage latency
+  - fix
+  - Merge branch 'features/save-latency-data' into develop
+  - fix
+  - add latency results
+  - Merge branch 'features/save-latency-data' into develop
+  - standardize measurement unit
+  - Merge branch 'features/save-latency-data' into develop
+  - add frame_id
+  - Merge branch 'features/save-latency-data' into develop
+  - add compressed info
+  - Merge branch 'features/save-latency-data' into develop
+  - save latency data
+  - add frame_id
+  - ignore
+  - add save latency data
+  - Merge branch 'bugfix/invalid-cam-format' into develop
+  - fix
+  - Merge branch 'develop' of github.com:ardihikaru/eagleeye into develop
+  - Merge branch 'features/ntp-sync-detail' into develop
+  - add sample codes
+  - Merge branch 'feature/experiment-data' into develop
+  - add exp data
+  - Merge branch 'feature/experiment-data' into develop
+  - add exp data
+  - Merge branch 'feature/experiment-data' into develop
+  - add exp data
+  - Merge branch 'feature/refactor-drr' into develop
+  - code refactor
+  - bugfix missing input var
+  - Merge branch 'feature/experiment-data' into develop
+  - add exp data
+  - Merge branch 'feature/experiment-data-drr' into develop
+  - add exp data
+  - add frame_id
+  - Merge branch 'feature/experiment-data-rr' into develop
+  - add exp data
+  - Merge branch 'develop' of github.com:ardihikaru/eagleeye into develop
+  - Merge branch 'bugfix/offloader-rr-error' into develop
+  - add frame_id; fix index out of bound
+  - Merge branch 'feature/experiment-data' into develop
+  - add experiment data
+  - Merge branch 'feature/ntp-misc' into develop
+  - save experiment codes
+  - Merge pull request #42 from ardihikaru/bugfix/offloader-unable-to-save-latency-data
+  - adjust message logs
+  - fix missing function; adjust message logs
+  - Merge pull request #41 from ardihikaru/feature/integrated-ntp-server
+  - add bash script
+  - update
+  - add ntp server doc
+  - add doc how to use NTP Server
+  - Merge pull request #40 from ardihikaru/feature/resize-drone-cam-reader
+  - code refactor and add more options
+  - Merge pull request #39 from ardihikaru/feature/update-readme-how-to-use
+  - update
+  - Merge pull request #38 from ardihikaru/feature/add-multiple-visualizer-config
+  - add other configs
+  - add visualizer configs
+  - change default value to
+  - Merge branch 'bugfix/disable-zmq-publisher-initialization-if-disabled' into develop
+  - optional logic
+  - Merge branch 'bugfix/unable-to-consume-image-data' into develop
+  - fix
+  - Merge branch 'bugfix/unable-to-consume-image-data' into develop
+  - fix
+  - Merge branch 'bugfix/unable-to-consume-image-data' into develop
+  - fix
+  - Merge branch 'develop' of github.com:ardihikaru/eagleeye into develop
+  - Merge branch 'bugfix/change-scheduler-to-offloader-service' into develop
+  - Merge pull request #37 from ardihikaru/bugfix/change-scheduler-to-offloader-service
+  - add info how to do tunneling to Littleboy
+  - - add offloader service to replace scheduler service - add some helpful modules - remove scheduler service (zipped it as a backup)
+  - Merge branch 'release/v7.1.8-native' into develop
+  - update readme
+
 ## 7.1.8-native (May 20, 2021)
   - Merge branch 'feature/send-visualizer-service-once-no-detected-objects' into develop
   - inform visualizer when there is no detected object
