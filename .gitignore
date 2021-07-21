@@ -13,14 +13,7 @@ old_codes/hasil
 data
 output/
 ext_lib/
-sorter_service/etc/site.conf
-visualizer-service/etc/site.conf
-visualizer-service/etc/visualizer-rtsp.conf.conf
-visualizer-service/etc/site-rtsp.conf
-web-service/etc/site.conf
-object-detection-service/etc/site.conf
-scheduler_service/etc/site.conf
-
+core-docker-images/misc/drone_img_publisher/bandwidth_usage.csv
 
 # Ignore site.conf in each micro-service
 object-detection-service/etc.site.conf
@@ -28,9 +21,16 @@ scheduler-service/etc.site.conf
 web-service/etc.site.conf
 
 # Ignore site.conf files
-object-detection-service/etc/site.conf
-web-service/etc/site.conf
 scheduler-service/etc/site.conf
+sorter_service/etc/site.conf
+visualizer-service/etc/site.conf
+visualizer-service/etc/site-rtsp-raw.conf
+visualizer-service/etc/site-rtsp.conf
+visualizer-service/etc/site-raw.conf
+web-service/etc/site.conf
+object-detection-service/etc/site.conf
+scheduler_service/etc/site.conf
+data_offloader_service/etc/site.conf
 
 # Ignore editors
 .idea/

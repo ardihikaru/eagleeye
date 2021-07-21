@@ -37,6 +37,7 @@ parser.add_argument('--listener', '-l', dest='listener',
                     help='Locators to listen on.')
 parser.add_argument('--selector', '-s', dest='selector',
                     default='/demo/example/**',
+                    # default='/eagleeye/svc/**',
                     type=str,
                     help='The selection of resources to subscribe.')
 

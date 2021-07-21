@@ -8,13 +8,17 @@ import simplejson as json
 from enum import Enum
 import logging
 import argparse
-# from hurry.filesize import size as fsize
+# from hurry.filesize import size as fsizeb
 from extras.functions import humanbytes as fsize
+import csv
+import os
 
-try:
-	import nanocamera as nano
-except:
-	print("[WARNING] Unable to load `nanocamera` module")
+# PATH TO Save CSV File
+CSV_FILE_PATH = "./bandwidth_usage.csv"
+
+# FullHD Format; fixed value, as per required in 5G-DIVE Project
+FULLHD_WIDTH = 1920
+FULLHD_HEIGHT = 1080
 
 # Encoding parameter
 encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 70]  # The default value for IMWRITE_JPEG_QUALITY is 95
@@ -22,10 +26,6 @@ encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 70]  # The default value for IMWR
 # --- [START] Command line argument parsing --- --- --- --- --- ---
 parser = argparse.ArgumentParser(
 	description='Zenoh Publisher example')
-parser.add_argument('--camera', '-m', dest='camera',  # e.g. 140.113.193.134 (Little Boy)
-                    default=2,  # `1`=JetsonNano; `2`=Normal Camera (PC/Laptop/etc)
-                    type=int,
-                    help='The name of the resource to publish.')
 parser.add_argument('--peer', '-e', dest='peer',  # e.g. 140.113.193.134 (Little Boy)
                     metavar='LOCATOR',
                     action='append',
@@ -39,10 +39,15 @@ parser.add_argument('--video', '-v', dest='video',
                     default="0",
                     type=str,
                     help='The name of the resource to publish.')
+parser.add_argument('--pwidth', dest='pwidth', default=1920, type=int, help='Target width to publish')
+parser.add_argument('--pheight', dest='pheight', default=1080, type=int, help='Target height to publish')
 parser.add_argument('--cvout', dest='cvout', action='store_true', help="Use CV Out")
+parser.add_argument('--resize', dest='resize', action='store_true', help="Force resize to FullHD")
 parser.set_defaults(cvout=False)
+parser.set_defaults(resize=False)
 
 args = parser.parse_args()
+print(args)
 # --- [END] Command line argument parsing --- --- --- --- --- ---
 
 ###
@@ -52,17 +57,24 @@ L = logging.getLogger(__name__)
 
 ###
 
+def get_img_fsize_in_float(img_bytes):
+	img_size_raw = fsize(img_bytes)
+	img_size_arr = img_size_raw.split(" ")
+	img_size_val = float(img_size_arr[0])
+	ext_txt = img_size_arr[1]
+
+	# make sure to use the same measurement
+	if ext_txt == "KB":
+		img_size_val /= 1000
+		ext_txt = "MB"
+
+	return img_size_val, ext_txt
+
+
 def encrypt_str(str_val, byteorder="little"):
 	encrypted_bytes = str_val.encode('utf-8')
 	encrypted_val = int.from_bytes(encrypted_bytes, byteorder)  # `byteorder` must be either 'little' or 'big'
 	return encrypted_val  # max 19 digit
-
-
-def get_capture_camera(capt, cam_mode):
-	if cam_mode == 1:
-		return capt.isReady()
-	else:
-		return cap.isOpened()
 
 
 peer = args.peer
@@ -90,20 +102,18 @@ publisher = z_svc.get_publisher()
 #########################
 # Zenoh related variables
 
-window_title = "output-raw"
-if args.camera == 1:
-	try:
-		cap = nano.Camera(camera_type=1)
-	except:
-		print("[ERROR] Unable to load `nano` package")
-		exit(0)
-elif args.camera == 2:
-	cap = cv2.VideoCapture(video_path)
-	# cap = cv2.VideoCapture(0)
-	# cap = cv2.VideoCapture("/home/ardi/devel/nctu/IBM-Lab/eaglestitch/data/videos/0312_2_CUT.mp4")
-else:
-	print("[ERROR] Unrecognized camera mode")
-	exit(0)
+window_title = "img-data-publisher"
+
+published_height, published_weight = args.pheight, args.pwidth  # target width and height
+cam_weight, cam_height = None, None  # default detected width and height
+
+cap = cv2.VideoCapture(video_path)
+
+# change the image property
+# use `$ v4l2-ctl --list-formats-ext` to check the available format!
+# install first (if not yet): `$ sudo apt install v4l-utils`
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, published_weight)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, published_height)
 
 if _enable_cv_out:
 	cv2.namedWindow(window_title, cv2.WND_PROP_FULLSCREEN)
@@ -111,51 +121,44 @@ if _enable_cv_out:
 	cv2.resizeWindow(window_title, 800, 550)  # Enter your size
 _frame_id = 0
 
-_wt, _ht = 1080, 1920  # target width and height
-_w, _h = None, None  # default detected width and height
-
-# IMPORTANT
-_is_compressed = True  # it enables/disables image compression when sending image frames
-
 # Extra information (to be tagged into the frame)
 int_drone_id = encrypt_str("1")  # contains 1 extra slot
-print(" ## int_drone_id:", int_drone_id)
-# t0_array = str(time.time()).split(".")  # contains 2 extra slots  # MOVED TO EACH FRAME
-# extra_len = 5  # contains 1 extra slot; another one slot is from `tagged_data_len` variable
-# extra_len = 6  # contains 1 extra slot; another one slot is from `tagged_data_len` variable
 extra_len = 8  # contains 1 extra slot; another one slot is from `tagged_data_len` variable
 
-# while cap.isOpened():
-while get_capture_camera(cap, args.camera):
-	_frame_id += 1
+# create an empty array
+bw_usage_header = ['FrameID', 'Uncompressed', 'Compressed']
+bw_usage = []
+bw_usage_compressed = []
 
-	# generate encrypted frame_id
-	eframe_id = encrypt_str(str(_frame_id))
+try:
+	while cap.isOpened():
+		_frame_id += 1
 
-	# ret = a boolean return value from getting the frame, frame = the current frame being projected in the video
-	try:
-		if args.camera == 1:  # jetson nano
-			ret, frame = True, cap.read()
-		else:
+		# generate encrypted frame_id
+		eframe_id = encrypt_str(str(_frame_id))
+
+		# ret = a boolean return value from getting the frame, frame = the current frame being projected in the video
+		try:
 			ret, frame = cap.read()
 
-		# do it ONCE
-		# detect width and height
-		if _w is None:
-			_w, _h, _ = frame.shape
+			# do it ONCE
+			# detect width and height
+			if cam_weight is None:
+				cam_height, cam_weight, _ = frame.shape
 
-		t0_decoding = time.time()
-		# resize the frame; Default VGA (640 x 480) for Laptop camera
-		if _w != _wt:
-			frame = cv2.resize(frame, (1920, 1080))
+			img_size, ext = get_img_fsize_in_float(frame.nbytes)
+			print(" ## Image Size: {} {}".format(img_size, ext))
+			# print(" ## Image Size Bytes:", fsizeb(frame.nbytes))
+			print(" ## Initial image SHAPE:", frame.shape)
 
-		# print size
-		print(" >>> FRAME Size BEFORE compression: {} or {}".format(frame.nbytes, fsize(frame.nbytes)))
+			t0_decoding = time.time()
+			# resize the frame; Default VGA (640 x 480) for Laptop camera
+			if cam_weight != FULLHD_WIDTH and args.resize:
+				frame = cv2.resize(frame, (FULLHD_WIDTH, FULLHD_HEIGHT))
 
-		# compress image (if enabled)
-		if _is_compressed:
+			print(" ## Final image SHAPE:", frame.shape)
+			# compress image
 			# NEW encoding method
-			# print(" ### compress image (if enabled)")
 			encoder_format = None  # disable custom encoder
 			itype = 4  # new type specially for compressed image
 			t0_img_compression = time.time()
@@ -166,20 +169,11 @@ while get_capture_camera(cap, args.camera):
 			print(('[%s] Latency Image Compression (%.3f ms) ' % (
 				datetime.now().strftime("%H:%M:%S"), t1_img_compression)))
 			tagged_data_len = compressed_img_len + extra_len  # `tagged_data_len` itself contains 1 extra slot
-			# print(" ## tagged_data_len:", tagged_data_len)
-			# print(" ## compressed_img_len:", compressed_img_len)
-			# print(" ## extra_len:", extra_len)
-			# cv2.imwrite("hasil.jpg", decimg)
-
-			# print size
-			# print(" >>> FRAME Size AFTER compression: {} or {}".format(compressed_img.nbytes, fsize(compressed_img.nbytes)))
 
 			# create t0
 			t0_array = str(time.time()).split(".")  # contains 2 extra slots
 
 			# generate img compression latency
-			# eimg_compression_lat = encrypt_str(str(t1_img_compression))
-			# print(" ## t1_img_compression:", t1_img_compression)
 			img_compr_lat_arr = str(t1_img_compression).split(".")  # contains 2 extra slots
 
 			# generate encrypted frame_id
@@ -197,10 +191,13 @@ while get_capture_camera(cap, args.camera):
 				[extra_len],
 				[tagged_data_len],
 			]
-			# print(" ----- OLD SHAPE compressed_img:", compressed_img.shape)
 			val = np.vstack([compressed_img, tagged_info])
 			t1_tag_extraction = (time.time() - t0_tag_extraction) * 1000
 			print(('[%s] Latency Image Taging (%.3f ms) ' % (datetime.now().strftime("%H:%M:%S"), t1_tag_extraction)))
+
+			img_size_compressed, ext = get_img_fsize_in_float(val.nbytes)
+			print(" ## Image Size COMPRESSED + TAGGED: {} {}".format(img_size_compressed, ext))
+			bw_usage.append([_frame_id, img_size, img_size_compressed])
 
 			# publish data
 			z_svc.publish(
@@ -208,68 +205,40 @@ while get_capture_camera(cap, args.camera):
 				_itype=itype,
 			)
 
-			# exit()
-		else:
-			# OLD enconding method
-			val = [('Drone 1', time.time(), frame.tobytes())]
-			t1_decoding = (time.time() - t0_decoding) * 1000
-			print(('\n[%s] Latency tagging (%.3f ms) \n' % (datetime.now().strftime("%H:%M:%S"), t1_decoding)))
-
-		# OLD enconding method
-		# # img_1d = frame.reshape(1, -1)
-		# # val = [('Drone 1', time.time(), img_1d, False)]
-		# # val = [('Drone 1', time.time(), imgencode, False)]
-		# val = [('Drone 1', time.time(), imgencode.tobytes())]
-		# t1_decoding = (time.time() - t0_decoding) * 1000
-		# print(('\n[%s] Latency tagging (%.3f ms) \n' % (datetime.now().strftime("%H:%M:%S"), t1_decoding)))
-
-		# # publish in every 2 frames
-		# if ret and _frame_id % 2 == 0:
-		# 	# publish data
-		# 	z_svc.publish(
-		# 		_val=val,
-		# 		_itype=itype,
-		# 		_encoder=encoder_format,
-		# 	)
-		#
-		# # publish data
-		# z_svc.publish(
-		# 	_val=val,
-		# 	_itype=itype,
-		# )
-		#
-		# exit()
-
-		# time.sleep(1)
+			if _enable_cv_out:
+				cv2.imshow(window_title, frame)
+			print()
+		except Exception as e:
+			print("No more frame to show: `{}`".format(e))
+			break
 
 		if _enable_cv_out:
-			cv2.imshow(window_title, frame)
-		print()
-	except Exception as e:
-		print("No more frame to show: `{}`".format(e))
-		break
+			if cv2.waitKey(1) & 0xFF == ord('q'):
+				break
 
-	if _enable_cv_out:
-		if cv2.waitKey(1) & 0xFF == ord('q'):
-			break
+# when stopped, start saving the CSV files
+except KeyboardInterrupt:
+	print("[STOPPING] Start storing CSV Files")
+	# if file exist, delete it first!
+	if os.path.isfile(CSV_FILE_PATH):
+		os.remove(CSV_FILE_PATH)
+
+	# # open the file in the write mode
+	with open(CSV_FILE_PATH, 'w', encoding='UTF8', newline='') as f:
+		# create the csv writer
+		writer = csv.writer(f)
+
+		# write the header
+		writer.writerow(bw_usage_header)
+
+		# write a row to the csv file
+		writer.writerows(bw_usage)
 
 if _enable_cv_out:
 	# The following frees up resources and closes all windows
 	cap.release()
 	cv2.destroyAllWindows()
 #########################
-
-# n_epoch = 5  # total number of publication processes
-# # for i in range(n_epoch):
-# while True:
-# 	# publish data
-# 	z_svc.publish(
-# 		_val=val,
-# 		_itype=itype,
-# 		_encoder=encoder_format,
-# 	)
-#
-# 	time.sleep(0.33)
 
 # closing Zenoh publisher & session
 z_svc.close_connection(publisher)

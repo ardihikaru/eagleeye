@@ -50,7 +50,7 @@ class ImagePlotterService(asab.Service):
             if bool(plot_info):
                 self._count_pih += 1
 
-                pih_label = "PiH Found"
+                pih_label = "PiH not Found"
                 if is_forced_plot:
                     await self._save_latest_plot_info(str(frame_id), plot_info)
 

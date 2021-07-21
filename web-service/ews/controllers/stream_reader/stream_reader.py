@@ -42,41 +42,11 @@ class StreamReader:
         t1_publish = (time.time() - t0_publish) * 1000
         config.pop("timestamp")  # removed, since it is a temporary key
         # TODO: Saving latency for scheduler:producer
-        # print('[%s] Latency for Publishing data (%.3f ms)' % (get_current_time(), t1_publish))
         L.warning('[%s] Latency for Publishing data (%.3f ms)' % (get_current_time(), t1_publish))
 
         # save input into mongoDB through thread process
-        # print("# save input into mongoDB through thread process")
         L.warning("# save input into mongoDB through thread process")
         config_to_mongodb(self.executor, config)
-
-        # t0_request_saving = time.time()
-        # request_to_redisdb(self.rc, request_json)
-        # t1_request_saving = (time.time() - t0_request_saving) * 1000
-        # print('[%s] Latency for Saving Request data (%.3f ms)' % (get_current_time(), t1_request_saving))
-
-        # t0_saving_mongo = time.time()
-        # is_success, config_data, msg = insert_new_data(ConfigModel, request_json)
-        # t1_saving_mongo = (time.time() - t0_saving_mongo) * 1000
-        # print(" -- config_data:", config_data)
-        # print('[%s] Latency for Saving data into MongoDB (%.3f ms)' % (get_current_time(), t1_saving_mongo))
-
-        # t0_loading_mongo = time.time()
-        # is_success, config_data, msg = get_data_by_id(ConfigModel, config_data["id"])
-        # t1_loading_mongo = (time.time() - t0_loading_mongo) * 1000
-        # print('[%s] Latency for Loading data into MongoDB (%.3f ms)' % (get_current_time(), t1_loading_mongo))
-        #
-        # t0_deleting_mongo = time.time()
-        # _, _ = del_data_by_id(ConfigModel, config_data["id"])
-        # t1_deleting_mongo = (time.time() - t0_deleting_mongo) * 1000
-        # print('[%s] Latency for Deleting data into MongoDB (%.3f ms)' % (get_current_time(), t1_deleting_mongo))
-
-        # t0_publish = time.time()
-        # channel = "scheduler"
-        # # pub(self.rc, channel, request_json)
-        # pub(self.redis.get_rc(), channel, request_json)
-        # t1_publish = (time.time() - t0_publish) * 1000
-        # print('[%s] Latency for Publishing data (%.3f ms)' % (get_current_time(), t1_publish))
 
         return aiohttp.web.json_response(get_json_template(True, request_json, -1, "OK"))
 
@@ -86,50 +56,9 @@ class StreamReader:
 
     def delete_data_by_id_one(self, _id):
         return del_config_by_id(_id)
-        # return get_json_template(True, {}, -1, "OK")
 
     def update_data_by_id(self, _id, json_data):
         return upd_config_by_id(_id, json_data)
-        # return get_json_template(is_success, user_data, -1, msg)
 
     def get_data_by_id(self, _id):
         return get_config_by_id(_id)
-        # return get_json_template(is_success, user_data, -1, msg)
-
-    # async def video_feed(self, request_json):
-    #     response = aiohttp.web.StreamResponse(
-    #         status=200,
-    #         reason='OK',
-    #         headers={
-    #             # 'Content-Type': 'multipart/x-mixed-replace;boundary={}'.format(my_boundary)
-    #             'Content-Type': 'multipart/x-mixed-replace'
-    #         }
-    #     )
-    #     camera = cv2.VideoCapture(request_json["uri"])  # use 0 for web camera
-    #     while True:
-    #         # frame = get_jpeg_frame()
-    #         # Capture frame-by-frame
-    #         success, frame = camera.read()  # read the camera frame
-    #         if not success:
-    #             break
-    #         else:
-    #             ret, buffer = cv2.imencode('.jpg', frame)
-    #             frame = buffer.tobytes()
-    #         # with MultipartWriter('image/jpeg', boundary=my_boundary) as mpwriter:
-    #         with MultipartWriter('image/jpeg') as mpwriter:
-    #             mpwriter.append(frame, {'Content-Type': 'image/jpeg'})
-    #             await mpwriter.write(response, close_boundary=False)
-    #         await response.drain()
-
-    # def gen_frames(self, uri):  # generate frame by frame from camera
-    #     camera = cv2.VideoCapture(uri)  # use 0 for web camera
-    #     while True:
-    #         # Capture frame-by-frame
-    #         success, frame = camera.read()  # read the camera frame
-    #         if not success:
-    #             break
-    #         else:
-    #             ret, buffer = cv2.imencode('.jpg', frame)
-    #             frame = buffer.tobytes()
-    #             yield (b'--frame\r\n'
-    #                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result

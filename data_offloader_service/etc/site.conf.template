@@ -1,0 +1,23 @@
+[customized:log]
+enabled=true
+
+[eagleeye:api]
+node = http://localhost:8079/api/nodes
+latency = http://localhost:8079/api/latency
+
+[pubsub:channel]
+scheduler=scheduler
+
+[zmq]
+sender_host=127.0.0.1
+recv_host_prefix=dual-det
+visualizer_port=5550
+img_source_port=5549
+
+[scheduler_policy]
+# valid value: `round_robin`, `dynamic_round_robin`
+policy=dynamic_round_robin
+
+[orchestration]
+# available values: {`native` and `docker`}
+mode=native

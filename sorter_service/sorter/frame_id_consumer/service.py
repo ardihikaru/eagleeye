@@ -71,7 +71,7 @@ class FrameIDConsumerService(asab.Service):
 		unsorted_seq = []  # list of frame_id based on captured data through redis consumer
 		for item in consumer.listen():
 			if isinstance(item["data"], int):
-				L.warning("\n[{}] Starting subscription to channel `{}_{}`".format(
+				L.warning("[{}] Starting subscription to channel `{}_{}`".format(
 						  get_current_time(), self.ch_prefix, self.sorter_id
 				))
 			else:
@@ -110,11 +110,11 @@ class FrameIDConsumerService(asab.Service):
 		t0_sorting = time.time()
 		sorted_seq = await self.algorithm_svc.sort_frame_sequences(unsorted_seq)
 		t1_sorting = (time.time() - t0_sorting) * 1000
-		L.warning('\n[%s] Latency of Sorting a frame sequence (%.3f ms)' %
+		L.warning('[%s] Latency of Sorting a frame sequence (%.3f ms)' %
 				  (get_current_time(), t1_sorting))
 
 		# build & submit latency data: Sorting
-		L.warning("\n[%s] build & submit latency data: Pre-processing" % get_current_time())
+		L.warning("[%s] build & submit latency data: Pre-processing" % get_current_time())
 		# IMPORTANT: `frame_id` is set into None
 		await self.lat_collector_svc.build_and_save_latency_info(
 			None, t1_sorting, "Sorting Network", "scheduling", "sorting"
@@ -141,5 +141,5 @@ class FrameIDConsumerService(asab.Service):
 		plot_info_key = "plotinfo-drone-%s-frame-%s" % (str(drone_id), str(frame_id))
 		redis_set(self.rc, plot_info_key, plot_info, expired=10)  # delete value after 10 seconds
 		t1_plotinfo_saving = (time.time() - t0_plotinfo_saving) * 1000
-		L.warning('\n[%s] Latency of Storing Plot info in redisDB (%.3f ms)' %
+		L.warning('[%s] Latency of Storing Plot info in redisDB (%.3f ms)' %
 				  (get_current_time(), t1_plotinfo_saving))

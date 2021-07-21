@@ -97,33 +97,55 @@ class ZenohNet(ServiceABC):
 		else:
 			return None
 
-	def init_connection(self):
-		# initiate logging
-		zenoh.init_logger()
+	def init_connection(self, log_initialized=False):
+		# set reset session
+		if self.z_session is not None:
+			self.close_connection()
 
-		L.warning("[ZENOH] Openning session...")
-		self.z_session = zenoh.net.open(self.conf)
+		# initiate logging (ONE TIME ONLY!)
+		if not log_initialized:
+			zenoh.init_logger()
 
-		self.z_sub_info = SubInfo(Reliability.Reliable, SubMode.Push)
+		L.warning("[ZENOH_NET] Openning session...")
+		try:
+			self.z_session = zenoh.net.open(self.conf)
+			self.z_sub_info = SubInfo(Reliability.Reliable, SubMode.Push)
+		except Exception as e:
+			L.error("[ZENOH_NET][init_connection] Error: `{}`".format(e))
 
+	# TODO: this function is not working YET
 	def close_connection(self, _subscriber=None):
-		self.z_session.close()
-		L.warning("[ZENOH] `{}` session has been closed".format(self.session_type))
+		try:
+			self.z_session.close()
+			zenoh.net.Subscriber.undeclare(self.sub)
+
+			self.z_session = None
+			self.z_sub_info = None
+			self.z_queryable = None
+			self.z_rid = None
+
+			self.pub = None
+			self.sub = None
+
+		except Exception as e:
+			L.error("[ZENOH_NET][close_connection] Error: `{}`".format(e))
+
+		L.warning("[ZENOH_NET] `{}` session has been closed".format(self.session_type))
 
 	def register_subscriber(self, listener, queryable=False):
-		L.warning("[ZENOH] Registering new consumer")
+		L.warning("[ZENOH_NET] Registering new consumer")
 		self.sub = self.z_session.declare_subscriber(self.selector, self.z_sub_info, listener)
 
 		if queryable:
-			L.warning("[ZENOH] Declaring Queryable on '{}'...".format(selector))
+			L.warning("[ZENOH_NET] Declaring Queryable on '{}'...".format(selector))
 			self.z_queryable = self.z_session.declare_queryable(
 				self.selector, STORAGE, query_handler)
 
 	def register_publisher(self):
-		L.warning("[ZENOH] Registering new producer")
+		L.warning("[ZENOH_NET] Registering new producer")
 		self.z_rid = self.z_session.declare_resource(self.path)
 		self.pub = self.z_session.declare_publisher(self.z_rid)
 
 	def publish_data(self, encoded_val):
-		L.warning("[ZENOH] Publish data")
+		L.warning("[ZENOH_NET] Publish data")
 		self.z_session.write(self.z_rid, encoded_val)

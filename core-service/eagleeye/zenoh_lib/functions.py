@@ -59,7 +59,8 @@ def extract_compressed_tagged_img(consumed_data):
 
 	# calculate zenoh pubsub
 	zenoh_pubsub_latency = (t1_zenoh_pubsub - t0_zenoh_pubsub) * 1000
-	L.warning(('[%s] Latency Zenoh Comm. PubSub (%.3f ms) ' % ("ZENOH CONSUMER", zenoh_pubsub_latency)))
+	L.warning(('[%s][Frame-{}] Latency Zenoh Comm. PubSub (%.3f ms) '.format(frame_id) % ("ZENOH CONSUMER",
+																						  zenoh_pubsub_latency)))
 
 	# popping tagged information
 	t0_non_img_cleaning = time.time()
@@ -94,12 +95,13 @@ def extract_compressed_tagged_img(consumed_data):
 	decompressed_img = cv2.imdecode(decoded_img, 1)  # decompress
 	# print(" ----- SHAPE decompressed_img:", decompressed_img.shape)
 	t1_decompress_img = (time.time() - t0_decompress_img) * 1000
-	L.warning(('[%s] Latency COMPRESSING IMG (%.3f ms) \n' % ("ZENOH CONSUMER", img_compr_lat)))
-	L.warning(('[%s] Latency DE-COMPRESSING IMG (%.3f ms) \n' % ("ZENOH CONSUMER", t1_decompress_img)))
+	L.warning(('[%s] Latency COMPRESSING IMG (%.3f ms)' % ("ZENOH CONSUMER", img_compr_lat)))
+	L.warning(('[%s] Latency DE-COMPRESSING IMG (%.3f ms)' % ("ZENOH CONSUMER", t1_decompress_img)))
 
 	# cv2.imwrite("decompressed_img.jpg", decompressed_img)
 	# cv2.imwrite("decompressed_img_{}.jpg".format(str(t0_decompress_img)), decompressed_img)
 
+	# latency data
 	latency_data = {
 		"decoding_payload": t1_decode,
 		"clean_decoded_payload": t1_non_img_cleaning,
@@ -120,24 +122,19 @@ def extract_compressed_tagged_img(consumed_data):
 	return img_info, latency_data
 
 
-def decode_payload(payload):
-	decoded_payload = np.frombuffer(payload, dtype=np.int64)
-	decoded_payload_len = list(decoded_payload.shape)[0]
-	decoded_payload = decoded_payload.reshape(decoded_payload_len, 1)
-
-	return decoded_payload
+def encrypt_str(str_val, byteorder="little"):
+	encrypted_bytes = str_val.encode('utf-8')
+	encrypted_val = int.from_bytes(encrypted_bytes, byteorder)  # `byteorder` must be either 'little' or 'big'
+	return encrypted_val  # max 19 digit
 
 
-def extract_decoded_payload(decoded_data):
-	array_len = decoded_data[-1][0]
-	extra_tag_len = decoded_data[-2][0]
-	encoded_img_len = array_len - extra_tag_len
-
-	return extra_tag_len, encoded_img_len
+def decrypt_str(int_val, byteorder="little"):
+	decrypted_bytes = int_val.to_bytes((int_val.bit_length() + 7) // 8, byteorder)  # byteorder must be either 'little' or 'big'
+	decrypted_str = decrypted_bytes.decode('utf-8')
+	return decrypted_str
 
 
 def extract_drone_id(data, img_len):
-	""" Extract drone_id captured by Zenoh's Consumer """
 	drone_idx = img_len
 	return decrypt_str(int(data[drone_idx][0]))
 
@@ -170,9 +167,3 @@ def extract_frame_id(data, img_len):
 	""" Extract drone_id captured by Zenoh's Consumer """
 	frame_idx = img_len + 3
 	return decrypt_str(int(data[frame_idx][0]))
-
-
-def decrypt_str(int_val, byteorder="little"):
-	decrypted_bytes = int_val.to_bytes((int_val.bit_length() + 7) // 8, byteorder)  # byteorder must be either 'little' or 'big'
-	decrypted_str = decrypted_bytes.decode('utf-8')
-	return decrypted_str

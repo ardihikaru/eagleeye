@@ -47,7 +47,7 @@ class LatencyCollectorService(asab.Service):
             L.error("[SAVE_LATENCY] Saving latency failed.")
 
         t1_lat = (time.time() - t0_lat) * 1000
-        L.warning('\n[%s] Proc. Latency of %s (%.3f ms)' % (get_current_time(), section, t1_lat))
+        L.warning('[%s] Proc. Latency of %s (%.3f ms)' % (get_current_time(), section, t1_lat))
 
     # async def store_latency_data(self, latency_data):
     def _store_latency_data(self, latency_data):

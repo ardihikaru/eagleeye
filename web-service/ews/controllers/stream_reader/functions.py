@@ -59,10 +59,10 @@ def config_to_mongodb(executor, request_json):
 		}
 		executor.submit(threaded_insertion, **kwargs)
 	except:
-		print("Somehow we unable to Start the Thread of TaskScheduler")
+		L.error("Somehow we unable to Start the Thread of TaskScheduler")
+
 	t1_thread = (time.time() - t0_thread) * 1000
-	# print('\n #### [%s] Latency for Start threading (%.3f ms)' % (get_current_time(), t1_thread))
-	L.warning('\n #### [%s] Latency for Start threading (%.3f ms)' % (get_current_time(), t1_thread))
+	L.warning('#### [%s] Latency for Start threading (%.3f ms)' % (get_current_time(), t1_thread))
 
 	# TODO: Save the latency into ElasticSearchDB for the real-time monitoring
 
