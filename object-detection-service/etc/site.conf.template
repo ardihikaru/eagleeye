@@ -20,9 +20,6 @@ is_microservice=false
 [persistence_detection]
 is_microservice=false
 
-[pih_candidate_selection]
-is_microservice=true
-
 [pcs:api]
 url=http://localhost:8082/pcs
 

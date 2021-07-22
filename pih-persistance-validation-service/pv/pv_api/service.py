@@ -24,7 +24,7 @@ class PVApiService(asab.Service):
 
 		self.pv_svc = app.get_service("pv.AlgorithmService")
 
-	async def calculate_and_wait(self, request_json):
+	async def calculate_pv_and_wait(self, request_json):
 
 		label, det_status = await self.pv_svc.validate_mbbox(
 			request_json["frame_id"],
@@ -36,5 +36,7 @@ class PVApiService(asab.Service):
 			"label": label,
 			"det_status": det_status
 		}
+
+		L.warning("[DRONE={}][FRAME={}] {}".format(request_json["drone_id"], request_json["frame_id"], resp_data))
 
 		return 200, self.StatusCode.REQUEST_OK.value, resp_data

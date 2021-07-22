@@ -64,6 +64,8 @@ class ObjectDetectionHandler(MyRedis):
 		# private rest APIs
 		self.pcs_url = asab.Config["pcs:api"]["url"]
 		self.pv_url = asab.Config["pv:api"]["url"]
+		self.pv_base_port = asab.Config["pv:api"].getint("pv_base_port")
+		self.pv_default_port = asab.Config["pv:api"].getint("pv_default_port")
 
 		# sorter config
 		self.ch_prefix = asab.Config["sorter"]["ch_prefix"]
@@ -118,8 +120,9 @@ class ObjectDetectionHandler(MyRedis):
 			if shm_nodes[0][i][0] == "idle":
 				shm_nodes[0][i][1] = status
 
-	async def send_pcs_request(self, bbox_data, list_det, names, h, w, c, selected_pairs):
+	async def send_pcs_request(self, drone_id, bbox_data, list_det, names, h, w, c, selected_pairs):
 		request_json = {
+			"drone_id": str(drone_id),
 			"bbox_data": bbox_data,
 			"det": list_det,
 			"names": names,
@@ -150,8 +153,9 @@ class ObjectDetectionHandler(MyRedis):
 			L.error("[PCS ERROR] `{}`".format(e))
 			return [], []
 
-	async def send_pv_request(self, frame_id, total_pih_candidates, period_pih_candidates):
+	async def send_pv_request(self, drone_id, frame_id, total_pih_candidates, period_pih_candidates):
 		request_json = {
+			"drone_id": str(drone_id),
 			"frame_id": frame_id,
 			"total_pih_candidates": total_pih_candidates,
 			"period_pih_candidates": period_pih_candidates,
@@ -160,7 +164,7 @@ class ObjectDetectionHandler(MyRedis):
 		try:
 			async with aiohttp.ClientSession() as session:
 				resp = await session.post(
-					self.pv_url,
+					pv_url,
 					data=json.dumps(request_json)
 				)
 
@@ -197,7 +201,7 @@ class ObjectDetectionHandler(MyRedis):
 		await self._save_latency(frame_id, pred_lat, image_info["algorithm"], "detection", "pred",
 								 node_id=str(self.node_id), node_name=str(self.node_name))
 
-	async def _exec_extra_pipeline(self, img, bbox_data, mbbox_data, plot_info, det, names, frame_id):
+	async def _exec_extra_pipeline(self, img, bbox_data, mbbox_data, plot_info, det, names, frame_id, drone_id):
 		# Get img information
 		h, w, c = img.shape
 
@@ -213,9 +217,10 @@ class ObjectDetectionHandler(MyRedis):
 
 			if self.pcs_is_microservice:
 				mbbox_data, self._selected_pairs = await self.send_pcs_request(
-					bbox_data, list_det, names, h, w, c, self._selected_pairs
+					drone_id, bbox_data, list_det, names, h, w, c, self._selected_pairs
 				)
 			else:
+				# TODO: add DroneID
 				mbbox_data, self._selected_pairs = await self.CandidateSelectionService.calc_mbbox(
 					bbox_data, det, names, h, w, c, self._selected_pairs
 				)
@@ -227,6 +232,11 @@ class ObjectDetectionHandler(MyRedis):
 			# build & submit latency data: PiH Candidate Selection
 			await self._save_latency(frame_id, t1_cs, "PiH Candidate Selection", "candidate_selection",
 									 "Extra Pipeline")
+
+			# build port of pv_url
+			new_port = self.pv_base_port + int(drone_id)
+			pv_url = self.pv_url.replace(str(self.pv_default_port), str(new_port))
+			L.warning("PiH PV's URL={}".format(pv_url))
 
 			# Performing Persistence Validation Algorithm, if enabled
 			if self.pv_enabled and len(mbbox_data) > 0:
@@ -242,6 +252,7 @@ class ObjectDetectionHandler(MyRedis):
 
 				if self.pv_is_microservice:
 					label, det_status = await self.send_pv_request(
+						drone_id,
 						frame_id,
 						self.total_pih_candidates,
 						self.period_pih_candidates
@@ -376,17 +387,21 @@ class ObjectDetectionHandler(MyRedis):
 														 image4yolo_lat, pred_lat, frame_id, image_info)
 					# execute PiH Candidate Selection & PiH Persitance Validation
 					mbbox_data, plot_info = await self._exec_extra_pipeline(img, bbox_data, mbbox_data, plot_info,
-																			det, names, frame_id)
+																			det, names, frame_id, image_info["drone_id"])
 
 					# print(" ## mbbox_data ## ")
 					# print(mbbox_data)
 
 					if len(mbbox_data) > 0:
 						detection_status = True
+					else:
+						# TODO: inform Visualizer Service ASAB!
+						pass
 
 				# Else, No object detected!
 				else:
 					L.warning("[DETECTION_RESULT] Unable to detect any valid objects in frame-{}".format(frame_id))
+					# TODO: inform Visualizer Service ASAB!
 
 				# If enable visualizer, send the bbox into the Visualizer Service
 				# mode 1: `sorter`
@@ -398,6 +413,9 @@ class ObjectDetectionHandler(MyRedis):
 						self.ch_prefix,
 						str(image_info["drone_id"]),
 					)
+					L.warning("[SENDING_TO_SORTER] Sending frame-{} (Drone-{}) to Sorter `{}`".format(
+						frame_id, image_info["drone_id"], sorter_channel
+					))
 					# build frame sequence information
 					frame_seq_obj = {
 						"drone_id": int(image_info["drone_id"]),

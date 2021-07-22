@@ -70,18 +70,22 @@ class GPSCollectorService(asab.Service):
             L.warning("[WARNING!] ******* GPS COLLECTOR IS WORKING IN AN OFFLINE MODE !!!!")
 
     def _is_ip_reachable(self):
-        hostname = asab.Config["stream:gps"]["host"]
-        process = subprocess.Popen(['ping', '-c', '5', '-w', '5', hostname],
-                                   stdout=PIPE, stderr=PIPE)
-        stdout, stderr = process.communicate()
-        packetloss = float(
-            [x for x in stdout.decode('utf-8').split('\n') if x.find('packet loss') != -1][0].split('%')[0].split(' ')[
-                -1])
-        if packetloss > 10.0:  # TODO: constant value can be used dynamically in the future
-            L.error("[WARNING!] Unable to connect with {}".format(hostname))
+        try:
+            hostname = asab.Config["stream:gps"]["host"]
+            process = subprocess.Popen(['ping', '-c', '5', '-w', '5', hostname],
+                                       stdout=PIPE, stderr=PIPE)
+            stdout, stderr = process.communicate()
+            packetloss = float(
+                [x for x in stdout.decode('utf-8').split('\n') if x.find('packet loss') != -1][0].split('%')[0].split(' ')[
+                    -1])
+            if packetloss > 10.0:  # TODO: constant value can be used dynamically in the future
+                L.error("[WARNING!] Unable to connect with {}".format(hostname))
+                return False
+            else:
+                return True
+        except Exception as e:
+            L.error("Error occur due to `{}`".format(e))
             return False
-        else:
-            return True
 
     def _setup_soap_connection(self):
         try:

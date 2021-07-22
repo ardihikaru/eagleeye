@@ -1,9 +1,9 @@
-# How to build: `$ docker build -f Dockerfile -t 5g-dive/eagleeye/sorter:1.0 .`
-# Run daemon: `$ docker run -d --name sorter-svc --network host 5g-dive/eagleeye/sorter:1.0`
-# Run: `$ docker run --name sorter-1-svc --network host 5g-dive/eagleeye/sorter:1.0`
-# Run: `$ docker run --name sorter-1-svc --rm -it --network host -v /home/s010132/devel/eagleeye/sorter_service/etc/site.conf:/app/etc/site.conf 5g-dive/eagleeye/sorter:1.0`
-# Test container: `$ docker run -it --rm 5g-dive/eagleeye/sorter:1.0 bash`
-# remove container: `$ docker container rm -f sorter-1-svc`
+# How to build: `$ docker build -f Dockerfile -t 5g-dive/eagleeye/pcs:1.0 .`
+# Run daemon: `$ docker run -d --name pcs-svc --network host 5g-dive/eagleeye/pcs:1.0`
+# Run: `$ docker run --name pcs-svc --network host 5g-dive/eagleeye/pcs:1.0`
+# Run: `$ docker run --name pcs-svc --network host --rm -it -v /home/s010132/devel/eagleeye/pih-candidate-selection-service/etc/site.conf:/app/etc/site.conf 5g-dive/eagleeye/pcs:1.0`
+# Test container: `$ docker run -it --rm 5g-dive/eagleeye/pcs:1.0 bash`
+# remove container: `$ docker container rm -f pcs-svc`
 
 # why not using alphine: https://pythonspeed.com/articles/alpine-docker-python/
 FROM 5g-dive/eagleeye/pycore-compact:1.0 as base
@@ -29,9 +29,9 @@ WORKDIR /app
 ARG VERSION=latest
 RUN echo "${VERSION}" > /app/VERSION
 RUN mkdir -p /app/etc
-COPY etc/sorter.conf /app/etc/
+COPY etc/pcs.conf /app/etc/
 RUN touch /app/etc/site.conf
-COPY sorter /app/sorter
-COPY ./sorter.py /app
+COPY pcs /app/pcs
+COPY ./pcs.py /app
 
-CMD ["/usr/local/bin/python", "./sorter.py", "-c", "etc/sorter.conf"]
+CMD ["/usr/local/bin/python", "./pcs.py", "-c", "etc/pcs.conf"]

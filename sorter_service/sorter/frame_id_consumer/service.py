@@ -76,6 +76,10 @@ class FrameIDConsumerService(asab.Service):
 				))
 			else:
 				detection_result = pubsub_to_json(item["data"])
+				"""
+				Sample Data: {'drone_id': 2, 'frame_id': 9207, 'plot_info': {}
+				"""
+				L.warning("[CONSUMED_DATA] {}".format(detection_result))
 
 				# pull in captured data
 				data_pool[detection_result["frame_id"]] = detection_result

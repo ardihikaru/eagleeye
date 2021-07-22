@@ -1,0 +1,3 @@
+asab==20.7.28  # has latest version, instead of `asab`
+python-dotenv==0.18.0
+window-slider

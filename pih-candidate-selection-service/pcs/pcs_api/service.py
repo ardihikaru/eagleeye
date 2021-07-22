@@ -24,7 +24,7 @@ class PCSApiService(asab.Service):
 
 		self.psc_svc = app.get_service("pcs.CandidateSelectionService")
 
-	async def calculate_and_wait(self, request_json):
+	async def calculate_pcs_and_wait(self, request_json):
 
 		mbbox_data, selected_pairs = await self.psc_svc.calc_mbbox(
 			# bbox_data=request_json["bbox_data"],  # DEPRECATED: no need to send this data anymore. we use `det` instead
@@ -40,5 +40,7 @@ class PCSApiService(asab.Service):
 			"mbbox_data": mbbox_data,
 			"selected_pairs": selected_pairs
 		}
+
+		L.warning("[DRONE={}] {}".format(request_json["drone_id"], resp_data))
 
 		return 200, self.StatusCode.REQUEST_OK.value, resp_data
