@@ -1,7 +1,7 @@
 # How to build: `$ docker build -f Dockerfile -t 5g-dive/eagleeye/sorter:1.0 .`
 # Run daemon: `$ docker run -d --name sorter-svc --network host 5g-dive/eagleeye/sorter:1.0`
 # Run: `$ docker run --name sorter-1-svc --network host 5g-dive/eagleeye/sorter:1.0`
-# Run: `$ docker run --name sorter-1-svc --rm -it --network host -v /home/s010132/devel/eagleeye/sorter_service/etc/site.conf:/app/etc/site.conf 5g-dive/eagleeye/sorter:1.0`
+# Run: `$ docker run --name sorter-1-svc --rm -it --network host -v /home/s010132/devel/eagleeye/sorter_service/etc/site-1.conf:/app/etc/site.conf 5g-dive/eagleeye/sorter:1.0`
 # Test container: `$ docker run -it --rm 5g-dive/eagleeye/sorter:1.0 bash`
 # remove container: `$ docker container rm -f sorter-1-svc`
 
