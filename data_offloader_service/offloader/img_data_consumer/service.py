@@ -173,7 +173,8 @@ class ImgConsumerService(ZenohImageSubscriberService):
 			self.frame_id = int(img_info["frame_id"])
 
 			# Sending image data into Visualizer Service as well
-			self.ZMQService.send_image_to_visualizer(self.frame_id, frame)
+			# self.ZMQService.send_image_to_visualizer(self.frame_id, frame)
+			self.ZMQService.send_image_to_visualizer_v2(img_info["id"], self.frame_id, frame)
 
 			# Start t0_e2e_lat: To calculate the e2e processing & comm. latency
 			t0_e2e_lat = time.time()
