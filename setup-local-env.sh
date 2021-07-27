@@ -21,6 +21,8 @@ fi
 ## Create Docker network
 docker network create -d bridge eagleeye
 
+# minor update due to issue: `docker on ubuntu 16.04 error when killing container`
+# Source: https://stackoverflow.com/a/49573618
 # Deploy Redis
 docker run -d \
   -h redis \
@@ -28,7 +30,10 @@ docker run -d \
   --name redis-service \
   --restart always \
   --network eagleeye \
+  --security-opt apparmor=docker-default \
   redis:5.0.5-alpine3.9 /bin/sh -c 'redis-server --appendonly yes'
 
+# minor update due to issue: `docker on ubuntu 16.04 error when killing container`
+# Source: https://stackoverflow.com/a/49573618
 # Deploy mongo
-docker run -d -p 27017:27017 --name mongo-service --network eagleeye mongo
+docker run -d -p 27017:27017 --name mongo-service --network eagleeye mongo --security-opt apparmor=docker-default
