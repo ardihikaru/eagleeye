@@ -36,4 +36,4 @@ docker run -d \
 # minor update due to issue: `docker on ubuntu 16.04 error when killing container`
 # Source: https://stackoverflow.com/a/49573618
 # Deploy mongo
-docker run -d -p 27017:27017 --name mongo-service --network eagleeye mongo --security-opt apparmor=docker-default
+docker run -d -p 27017:27017 --name mongo-service --network eagleeye --security-opt apparmor=docker-default mongo
