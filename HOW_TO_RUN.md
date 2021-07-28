@@ -148,12 +148,43 @@
     - Local:
         `$ ffplay -rtsp_transport tcp -i rtsp://localhost/test`
     
+## How to use in docker mode (containerized)
+1. Redis and Mongodb Services
+    - Run: `$ . setup-local-env.sh`
+    - Destroy: `$ . docker-prune-containers.sh`
+2. Web Service (EWS)
+    - // TBD
+3. Sorter Service (can be multiple)
+    - Folder Loc: `./sorter_service/`
+    - Build: `$ docker build -f Dockerfile -t 5g-dive/eagleeye/sorter:1.0 .`
+    - Run: `$ docker run --name <svc-name> -d --network host -v <site-config-fullpath>:/app/etc/site.conf 5g-dive/eagleeye/sorter:1.0`
+        - Example of `Sorter 1`: `$ docker run --name sorter-1-svc -d --network host -v /home/s010132/devel/eagleeye/sorter_service/etc/site-1.conf:/app/etc/site.conf 5g-dive/eagleeye/sorter:1.0`
+        - Example of `Sorter 2`: `$ docker run --name sorter-2-svc -d --network host -v /home/s010132/devel/eagleeye/sorter_service/etc/site-2.conf:/app/etc/site.conf 5g-dive/eagleeye/sorter:1.0`
+4. PiH Candidate Selection (PCS) Service
+    - Folder Loc: `./pih-candidate-selection-service/`
+    - build: `$ docker build -f Dockerfile -t 5g-dive/eagleeye/pcs:1.0 .`
+    - Run: `$ docker run --name <svc-name> --network host -d -v <site-config-fullpath>:/app/etc/site.conf 5g-dive/eagleeye/pcs:1.0`
+        - Example: `$ docker run --name pcs-svc --network host -d -v /home/s010132/devel/eagleeye/pih-candidate-selection-service/etc/site.conf:/app/etc/site.conf 5g-dive/eagleeye/pcs:1.0`
+5. PiH Persistance Validation (PV) Service (can be multiple)
+    - Folder Loc: `./pih-persistance-validation-service/`
+    - Build: `$ docker build -f Dockerfile -t 5g-dive/eagleeye/sorter:1.0 .`
+    - Run: `$ docker run --name <svc-name> --network host -d -v <site-config-fullpath>:/app/etc/site.conf 5g-dive/eagleeye/pv:1.0`
+        - Example of `PV 1`: `$ docker run --name pv-1-svc --network host -d -v /home/s010132/devel/eagleeye/pih-persistance-validation-service/etc/site-1.conf:/app/etc/site.conf 5g-dive/eagleeye/pv:1.0`
+        - Example of `PV 2`: `$ docker run --name pv-2-svc --network host -d -v /home/s010132/devel/eagleeye/pih-persistance-validation-service/etc/site-2.conf:/app/etc/site.conf 5g-dive/eagleeye/pv:1.0`
+6. Detection Service (can be multiple)
+    - // TBD
+7. Offloader Service
+    - // TBD
+8. Visualizer Service (can be multiple)
+    - // TBD
+
 ## MISC
 - Tunnel to LittleBoy:
-    `$ ssh -L 5901:127.0.0.1:5901 -C -N -l s010132 192.168.1.10`
+    - Local: `$ ssh -L 5901:127.0.0.1:5901 -C -N -l s010132 192.168.1.10`
+    - Public IP: `$ ssh -L 5901:127.0.0.1:5901 -C -N -l s010132 140.113.86.92`
     - password: `s010132`
 - Tunnel to Fatman:
-    `$ ssh -L 5901:127.0.0.1:5901 -C -N -l k200 192.168.1.60`
+    `$ ssh -L 5901:127.0.0.1:5901 -C -N -l   192.168.1.60`
     - password: `k200user`
 - Run: `export PYTHONPATH=:/home/s010132/devel/eagleeye/core-service/eagleeye`
 - Database related
