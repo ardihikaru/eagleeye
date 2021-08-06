@@ -2,6 +2,7 @@ import asab
 from .service import CandidateSelectionService
 from ext_lib.utils import get_current_time
 import logging
+from asab import LOG_NOTICE
 
 ###
 
@@ -18,4 +19,4 @@ class CandidateSelectionModule(asab.Module):
 		self.Service = CandidateSelectionService(app, "pcs.CandidateSelectionService")
 
 	async def initialize(self, app):
-		L.warning("\n[%s] Initialize Candidate Selection Module." % get_current_time())
+		L.log(LOG_NOTICE, "[%s] Initialize Candidate Selection Module." % get_current_time())

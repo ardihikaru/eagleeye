@@ -7,10 +7,16 @@ import simplejson as json
 
 class CSv2(RegionCluster):
     def __init__(self):
-        super().__init__()
+        super().__init__(
+            target_obj_one=asab.Config["objdet:yolo"]["target_obj_one"],
+            target_obj_two=asab.Config["objdet:yolo"]["target_obj_two"],
+        )
+        self.target_obj_one = asab.Config["objdet:yolo"]["target_obj_one"]
+        self.target_obj_two = asab.Config["objdet:yolo"]["target_obj_two"]
+
         self.height, self.width, self.channels = None, None, None
         self.det = None  # Original detected objects
-        self.class_det = {"Person": [], "Flag": []}
+        self.class_det = {self.target_obj_one: [], self.target_obj_two: []}
         self.names = None
         self.detected_mbbox = []
         self.pih_label = asab.Config["bbox_config"]["pih_label"]
@@ -23,13 +29,10 @@ class CSv2(RegionCluster):
         self.person_xyxys = {}
         self.flag_xyxys = {}
         self.flag_pair_candidates = {}
-        self.selected_pairs = []
-        self._prev_pairs = None
         # self.bbox_data = []  # an optional, since we can use `det`
 
-    def initialize(self, det, names, h, w, c, prev_pairs):
+    def initialize(self, det, names, h, w, c):
         # self.bbox_data = bbox_data
-        self._prev_pairs = prev_pairs
         self.det = det
         self.names = names
         self.height = h
@@ -37,13 +40,12 @@ class CSv2(RegionCluster):
         self.channels = c
 
         # Reset on every call
-        self.class_det = {"Person": [], "Flag": []}
+        self.class_det = {self.target_obj_one: [], self.target_obj_two: []}
         self.paired_flags = {}
         self.saved_dist = {}  # of (FlagID, PersonID), e.g. ["0-0"] = 80
         self.person_xyxys = {}
         self.flag_xyxys = {}
         self.flag_pair_candidates = {}
-        self.selected_pairs = []
         self.detected_mbbox = []
         self._set_empty_object_data()
 
@@ -96,9 +98,9 @@ class CSv2(RegionCluster):
 
     def find_pair_candidates(self):
         for cluster_data in self.mapped_obj:
-            if len(cluster_data["Person"]) > 0 and len(cluster_data["Flag"]) > 0:
-                for flag_idx in cluster_data["Flag"]:
-                    for person_idx in cluster_data["Person"]:
+            if len(cluster_data[self.target_obj_one]) > 0 and len(cluster_data[self.target_obj_two]) > 0:
+                for flag_idx in cluster_data[self.target_obj_two]:
+                    for person_idx in cluster_data[self.target_obj_one]:
                         dist_idx = str(flag_idx) + "-" + str(person_idx)
 
                         if self.__is_flag_valid(flag_idx, person_idx) and self.__is_distance_valid(dist_idx):
@@ -123,12 +125,6 @@ class CSv2(RegionCluster):
                 flag_xyxy = get_det_xyxy(self.det[flag_idx])
                 mbbox_xyxy = get_mbbox(person_xyxy, flag_xyxy)
 
-                # save selected pairs
-                self.selected_pairs.append({
-                    "Person": person_xyxy,
-                    "Flag": flag_xyxy
-                })
-
                 # Bugfix: format numpy-float into float data type
                 for i in range(len(mbbox_xyxy)):
                     mbbox_xyxy[i] = float(mbbox_xyxy[i])
@@ -137,20 +133,20 @@ class CSv2(RegionCluster):
                 # plot_one_box(mbbox_xyxy, self.mbbox_img, label=self.pih_label, color=self.rgb_mbbox)
 
     def __is_eligible(self):
-        # if "Person" not in self.class_det or "Flag" not in self.class_det:
-        if len(self.class_det["Person"]) == 0 or len(self.class_det["Flag"]) == 0:
+        # if [self.target_obj_one] not in self.class_det or [self.target_obj_two] not in self.class_det:
+        if len(self.class_det[self.target_obj_one]) == 0 or len(self.class_det[self.target_obj_two]) == 0:
             return False
         else:
             return True
 
     def map_to_clusters(self):
-        for person_idx in self.class_det["Person"]:
+        for person_idx in self.class_det[self.target_obj_one]:
             person_xyxy = get_det_xyxy(self.det[person_idx])
             person_centroid = np_xyxy2centroid(person_xyxy)
             self.person_xyxys[person_idx] = [person_idx, person_xyxy, person_centroid]
-            self.find_cluster(person_centroid, "Person", person_idx)
+            self.find_cluster(person_centroid, self.target_obj_one, person_idx)
 
-        for flag_idx in self.class_det["Flag"]:
+        for flag_idx in self.class_det[self.target_obj_two]:
             flag_xyxy = get_det_xyxy(self.det[flag_idx])
             flag_centroid = np_xyxy2centroid(flag_xyxy)
             self.flag_xyxys[flag_idx] = [flag_idx, flag_xyxy, flag_centroid]
@@ -158,7 +154,7 @@ class CSv2(RegionCluster):
             self.save_distance(flag_idx, flag_centroid)
             self.flag_pair_candidates[flag_idx] = {"id": [], "dist": []}
 
-            self.find_cluster(flag_centroid, "Flag", flag_idx)
+            self.find_cluster(flag_centroid, self.target_obj_two, flag_idx)
 
     def save_distance(self, flag_idx, centroid):
         i = 0
@@ -182,9 +178,6 @@ class CSv2(RegionCluster):
 
     def get_detected_mbbox(self):
         return self.detected_mbbox
-
-    def get_selected_pairs(self):
-        return self.selected_pairs
 
     def get_rgb_mbbox(self):
         return self.rgb_mbbox

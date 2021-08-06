@@ -1087,6 +1087,7 @@ def get_current_time():
     return datetime.now().strftime("%H:%M:%S")
 
 
+# DEPRECATED!
 def plot_gps_info(img_height, gps_data, det_status, img):
     x_coord_lbl, y_coord_lbl = 10, (img_height - 90)
     x_coord_gps, y_coord_gps = 10, (img_height - 60)

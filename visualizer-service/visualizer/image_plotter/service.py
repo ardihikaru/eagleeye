@@ -6,6 +6,7 @@ from ext_lib.redis.my_redis import MyRedis
 from ext_lib.redis.translator import redis_get, redis_set
 import cv2
 from ext_lib.utils import get_current_time
+from asab import LOG_NOTICE
 
 ###
 
@@ -50,7 +51,7 @@ class ImagePlotterService(asab.Service):
             if bool(plot_info):
                 self._count_pih += 1
 
-                pih_label = "PiH not Found"
+                pih_label = "{} PiH Found".format(len(plot_info["mbbox"]))
                 if is_forced_plot:
                     await self._save_latest_plot_info(str(frame_id), plot_info)
 
@@ -59,29 +60,33 @@ class ImagePlotterService(asab.Service):
                 # plot each mbbox data into the image
                 t0_plot_bbox = time.time()
                 for mbbox_data in plot_info["mbbox"]:
+                    # for each_mbbox_data in mbbox_data:
                     plot_one_box(mbbox_data, img, label=plot_info["label"], color=plot_info["color"])
+                        # plot_one_box(each_mbbox_data, img, label=plot_info["label"], color=plot_info["color"])
                     # break  # TODO: This is a temporary approach! We need to fix the bug of PCS (v2)
                 t1_plot_bbox = (time.time() - t0_plot_bbox) * 1000
-                L.warning('\n[%s] Latency for plotting PiH BBox (%.3f ms)' % (get_current_time(), t1_plot_bbox))
+                L.log(LOG_NOTICE, '[{}] Latency for plotting PiH BBox (%.3f ms)'.format(get_current_time())
+                      % t1_plot_bbox)
 
             # sending GPS information to the Ground Control, every N frames (default `N`=300)
             if int(frame_id) % self._delay_send_gps == 0 and self._count_pih > 0:
                 await self.GPSCollectorService.send_gps_info(gps_data)
                 self._count_pih = 0
 
+            # Plot GPS information (left bottom)
             self._plot_gps_and_det_info(gps_data, pih_label, img)
             if self._plot_fps:
                 self._plot_fps_info(img, fps)
 
-            # This feature enable to plot PiH BBox based on the latest stored BBox in the redisDB
-            # Default: DISABLED
-            if is_forced_plot and not bool(plot_info) and is_latest_plot_available:
-                plot_info = self._get_latest_plot_info(str(frame_id))
-                if bool(plot_info):
-                    # plot each mbbox data into the image
-                    for mbbox_data in plot_info["mbbox"]:
-                        plot_one_box(mbbox_data, img, label=plot_info["label"], color=plot_info["color"])
-                        break  # TODO: This is a temporary approach! We need to fix the bug of PCS (v2)
+            # # This feature enable to plot PiH BBox based on the latest stored BBox in the redisDB
+            # # Default: DISABLED
+            # if is_forced_plot and not bool(plot_info) and is_latest_plot_available:
+            #     plot_info = self._get_latest_plot_info(str(frame_id))
+            #     if bool(plot_info):
+            #         # plot each mbbox data into the image
+            #         for mbbox_data in plot_info["mbbox"]:
+            #             plot_one_box(mbbox_data, img, label=plot_info["label"], color=plot_info["color"])
+            #             break  # TODO: This is a temporary approach! We need to fix the bug of PCS (v2)
 
         if self._mode == "rtsp":
             # write to pipe of RTSP Server
@@ -127,8 +132,8 @@ class ImagePlotterService(asab.Service):
                     (x_coord_obj, y_coord_obj), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), 2)
 
         t1_plot_gps_det = (time.time() - t0_plot_gps_det) * 1000
-        L.warning('\n[%s] Latency for plotting GPS and detection information (%.3f ms)' % (get_current_time(),
-                                                                                           t1_plot_gps_det))
+        L.log(LOG_NOTICE, '[{}] Latency for plotting GPS and detection information (%.3f ms)'.format(get_current_time())
+              % t1_plot_gps_det)
 
     def _plot_fps_info(self, img, fps=None):
         t0_plot_fps = time.time()
@@ -150,8 +155,8 @@ class ImagePlotterService(asab.Service):
         cv2.putText(img, label, (x_coord, y_coord), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 255, 0), 2)
 
         t1_plot_fps = (time.time() - t0_plot_fps) * 1000
-        L.warning('\n[%s] Latency for plotting FPS information (%.3f ms)' % (get_current_time(),
-                                                                                           t1_plot_fps))
+        L.log(LOG_NOTICE, '[{}] Latency for plotting FPS information (%.3f ms)'.format(get_current_time())
+              % t1_plot_fps)
 
     async def _get_plot_info(self, frame_id):
         drone_id = asab.Config["stream:config"]["drone_id"]
@@ -167,7 +172,7 @@ class ImagePlotterService(asab.Service):
                 break
             continue
 
-        L.warning("[FRAME Waiting time] of frame-%s=%s" % (frame_id, str(t1_wait)))
+        L.log(LOG_NOTICE, "[FRAME Waiting time] of frame-{}={}".format(frame_id, str(t1_wait)))
         plot_info = redis_get(self.redis.get_rc(), plot_info_key)
 
         return plot_info

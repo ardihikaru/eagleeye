@@ -5,6 +5,7 @@ from ext_lib.redis.my_redis import MyRedis
 import cv2
 import time
 from ext_lib.utils import get_current_time
+from asab import LOG_NOTICE
 
 ###
 
@@ -47,13 +48,13 @@ class OpenCVVisualizerService(asab.Service):
                 t1_zmq = (time.time() - t0_zmq) * 1000
                 if is_success:
                     fps = await self.FPSCalculatorService.get_fps(frame_id)
-                    L.warning('Latency [Visualizer Capture] of frame-%s: (%.5fms)' % (str(frame_id), t1_zmq))
+                    L.log(LOG_NOTICE, 'Latency [Visualizer Capture] of frame-{}: (%.5fms)'.format(str(frame_id)) % t1_zmq)
                     is_latest_plot_available = await self.ImagePlotterService.plot_img(is_latest_plot_available,
                                                                                        frame_id, img, fps)
                     cv2.imshow(self._window_title, img)
                     # L.warning('*** Current FPS: {}'.format(await self.FPSCalculatorService.get_fps(frame_id)))
             except Exception as e:
-                print("No more frame to show; Reason: {}".format(e))
+                L.error("No more frame to show; Reason: {}".format(e))
                 break
 
             if cv2.waitKey(1) & 0xFF == ord('q'):

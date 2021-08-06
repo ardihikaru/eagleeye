@@ -6,6 +6,7 @@ from detection.algorithm.soa.yolo_v3.components.utils.utils import get_current_t
 from detection.algorithm.soa.yolo_v3.etc.commons.yolo_functions import YOLOFunctions
 import logging
 import json
+from asab import LOG_NOTICE
 
 ###
 
@@ -17,14 +18,14 @@ L = logging.getLogger(__name__)
 
 class YOLOv3(YOLOFunctions):
     def __init__(self, conf):
-        L.warning("Reformatting configuration data")
+        L.log(LOG_NOTICE, "Reformatting configuration data")
         conf = self._reformat_conf(conf)
-        L.warning(json.dumps(conf))
+        L.log(LOG_NOTICE, json.dumps(conf))
         super().__init__(conf)
         self.conf = conf
-        L.warning("Initializing Configuration")
+        L.log(LOG_NOTICE, "Initializing Configuration")
         self.__initialize_configurations()
-        L.warning("Configuration initialized")
+        L.log(LOG_NOTICE, "Configuration initialized")
 
         # Set related parameters
         self.total_proc_frames = 0
@@ -52,16 +53,14 @@ class YOLOv3(YOLOFunctions):
         return conf
 
     def __initialize_configurations(self):
-        # print("\n[%s] Initialize YOLO Configuration" % get_current_time())
-        L.warning("\n[%s] Initialize YOLO Configuration" % get_current_time())
+        L.log(LOG_NOTICE, "[%s] Initialize YOLO Configuration" % get_current_time())
         t0_load_weight = time.time()
         self._load_weight()
         t_load_weight = time.time() - t0_load_weight
         # print(".. Load `weight` in (%.3fs)" % t_load_weight)
 
         # Latency: Load YOLOv3 Weight
-        # print('Latency [Load `weight`]: (%.5fs)' % t_load_weight)
-        L.warning('Latency [Load `weight`]: (%.5fs)' % t_load_weight)
+        L.log(LOG_NOTICE, 'Latency [Load `weight`]: (%.5fs)' % t_load_weight)
 
         t0_load_eval = time.time()
         self._eval_model()
@@ -69,8 +68,7 @@ class YOLOv3(YOLOFunctions):
         # print(".. Load function `eval_model` in (%.3fs)" % t_load_eval_model)
 
         # Latency: Execute Evaluation Model
-        # print('Latency [Load `Eval Model`]: (%.5fs)' % t_load_eval_model)
-        L.warning('Latency [Load `Eval Model`]: (%.5fs)' % t_load_eval_model)
+        L.log(LOG_NOTICE, 'Latency [Load `Eval Model`]: (%.5fs)' % t_load_eval_model)
 
         self._get_names_colors()
 
@@ -85,8 +83,7 @@ class YOLOv3(YOLOFunctions):
                                           dtype=np.float16 if self.conf["half"] else np.float32)  # uint8 to fp16/fp32
         image4yolo /= 255.0  # 0 - 255 to 0.0 - 1.0
         t1_preproc = (time.time() - t0_preproc) * 1000  # to ms
-        # print('[%s] Pre-processing time (%.3f ms)' % (get_current_time(), t1_preproc))
-        L.warning('[%s] Pre-processing time (%.3f ms)' % (get_current_time(), t1_preproc))
+        L.log(LOG_NOTICE, '[%s] Pre-processing time (%.3f ms)' % (get_current_time(), t1_preproc))
         # TODO: To capture the latency of the PRE-Processing
 
         return image4yolo
@@ -120,11 +117,11 @@ class YOLOv3(YOLOFunctions):
         tdiff_inference = (time.time() - t0_det) * 1000  # to ms
 
         # Latency: Inference
-        L.warning('[%s] Inference time (%.3f ms)' % (get_current_time(), tdiff_inference))
+        L.log(LOG_NOTICE, '[%s] Inference time (%.3f ms)' % (get_current_time(), tdiff_inference))
 
-        L.warning('[%s] Function (from_numpy) time (%.3f ms)' % (get_current_time(), tdiff_from_numpy))
-        L.warning('[%s] Function (image4yolo) time (%.3f ms)' % (get_current_time(), tdiff_image4yolo))
-        L.warning('[%s] Prediction time (%.3f ms)' % (get_current_time(), tdiff_pred))
+        L.log(LOG_NOTICE, '[%s] Function (from_numpy) time (%.3f ms)' % (get_current_time(), tdiff_from_numpy))
+        L.log(LOG_NOTICE, '[%s] Function (image4yolo) time (%.3f ms)' % (get_current_time(), tdiff_image4yolo))
+        L.log(LOG_NOTICE, '[%s] Prediction time (%.3f ms)' % (get_current_time(), tdiff_pred))
 
         # Default: Disabled
         # if self.conf["half"]:
@@ -137,8 +134,7 @@ class YOLOv3(YOLOFunctions):
                                    classes=None,
                                    agnostic=self.conf["agnostic_nms"])
         tdiff_nms = ((time.time() - t0_nms) * 1000)
-        # print('\n # Total Non-Maximum Suppression (NMS) time: (%.3f ms)' % tdiff_nms)
-        L.warning('# Total Non-Maximum Suppression (NMS) time: (%.3f ms)' % tdiff_nms)
+        L.log(LOG_NOTICE, '# Total Non-Maximum Suppression (NMS) time: (%.3f ms)' % tdiff_nms)
 
         # Get detection
         t0_get_detection = time.time()
@@ -158,8 +154,7 @@ class YOLOv3(YOLOFunctions):
                     break
 
         t1_get_detection = ((time.time() - t0_get_detection) * 1000)
-        # print('\n # Get Detection time: (%.3f ms)' % t1_get_detection)
-        L.warning('# Get Detection time: (%.3f ms)' % t1_get_detection)
+        L.log(LOG_NOTICE, '# Get Detection time: (%.3f ms)' % t1_get_detection)
         # TODO: To capture the latency of the POST-Processing
 
         names = load_classes(self.conf["names"])

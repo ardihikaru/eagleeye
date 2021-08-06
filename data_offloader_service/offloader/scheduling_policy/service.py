@@ -5,6 +5,7 @@ from ext_lib.utils import get_current_time
 import numpy as np
 from ext_lib.redis.my_redis import MyRedis
 from ext_lib.redis.translator import redis_get, redis_set
+from asab import LOG_NOTICE
 
 ###
 
@@ -62,11 +63,11 @@ class SchedulingPolicyService(asab.Service):
 			# L.warning(self.avail_nodes)
 
 		t1_shm = time.time() - t0_shm
-		L.warning('Latency [Creating Redis variable] in: (%.5f ms)' % (t1_shm * 1000))
+		L.log(LOG_NOTICE, 'Latency [Creating Redis variable] in: (%.5f ms)' % (t1_shm * 1000))
 
 	def find_idle_node(self, max_node=1, sch_policy="round_robin", frame_id=None):
-		L.warning("[sync_SCHEDULING_POLICY]: `{}`".format(sch_policy))
-		L.warning("[max_node]: `{}`".format(max_node))
+		L.log(LOG_NOTICE, "[sync_SCHEDULING_POLICY]: `{}`".format(sch_policy))
+		L.log(LOG_NOTICE, "[max_node]: `{}`".format(max_node))
 		self.max_node = max_node
 		if sch_policy == "round_robin":
 			self.exec_round_robin(frame_id)
@@ -83,31 +84,31 @@ class SchedulingPolicyService(asab.Service):
 		return self.selected_node_id
 
 	def exec_dynamic_round_robin(self, frame_id):
-		L.warning("[SYNC] I am using Dynamic Round-Robin")
-		L.warning("[self.selected_node_id]: `{}`".format(self.selected_node_id))
+		L.log(LOG_NOTICE, "[SYNC] I am using Dynamic Round-Robin")
+		L.log(LOG_NOTICE, "[self.selected_node_id]: `{}`".format(self.selected_node_id))
 
 		# perform a close loop to find an available worker node
 		t0_wait_node = time.time()
 		self._dynamic_round_robin_wait_until_ready()
 		t1_wait_node = (time.time() - t0_wait_node) * 1000
 
-		L.warning('[Frame-{}] Latency [Waiting node to be ready] in: (%.5f ms)'.format(frame_id) % t1_wait_node)
+		L.log(LOG_NOTICE, '[Frame-{}] Latency [Waiting node to be ready] in: (%.5f ms)'.format(frame_id) % t1_wait_node)
 
 		# Set selected node as busy (idle=False); "0" == False
 		self._sync_set_idle_status(self.selected_node_id, False)
 
 	def exec_round_robin(self, frame_id):
-		L.warning("[SYNC] I am using Round-Robin")
+		L.log(LOG_NOTICE, "[SYNC] I am using Round-Robin")
 		self.selected_node_id += 1
 
 		if self.selected_node_id >= self.max_node:
 			self.selected_node_id = 0  # Reset
 
-		L.warning("#### ***** checking the status of selected node_id:")
+		L.log(LOG_NOTICE, "#### ***** checking the status of selected node_id:")
 		t0_wait_node = time.time()
 		self._round_robin_wait_until_ready(self.selected_node_id)
 		t1_wait_node = (time.time() - t0_wait_node) * 1000
-		L.warning('[{}] Latency [Waiting node to be ready] in: (%.5f ms)'.format(frame_id) % t1_wait_node)
+		L.log(LOG_NOTICE, '[{}] Latency [Waiting node to be ready] in: (%.5f ms)'.format(frame_id) % t1_wait_node)
 
 		# Set selected node as busy (idle=False); "0" == False
 		self._sync_set_idle_status(self.selected_node_id, False)

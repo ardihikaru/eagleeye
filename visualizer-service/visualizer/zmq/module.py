@@ -2,6 +2,7 @@ import asab
 from .service import ZMQService
 from ext_lib.utils import get_current_time
 import logging
+from asab import LOG_NOTICE
 
 ###
 
@@ -18,4 +19,4 @@ class ZMQModule(asab.Module):
 		self.Service = ZMQService(app, "visualizer.ZMQService")
 
 	async def initialize(self, app):
-		L.warning("\n[%s] Initialize ZMQModule." % get_current_time())
+		L.log(LOG_NOTICE, "[%s] Initialize ZMQModule." % get_current_time())

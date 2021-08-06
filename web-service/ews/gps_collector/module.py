@@ -2,6 +2,7 @@ import asab
 from .service import GPSCollectorService
 from ext_lib.utils import get_current_time
 import logging
+from asab import LOG_NOTICE
 
 ###
 
@@ -18,4 +19,4 @@ class GPSCollectorModule(asab.Module):
 		self.Service = GPSCollectorService(app)
 
 	async def initialize(self, app):
-		L.warning("\n[%s] Initialize GPSCollectorModule." % get_current_time())
+		L.log(LOG_NOTICE, "[%s] Initialize GPSCollectorModule." % get_current_time())

@@ -1,5 +1,6 @@
 import asab
 from enum import Enum
+from asab import LOG_NOTICE
 import logging
 
 ###
@@ -25,7 +26,6 @@ class PVApiService(asab.Service):
 		self.pv_svc = app.get_service("pv.AlgorithmService")
 
 	async def calculate_pv_and_wait(self, request_json):
-
 		label, det_status = await self.pv_svc.validate_mbbox(
 			request_json["frame_id"],
 			request_json["total_pih_candidates"],
@@ -37,6 +37,8 @@ class PVApiService(asab.Service):
 			"det_status": det_status
 		}
 
-		L.warning("[DRONE={}][FRAME={}] {}".format(request_json["drone_id"], request_json["frame_id"], resp_data))
+		L.log(LOG_NOTICE, "[DRONE={}][FRAME={}] Label={}; Det_status={}".format(
+			request_json["drone_id"],
+			request_json["frame_id"], label, det_status))
 
 		return 200, self.StatusCode.REQUEST_OK.value, resp_data

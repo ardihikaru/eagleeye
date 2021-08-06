@@ -1,5 +1,5 @@
-# How to build: `docker build -f Dockerfile-compact -t 5g-dive/eagleeye/pycore-compact:1.0 .`
-# How to test: `docker run -it --rm 5g-dive/eagleeye/pycore-compact:1.0 bash`
+# How to build: `$ docker build -f Dockerfile-compact -t 5g-dive/eagleeye/pycore-compact:1.0 .`
+# How to test: `$ docker run -it --rm 5g-dive/eagleeye/pycore-compact:1.0 bash`
 
 # why not using alphine: https://pythonspeed.com/articles/alpine-docker-python/
 # FROM python:3.8.2-buster

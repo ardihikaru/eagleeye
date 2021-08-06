@@ -10,7 +10,9 @@ from offloader.img_data_consumer import ImgConsumerModule
 
 from ext_lib.utils import get_current_time
 import logging
-from my_logging.custom_logging import CustomLogging
+from missing_asab_components.application import Application
+import os.path
+from asab.log import LOG_NOTICE
 from dotenv import load_dotenv, find_dotenv
 
 ###
@@ -21,24 +23,15 @@ L = logging.getLogger(__name__)
 ###
 
 
-class OffloaderService(asab.Application):
+class OffloaderService(Application):
 
 	def __init__(self):
+		# IMPORTANT: Load `.env` file in this directory (if any)
+		# Currently it is used for local deployment, Dockfile may not COPY this `.env` into the container yet
+		if os.path.isfile(".env"):
+			load_dotenv(find_dotenv())
+
 		super().__init__()
-
-		# IMPORTANT: Load `.env` file
-		load_dotenv(find_dotenv(filename=asab.Config["commons"]["envfile"]))
-		# TODO: Update Dockerfile to COPY `.env` file to container
-
-		# # Testing:
-		# import os
-		# PYTHONPATH = os.getenv("PYTHONPATH")
-		# print(" this is PYTHONPATH:", PYTHONPATH)
-
-		# Customized logging
-		if asab.Config["customized:log"].getboolean("enabled"):
-			self.Logging = CustomLogging()
-			self.Logging.set_console_logging()
 
 		# Add reader module
 		self.add_module(SystemManagerModule)

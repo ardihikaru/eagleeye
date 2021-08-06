@@ -11,6 +11,7 @@ import numpy as np
 import simplejson as json
 from ext_lib.commons.opencv_helpers import get_det_xyxy, torch2list_det
 import aiohttp
+from asab import LOG_NOTICE
 
 ###
 
@@ -28,8 +29,6 @@ class ObjectDetectionHandler(MyRedis):
 	def __init__(self, app):
 		super().__init__(asab.Config)
 		self.DetectionAlgorithmService = app.get_service("detection.DetectionAlgorithmService")
-		self.CandidateSelectionService = app.get_service("detection.CandidateSelectionService")
-		self.PersValService = app.get_service("detection.PersistenceValidationService")
 		self.executor = ThreadPoolExecutor(int(asab.Config["thread"]["num_executor"]))
 
 		self.lat_collector_svc = app.get_service("eagleeye.LatencyCollectorService")
@@ -49,23 +48,8 @@ class ObjectDetectionHandler(MyRedis):
 		self.pv_enabled = redis_get(self.rc, asab.Config["node"]["redis_pv_key"])
 		self.cv_out = bool(int(asab.Config["objdet:yolo"]["cv_out"]))
 
-		# PiH Candidate Selection params
-		self.pcs_is_microservice = asab.Config["pih_candidate_selection"].getboolean("is_microservice")
-		self.pv_is_microservice = asab.Config["persistence_detection"].getboolean("is_microservice")
-
-		# PiH Persistence Validation params
-		self.total_pih_candidates = 0
-		self.persistence_window = int(asab.Config["persistence_detection"]["persistence_window"])
-		self.period_pih_candidates = []
-
-		# save last selected_pairs in this node
-		self._selected_pairs = None
-
 		# private rest APIs
 		self.pcs_url = asab.Config["pcs:api"]["url"]
-		self.pv_url = asab.Config["pv:api"]["url"]
-		self.pv_base_port = asab.Config["pv:api"].getint("pv_base_port")
-		self.pv_default_port = asab.Config["pv:api"].getint("pv_default_port")
 
 		# sorter config
 		self.ch_prefix = asab.Config["sorter"]["ch_prefix"]
@@ -88,11 +72,11 @@ class ObjectDetectionHandler(MyRedis):
 
 	async def set_configuration(self):
 		# Initialize YOLOv3 configuration
-		L.warning("\n[%s][%s] Initialize YOLOv3 configuration" % (get_current_time(), self.node_alias))
+		L.log(LOG_NOTICE, "[{}][{}] Initialize YOLOv3 configuration".format(get_current_time(), self.node_alias))
 
 	async def set_deployment_status(self):
 		""" To change Field `pid` from -1 into this process's PID """
-		L.warning("\n[%s][%s] Updating PID information" % (get_current_time(), self.node_alias))
+		L.log(LOG_NOTICE, "[{}][{}] Updating PID information".format(get_current_time(), self.node_alias))
 
 		# Update Node information: `channel` and `pid`
 		await self.DetectionAlgorithmService.update_node_information(self.node_id, self.pid)
@@ -101,8 +85,7 @@ class ObjectDetectionHandler(MyRedis):
 		await self.DetectionAlgorithmService.set_zmq_configurations(self.node_name, self.node_id)
 
 	async def stop(self):
-		# print("\n[%s][%s] Object Detection Service is going to stop" % (get_current_time(), self.node_alias))
-		L.warning("\n[%s][%s] Object Detection Service is going to stop" % (get_current_time(), self.node_alias))
+		L.log(LOG_NOTICE, "[{}][{}] Object Detection Service is going to stop".format(get_current_time(), self.node_alias))
 
 		# Delete Node
 		await self.DetectionAlgorithmService.delete_node_information(self.node_id)
@@ -120,7 +103,7 @@ class ObjectDetectionHandler(MyRedis):
 			if shm_nodes[0][i][0] == "idle":
 				shm_nodes[0][i][1] = status
 
-	async def send_pcs_request(self, drone_id, bbox_data, list_det, names, h, w, c, selected_pairs):
+	async def send_pcs_request(self, drone_id, bbox_data, list_det, names, h, w, c):
 		request_json = {
 			"drone_id": str(drone_id),
 			"bbox_data": bbox_data,
@@ -129,7 +112,6 @@ class ObjectDetectionHandler(MyRedis):
 			"h": h,
 			"w": w,
 			"c": c,
-			"selected_pairs": selected_pairs,
 		}
 
 		try:
@@ -144,52 +126,23 @@ class ObjectDetectionHandler(MyRedis):
 						resp.status,
 						await resp.text()
 					))
-					return [], []
+					return []
 				else:
 					r = await resp.json()
 					resp_json = r.get("data")
-					return resp_json.get("mbbox_data", []), resp_json.get("selected_pairs", [])
+					return resp_json.get("mbbox_data", [])
 		except Exception as e:
 			L.error("[PCS ERROR] `{}`".format(e))
-			return [], []
-
-	async def send_pv_request(self, drone_id, frame_id, total_pih_candidates, period_pih_candidates):
-		request_json = {
-			"drone_id": str(drone_id),
-			"frame_id": frame_id,
-			"total_pih_candidates": total_pih_candidates,
-			"period_pih_candidates": period_pih_candidates,
-		}
-
-		try:
-			async with aiohttp.ClientSession() as session:
-				resp = await session.post(
-					pv_url,
-					data=json.dumps(request_json)
-				)
-
-				if resp.status != 200:
-					L.error("Can't get a proper response. Server responded with code '{}':\n{}".format(
-						resp.status,
-						await resp.text()
-					))
-					return [], []
-				else:
-					r = await resp.json()
-					resp_json = r.get("data")
-					return resp_json.get("mbbox_data", []), resp_json.get("selected_pairs", [])
-		except Exception as e:
-			L.error("[PV ERROR] `{}`".format(e))
-			return [], []
+			return []
 
 	async def _save_detection_related_latency(self, pre_proc_lat, yolo_lat, from_numpy_lat,
 														 image4yolo_lat, pred_lat, frame_id, image_info):
 		# build & submit latency data: Pre-processing
-		L.warning("build & submit latency data: Pre-processing")
+		L.log(LOG_NOTICE, "build & submit latency data: Pre-processing")
 		await self._save_latency(frame_id, pre_proc_lat, "N/A", "preproc_det", "Pre-processing")
 
 		# build & submit latency data: YOLO
-		L.warning("build & submit latency data: YOLO")
+		L.log(LOG_NOTICE, "build & submit latency data: YOLO")
 		await self._save_latency(frame_id, yolo_lat, image_info["algorithm"], "detection", "Object Detection",
 								 node_id=str(self.node_id), node_name=str(self.node_name))
 
@@ -206,78 +159,24 @@ class ObjectDetectionHandler(MyRedis):
 		h, w, c = img.shape
 
 		# Performing Candidate Selection Algorithm, if enabled
-		L.warning("Performing Candidate Selection Algorithm, if enabled")
+		L.log(LOG_NOTICE, "Performing Candidate Selection Algorithm, if enabled")
 		if self.cs_enabled and det is not None:
-			# print("***** [%s] Performing Candidate Selection Algorithm" % self.node_alias)
-			L.warning("***** [%s] Performing Candidate Selection Algorithm" % self.node_alias)
+			L.log(LOG_NOTICE, "***** [%s] Performing Candidate Selection Algorithm" % self.node_alias)
 			t0_cs = time.time()
 
 			# convert torch `det` into list `det`
 			list_det = torch2list_det(det)
 
-			if self.pcs_is_microservice:
-				mbbox_data, self._selected_pairs = await self.send_pcs_request(
-					drone_id, bbox_data, list_det, names, h, w, c, self._selected_pairs
-				)
-			else:
-				# TODO: add DroneID
-				mbbox_data, self._selected_pairs = await self.CandidateSelectionService.calc_mbbox(
-					bbox_data, det, names, h, w, c, self._selected_pairs
-				)
+			mbbox_data = await self.send_pcs_request(
+				drone_id, bbox_data, list_det, names, h, w, c
+			)
 
 			t1_cs = (time.time() - t0_cs) * 1000
-			# print('\n[%s] Latency of Candidate Selection Algo. (%.3f ms)' % (get_current_time(), t1_cs))
-			L.warning('\n[%s] Latency of Candidate Selection Algo. (%.3f ms)' % (get_current_time(), t1_cs))
+			L.log(LOG_NOTICE, '[{}] Latency of Candidate Selection Algo. (%.3f ms)'.format(get_current_time()) % (t1_cs))
 
 			# build & submit latency data: PiH Candidate Selection
 			await self._save_latency(frame_id, t1_cs, "PiH Candidate Selection", "candidate_selection",
 									 "Extra Pipeline")
-
-			# build port of pv_url
-			new_port = self.pv_base_port + int(drone_id)
-			pv_url = self.pv_url.replace(str(self.pv_default_port), str(new_port))
-			L.warning("PiH PV's URL={}".format(pv_url))
-
-			# Performing Persistence Validation Algorithm, if enabled
-			if self.pv_enabled and len(mbbox_data) > 0:
-				# print("***** [%s] Performing Persistence Validation Algorithm" % self.node_alias)
-				L.warning("***** [%s] Performing Persistence Validation Algorithm" % self.node_alias)
-
-				# Increment PiH candidates
-				self.total_pih_candidates += 1
-				self.period_pih_candidates.append(int(frame_id))
-
-				# mbbox_data_pv = await self.PersValService.predict_mbbox(mbbox_data)
-				t0_pv = time.time()
-
-				if self.pv_is_microservice:
-					label, det_status = await self.send_pv_request(
-						drone_id,
-						frame_id,
-						self.total_pih_candidates,
-						self.period_pih_candidates
-					)
-				else:
-					label, det_status = await self.PersValService.validate_mbbox(
-						frame_id,
-						self.total_pih_candidates,
-						self.period_pih_candidates
-					)
-
-				await self._maintaince_period_pih_cand()
-				t1_pv = (time.time() - t0_pv) * 1000
-				# print('\n[%s] Latency of Persistence Detection Algorithm (%.3f ms)' %
-				#       (get_current_time(), t1_pv))
-				L.warning('\n[%s] Latency of Persistence Detection Algorithm (%.3f ms)' %
-						  (get_current_time(), t1_pv))
-
-				# build & submit latency data: PiH Persistence Validation
-				await self._save_latency(frame_id, t1_pv, "PiH Persistence Validation", "persistence_validation",
-										 "Extra Pipeline")
-			else:
-				# Set default label, in case PV algorithm is DISABLED
-				label = asab.Config["bbox_config"]["pih_label"]
-				det_status = label + " object FOUND"
 
 			# If MBBox data available, build plot_info
 			if len(mbbox_data) > 0:
@@ -293,22 +192,19 @@ class ObjectDetectionHandler(MyRedis):
 					"bbox": bbox_data,
 					"mbbox": mbbox_data,
 					"color": color,
-					"label": label,
+					"label": "N/A",  # default value; will be updated by PV service
 					"gps_data": gps_data
 				}
-				L.warning("[PCS_RESULT] detected PiH object(s) in frame-{}".format(frame_id))
+				L.log(LOG_NOTICE, "[PCS_RESULT] detected PiH object(s) in frame-{}".format(frame_id))
 			else:
-				L.warning("[PCS_RESULT] Unable to detect any PiH objects in frame-{}".format(frame_id))
-
-			L.warning("\n[%s][%s]Frame-%s label=[%s], det_status=[%s]" %
-					  (get_current_time(), self.node_alias, str(frame_id), label, det_status))
+				L.log(LOG_NOTICE, "[PCS_RESULT] Unable to detect any PiH objects in frame-{}".format(frame_id))
 
 		return mbbox_data, plot_info
 
 	async def start(self):
 		channel = "node-" + self.node_id
-		L.warning("\n[%s][%s] YOLOv3Handler try to subsscribe to channel `%s` from [Scheduler Service]" %
-			  (get_current_time(), self.node_alias, channel))
+		L.log(LOG_NOTICE, "[{}][{}] YOLOv3Handler try to subsscribe to channel `{}` from [Scheduler Service]".format(
+			get_current_time(), self.node_alias, channel))
 
 		redis_key = self.node_id + "_status"
 
@@ -316,10 +212,8 @@ class ObjectDetectionHandler(MyRedis):
 		consumer.subscribe([channel])
 		for item in consumer.listen():
 			if isinstance(item["data"], int):
-				# print("\n[%s][%s] YOLOv3Handler start listening to [Scheduler Service]" %
-				#       (get_current_time(), self.node_alias))
-				L.warning("\n[%s][%s] YOLOv3Handler start listening to [Scheduler Service]" %
-					  (get_current_time(), self.node_alias))
+				L.log(LOG_NOTICE, "[{}][{}] YOLOv3Handler start listening to [Scheduler Service]".format(
+					get_current_time(), self.node_alias))
 			else:
 				# TODO: To tag the corresponding drone_id to identify where the image came from (Future work)
 				"""
@@ -341,28 +235,26 @@ class ObjectDetectionHandler(MyRedis):
 				}
 				"""
 				image_info = pubsub_to_json(item["data"])
-				L.warning("Collecting Image Info")
-				L.warning(json.dumps(image_info))
-				L.warning("Image INFORMATION is collected.")
+				L.log(LOG_NOTICE, "Collecting Image Info")
+				L.log(LOG_NOTICE, json.dumps(image_info))
+				L.log(LOG_NOTICE, "Image INFORMATION is collected.")
 
 				if redis_get(self.rc, channel) is not None:
 					self.rc.delete(channel)
-					L.warning("\n[%s][%s] Forced to exit the Object Detection Service" %
-						  (get_current_time(), self.node_alias))
+					L.log(LOG_NOTICE, "[{}][{}] Forced to exit the Object Detection Service".format(
+						get_current_time(), self.node_alias))
 					await self.stop()
 					break
 
 				# TODO: To start TCP Connection and be ready to capture the image from [Scheduler Service]
 				# TODO: To have a tag as the image identifier, i.e. DroneID
 				# TODO: To add a timeout, if no response found after a `timeout` time, ignore this (Future work)
-				L.warning("Try to collect Image DATA.")
+				L.log(LOG_NOTICE, "Try to collect Image DATA.")
 				is_success, frame_id, t0_zmq, img = await self.DetectionAlgorithmService.get_img()
-				L.warning("Receiving image data via ZMQ (is_success=%s; frame_id=%s)" % (str(is_success), str(frame_id)))
-				L.warning("Image DATA is collected.")
-				# print(">>>> RECEIVED DATA:", is_success, frame_id, t0_zmq, img.shape)
+				L.log(LOG_NOTICE, "Receiving image data via ZMQ (is_success=%s; frame_id=%s)" % (str(is_success), str(frame_id)))
+				L.log(LOG_NOTICE, "Image DATA is collected.")
 				t1_zmq = (time.time() - t0_zmq) * 1000  # TODO: This is still INVALID! it got mixed up with Det latency!
-				# print('\n[%s] Latency for Receiving Image ZMQ (%.3f ms)' % (get_current_time(), t1_zmq))
-				L.warning('\n[%s] Latency for Receiving Image ZMQ (%.3f ms)' % (get_current_time(), t1_zmq))
+				L.log(LOG_NOTICE, '[{}] Latency for Receiving Image ZMQ (%.3f ms)'.format(get_current_time()) % (t1_zmq))
 				# TODO: To save latency into ElasticSearchDB (Future work)
 
 				# BUG FIX: Start t0 e2e frame from here (later on, PLUS with `t1_zmq` latency)
@@ -372,7 +264,7 @@ class ObjectDetectionHandler(MyRedis):
 				detection_status = False
 
 				# Start performing object detection
-				L.warning("Start performing object detection")
+				L.log(LOG_NOTICE, "Start performing object detection")
 				# bbox_data, det, names, (tdiff_inference + tdiff_nms), tdiff_from_numpy, tdiff_image4yolo, tdiff_pred
 				#  bbox_data, det, names, yolo_lat, from_numpy_lat, image4yolo_lat, pred_lat
 				bbox_data, det, names, pre_proc_lat, yolo_lat, from_numpy_lat, image4yolo_lat, pred_lat = \
@@ -389,8 +281,6 @@ class ObjectDetectionHandler(MyRedis):
 					mbbox_data, plot_info = await self._exec_extra_pipeline(img, bbox_data, mbbox_data, plot_info,
 																			det, names, frame_id, image_info["drone_id"])
 
-					# print(" ## mbbox_data ## ")
-					# print(mbbox_data)
 
 					if len(mbbox_data) > 0:
 						detection_status = True
@@ -400,7 +290,7 @@ class ObjectDetectionHandler(MyRedis):
 
 				# Else, No object detected!
 				else:
-					L.warning("[DETECTION_RESULT] Unable to detect any valid objects in frame-{}".format(frame_id))
+					L.log(LOG_NOTICE, "[DETECTION_RESULT] Unable to detect any valid objects in frame-{}".format(frame_id))
 					# TODO: inform Visualizer Service ASAB!
 
 				# If enable visualizer, send the bbox into the Visualizer Service
@@ -413,28 +303,31 @@ class ObjectDetectionHandler(MyRedis):
 						self.ch_prefix,
 						str(image_info["drone_id"]),
 					)
-					L.warning("[SENDING_TO_SORTER] Sending frame-{} (Drone-{}) to Sorter `{}`".format(
+					L.log(LOG_NOTICE, "[SENDING_TO_SORTER] Sending frame-{} (Drone-{}) to Sorter `{}`".format(
 						frame_id, image_info["drone_id"], sorter_channel
 					))
 					# build frame sequence information
 					frame_seq_obj = {
 						"drone_id": int(image_info["drone_id"]),
 						"frame_id": int(frame_id),
+						"mbbox_data": mbbox_data,
 						"plot_info": plot_info,
+						"node_alias": self.node_alias,
 					}
 					pub(self.rc, sorter_channel, json.dumps(frame_seq_obj))
 
 					# IMPORTANT: it will send the detection result (plot_info) once sorted
 
 				elif self.cv_out and self.viz_com_mode == self.VizCommunicationMode.DIRECT.value:
-					# Inform visualizer!
-					t0_plotinfo_saving = time.time()
-					drone_id = asab.Config["stream:config"]["drone_id"]
-					plot_info_key = "plotinfo-drone-%s-frame-%s" % (drone_id, str(frame_id))
-					redis_set(self.rc, plot_info_key, plot_info, expired=10)  # delete value after 10 seconds
-					t1_plotinfo_saving = (time.time() - t0_plotinfo_saving) * 1000
-					L.warning('[%s] Latency of Storing Plot info in redisDB (%.3f ms)' %
-							  (get_current_time(), t1_plotinfo_saving))
+					L.error(" ## MODE @ (DIRECT) IS DISABLED AT THE MOMENT!")
+					# # Inform visualizer!
+					# t0_plotinfo_saving = time.time()
+					# drone_id = asab.Config["stream:config"]["drone_id"]
+					# plot_info_key = "plotinfo-drone-%s-frame-%s" % (drone_id, str(frame_id))
+					# redis_set(self.rc, plot_info_key, plot_info, expired=10)  # delete value after 10 seconds
+					# t1_plotinfo_saving = (time.time() - t0_plotinfo_saving) * 1000
+					# L.log(LOG_NOTICE, '[%s] Latency of Storing Plot info in redisDB (%.3f ms)' %
+					# 		  (get_current_time(), t1_plotinfo_saving))
 
 				# when no BBox not PiH detected, directly inform Visualizer service!
 				if self.cv_out and not detection_status:
@@ -456,15 +349,15 @@ class ObjectDetectionHandler(MyRedis):
 					plot_info_key = "plotinfo-drone-%s-frame-%s" % (drone_id, str(frame_id))
 					redis_set(self.rc, plot_info_key, plot_info, expired=10)  # delete value after 10 seconds
 					t1_plotinfo_saving = (time.time() - t0_plotinfo_saving) * 1000
-					L.warning('[%s] Latency of Storing Plot info in redisDB (%.3f ms)' %
+					L.log(LOG_NOTICE, '[%s] Latency of Storing Plot info in redisDB (%.3f ms)' %
 							  (get_current_time(), t1_plotinfo_saving))
 
-				L.warning("[%s][%s][%s] Store BBox INTO Visualizer Service!" %
+				L.log(LOG_NOTICE, "[%s][%s][%s] Store BBox INTO Visualizer Service!" %
 						  (get_current_time(), self.node_alias, str(frame_id)))
 
 				# Set this node as available again
 				redis_set(self.rc, redis_key, True)
-				L.warning("[DOD_DEBUG] Status of this Node: %s" % str(redis_get(self.rc, redis_key)))
+				L.log(LOG_NOTICE, "[DOD_DEBUG] Status of this Node: %s" % str(redis_get(self.rc, redis_key)))
 
 				# Capture and store e2e latency
 				t1_e2e_latency = (time.time() - t0_e2e_latency) * 1000
@@ -476,19 +369,15 @@ class ObjectDetectionHandler(MyRedis):
 				#     t_start = t1_e2e_latency
 				await self._store_e2e_latency(str(frame_id), t1_e2e_latency)
 
-			L.warning("[%s] Node-%s is ready to serve." % (get_current_time(), self.node_name))
+			L.log(LOG_NOTICE, "[%s] Node-%s is ready to serve." % (get_current_time(), self.node_name))
 
-		L.warning("[%s][%s] YOLOv3Handler stopped listening to [Scheduler Service]" %
+		L.log(LOG_NOTICE, "[%s][%s] YOLOv3Handler stopped listening to [Scheduler Service]" %
 			  (get_current_time(), self.node_alias))
 		# Call stop function since it no longers listening
 		await self.stop()
 
 	async def _store_e2e_latency(self, frame_id, t1_e2e_latency):
-		# t0_e2e_latency = await self._get_t0_e2e_latency(frame_id)  # BUG Calculation here!
-		# t1_e2e_latency = (time.time() - t0_e2e_latency) * 1000
-		# t1_e2e_latency = (t1_e2e_latency - t0_e2e_latency) * 1000
-		# print('[%s] E2E Latency of frame-%s (%.3f ms)' % (get_current_time(), frame_id, t1_e2e_latency))
-		L.warning('[%s] E2E Latency of frame-%s (%.3f ms)' % (get_current_time(), frame_id, t1_e2e_latency))
+		L.log(LOG_NOTICE, '[%s] E2E Latency of frame-%s (%.3f ms)' % (get_current_time(), frame_id, t1_e2e_latency))
 		# TODO: TO save latency into ElasticSearchDB
 
 		# build & submit latency data: E2E Latency
@@ -504,8 +393,7 @@ class ObjectDetectionHandler(MyRedis):
 		while redis_get(self.rc, e2e_lat_key) is None:
 			continue
 		t1_e2e_waiting = (time.time() - t0_e2e_waiting) * 1000
-		# print('\n[%s] Latency for waiting redis key e2e latency (%.3f ms)' % (get_current_time(), t1_e2e_waiting))
-		L.warning('\n[%s] Latency for waiting redis key e2e latency (%.3f ms)' % (get_current_time(), t1_e2e_waiting))
+		L.log(LOG_NOTICE, '\n[%s] Latency for waiting redis key e2e latency (%.3f ms)' % (get_current_time(), t1_e2e_waiting))
 
 		return redis_get(self.rc, e2e_lat_key)
 
@@ -525,8 +413,4 @@ class ObjectDetectionHandler(MyRedis):
 		if not await self.lat_collector_svc.store_latency_data_thread(preproc_latency_data):
 			await self.stop()
 		t1_preproc = (time.time() - t0_preproc) * 1000
-		L.warning('[%s] Proc. Latency of %s (%.3f ms)' % (get_current_time(), section, t1_preproc))
-
-	async def _maintaince_period_pih_cand(self):
-		if len(self.period_pih_candidates) > self.persistence_window:
-			self.period_pih_candidates.pop(0)
+		L.log(LOG_NOTICE, '[%s] Proc. Latency of %s (%.3f ms)' % (get_current_time(), section, t1_preproc))

@@ -25,7 +25,7 @@ class PVApiWebHandler(object):
 			raise aiohttp.web.HTTPBadRequest(reason="Unable to extract request json")
 
 		# Submit request
-		status, status_code, msg = await self.pv_api_svc.calculate_pv_and_wait(
+		status, status_code, data = await self.pv_api_svc.calculate_pv_and_wait(
 			request_json=request_json,
 		)
 
@@ -33,6 +33,6 @@ class PVApiWebHandler(object):
 		return asab.web.rest.json_response(request, {
 			"status": status,
 			"status_code": status_code,
-			"data": msg,
+			"data": data,
 		}, status=status)
 

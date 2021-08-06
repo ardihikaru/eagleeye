@@ -2,6 +2,7 @@ import asab
 import logging
 import imagezmq
 from ext_lib.redis.my_redis import MyRedis
+from asab import LOG_NOTICE
 
 ###
 
@@ -24,7 +25,7 @@ class ZMQService(asab.Service):
     async def set_configurations(self, node_name, node_id):  # node_name is the port suffix!
         # get node name
         uri = "tcp://%s:%s%s" % (asab.Config["zmq"]["sender_host"], asab.Config["zmq"]["sender_prefix_port"], node_name)
-        L.warning("[IMPORTANT] Accepted ZMQ URI: %s" % uri)
+        L.log(LOG_NOTICE, "[IMPORTANT] Accepted ZMQ URI: {}".format(uri))
         self.zmq_receiver = imagezmq.ImageHub(open_port=uri, REQ_REP=False)
 
     def get_zmq_receiver(self):

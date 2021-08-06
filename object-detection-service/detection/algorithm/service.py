@@ -6,6 +6,7 @@ import requests
 from ext_lib.redis.my_redis import MyRedis
 from ext_lib.redis.translator import redis_get
 from enum import Enum
+from asab import LOG_NOTICE
 
 ###
 
@@ -65,7 +66,7 @@ class DetectionAlgorithmService(asab.Service):
 
     async def start_subscription(self):
         try:
-            L.warning("Configuring Object Detection")
+            L.log(LOG_NOTICE, "Configuring Object Detection")
 
             # validate algorithms
             if self._detection_algorithm not in self._valid_algorithms:
@@ -118,7 +119,7 @@ class DetectionAlgorithmService(asab.Service):
 
     async def detect_object(self, frame):
         # print("####[%s]##### START OBJECT DETECTION" % self.node_alias)
-        L.warning("####[%s]##### START OBJECT DETECTION" % self.node_alias)
+        L.log(LOG_NOTICE, "####[%s]##### START OBJECT DETECTION" % self.node_alias)
         bbox_data, det, names, pre_proc_lat, yolo_lat = [], None, None, None, None
         from_numpy_lat, image4yolo_lat, pred_lat = None, None, None
         try:

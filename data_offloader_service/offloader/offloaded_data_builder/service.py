@@ -127,7 +127,7 @@ class OffloadedDataBuilderService(asab.Service):
 							L.error("## No images can be captured for the time being.")
 
 					# L.log(LOG_NOTICE, "## System is no longer consuming data")
-					L.log(LOG_NOTICE, "## MENUNGGU PubSub baru ## ")
+					L.log(LOG_NOTICE, "## Awaiting for new PubSub connection ## ")
 
 		# it is running
 		else:
