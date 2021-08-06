@@ -32,10 +32,10 @@ COPY ./scheduler.py /app
 
 # Version
 ARG VERSION=latest
-RUN set -ex \
-  && echo "${VERSION}" > /app/VERSION \
-  && mkdir log \
-  && touch /log/ows.log
+#RUN set -ex \
+#  && echo "${VERSION}" > /app/VERSION \
+#  && mkdir log \
+#  && touch /log/ows.log
 
 WORKDIR /app
-CMD ["/usr/bin/python3", "./scheduler.py", "-c", "/conf/scheduler/scheduler.conf"]
+CMD ["/usr/bin/python3", "./offloader.py", "-c", "/conf/offloader/offloader.conf"]
