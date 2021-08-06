@@ -13,6 +13,8 @@ MAINTAINER NCTU Team (mfardiansyah.eed08g@nctu.edu.tw)
 ENV LANG C.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 
+ENV ASABFORCECONSOLE 1
+
 COPY requirements-no-cv.txt /tmp/requirements.txt
 
 # install requirements
