@@ -38,4 +38,5 @@ COPY ./eagleeye/latency /opt/pycore/latency
 COPY ./eagleeye/ext_lib /opt/pycore/ext_lib
 COPY ./eagleeye/algorithm /opt/pycore/algorithm
 COPY ./eagleeye/my_logging /opt/pycore/my_logging
+COPY ./eagleeye/missing_asab_components /opt/pycore/missing_asab_components
 ENV PYTHONPATH "${PYTHONPATH}:/opt/pycore"
