@@ -48,7 +48,8 @@ class OpenCVVisualizerService(asab.Service):
                 t1_zmq = (time.time() - t0_zmq) * 1000
                 if is_success:
                     fps = await self.FPSCalculatorService.get_fps(frame_id)
-                    L.log(LOG_NOTICE, 'Latency [Visualizer Capture] of frame-{}: (%.5fms)'.format(str(frame_id)) % t1_zmq)
+                    L.log(LOG_NOTICE, 'Latency [Visualizer Capture] of frame-{}: (%.5fms)'.format(str(frame_id))
+                          % t1_zmq)
                     is_latest_plot_available = await self.ImagePlotterService.plot_img(is_latest_plot_available,
                                                                                        frame_id, img, fps)
                     cv2.imshow(self._window_title, img)

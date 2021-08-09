@@ -51,22 +51,26 @@ class ImagePlotterService(asab.Service):
             if bool(plot_info):
                 self._count_pih += 1
 
-                pih_label = "{} PiH Found".format(len(plot_info["mbbox"]))
-                if is_forced_plot:
-                    await self._save_latest_plot_info(str(frame_id), plot_info)
+                # check whether any mbbox to plot or not
+                if "mbbox" in plot_info:
+                    print(plot_info)
+                    pih_label = "{} PiH Found".format(len(plot_info["mbbox"]))
 
-                is_latest_plot_available = True
+                    if is_forced_plot:
+                        await self._save_latest_plot_info(str(frame_id), plot_info)
 
-                # plot each mbbox data into the image
-                t0_plot_bbox = time.time()
-                for mbbox_data in plot_info["mbbox"]:
-                    # for each_mbbox_data in mbbox_data:
-                    plot_one_box(mbbox_data, img, label=plot_info["label"], color=plot_info["color"])
-                        # plot_one_box(each_mbbox_data, img, label=plot_info["label"], color=plot_info["color"])
-                    # break  # TODO: This is a temporary approach! We need to fix the bug of PCS (v2)
-                t1_plot_bbox = (time.time() - t0_plot_bbox) * 1000
-                L.log(LOG_NOTICE, '[{}] Latency for plotting PiH BBox (%.3f ms)'.format(get_current_time())
-                      % t1_plot_bbox)
+                    is_latest_plot_available = True
+
+                    # plot each mbbox data into the image
+                    t0_plot_bbox = time.time()
+                    for mbbox_data in plot_info["mbbox"]:
+                        # for each_mbbox_data in mbbox_data:
+                        plot_one_box(mbbox_data, img, label=plot_info["label"], color=plot_info["color"])
+                            # plot_one_box(each_mbbox_data, img, label=plot_info["label"], color=plot_info["color"])
+                        # break  # TODO: This is a temporary approach! We need to fix the bug of PCS (v2)
+                    t1_plot_bbox = (time.time() - t0_plot_bbox) * 1000
+                    L.log(LOG_NOTICE, '[{}] Latency for plotting PiH BBox (%.3f ms)'.format(get_current_time())
+                          % t1_plot_bbox)
 
             # sending GPS information to the Ground Control, every N frames (default `N`=300)
             if int(frame_id) % self._delay_send_gps == 0 and self._count_pih > 0:
