@@ -230,9 +230,8 @@ class ImgConsumerService(ZenohImageSubscriberService):
 				pub(self.redis.get_rc(), node_channel, dump_request)
 				t1_publish = (time.time() - t0_publish) * 1000
 				# TODO: Saving latency for scheduler:producer:notification:image
-				L.log(LOG_NOTICE,
-					'[%s] Latency for Publishing FRAME NOTIFICATION into Object Detection Service (%.3f ms)'.format(get_current_time())
-					  % t1_publish)
+				L.log(LOG_NOTICE, '[{}] Latency for Publishing FRAME NOTIFICATION '
+								  'into Object Detection Service (%.3f ms)'.format(get_current_time()) % t1_publish)
 
 				if not bool(int(asab.Config["stream:config"]["convert_img"])):
 					# Sending image data through ZMQ (TCP connection)
