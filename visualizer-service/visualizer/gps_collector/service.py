@@ -31,7 +31,6 @@ class GPSCollectorService(asab.Service):
         self._gps_key_prefix = asab.Config["stream:config"]["gps_key_prefix"]
 
         self._collector_mode = asab.Config["stream:gps"]["mode"]
-        self._num_drones = int(asab.Config["stream:gps"]["num_drones"])
         self._drone_gps_data = []
         self._target_url = None
         self._client = None
