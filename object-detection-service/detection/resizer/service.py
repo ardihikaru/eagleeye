@@ -33,7 +33,7 @@ class ResizerService(asab.Service):
 		t0_padded = time.time()
 		img4yolo = letterbox(img, new_shape=self.img_size)[0]
 		t1_padded = (time.time() - t0_padded) * 1000
-		L.log(LOG_NOTICE, ('\n[%s] Proc. Latency converting into padded size (%.3f ms)' % (get_current_time(), t1_padded)))
+		L.log(LOG_NOTICE, ('[{}] Proc. Latency converting into padded size (%.3f ms)'.format(get_current_time()) % t1_padded))
 		# TODO: To save the latency to convert FullHD size into padded size	
 
 		# Convert
