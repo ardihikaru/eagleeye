@@ -60,3 +60,10 @@ COPY requirements-no-cv.txt /tmp/requirements.txt
 RUN pip3 install Cython
 RUN pip3 install -r /tmp/requirements.txt
 
+# Install other requirements and Zenoh
+RUN pip3 install Cython maturin
+
+# Install Zenoh
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain nightly
+ENV PATH="/root/.cargo/bin:${PATH}"
+RUN pip3 install eclipse-zenoh==0.5.0b8

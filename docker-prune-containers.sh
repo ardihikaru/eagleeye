@@ -36,8 +36,21 @@ for i in $(seq 1 $NODES);
   do docker container rm -f "detection-service-${i}";
 done
 
-echo "Deleting scheduler-service..."
-docker container rm -f scheduler-service
+echo "Deleting all pv-service; Total=$1..."
+for i in $(seq 1 $NODES);
+  do docker container rm -f "pv-${i}-svc";
+done
+
+echo "Deleting all sorter-service; Total=$1..."
+for i in $(seq 1 $NODES);
+  do docker container rm -f "sorter-${i}-svc";
+done
+
+echo "Deleting pcs-service..."
+docker container rm -f pcs-svc
+
+echo "Deleting offloader-service..."
+docker container rm -f offloader-service
 
 echo "Deleting visualizer-service..."
 docker container rm -f visualizer-service

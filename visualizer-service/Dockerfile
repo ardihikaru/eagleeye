@@ -22,9 +22,12 @@ RUN pip3 install -r /tmp/requirements.txt
 
 # Folder structure
 RUN set -ex \
-	&& mkdir -p /conf/visualizer/conf \
-	&& touch /conf/visualizer/visualizer.conf \
-	&& touch /conf/visualizer/site.conf
+	&& mkdir -p /app/etc \
+	&& touch /app/etc/visualizer.conf \
+	&& touch /app/etc/site.conf
+
+# copy default config
+COPY etc/visualizer.conf /app/etc/visualizer.conf
 
 # Application
 COPY visualizer /app/visualizer
@@ -39,4 +42,4 @@ RUN set -ex \
   && touch /log/visualizer.log
 
 WORKDIR /app
-CMD ["/usr/bin/python3", "./visualizer.py", "-c", "/conf/visualizer/visualizer.conf"]
+CMD ["/usr/bin/python3", "./visualizer.py", "-c", "/app/etc/visualizer.conf"]

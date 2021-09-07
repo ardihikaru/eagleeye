@@ -25,11 +25,12 @@ RUN pip3 install -r /tmp/requirements.txt
 
 # Folder structure
 RUN set -ex \
-	&& mkdir -p /conf/ews/conf \
-	&& mkdir -p /conf/dual-det/conf \
-	&& touch /conf/ews/ews.conf \
-	&& touch /conf/ews/site.conf \
-	&& touch /conf/dual-det/site.conf
+	&& mkdir -p /app/etc \
+	&& touch /app/etc/ews.conf \
+	&& touch /app/etc/site.conf
+
+# copy default config
+COPY etc/ews.conf /app/etc/ews.conf
 
 # Application
 COPY ews /app/ews
@@ -49,4 +50,4 @@ RUN set -ex \
   && touch /log/ows.log
 
 WORKDIR /app
-CMD ["/usr/bin/python3", "./ews.py", "-c", "/conf/ews/ews.conf"]
+CMD ["/usr/bin/python3", "./ews.py", "-c", "/app/etc/ews.conf"]

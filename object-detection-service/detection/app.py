@@ -33,10 +33,6 @@ class ObjectDetectionService(Application):
 
 		super().__init__()
 
-		# IMPORTANT: Load `.env` file
-		load_dotenv(find_dotenv(filename=asab.Config["commons"]["envfile"]))
-		# TODO: Update Dockerfile to COPY `.env` file to container
-
 		# # Testing:
 		# import os
 		# PYTHONPATH = os.getenv("PYTHONPATH")
