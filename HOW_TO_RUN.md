@@ -233,6 +233,14 @@
               -v /home/s010132/devel/eagleeye/object-detection-service/config_files:/app/config_files \
               5g-dive/eagleeye/dual-object-detection-service:2.4
           ```
+        - Detection 5:
+          ```
+          $ docker run --runtime=nvidia --name "detection-service-5" -d \
+              --network host \
+              -v /home/s010132/devel/eagleeye/object-detection-service/etc/site-docker.conf:/app/etc/site.conf \
+              -v /home/s010132/devel/eagleeye/object-detection-service/config_files:/app/config_files \
+              5g-dive/eagleeye/dual-object-detection-service:2.4
+          ```
       - Change `detection-service-1` into `detection-service-x` to deploy more
 7. Offloader Service
     - Build: `$ docker build -t 5g-dive/eagleeye/offloader-service:2.4 .`
@@ -245,35 +253,53 @@
       ```
       - Then, run following script in terminal:
         ``` 
-        {
+        curl --location --request POST 'http://localhost:8079/api/stream/live' \
+        --header 'Content-Type: application/json' \
+        --data-raw '{
             "algorithm": "YOLOv3",
             "stream": "ZENOH",
-            "uri": "tcp/192.168.1.60:7446",
+            "uri": "tcp/localhost:7446",
             "scalable": true,
             "extras": {
                 "selector": "/eagle/svc/**"
             }
-        }
+        }'
         ```
-        - Where `192.168.1.60` is the IP of the deployed **Web Service**
+        - Where `localhost` is the IP of the deployed **Web Service**
 8. Visualizer Service (can be multiple)
     - Folder Loc: `./visualizer-service/`
     - Build: `$ docker build -t 5g-dive/eagleeye/visualizer-service:2.4 .`
     - Run:
-        - Drone 1 (RTSP EE):
-          ```
-          $ docker run --name "viz-rtsp-ee-svc" -d \
-              --network host \
-              -v /home/s010132/devel/eagleeye/visualizer-service/etc/site-rtsp.conf:/app/etc/site.conf \
-              5g-dive/eagleeye/visualizer-service:2.4
-          ```
-        - Drone 1 (RTSP RAW): 
-          ```
-          $ docker run --name "viz-rtsp-raw-svc" -d \
-              --network host \
-              -v /home/s010132/devel/eagleeye/visualizer-service/etc/site-rtsp-raw.conf:/app/etc/site.conf \
-              5g-dive/eagleeye/visualizer-service:2.4
-          ```
+        - For **Drone 1**:
+            - Drone 1 (RTSP EE):
+              ```
+              $ docker run --name "viz-rtsp-ee-svc-1" -d \
+                  --network host \
+                  -v /home/s010132/devel/eagleeye/visualizer-service/etc/site-rtsp.conf:/app/etc/site.conf \
+                  5g-dive/eagleeye/visualizer-service:2.4
+              ```
+            - Drone 1 (RTSP RAW): 
+              ```
+              $ docker run --name "viz-rtsp-raw-svc-1" -d \
+                  --network host \
+                  -v /home/s010132/devel/eagleeye/visualizer-service/etc/site-rtsp-raw.conf:/app/etc/site.conf \
+                  5g-dive/eagleeye/visualizer-service:2.4
+              ```
+        - For **Drone 2**:
+            - Drone 2 (RTSP EE):
+              ```
+              $ docker run --name "viz-rtsp-ee-svc-2" -d \
+                  --network host \
+                  -v /home/s010132/devel/eagleeye/visualizer-service/etc/site-rtsp-2.conf:/app/etc/site.conf \
+                  5g-dive/eagleeye/visualizer-service:2.4
+              ```
+            - Drone 2 (RTSP RAW): 
+              ```
+              $ docker run --name "viz-rtsp-raw-svc-2" -d \
+                  --network host \
+                  -v /home/s010132/devel/eagleeye/visualizer-service/etc/site-rtsp-raw-2.conf:/app/etc/site.conf \
+                  5g-dive/eagleeye/visualizer-service:2.4
+              ```
 ## MISC
 - Tunnel to LittleBoy:
     - Local: `$ ssh -L 5901:127.0.0.1:5901 -C -N -l s010132 192.168.1.10`
