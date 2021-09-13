@@ -170,26 +170,26 @@
           -v /home/s010132/devel/eagleeye/object-detection-service/config_files:/app/config_files \
           5g-dive/eagleeye/web-service:2.4
       ```
-3. Sorter Service (can be multiple)
+4. Sorter Service (can be multiple)
     - Folder Loc: `./sorter_service/`
     - Build: `$ docker build -f Dockerfile -t 5g-dive/eagleeye/sorter:1.0 .`
     - Run: `$ docker run --name <svc-name> -d --network host -v <site-config-fullpath>:/app/etc/site.conf 5g-dive/eagleeye/sorter:1.0`
         - Example of `Sorter 1`: `$ docker run --name sorter-1-svc -d --network host -v /home/s010132/devel/eagleeye/sorter_service/etc/site-1.conf:/app/etc/site.conf 5g-dive/eagleeye/sorter:1.0`
         - Example of `Sorter 2`: `$ docker run --name sorter-2-svc -d --network host -v /home/s010132/devel/eagleeye/sorter_service/etc/site-2.conf:/app/etc/site.conf 5g-dive/eagleeye/sorter:1.0`
         - Example of `Sorter 3`: `$ docker run --name sorter-3-svc -d --network host -v /home/s010132/devel/eagleeye/sorter_service/etc/site-3.conf:/app/etc/site.conf 5g-dive/eagleeye/sorter:1.0`
-4. PiH Candidate Selection (PCS) Service
+5. PiH Candidate Selection (PCS) Service
     - Folder Loc: `./pih-candidate-selection-service/`
     - build: `$ docker build -f Dockerfile -t 5g-dive/eagleeye/pcs:1.0 .`
     - Run: `$ docker run --name <svc-name> --network host -d -v <site-config-fullpath>:/app/etc/site.conf 5g-dive/eagleeye/pcs:1.0`
         - Example: `$ docker run --name pcs-svc --network host -d -v /home/s010132/devel/eagleeye/pih-candidate-selection-service/etc/site.conf:/app/etc/site.conf 5g-dive/eagleeye/pcs:1.0`
-5. PiH Persistance Validation (PV) Service (can be multiple)
+6. PiH Persistance Validation (PV) Service (can be multiple)
     - Folder Loc: `./pih-persistance-validation-service/`
     - Build: `$ docker build -f Dockerfile -t 5g-dive/eagleeye/pv:1.0 .`
     - Run: `$ docker run --name <svc-name> --network host -d -v <site-config-fullpath>:/app/etc/site.conf 5g-dive/eagleeye/pv:1.0`
         - Example of `PV 1`: `$ docker run --name pv-1-svc --network host -d -v /home/s010132/devel/eagleeye/pih-persistance-validation-service/etc/site-1.conf:/app/etc/site.conf 5g-dive/eagleeye/pv:1.0`
         - Example of `PV 2`: `$ docker run --name pv-2-svc --network host -d -v /home/s010132/devel/eagleeye/pih-persistance-validation-service/etc/site-2.conf:/app/etc/site.conf 5g-dive/eagleeye/pv:1.0`
         - Example of `PV 3`: `$ docker run --name pv-3-svc --network host -d -v /home/s010132/devel/eagleeye/pih-persistance-validation-service/etc/site-3.conf:/app/etc/site.conf 5g-dive/eagleeye/pv:1.0`
-6. Detection Service (can be multiple)
+7. Detection Service (can be multiple)
     - Build: 
         - Parent Docker: `$ docker build -f Dockerfile-parent -t 5g-dive/eagleeye/dual-object-detection-service-head:2.4 .`
         - Child Docker: `$ docker build -t 5g-dive/eagleeye/dual-object-detection-service:2.4 .`
@@ -242,7 +242,7 @@
               5g-dive/eagleeye/dual-object-detection-service:2.4
           ```
       - Change `detection-service-1` into `detection-service-x` to deploy more
-7. Offloader Service
+8. Offloader Service
     - Build: `$ docker build -t 5g-dive/eagleeye/offloader-service:2.4 .`
     - Run:
       ``` 
@@ -266,7 +266,7 @@
         }'
         ```
         - Where `localhost` is the IP of the deployed **Web Service**
-8. Visualizer Service (can be multiple)
+9. Visualizer Service (can be multiple)
     - Folder Loc: `./visualizer-service/`
     - Build: `$ docker build -t 5g-dive/eagleeye/visualizer-service:2.4 .`
     - Run:
@@ -275,14 +275,14 @@
               ```
               $ docker run --name "viz-rtsp-ee-svc-1" -d \
                   --network host \
-                  -v /home/s010132/devel/eagleeye/visualizer-service/etc/site-rtsp.conf:/app/etc/site.conf \
+                  -v /home/s010132/devel/eagleeye/visualizer-service/etc/site-rtsp-1.conf:/app/etc/site.conf \
                   5g-dive/eagleeye/visualizer-service:2.4
               ```
             - Drone 1 (RTSP RAW): 
               ```
               $ docker run --name "viz-rtsp-raw-svc-1" -d \
                   --network host \
-                  -v /home/s010132/devel/eagleeye/visualizer-service/etc/site-rtsp-raw.conf:/app/etc/site.conf \
+                  -v /home/s010132/devel/eagleeye/visualizer-service/etc/site-rtsp-raw-1.conf:/app/etc/site.conf \
                   5g-dive/eagleeye/visualizer-service:2.4
               ```
         - For **Drone 2**:
@@ -300,6 +300,23 @@
                   -v /home/s010132/devel/eagleeye/visualizer-service/etc/site-rtsp-raw-2.conf:/app/etc/site.conf \
                   5g-dive/eagleeye/visualizer-service:2.4
               ```
+10. Start video stream consumer
+    - Run this command:
+      ``` 
+      curl --location --request POST 'http://localhost:8079/api/stream/live' \
+        --header 'Content-Type: application/json' \
+        --data-raw '{
+            "algorithm": "YOLOv3",
+            "stream": "ZENOH",
+            "uri": "tcp/192.168.1.60:7446",
+            "scalable": true,
+            "extras": {
+                "selector": "/eagle/svc/**"
+            }
+        }'
+      ``` 
+      - Please change `localhost` value accordingly.
+
 ## MISC
 - Tunnel to LittleBoy:
     - Local: `$ ssh -L 5901:127.0.0.1:5901 -C -N -l s010132 192.168.1.10`
