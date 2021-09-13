@@ -77,7 +77,7 @@ echo "Deploying Sorter Services ..."
 for i in $(seq 1 $NUMDRONE);
   do
     docker run --name "sorter-${i}-svc" -d --network host \
-    -v /home/s010132/devel/eagleeye/sorter_service/etc/site-1.conf:/app/etc/site.conf \
+    -v "/home/s010132/devel/eagleeye/sorter_service/etc/site-${i}.conf:/app/etc/site.conf" \
     5g-dive/eagleeye/sorter:1.0;
 
     echo "[sorter-${i}-svc] is deployed ..."
@@ -95,7 +95,7 @@ echo "Deploying PiH PV Services ..."
 for i in $(seq 1 $NUMDRONE);
   do
     docker run --name "pv-${i}-svc" --network host -d \
-    -v /home/s010132/devel/eagleeye/pih-persistance-validation-service/etc/site-1.conf:/app/etc/site.conf \
+    -v "/home/s010132/devel/eagleeye/pih-persistance-validation-service/etc/site-${i}.conf:/app/etc/site.conf" \
     5g-dive/eagleeye/pv:1.0
 
     echo "[pv-${i}-svc] is deployed ..."
@@ -173,4 +173,5 @@ curl --location --request POST "http://localhost:8079/api/stream/live" \
             }
         }'
 
+echo ""
 echo "Auto deplooyment script done. Enjoy! :)"
