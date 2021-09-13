@@ -174,4 +174,4 @@ curl --location --request POST "http://localhost:8079/api/stream/live" \
         }'
 
 echo ""
-echo "Auto deplooyment script done. Enjoy! :)"
+echo "Auto deployment script done. Enjoy! :)"
