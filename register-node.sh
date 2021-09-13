@@ -15,7 +15,7 @@ fi
 if [ -z "$PORT" ]
 then
       echo "\$PORT is empty"
-      PORT="8080"  # default value
+      PORT="8079"  # default value
 fi
 
 printf "\n>>> Web Service URL is http://%s:%s" ${HOST} ${PORT}

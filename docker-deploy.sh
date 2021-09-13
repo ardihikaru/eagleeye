@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# TODO: update this file
+
 # Capturing expected total number of worker nodes (input arguments)
 NODES=$1
 DELAY=$2
@@ -77,8 +79,7 @@ for i in $(seq 1 $NODES);
     
     docker run --runtime=nvidia --name "detection-service-${i}" -d \
       --network eagleeye \
-      -v /home/s010132/devel/eagleeye/object-detection-service/etc/detection.conf:/conf/dual-det/detection.conf \
-      -v /home/s010132/devel/eagleeye/site_conf_files/object-detection-service/site.conf:/conf/dual-det/site.conf \
+      -v /home/s010132/devel/eagleeye/object-detection-service/etc/site-docker.conf:/app/etc/site.conf \
       -v /home/s010132/devel/eagleeye/object-detection-service/config_files:/app/config_files \
       "5g-dive/eagleeye/dual-object-detection-service:${VERSION}";
 
@@ -90,8 +91,8 @@ done
 echo "Delaying for ${DELAY} seconds..."
 sleep ${DELAY}
 
-# Deploy Scheduler Service
-docker run --name scheduler-service -d \
+# Deploy Offloader Service
+docker run --name offloder-service -d \
   --network eagleeye \
   -v /home/s010132/devel/eagleeye/scheduler-service/etc/scheduler.conf:/conf/scheduler/scheduler.conf \
   -v /home/s010132/devel/eagleeye/site_conf_files/scheduler-service/site.conf:/conf/scheduler/site.conf \

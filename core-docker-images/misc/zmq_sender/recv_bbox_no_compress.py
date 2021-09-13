@@ -25,7 +25,21 @@ while True:  # show received images
 
     # print(">> data:", data)
     print(">> img SHAPE:", img.shape)
-    cv2.imshow(window_title, img)
+
+    # Image de-compression (restore back into FullHD)
+    t0_decompress_img = time.time()
+    deimg_len = list(img.shape)[0]
+    print(" ----- deimg_len:", deimg_len)
+    decoded_img = img.reshape(deimg_len, 1)
+    print(" ### SHAPE: decoded_img = ", decoded_img.shape, type(decoded_img), type(decoded_img[0][0]))
+    decompressed_img = cv2.imdecode(decoded_img, 1)  # decompress
+    print(" ----- SHAPE decompressed_img:", decompressed_img.shape)
+    t1_decompress_img = (time.time() - t0_decompress_img) * 1000
+    L.warning(('[%s] Latency DE-COMPRESSING IMG (%.3f ms)' % ("ZENOH CONSUMER", t1_decompress_img)))
+    L.warning("")
+
+    # cv2.imshow(window_title, img)
+    cv2.imshow(window_title, decompressed_img)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break

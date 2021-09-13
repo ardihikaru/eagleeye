@@ -2,6 +2,7 @@ import asab
 from .service import ImagePlotterService
 from ext_lib.utils import get_current_time
 import logging
+from asab import LOG_NOTICE
 
 ###
 
@@ -18,4 +19,4 @@ class ImagePlotterModule(asab.Module):
 		self.Service = ImagePlotterService(app, "visualizer.ImagePlotterService")
 
 	async def initialize(self, app):
-		L.warning("\n[%s] Initialize ImagePlotterModule." % get_current_time())
+		L.log(LOG_NOTICE, "[%s] Initialize ImagePlotterModule." % get_current_time())

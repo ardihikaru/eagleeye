@@ -3,6 +3,7 @@ import logging
 import imagezmq
 from ext_lib.utils import get_imagezmq
 import time
+from asab import LOG_NOTICE
 
 ###
 
@@ -30,13 +31,13 @@ class ZMQService(asab.Service):
 
     async def set_zmq_recv(self):
         uri = "tcp://%s:%s" % (asab.Config["zmq"]["sender_host"], asab.Config["zmq"]["sender_port"])
-        L.warning("[IMPORTANT] Accepted ZMQ URL: %s" % uri)
+        L.log(LOG_NOTICE, "[IMPORTANT] Accepted ZMQ URL: {}".format(uri))
         self.zmq_receiver = imagezmq.ImageHub(open_port=uri, REQ_REP=False)
 
     async def set_zmq_output_publisher(self):
         if self._mode == "zeromq":
             uri = "tcp://%s:%s" % (asab.Config["stream:config"]["zeromq_host"], asab.Config["stream:config"]["zeromq_port"])
-            L.warning("[IMPORTANT] Publish Image into this URL: %s" % uri)
+            L.log(LOG_NOTICE, "[IMPORTANT] Publish Image into this URL: {}".format(uri))
             self.zmq_publisher = imagezmq.ImageSender(connect_to=uri, REQ_REP=False)
 
     def get_zmq_receiver(self):
@@ -48,7 +49,7 @@ class ZMQService(asab.Service):
 
     async def start(self):
         await self._set_zmq_configurations()
-        L.warning("I am running ...")
+        L.log(LOG_NOTICE, "I am running ...")
 
         if self._mode == "zeromq":
             await self.ZeroMQVisualizerService.run(self.get_zmq_receiver(), self.zmq_publisher)

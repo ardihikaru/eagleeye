@@ -15,9 +15,8 @@ L = logging.getLogger(__name__)
 ###
 
 
-# def validate_request_json(request_json):
 def request_to_config(request_json):
-	config = {}
+	config = {"save_to_db": False}
 	valid_list = ["algorithm", "uri", "scalable", "stream", "extras"]
 	if not isinstance(request_json, dict):
 		raise aiohttp.web.HTTPBadRequest()
@@ -30,23 +29,13 @@ def request_to_config(request_json):
 		else:
 			config[key] = request_json[key]
 
-	# To validate where the image came from
-	# TODO: To enable multiple drone streams (Future work)
-	# TODO: We need to consider tagging each image with a drone_id, helping the identification phase in Scheduler
-	# Currently, only one stream is allowed, if a stream found, return FALSE and notify to delete the current stream
-	# // TODO Here
+	# If it is running already, no need to save to DB
 	is_available, _, _ = get_data_by_uri(ConfigModel, request_json["uri"])
-	if is_available:
-		# Log the error
-		L.error("Invalid request: {}".format("This URI is streaming now: `%s`." % request_json["uri"]))
-		raise aiohttp.web.HTTPBadRequest()
+	if not is_available:
+		config["save_to_db"] = True
 
+	# Simply allow any incoming request, without checking the status
 	return config
-
-
-# def config_to_redisdb(rc, request_json):
-#     for key, value in request_json.items():
-#         redis_set(rc, key, value)
 
 
 def config_to_mongodb(executor, request_json):

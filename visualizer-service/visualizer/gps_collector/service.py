@@ -8,6 +8,7 @@ from suds.client import Client
 import simplejson as json
 import subprocess
 from subprocess import Popen, PIPE
+from asab import LOG_NOTICE
 
 ###
 
@@ -30,7 +31,6 @@ class GPSCollectorService(asab.Service):
         self._gps_key_prefix = asab.Config["stream:config"]["gps_key_prefix"]
 
         self._collector_mode = asab.Config["stream:gps"]["mode"]
-        self._num_drones = int(asab.Config["stream:gps"]["num_drones"])
         self._drone_gps_data = []
         self._target_url = None
         self._client = None
@@ -52,7 +52,7 @@ class GPSCollectorService(asab.Service):
         self._initialize_connection_mode()
 
     async def initialize(self, app):
-        L.warning("\n[%s] Initializing GPS Collector Service" % get_current_time())
+        L.log(LOG_NOTICE, "[%s] Initializing GPS Collector Service" % get_current_time())
 
     def _initialize_connection_mode(self):
         if self._collector_mode == "online":
@@ -63,31 +63,35 @@ class GPSCollectorService(asab.Service):
                 if self._client is None:
                     L.warning("[WARNING!] ******* GPS COLLECTOR IS WORKING IN AN OFFLINE MODE !!!!")
                 else:
-                    L.warning("[IMPORTANT!] ******* GPS COLLECTOR IS WORKING IN AN ONLINE MODE !!!!")
+                    L.log(LOG_NOTICE, "[IMPORTANT!] ******* GPS COLLECTOR IS WORKING IN AN ONLINE MODE !!!!")
             else:
                 L.warning("[WARNING!] ******* GPS COLLECTOR IS WORKING IN AN OFFLINE MODE !!!!")
         else:
             L.warning("[WARNING!] ******* GPS COLLECTOR IS WORKING IN AN OFFLINE MODE !!!!")
 
     def _is_ip_reachable(self):
-        hostname = asab.Config["stream:gps"]["host"]
-        process = subprocess.Popen(['ping', '-c', '5', '-w', '5', hostname],
-                                   stdout=PIPE, stderr=PIPE)
-        stdout, stderr = process.communicate()
-        packetloss = float(
-            [x for x in stdout.decode('utf-8').split('\n') if x.find('packet loss') != -1][0].split('%')[0].split(' ')[
-                -1])
-        if packetloss > 10.0:  # TODO: constant value can be used dynamically in the future
-            L.error("[WARNING!] Unable to connect with {}".format(hostname))
+        try:
+            hostname = asab.Config["stream:gps"]["host"]
+            process = subprocess.Popen(['ping', '-c', '5', '-w', '5', hostname],
+                                       stdout=PIPE, stderr=PIPE)
+            stdout, stderr = process.communicate()
+            packetloss = float(
+                [x for x in stdout.decode('utf-8').split('\n') if x.find('packet loss') != -1][0].split('%')[0].split(' ')[
+                    -1])
+            if packetloss > 10.0:  # TODO: constant value can be used dynamically in the future
+                L.error("[WARNING!] Unable to connect with {}".format(hostname))
+                return False
+            else:
+                return True
+        except Exception as e:
+            L.error("Error occur due to `{}`".format(e))
             return False
-        else:
-            return True
 
     def _setup_soap_connection(self):
         try:
             self._client = Client(self._target_url)
         except Exception as e:
-            L.warning("Connection establishment Failed; Reason: {}".format(e))
+            L.error("Connection establishment Failed; Reason: {}".format(e))
 
     def _build_conn_url(self):
         schema = asab.Config["stream:gps"]["schema"]
@@ -109,11 +113,11 @@ class GPSCollectorService(asab.Service):
                 continue
 
         t1_gps = (time.time() - t0_gps) * 1000
-        L.warning('\n[%s] Latency for collecting GPS data (%.3f ms)' % (get_current_time(), t1_gps))
+        L.log(LOG_NOTICE, '[%s] Latency for collecting GPS data (%.3f ms)' % (get_current_time(), t1_gps))
         return gps_data
 
     async def _sending_fake_request(self, gps_data):
-        L.warning(" **** I am in OFFLINE Mode. FlyNo={}; GPS={}; Heading={}".format(gps_data["fly_no"],
+        L.log(LOG_NOTICE, " **** I am in OFFLINE Mode. FlyNo={}; GPS={}; Heading={}".format(gps_data["fly_no"],
                                                                                     gps_data["gps"],
                                                                                     gps_data["heading"]))
 
@@ -135,20 +139,23 @@ class GPSCollectorService(asab.Service):
         }
         soap_request = json.dumps(soap_request_obj)
         t0_soap_askey = time.time()
-        resp = self._client.service.SendPeopleLocation(soap_request)
-        t1_soap_askey = (time.time() - t0_soap_askey) * 1000
-        L.warning('\n[%s] Latency for ASKEY SOAP response (%.3f ms)' % (get_current_time(), t1_soap_askey))
-        resp = ''.join(resp)
-        resp = json.loads(resp)
-        if "Response" in resp and await self._is_resp_valid(resp["Response"]):
-            L.warning(" **** GPS Information have been successfully sent into ASKEY's Drone Navigation Server.")
-            L.warning("-- GPS INFO --> FlyNo={}; GPS={}; Heading={}".format(gps_data["fly_no"], gps_data["gps"],
-                                                                            gps_data["heading"]))
+        if self._client is None:
+            L.warning("UNABLE TO SEND GPS Information (Reason: No connection with GPS Navigation Server).")
         else:
-            L.warning("UNABLE TO SEND GPS Information (Reason: {}). FlyNo={}; GPS={}; Heading={}".
-                      format(resp, gps_data["fly_no"],
-                             gps_data["gps"],
-                             gps_data["heading"]))
+            resp = self._client.service.SendPeopleLocation(soap_request)
+            t1_soap_askey = (time.time() - t0_soap_askey) * 1000
+            L.log(LOG_NOTICE, '[%s] Latency for ASKEY SOAP response (%.3f ms)' % (get_current_time(), t1_soap_askey))
+            resp = ''.join(resp)
+            resp = json.loads(resp)
+            if "Response" in resp and await self._is_resp_valid(resp["Response"]):
+                L.log(LOG_NOTICE, " **** GPS Information have been successfully sent into ASKEY's Drone Navigation Server.")
+                L.log(LOG_NOTICE, "-- GPS INFO --> FlyNo={}; GPS={}; Heading={}".format(gps_data["fly_no"], gps_data["gps"],
+                                                                                gps_data["heading"]))
+            else:
+                L.warning("UNABLE TO SEND GPS Information (Reason: {}). FlyNo={}; GPS={}; Heading={}".
+                          format(resp, gps_data["fly_no"],
+                                 gps_data["gps"],
+                                 gps_data["heading"]))
 
     async def send_gps_info(self, gps_data):
         if self._is_online:

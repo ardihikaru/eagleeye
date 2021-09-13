@@ -16,9 +16,9 @@ seaborn
 window-slider
 suds-py3
 kubernetes
-tqdm
-torch
-torchvision
+tqdm==4.42.0
+torch==1.4.0
+torchvision==0.5.0
 imutils
 aiounittest
 nose2

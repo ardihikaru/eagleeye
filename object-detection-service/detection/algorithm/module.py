@@ -2,6 +2,7 @@ import asab
 from .service import DetectionAlgorithmService
 from ext_lib.utils import get_current_time
 import logging
+from asab import LOG_NOTICE
 
 ###
 
@@ -19,5 +20,4 @@ class DetectionAlgorithmModule(asab.Module):
 
 	async def initialize(self, app):
 		self.Service.ZMQService = app.get_service('detection.ZMQService')
-		# print("\n[%s] Initialize DetectionAlgorithmModule." % get_current_time())
-		L.warning("\n[%s] Initialize DetectionAlgorithmModule." % get_current_time())
+		L.log(LOG_NOTICE, "[{}] Initialize DetectionAlgorithmModule.".format(get_current_time()))

@@ -57,8 +57,8 @@ class Logging(object):
 				self.ConsoleHandler.setFormatter(StructuredDataFormatter(
 					fmt=Config["logging:console"]["format"],
 					datefmt=Config["logging:console"]["datefmt"],
+					use_color=Config["logging:console"].getboolean("use_color"),  # make it configurable
 					sd_id=Config["logging"]["sd_id"],
-					use_color=True
 				))
 				self.ConsoleHandler.setLevel(logging.DEBUG)
 				self.RootLogger.addHandler(self.ConsoleHandler)

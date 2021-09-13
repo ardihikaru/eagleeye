@@ -2,6 +2,7 @@ import asab
 from .service import ResizerService
 from ext_lib.utils import get_current_time
 import logging
+from asab import LOG_NOTICE
 
 ###
 
@@ -18,5 +19,4 @@ class ResizerModule(asab.Module):
 		self.Service = ResizerService(app, "detection.ResizerService")
 
 	async def initialize(self, app):
-		# print("\n[%s] Initialize ResizerModule." % get_current_time())
-		L.warning("\n[%s] Initialize ResizerModule." % get_current_time())
+		L.log(LOG_NOTICE, "[%s] Initialize ResizerModule." % get_current_time())

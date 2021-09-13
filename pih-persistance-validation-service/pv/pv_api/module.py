@@ -3,6 +3,7 @@ from .service import PVApiService
 from .handler import PVApiWebHandler
 from ext_lib.utils import get_current_time
 import logging
+from asab import LOG_NOTICE
 
 ###
 
@@ -20,4 +21,4 @@ class PVApiModule(asab.Module):
 		self.PVApiWebHandler = PVApiWebHandler(app)
 
 	async def initialize(self, app):
-		L.warning("\n[%s] Initialize PV Api Module." % get_current_time())
+		L.log(LOG_NOTICE, "[%s] Initialize PV Api Module." % get_current_time())

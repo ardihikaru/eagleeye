@@ -25,7 +25,7 @@ class PCSApiWebHandler(object):
 			raise aiohttp.web.HTTPBadRequest(reason="Unable to extract request json")
 
 		# Submit request
-		status, status_code, msg = await self.pcs_api_svc.calculate_and_wait(
+		status, status_code, msg = await self.pcs_api_svc.calculate_pcs_and_wait(
 			request_json=request_json,
 		)
 

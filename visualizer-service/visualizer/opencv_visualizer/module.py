@@ -2,6 +2,7 @@ import asab
 from .service import OpenCVVisualizerService
 from ext_lib.utils import get_current_time
 import logging
+from asab import LOG_NOTICE
 
 ###
 
@@ -18,4 +19,4 @@ class OpenCVVisualizerModule(asab.Module):
 		self.Service = OpenCVVisualizerService(app, "visualizer.OpenCVVisualizerService")
 
 	async def initialize(self, app):
-		L.warning("\n[%s] Initialize OpenCVVisualizerModule." % get_current_time())
+		L.log(LOG_NOTICE, "[%s] Initialize OpenCVVisualizerModule." % get_current_time())

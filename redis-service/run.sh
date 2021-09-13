@@ -4,4 +4,4 @@ docker run -d \
   -p 6379:6379 \
   --name redis \
   --restart always \
-  5g-dive/redis:1.0 /bin/sh -c 'redis-server --appendonly yes'
+  redis:5.0.5-alpine3.9 /bin/sh -c 'redis-server --appendonly yes'

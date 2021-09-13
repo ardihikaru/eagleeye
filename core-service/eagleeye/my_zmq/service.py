@@ -20,10 +20,15 @@ class ZMQService(asab.Service):
     def __init__(self, app, service_name="eagleeye.ZMQService"):
         super().__init__(app, service_name)
         self.zmq_visualizer = None
+        self.zmq_visualizer_list = []
         self.zmq_source_reader = None
         self.zmq_sender = []
         self.node_info = []
         self.node_api_uri = asab.Config["eagleeye:api"]["node"]
+
+        # ZMQ
+        self.visualizer_num = asab.Config["zmq"].getint("visualizer_num")
+        self.visualizer_port_prefix = asab.Config["zmq"]["visualizer_port_prefix"]
 
         # config info
         self.config = None
@@ -41,6 +46,8 @@ class ZMQService(asab.Service):
         # reset array data
         self.zmq_sender = []
         self.zmq_visualizer = None
+
+        # TODO: also clean uo list of visualizer ZMQ
 
     # TODO: We need to have a dynamic configuration; This is still static and called ONCE
     async def set_configurations(self):
@@ -69,10 +76,19 @@ class ZMQService(asab.Service):
 
             # Set ZMQ Sender for sending images to Visualizer Service
             # build ZMQ URI
-            visualizer_port = asab.Config["zmq"]["visualizer_port"]
-            visualizer_uri = 'tcp://%s:%s' % (zmq_host, visualizer_port)
-            L.log(LOG_NOTICE, "ZMQ Visualizer URI: %s" % visualizer_uri)
-            self.zmq_visualizer = imagezmq.ImageSender(connect_to=visualizer_uri, REQ_REP=False)
+            # visualizer_port = asab.Config["zmq"]["visualizer_port"]
+            # visualizer_uri = 'tcp://%s:%s' % (zmq_host, visualizer_port)
+            # L.log(LOG_NOTICE, "ZMQ Visualizer URI: %s" % visualizer_uri)
+            # self.zmq_visualizer = imagezmq.ImageSender(connect_to=visualizer_uri, REQ_REP=False)
+
+            # setup ZMQ Sender sending images to Visualizer Service, multiple ports
+            for idx in range(1, (self.visualizer_num+1)):
+                # build ZMQ URI
+                postfix_idx = str(idx) if idx >= 10 else "0{}".format(str(idx))
+                visualizer_port = "{}{}".format(self.visualizer_port_prefix, postfix_idx)
+                visualizer_uri = 'tcp://%s:%s' % (zmq_host, visualizer_port)
+                L.log(LOG_NOTICE, "ZMQ Visualizer URI: %s" % visualizer_uri)
+                self.zmq_visualizer_list.append(imagezmq.ImageSender(connect_to=visualizer_uri, REQ_REP=False))
 
         else:
             L.warning("\n[%s] Forced to exit, since No Node are available!" % get_current_time())
@@ -119,11 +135,24 @@ class ZMQService(asab.Service):
         L.warning('Latency [Send imagezmq] of frame-%s: (%.5fms)' % (str(frame_id), t1_zmq))
         # TODO: Saving latency for scheduler:latency:sending_image_zmq
 
+    @DeprecationWarning
     def send_image_to_visualizer(self, frame_id, frame):
         t0_zmq = time.time()
         zmq_id = str(frame_id) + "-" + str(t0_zmq)
         self.zmq_visualizer.send_image(zmq_id, frame)
         t1_zmq = (time.time() - t0_zmq) * 1000
         L.warning('Latency [Send image to Visualizer] of frame-%s: (%.5fms)' % (str(frame_id), t1_zmq))
+        # TODO: Saving latency for scheduler:latency:sending_image_zmq
+
+    def send_image_to_visualizer_v2(self, drone_id, frame_id, frame):
+        """ Function send_image_to_visualizer_v2 allow the system to send frame to multiple visualizer """
+        idx = int(drone_id) - 1
+        t0_zmq = time.time()
+        zmq_id = str(frame_id) + "-" + str(t0_zmq)
+        self.zmq_visualizer_list[idx].send_image(zmq_id, frame)
+        t1_zmq = (time.time() - t0_zmq) * 1000
+        L.warning('Latency [Send image to Visualizer] of frame-%s: (%.5fms); drone_id={}; idx={}'.format(
+            drone_id, idx
+        ) % (str(frame_id), t1_zmq))
         # TODO: Saving latency for scheduler:latency:sending_image_zmq
 

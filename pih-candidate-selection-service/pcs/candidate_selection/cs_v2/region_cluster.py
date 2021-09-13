@@ -3,7 +3,9 @@ import numpy
 
 
 class RegionCluster:
-    def __init__(self):
+    def __init__(self, target_obj_one, target_obj_two):
+        self.target_obj_one = target_obj_one
+        self.target_obj_two = target_obj_two
         self.num_combination = 11
 
         # Set pre-defined regions
@@ -40,4 +42,4 @@ class RegionCluster:
         """ Set empty Person and Flag data """
         self.mapped_obj = []
         for i in range(self.num_combination):
-            self.mapped_obj.append({"Person": [], "Flag": []})
+            self.mapped_obj.append({self.target_obj_one: [], self.target_obj_two: []})

@@ -2,6 +2,7 @@ import asab
 import logging
 import subprocess
 from ext_lib.redis.my_redis import MyRedis
+from asab import LOG_NOTICE
 
 ###
 
@@ -30,7 +31,7 @@ class ImagePublisherService(asab.Service):
         host = asab.Config["stream:config"]["host"]
         path = asab.Config["stream:config"]["path"]
         rtsp_url = "%s://%s/%s" % (protocol, host, path)
-        L.warning("Setup RTSP URL: %s" % rtsp_url)
+        L.log(LOG_NOTICE, "Setup RTSP URL: {}".format(rtsp_url))
 
         mode = asab.Config["stream:config"]["mode"]
 

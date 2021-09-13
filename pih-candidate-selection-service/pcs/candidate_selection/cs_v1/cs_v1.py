@@ -19,6 +19,8 @@ class CSv1:
         self.detected_mbbox = []
         self.mbbox_img = None
         self.pih_label = asab.Config["bbox_config"]["pih_label"]
+        self.target_obj_one = asab.Config["objdet:yolo"]["target_obj_one"]
+        self.target_obj_two = asab.Config["objdet:yolo"]["target_obj_two"]
 
     def run(self):
         # ts_extract = time.time()
@@ -35,7 +37,7 @@ class CSv1:
             self.mbbox_img = self.intersection.get_img_with_mbbox()
             self.rgb_mbbox = self.intersection.get_rgb_mbbox()
             # print("Person-W-Flag object: %d founds." % len(detected_mbbox))
-            print("Person=%d; Flag=%d; %s=%d;" % (len(self.class_det["Person"]), len(self.class_det["Flag"]),
+            print("{}=%d; {}=%d; %s=%d;".format(self.target_obj_one, self.target_obj_one) % (len(self.class_det[self.target_obj_one]), len(self.class_det[self.target_obj_two]),
                                                   self.pih_label, len(self.detected_mbbox)))
         else:
             self.mbbox_img = self.img
@@ -44,11 +46,11 @@ class CSv1:
             # print("Person + Flag objects NOT Found.")
             total_person = 0
             total_flag = 0
-            if "Person" in self.class_det:
-                total_person = len(self.class_det["Person"])
-            if "Flag" in self.class_det:
-                total_flag = len(self.class_det["Flag"])
-            print("Person=%d; Flag=%d; Person-W-Flag=0;" % (total_person, total_flag))
+            if self.target_obj_one in self.class_det:
+                total_person = len(self.class_det[self.target_obj_one])
+            if self.target_obj_two in self.class_det:
+                total_flag = len(self.class_det[self.target_obj_two])
+            print("{}=%d; {}=%d; {}=0;".format(self.target_obj_one, self.target_obj_two, self.pih_label) % (total_person, total_flag))
 
     def get_mbbox_img(self):
         return self.mbbox_img

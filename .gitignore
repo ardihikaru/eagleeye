@@ -31,6 +31,8 @@ web-service/etc/site.conf
 object-detection-service/etc/site.conf
 scheduler_service/etc/site.conf
 data_offloader_service/etc/site.conf
+pih-persistance-validation-service/etc/site.conf
+pih-candidate-selection-service/etc/site.conf
 
 # Ignore editors
 .idea/

@@ -35,7 +35,7 @@ class StreamReader:
 
         # send data into Scheduler service through the pub/sub
         t0_publish = time.time()
-        # print("# send data into Scheduler service through the pub/sub")
+        L.warning("Sending config information to [Offloader service] through the Redis pub/sub")
         config["timestamp"] = time.time()  # To verify the communication latency
         dump_request = json.dumps(config)
         pub(self.redis.get_rc(), asab.Config["pubsub:channel"]["scheduler"], dump_request)
@@ -44,9 +44,14 @@ class StreamReader:
         # TODO: Saving latency for scheduler:producer
         L.warning('[%s] Latency for Publishing data (%.3f ms)' % (get_current_time(), t1_publish))
 
-        # save input into mongoDB through thread process
-        L.warning("# save input into mongoDB through thread process")
-        config_to_mongodb(self.executor, config)
+        # save input into mongoDB through thread process (optional)
+        if config.get("save_to_db", False):
+            L.warning("# save input into mongoDB through thread process")
+            # remove identifier `key` [save_to_db]
+            config.pop("save_to_db")
+            config_to_mongodb(self.executor, config)
+        else:
+            L.warning("# NO NEED to save input into mongoDB through thread process")
 
         return aiohttp.web.json_response(get_json_template(True, request_json, -1, "OK"))
 

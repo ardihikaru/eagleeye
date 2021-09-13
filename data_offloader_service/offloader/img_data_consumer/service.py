@@ -8,6 +8,7 @@ from ext_lib.redis.translator import pub, redis_get, redis_set
 from zenoh_image_subscriber.service import ZenohImageSubscriberService
 from zenoh_lib.functions import extract_compressed_tagged_img
 import simplejson as json
+from asab import LOG_NOTICE
 
 ###
 
@@ -95,7 +96,7 @@ class ImgConsumerService(ZenohImageSubscriberService):
 		}
 		# Submit and store latency data: Pre-processing
 		if not self.LatCollectorService.sync_store_latency_data_thread(preproc_latency_data):
-			L.warning("[%s]\nUps, it failed to save the latency data (Scheduling latency)" % get_current_time())
+			L.error("[{}]Ups, it failed to save the latency data (Scheduling latency)".format(get_current_time()))
 
 	def _exec_e2e_latency_collector(self, t0_e2e_lat, node_id, frame_id):
 		t0_thread = time.time()
@@ -111,7 +112,7 @@ class ImgConsumerService(ZenohImageSubscriberService):
 					"e2e Latency Collector: `{}`".format(frame_id, str(e)) % get_current_time())
 
 		t1_thread = (time.time() - t0_thread) * 1000
-		L.warning('[%s] Latency for Start threading (%.3f ms)' % (get_current_time(), t1_thread))
+		L.log(LOG_NOTICE, '[{}] Latency for Start threading (%.3f ms)'.format(get_current_time()) % t1_thread)
 		# TODO: Save the latency into ElasticSearchDB for the real-time monitoring
 
 	def _save_e2e_lat(self, lat_key, t0):
@@ -167,13 +168,14 @@ class ImgConsumerService(ZenohImageSubscriberService):
 		# try skipping frames
 		if self._num_skipped_frames > 0 and self.received_frame_id > 1 and self.skip_count <= self._num_skipped_frames:
 			# skip this frame
-			L.warning(">>> Skipping frame-{}; Current `skip_count={}`".format(str(self.received_frame_id), str(self.skip_count)))
+			L.log(LOG_NOTICE, ">>> Skipping frame-{}; Current `skip_count={}`".format(str(self.received_frame_id), str(self.skip_count)))
 		else:
 			# self.frame_id += 1
 			self.frame_id = int(img_info["frame_id"])
 
 			# Sending image data into Visualizer Service as well
-			self.ZMQService.send_image_to_visualizer(self.frame_id, frame)
+			# self.ZMQService.send_image_to_visualizer(self.frame_id, frame)
+			self.ZMQService.send_image_to_visualizer_v2(img_info["id"], self.frame_id, frame)
 
 			# Start t0_e2e_lat: To calculate the e2e processing & comm. latency
 			t0_e2e_lat = time.time()
@@ -189,7 +191,7 @@ class ImgConsumerService(ZenohImageSubscriberService):
 						sch_policy=self.scheduler_policy,
 						frame_id=self.frame_id,
 					)
-				L.warning("Selected Node idx: %s" % str(sel_node_id))
+				L.log(LOG_NOTICE, "Selected Node idx: {}".format(str(sel_node_id)))
 			except Exception as e:
 				L.error("[ERROR]: %s" % str(e))
 				sel_node_id = 0
@@ -200,14 +202,14 @@ class ImgConsumerService(ZenohImageSubscriberService):
 			node_channel = _senders["node"][sel_node_id]["channel"]
 			node_name = _senders["node"][sel_node_id]["name"]
 
-			L.warning("NodeID=%s; NodeChannel=%s; NodeName=%s" % (str(node_id), node_channel, node_name))
+			L.log(LOG_NOTICE, "NodeID={}; NodeChannel={}; NodeName={}".format(str(node_id), node_channel, node_name))
 
 			# Save Scheduling latency
 			self._sync_save_latency(
 				self.frame_id, t1_sched_lat, self.scheduler_policy, "scheduling", "Scheduling", node_id, node_name
 			)
-			L.warning('[%s] Proc. Latency of %s for frame-%s (%.3f ms)' % (
-				get_current_time(), "scheduling", str(self.frame_id), t1_sched_lat))
+			L.log(LOG_NOTICE, '[{}] Proc. Latency of %s for frame-%s (%.3f ms)'.format(get_current_time()) % (
+				"scheduling", str(self.frame_id), t1_sched_lat))
 
 			# Save e2e latency
 			self._exec_e2e_latency_collector(t0_e2e_lat, node_id, self.frame_id)
@@ -216,7 +218,7 @@ class ImgConsumerService(ZenohImageSubscriberService):
 			# Never send any frame if `test_mode` is enabled (test_mode=1)
 			if not bool(int(asab.Config["stream:config"]["test_mode"])):
 				t0_publish = time.time()
-				L.warning("[%s] Publishing image into Redis channel: %s" % (get_current_time(), node_channel))
+				L.log(LOG_NOTICE, "[{}] Publishing image into Redis channel: %s".format(get_current_time()) % node_channel)
 
 				dump_request = json.dumps({
 					"active": True,
@@ -228,10 +230,8 @@ class ImgConsumerService(ZenohImageSubscriberService):
 				pub(self.redis.get_rc(), node_channel, dump_request)
 				t1_publish = (time.time() - t0_publish) * 1000
 				# TODO: Saving latency for scheduler:producer:notification:image
-				L.warning(
-					'[%s] Latency for Publishing FRAME NOTIFICATION into Object Detection Service (%.3f ms)' % (
-						get_current_time(), t1_publish)
-				)
+				L.log(LOG_NOTICE, '[{}] Latency for Publishing FRAME NOTIFICATION '
+								  'into Object Detection Service (%.3f ms)'.format(get_current_time()) % t1_publish)
 
 				if not bool(int(asab.Config["stream:config"]["convert_img"])):
 					# Sending image data through ZMQ (TCP connection)

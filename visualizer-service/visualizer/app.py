@@ -9,6 +9,9 @@ from visualizer.image_publisher import ImagePublisherModule
 from visualizer.image_plotter import ImagePlotterModule
 from visualizer.zmq import ZMQModule
 from ext_lib.utils import get_current_time
+from missing_asab_components.application import Application
+import os.path
+from asab.log import LOG_NOTICE
 import logging
 from dotenv import load_dotenv, find_dotenv
 
@@ -20,19 +23,15 @@ L = logging.getLogger(__name__)
 ###
 
 
-class VisualizerService(asab.Application):
+class VisualizerService(Application):
 
 	def __init__(self):
+		# IMPORTANT: Load `.env` file in this directory (if any)
+		# Currently it is used for local deployment, Dockfile may not COPY this `.env` into the container yet
+		if os.path.isfile(".env"):
+			load_dotenv(find_dotenv())
+
 		super().__init__()
-
-		# IMPORTANT: Load `.env` file
-		load_dotenv(find_dotenv(filename=asab.Config["commons"]["envfile"]))
-		# TODO: Update Dockerfile to COPY `.env` file to container
-
-		# # Testing:
-		# import os
-		# PYTHONPATH = os.getenv("PYTHONPATH")
-		# print(" this is PYTHONPATH:", PYTHONPATH)
 
 		# Add customized modules
 		self.add_module(FPSCalculatorModule)

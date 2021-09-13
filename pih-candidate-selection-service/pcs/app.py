@@ -6,6 +6,9 @@ from .pcs_api import PCSApiModule
 from .candidate_selection import CandidateSelectionModule
 from ext_lib.utils import get_current_time
 import logging
+from missing_asab_components.application import Application
+import os.path
+from asab.log import LOG_NOTICE
 from dotenv import load_dotenv, find_dotenv
 
 ###
@@ -15,18 +18,14 @@ L = logging.getLogger(__name__)
 ###
 
 
-class PihCandidateSelectionService(asab.Application):
+class PihCandidateSelectionService(Application):
 	def __init__(self):
+		# IMPORTANT: Load `.env` file in this directory (if any)
+		# Currently it is used for local deployment, Dockfile may not COPY this `.env` into the container yet
+		if os.path.isfile(".env"):
+			load_dotenv(find_dotenv())
+
 		super().__init__()
-
-		# IMPORTANT: Load `.env` file
-		load_dotenv(find_dotenv(filename=asab.Config["commons"]["envfile"]))
-		# TODO: Update Dockerfile to COPY `.env` file to container
-
-		# # Testing:
-		# import os
-		# PYTHONPATH = os.getenv("PYTHONPATH")
-		# print(" this is PYTHONPATH:", PYTHONPATH)
 
 		# Web Module
 		self.add_module(asab.web.Module)
@@ -45,4 +44,4 @@ class PihCandidateSelectionService(asab.Application):
 		self.add_module(PCSApiModule)
 
 	async def initialize(self):
-		L.warning('\n[%s] PiH Candidate Selection Service is running!' % get_current_time())
+		L.log(LOG_NOTICE, '[%s] PiH Candidate Selection Service is running!' % get_current_time())

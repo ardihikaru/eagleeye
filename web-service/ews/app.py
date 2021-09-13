@@ -10,6 +10,9 @@ from ext_lib.redis.translator import redis_set
 from mongoengine import connect
 from mongoengine.connection import _get_db
 import logging
+from missing_asab_components.application import Application
+import os.path
+from asab.log import LOG_NOTICE
 from ews.controllers.node.node import Node as NodeController
 from dotenv import load_dotenv, find_dotenv
 
@@ -21,19 +24,15 @@ L = logging.getLogger(__name__)
 ###
 
 
-class EagleEYEWebService(asab.Application):
+class EagleEYEWebService(Application):
 
 	def __init__(self):
+		# IMPORTANT: Load `.env` file in this directory (if any)
+		# Currently it is used for local deployment, Dockfile may not COPY this `.env` into the container yet
+		if os.path.isfile(".env"):
+			load_dotenv(find_dotenv())
+
 		super().__init__()
-
-		# IMPORTANT: Load `.env` file
-		load_dotenv(find_dotenv(filename=asab.Config["commons"]["envfile"]))
-		# TODO: Update Dockerfile to COPY `.env` file to container
-
-		# # Testing:
-		# import os
-		# PYTHONPATH = os.getenv("PYTHONPATH")
-		# print(" this is PYTHONPATH:", PYTHONPATH)
 
 		# Connect Database
 		connect('eagleeyeDB', host=asab.Config["asab:storage"]["mongodb_host"])
@@ -65,4 +64,4 @@ class EagleEYEWebService(asab.Application):
 		}
 		NodeController().register(json_data)
 
-		L.warning("EagleEYE Web Service is running!")
+		L.log(LOG_NOTICE, "EagleEYE Web Service is running!")

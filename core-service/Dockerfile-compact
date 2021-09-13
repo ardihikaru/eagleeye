@@ -1,0 +1,42 @@
+# How to build: `$ docker build -f Dockerfile-compact -t 5g-dive/eagleeye/pycore-compact:1.0 .`
+# How to test: `$ docker run -it --rm 5g-dive/eagleeye/pycore-compact:1.0 bash`
+
+# why not using alphine: https://pythonspeed.com/articles/alpine-docker-python/
+# FROM python:3.8.2-buster
+FROM python:3.8-slim-buster
+MAINTAINER Muhammad Febrian Ardiansyah (mfardiansyah.ee08@nycu.edu.tw)
+
+# http://bugs.python.org/issue19846
+# > At the moment, setting "LANG=C" on a Linux system *fundamentally breaks Python 3*, and that's not OK.
+ENV LANG C.UTF-8
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Source fixing psutil: https://stackoverflow.com/questions/60688278/how-to-import-python-module-running-script-in-docker-container
+# Source: https://stackoverflow.com/questions/55313610/importerror-libgl-so-1-cannot-open-shared-object-file-no-such-file-or-directo
+RUN apt-get update \
+        && apt-get install ffmpeg libsm6 libxext6  -y \
+		&& apt-get install -y \
+		&& apt-get install curl -y \
+		&& apt-get clean \
+		&& pip install opencv-python \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Install other requirements and Zenoh
+RUN pip3 install Cython maturin
+
+# Install Zenoh
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain nightly
+ENV PATH="/root/.cargo/bin:${PATH}"
+RUN pip3 install eclipse-zenoh==0.5.0b8
+
+# update pip
+WORKDIR /usr/local
+
+# Project Core Codes
+RUN mkdir -p /opt/pycore
+COPY ./eagleeye/latency /opt/pycore/latency
+COPY ./eagleeye/ext_lib /opt/pycore/ext_lib
+COPY ./eagleeye/algorithm /opt/pycore/algorithm
+COPY ./eagleeye/my_logging /opt/pycore/my_logging
+COPY ./eagleeye/missing_asab_components /opt/pycore/missing_asab_components
+ENV PYTHONPATH "${PYTHONPATH}:/opt/pycore"

@@ -4,6 +4,7 @@ from .handler import RouteWebHandler
 from .rthandler import WebRealtimeHandler
 from ext_lib.utils import get_current_time
 import logging
+from asab import LOG_NOTICE
 
 ###
 
@@ -22,5 +23,5 @@ class RouteManagerModule(asab.Module):
 		self.WebRTHandler = WebRealtimeHandler(app)
 
 	async def initialize(self, app):
-		L.warning("\n[%s] Initialize RouteManagerModule." % get_current_time())
+		L.log(LOG_NOTICE, "[%s] Initialize RouteManagerModule." % get_current_time())
 

@@ -2,6 +2,7 @@ import asab
 from .service import RTSPVisualizerService
 from ext_lib.utils import get_current_time
 import logging
+from asab import LOG_NOTICE
 
 ###
 
@@ -18,4 +19,4 @@ class RTSPVisualizerModule(asab.Module):
 		self.Service = RTSPVisualizerService(app, "visualizer.RTSPVisualizerService")
 
 	async def initialize(self, app):
-		L.warning("\n[%s] Initialize RTSPVisualizerModule." % get_current_time())
+		L.log(LOG_NOTICE, "[%s] Initialize RTSPVisualizerModule." % get_current_time())

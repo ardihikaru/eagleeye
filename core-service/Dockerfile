@@ -8,6 +8,14 @@ MAINTAINER NCTU Team (mfardiansyah.eed08g@nctu.edu.tw)
 ENV LANG C.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 
+# Install other requirements and Zenoh
+RUN pip3 install Cython maturin
+
+# Install Zenoh
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain nightly
+ENV PATH="/root/.cargo/bin:${PATH}"
+RUN pip3 install eclipse-zenoh==0.5.0b8
+
 # Project Core Codes
 COPY ./eagleeye /opt/eagleeye
 ENV PYTHONPATH "${PYTHONPATH}:/opt/eagleeye"

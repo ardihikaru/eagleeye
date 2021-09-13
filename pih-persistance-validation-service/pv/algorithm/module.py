@@ -2,6 +2,7 @@ import asab
 from .service import AlgorithmService
 from ext_lib.utils import get_current_time
 import logging
+from asab import LOG_NOTICE
 
 ###
 
@@ -18,4 +19,4 @@ class AlgorithmModule(asab.Module):
 		self.Service = AlgorithmService(app, "pv.AlgorithmService")
 
 	async def initialize(self, app):
-		L.warning("\n[%s] Initialize Algorithm Module." % get_current_time())
+		L.log(LOG_NOTICE, "[%s] Initialize Algorithm Module." % get_current_time())

@@ -9,6 +9,7 @@ from suds.client import Client
 import simplejson as json
 import subprocess
 from subprocess import Popen, PIPE
+from asab import LOG_NOTICE
 
 ###
 
@@ -56,7 +57,7 @@ class GPSCollectorService(asab.Service):
         self._start_gps_collector_thread()
 
     async def initialize(self, app):
-        L.warning("\n[%s] Initializing GPS Collector Service" % get_current_time())
+        L.log(LOG_NOTICE, "[{}] Initializing GPS Collector Service".format(get_current_time()))
 
     def _initialize_connection_mode(self):
         if self._collector_mode == "online":
@@ -65,33 +66,37 @@ class GPSCollectorService(asab.Service):
                 self._is_online = True
                 self._setup_soap_connection()
                 if self._client is None:
-                    L.warning("[WARNING!] ******* GPS COLLECTOR IS WORKING IN AN OFFLINE MODE !!!!")
+                    L.log(LOG_NOTICE, "[WARNING!] ******* GPS COLLECTOR IS WORKING IN AN OFFLINE MODE !!!!")
                 else:
-                    L.warning("[IMPORTANT!] ******* GPS COLLECTOR IS WORKING IN AN ONLINE MODE !!!!")
+                    L.log(LOG_NOTICE, "[IMPORTANT!] ******* GPS COLLECTOR IS WORKING IN AN ONLINE MODE !!!!")
             else:
-                L.warning("[WARNING!] ******* GPS COLLECTOR IS WORKING IN AN OFFLINE MODE !!!!")
+                L.log(LOG_NOTICE, "[WARNING!] ******* GPS COLLECTOR IS WORKING IN AN OFFLINE MODE !!!!")
         else:
-            L.warning("[WARNING!] ******* GPS COLLECTOR IS WORKING IN AN OFFLINE MODE !!!!")
+            L.log(LOG_NOTICE, "[WARNING!] ******* GPS COLLECTOR IS WORKING IN AN OFFLINE MODE !!!!")
 
     def _is_ip_reachable(self):
-        hostname = asab.Config["stream:gps"]["host"]
-        process = subprocess.Popen(['ping', '-c', '5', '-w', '5', hostname],
-                                   stdout=PIPE, stderr=PIPE)
-        stdout, stderr = process.communicate()
-        packetloss = float(
-            [x for x in stdout.decode('utf-8').split('\n') if x.find('packet loss') != -1][0].split('%')[0].split(' ')[
-                -1])
-        if packetloss > 10.0:  # TODO: constant value can be used dynamically in the future
-            L.error("[WARNING!] Unable to connect with {}".format(hostname))
+        try:
+            hostname = asab.Config["stream:gps"]["host"]
+            process = subprocess.Popen(['ping', '-c', '5', '-w', '5', hostname],
+                                       stdout=PIPE, stderr=PIPE)
+            stdout, stderr = process.communicate()
+            packetloss = float(
+                [x for x in stdout.decode('utf-8').split('\n') if x.find('packet loss') != -1][0].split('%')[0].split(' ')[
+                    -1])
+            if packetloss > 10.0:  # TODO: constant value can be used dynamically in the future
+                L.error("[WARNING!] Unable to connect with {}".format(hostname))
+                return False
+            else:
+                return True
+        except Exception as e:
+            L.error("Error occur due to `{}`".format(e))
             return False
-        else:
-            return True
 
     def _setup_soap_connection(self):
         try:
             self._client = Client(self._target_url)
         except Exception as e:
-            L.warning("Connection establishment Failed; Reason: {}".format(e))
+            L.log(LOG_NOTICE, "Connection establishment Failed; Reason: {}".format(e))
 
     def _build_conn_url(self):
         schema = asab.Config["stream:gps"]["schema"]
@@ -119,7 +124,7 @@ class GPSCollectorService(asab.Service):
         return dummy_gps_data
 
     def _start_gps_collector_thread(self):
-        L.warning("\n[%s] Starting thread-level GPS Collector Worker" % get_current_time())
+        L.log(LOG_NOTICE, "[{}] Starting thread-level GPS Collector Worker".format(get_current_time()))
         t0_thread = time.time()
         pool_name = "[THREAD-%s]" % get_random_str()
         try:
@@ -128,9 +133,9 @@ class GPSCollectorService(asab.Service):
             }
             self._executor.submit(self._spawn_gps_collector_worker, **kwargs)
         except:
-            L.warning("[%s] Somehow we unable to Start the Thread of NodeGenerator" % get_current_time())
+            L.log(LOG_NOTICE, "[%s] Somehow we unable to Start the Thread of NodeGenerator" % get_current_time())
         t1_thread = (time.time() - t0_thread) * 1000
-        L.warning('[%s] Latency for Start threading (%.3f ms)' % (get_current_time(), t1_thread))
+        L.log(LOG_NOTICE, '[%s] Latency for Start threading (%.3f ms)' % (get_current_time(), t1_thread))
         # TODO: Save the latency into ElasticSearchDB for the real-time monitoring
 
     def _spawn_gps_collector_worker(self, pool_name):
@@ -141,13 +146,13 @@ class GPSCollectorService(asab.Service):
             all_gps_data = self._get_latest_drone_gps_data(dummy_gps_data)
             for each_gps_data in all_gps_data:
                 self._set_gps_data(each_gps_data["drone_id"], each_gps_data)
-                L.warning("[{}]{} Saving data in every 1 second; GPS data (drone_id=`{}`; fly_no=`{}`)={}; Heading={}".
+                L.log(LOG_NOTICE, "[{}]{} Saving data in every 1 second; GPS data (drone_id=`{}`; fly_no=`{}`)={}; Heading={}".
                     format(
                             get_current_time(), pool_name, each_gps_data["drone_id"], each_gps_data["fly_no"],
                             str(each_gps_data["gps"]), each_gps_data["heading"]
                     )
                 )
-            L.warning("")
+            L.log(LOG_NOTICE, "")
             time.sleep(1)
 
             # OFFLINE MODE: Simulate drone movement (Lat, Long, Alt)
