@@ -80,15 +80,15 @@ class ImagePlotterService(asab.Service):
             if self._plot_fps:
                 self._plot_fps_info(img, fps)
 
-            # # This feature enable to plot PiH BBox based on the latest stored BBox in the redisDB
-            # # Default: DISABLED
-            # if is_forced_plot and not bool(plot_info) and is_latest_plot_available:
-            #     plot_info = self._get_latest_plot_info(str(frame_id))
-            #     if bool(plot_info):
-            #         # plot each mbbox data into the image
-            #         for mbbox_data in plot_info["mbbox"]:
-            #             plot_one_box(mbbox_data, img, label=plot_info["label"], color=plot_info["color"])
-            #             break  # TODO: This is a temporary approach! We need to fix the bug of PCS (v2)
+            # This feature enable to plot PiH BBox based on the latest stored BBox in the redisDB
+            # Default: DISABLED
+            if is_forced_plot and not bool(plot_info) and is_latest_plot_available:
+                plot_info = self._get_latest_plot_info(str(frame_id))
+                if bool(plot_info):
+                    # plot each mbbox data into the image
+                    for mbbox_data in plot_info["mbbox"]:
+                        plot_one_box(mbbox_data, img, label=plot_info["label"], color=plot_info["color"])
+                        break  # TODO: This is a temporary approach! We need to fix the bug of PCS (v2)
 
         if self._mode == "rtsp":
             # write to pipe of RTSP Server
@@ -182,7 +182,7 @@ class ImagePlotterService(asab.Service):
     async def _save_latest_plot_info(self, frame_id, plot_info):
         drone_id = asab.Config["stream:config"]["drone_id"]
         latest_plotinfo_key = "latest-plotinfo-drone-%s" % drone_id
-        redis_set(self.redis.get_rc(), latest_plotinfo_key, plot_info)
+        redis_set(self.redis.get_rc(), latest_plotinfo_key, plot_info, 5)
 
     def _get_latest_plot_info(self, frame_id):
         drone_id = asab.Config["stream:config"]["drone_id"]

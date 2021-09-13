@@ -53,7 +53,6 @@ class OpenCVVisualizerService(asab.Service):
                     is_latest_plot_available = await self.ImagePlotterService.plot_img(is_latest_plot_available,
                                                                                        frame_id, img, fps)
                     cv2.imshow(self._window_title, img)
-                    # L.warning('*** Current FPS: {}'.format(await self.FPSCalculatorService.get_fps(frame_id)))
             except Exception as e:
                 L.error("No more frame to show; Reason: {}".format(e))
                 break
