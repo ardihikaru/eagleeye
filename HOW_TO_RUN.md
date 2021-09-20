@@ -429,3 +429,9 @@
         +-----------------------------------------------------------------------------+
        ```
   6. Congrats! You have successfully installed Docker and Nvidia-Docker in your environment.
+- How to check whether the OpenCV is compiled with GPU or not:
+  ``` 
+  import cv2
+  count = cv2.cuda.getCudaEnabledDeviceCount()
+  print(count)  # will return 0 is NOT compiled with GPU
+  ```
