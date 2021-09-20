@@ -61,7 +61,6 @@ class ResizerService(asab.Service):
         img4yolo = np.ascontiguousarray(img4yolo, dtype=np.float16 if self.half else np.float32)  # uint8 to fp16/fp32
         img4yolo /= 255.0  # 0 - 255 to 0.0 - 1.0
         t1_convert = (time.time() - t0_convert) * 1000
-        # print('\n[%s] Proc. Latency converting into yolo format (%.3f ms)' % (get_current_time(), t1_convert))
         # TODO: To save the latency to convert img into yolo format
 
         return img4yolo
