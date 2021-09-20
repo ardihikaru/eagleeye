@@ -12,6 +12,7 @@ import simplejson as json
 from ext_lib.commons.opencv_helpers import get_det_xyxy, torch2list_det
 import aiohttp
 from asab import LOG_NOTICE
+import cv2
 
 ###
 
@@ -54,6 +55,8 @@ class ObjectDetectionHandler(MyRedis):
 		# sorter config
 		self.ch_prefix = asab.Config["sorter"]["ch_prefix"]
 		self.viz_com_mode = asab.Config["visualizer"]["viz_com_mode"]
+
+		self.compressed_img = asab.Config["image:preprocessing"].getboolean("compressed_img")
 
 	def _dict2list(self, dict_data):
 		list_data = []
@@ -232,6 +235,7 @@ class ObjectDetectionHandler(MyRedis):
 					'algorithm': 'YOLOv3', 
 					'ts': 1620022172.6399865,
 					'drone_id': 1,
+					"frame_id": 1,
 				}
 				"""
 				image_info = pubsub_to_json(item["data"])
@@ -246,16 +250,28 @@ class ObjectDetectionHandler(MyRedis):
 					await self.stop()
 					break
 
-				# TODO: To start TCP Connection and be ready to capture the image from [Scheduler Service]
-				# TODO: To have a tag as the image identifier, i.e. DroneID
-				# TODO: To add a timeout, if no response found after a `timeout` time, ignore this (Future work)
 				L.log(LOG_NOTICE, "Try to collect Image DATA.")
-				is_success, frame_id, t0_zmq, img = await self.DetectionAlgorithmService.get_img()
+				is_success, frame_id, t0_zmq, raw_img = await self.DetectionAlgorithmService.get_img()
 				L.log(LOG_NOTICE, "Receiving image data via ZMQ (is_success=%s; frame_id=%s)" % (str(is_success), str(frame_id)))
 				L.log(LOG_NOTICE, "Image DATA is collected.")
 				t1_zmq = (time.time() - t0_zmq) * 1000  # TODO: This is still INVALID! it got mixed up with Det latency!
-				L.log(LOG_NOTICE, '[{}] Latency for Receiving Image ZMQ (%.3f ms)'.format(get_current_time()) % (t1_zmq))
+				L.log(LOG_NOTICE, '[{}] Latency for Receiving Image ZMQ (%.3f ms)'.format(get_current_time()) % t1_zmq)
 				# TODO: To save latency into ElasticSearchDB (Future work)
+
+				# try to decompress the captured image (depends on the config)
+				t0_decompress_in_subprocess = time.time()
+				if self.compressed_img:
+					# captured image is compressed, try to decompress
+					t0_decompress_in_subprocess = time.time()
+					deimg_len = list(raw_img.shape)[0]
+					decoded_img = raw_img.reshape(deimg_len, 1)
+					decompressed_img = cv2.imdecode(decoded_img, 1)  # decompress
+					img = decompressed_img.copy()
+				else:
+					img = raw_img.copy()
+				t1_decompress_in_subprocess = (time.time() - t0_decompress_in_subprocess) * 1000
+				L.log(LOG_NOTICE, '[{}] Proc. Latency of %s for frame-%s (%.3f ms)'.format(get_current_time()) % (
+						"DECOMPRESS-IN-DETECTION-SERVICE", str(image_info["frame_id"]), t1_decompress_in_subprocess))
 
 				# BUG FIX: Start t0 e2e frame from here (later on, PLUS with `t1_zmq` latency)
 				t0_e2e_latency = time.time()
@@ -280,7 +296,6 @@ class ObjectDetectionHandler(MyRedis):
 					# execute PiH Candidate Selection & PiH Persitance Validation
 					mbbox_data, plot_info = await self._exec_extra_pipeline(img, bbox_data, mbbox_data, plot_info,
 																			det, names, frame_id, image_info["drone_id"])
-
 
 					if len(mbbox_data) > 0:
 						detection_status = True

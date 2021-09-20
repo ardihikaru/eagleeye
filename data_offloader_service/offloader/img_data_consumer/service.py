@@ -8,7 +8,6 @@ from ext_lib.redis.translator import pub, redis_get, redis_set
 from zenoh_image_subscriber.service import ZenohImageSubscriberService
 from zenoh_lib.functions import extract_compressed_tagged_img
 import simplejson as json
-from asab import LOG_NOTICE
 
 ###
 
@@ -53,6 +52,8 @@ class ImgConsumerService(ZenohImageSubscriberService):
 		self.img_ch = asab.Config["stream:config"].getint("channel")
 
 		self._num_skipped_frames = asab.Config["stream:config"].getint("num_skipped_frames")
+
+		self.decompression = asab.Config["image:preprocessing"].getboolean("decompression")
 
 		# config related with ZENOH; default value
 		self.received_frame_id = 0
@@ -129,7 +130,7 @@ class ImgConsumerService(ZenohImageSubscriberService):
 
 	# OVERRIDE Child function
 	def img_listener(self, consumed_data):
-		img_info, latency_data = extract_compressed_tagged_img(consumed_data)
+		img_info, latency_data = extract_compressed_tagged_img(consumed_data, is_decompress=self.decompression)
 		"""
 		latency_data = {
 			"decoding_payload": t1_decode,
@@ -168,7 +169,8 @@ class ImgConsumerService(ZenohImageSubscriberService):
 		# try skipping frames
 		if self._num_skipped_frames > 0 and self.received_frame_id > 1 and self.skip_count <= self._num_skipped_frames:
 			# skip this frame
-			L.log(LOG_NOTICE, ">>> Skipping frame-{}; Current `skip_count={}`".format(str(self.received_frame_id), str(self.skip_count)))
+			L.log(LOG_NOTICE, ">>> Skipping frame-{}; Current `skip_count={}`".format(str(self.received_frame_id),
+																					  str(self.skip_count)))
 		else:
 			# self.frame_id += 1
 			self.frame_id = int(img_info["frame_id"])
@@ -214,6 +216,7 @@ class ImgConsumerService(ZenohImageSubscriberService):
 			# Save e2e latency
 			self._exec_e2e_latency_collector(t0_e2e_lat, node_id, self.frame_id)
 
+			t0_other_process = time.time()
 			# send data into Scheduler service through the pub/sub
 			# Never send any frame if `test_mode` is enabled (test_mode=1)
 			if not bool(int(asab.Config["stream:config"]["test_mode"])):
@@ -225,6 +228,7 @@ class ImgConsumerService(ZenohImageSubscriberService):
 					"algorithm": _config["algorithm"],
 					"ts": time.time(),
 					"drone_id": int(img_info["id"]),
+					"frame_id": int(img_info["frame_id"]),
 				})
 
 				pub(self.redis.get_rc(), node_channel, dump_request)
@@ -235,9 +239,12 @@ class ImgConsumerService(ZenohImageSubscriberService):
 
 				if not bool(int(asab.Config["stream:config"]["convert_img"])):
 					# Sending image data through ZMQ (TCP connection)
+					L.log(LOG_NOTICE, "# Sending image data through ZMQ (TCP connection)")
 					self.ZMQService.send_this_image(_senders["zmq"][sel_node_id], self.frame_id, frame)
 				else:
 					# TODO: In this case, Candidate Selection Algorithm will not work!!!!!
+					L.log(LOG_NOTICE, "# Convert the yolo input images; "
+									  "Here it converts from FullHD into <img_size> (padded size)")
 					# Convert the yolo input images; Here it converts from FullHD into <img_size> (padded size)
 					if not bool(int(asab.Config["stream:config"]["gpu_converter"])):
 						yolo_frame = self.ResizerService.sync_cpu_convert_to_padded_size(frame)
@@ -249,8 +256,10 @@ class ImgConsumerService(ZenohImageSubscriberService):
 					# CHECKING: how is the latency if we send converted version?
 					# Sending image data through ZENOH (TCP connection)
 					self.ZMQService.send_this_image(_senders["zmq"][sel_node_id], self.frame_id, yolo_frame)
+			t1_other_process = (time.time() - t0_other_process) * 1000
+			L.log(LOG_NOTICE, '[{}] Proc. Latency of %s for frame-%s (%.3f ms)'.format(get_current_time()) % (
+				"OTHER PROCESSES", str(self.frame_id), t1_other_process))
 
 		# reset skipping frames
 		if 0 < self._num_skipped_frames < self.skip_count:
 			self.skip_count = 0
-
