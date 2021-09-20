@@ -52,7 +52,9 @@ class ZMQService(asab.Service):
         L.log(LOG_NOTICE, "I am running ...")
 
         if self._mode == "zeromq":
-            await self.ZeroMQVisualizerService.run(self.get_zmq_receiver(), self.zmq_publisher)
+            L.error("DEPRECATED. This mode is no more can be used. Please consider using another mode.")
+            exit(0)
+            # await self.ZeroMQVisualizerService.run(self.get_zmq_receiver(), self.zmq_publisher)
         elif self._mode == "opencv":
             await self.OpenCVVisualizerService.run(self.get_zmq_receiver())
         else:
