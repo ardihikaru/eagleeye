@@ -37,7 +37,7 @@ cd ..
 
 echo "5. Building Non-GPU Pycore image"
 #cd core-service && docker build --no-cache -t "5g-dive/eagleeye/core-service:${VERSION}" .
-cd core-service && docker build -t "5g-dive/eagleeye/pycore-compact:1.0" .
+cd core-service && docker build -f Dockerfile-compact -t "5g-dive/eagleeye/pycore-compact:1.0" .
 cd ..
 
 echo "6. Building Web Service image"

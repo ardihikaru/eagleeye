@@ -2,6 +2,7 @@
 
 # To install : https://github.com/janza/docker-python3-opencv/blob/master/Dockerfile
 
+# FROM nvidia/cuda:10.0-base
 FROM 5g-dive/eagleeye/cuda-cv-ffmpeg-py38:1.0
 MAINTAINER NCTU Team (mfardiansyah.eed08g@nctu.edu.tw)
 
