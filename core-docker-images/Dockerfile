@@ -2,7 +2,7 @@
 
 # To install : https://github.com/janza/docker-python3-opencv/blob/master/Dockerfile
 
-FROM nvidia/cuda:10.0-base
+FROM 5g-dive/eagleeye/cuda-cv-ffmpeg-py38:1.0
 MAINTAINER NCTU Team (mfardiansyah.eed08g@nctu.edu.tw)
 
 # http://bugs.python.org/issue19846
@@ -48,12 +48,14 @@ RUN pip3 install --upgrade pip
 RUN apt-get install -y libavdevice-dev libavfilter-dev libopus-dev libvpx-dev pkg-config
 RUN apt-get install -y libsrtp2-dev
 # not listed but needed...
-RUN apt install libopencv-dev -y
+# RUN apt install libopencv-dev -y
+
+# FYI: all opencv related library has been installed by the parent's docker image!
 
 RUN pip3 install scikit-build
 #RUN pip3 install opencv-contrib-python-headless
-RUN pip3 install opencv-contrib-python
-RUN pip3 install opencv-python
+# RUN pip3 install opencv-contrib-python
+# RUN pip3 install opencv-python
 
 # Copy and Install requirement from web-service
 COPY requirements-no-cv.txt /tmp/requirements.txt

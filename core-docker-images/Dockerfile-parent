@@ -1,0 +1,107 @@
+# How to build: docker build -f Dockerfile-parent -t 5g-dive/eagleeye/cuda-cv-ffmpeg-py38:1.0 .
+# Test: docker run --runtime=nvidia --name testing --rm -it 5g-dive/eagleeye/cuda-cv-ffmpeg-py38:1.0 bash
+
+# use following code (python code) and it should return `1`:
+# import cv2
+# count = cv2.cuda.getCudaEnabledDeviceCount()
+# print(count)
+
+# Dockerfile for building CUDA 10.1 enabled OpenCV as well as ffmpeg, complete with Python 3.8 support
+# How to build: docker build -f Dockerfile-cuda-cv-ffmpeg-py38 -t 5g-dive/eagleeye/cuda-cv-ffmpeg-py38:1.0 .
+# How to run: docker run --runtime=nvidia --name testing --rm -it 5g-dive/eagleeye/cuda-cv-ffmpeg-py38:1.0 bash
+# Credits to the original author: https://github.com/JulianAssmann/opencv-cuda-docker/blob/master/ubuntu-18.04/opencv-4.2/cuda-10.1/devel/Dockerfile
+
+FROM nvidia/cuda:10.1-devel-ubuntu18.04
+MAINTAINER NCTU Team timwilliam 19308063+timwilliam@users.noreply.github.com
+ARG OPENCV_VERSION=4.2.0
+
+RUN apt-get update && apt-get upgrade -y &&\
+    # Install build tools, build dependencies and python
+    apt-get install -y \
+        build-essential \
+        cmake \
+        git \
+        wget \
+        unzip \
+        yasm \
+        pkg-config \
+        libswscale-dev \
+        libtbb2 \
+        libtbb-dev \
+        libjpeg-dev \
+        libpng-dev \
+        libtiff-dev \
+        libavformat-dev \
+        libpq-dev \
+        libxine2-dev \
+        libglew-dev \
+        libtiff5-dev \
+        zlib1g-dev \
+        libjpeg-dev \
+        libavcodec-dev \
+        libavformat-dev \
+        libavutil-dev \
+        libpostproc-dev \
+        libswscale-dev \
+        libeigen3-dev \
+        libtbb-dev \
+        libgtk2.0-dev \
+        pkg-config \
+        ## Python
+        python-dev \
+        python-numpy \
+        python3.8 \
+        python3.8-venv \
+        python3.8-dev \
+        python3-pip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set Python 3.8 as default
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 1
+RUN update-alternatives --config python3
+RUN python3 -m pip install --upgrade pip
+RUN python3 -m pip install numpy
+
+# Install OpenCV
+RUN cd /opt/ &&\
+    # Download and unzip OpenCV and opencv_contrib and delte zip files
+    wget https://github.com/opencv/opencv/archive/$OPENCV_VERSION.zip &&\
+    unzip $OPENCV_VERSION.zip &&\
+    rm $OPENCV_VERSION.zip &&\
+    wget https://github.com/opencv/opencv_contrib/archive/$OPENCV_VERSION.zip &&\
+    unzip ${OPENCV_VERSION}.zip &&\
+    rm ${OPENCV_VERSION}.zip &&\
+    # Create build folder and switch to it
+    mkdir /opt/opencv-${OPENCV_VERSION}/build && cd /opt/opencv-${OPENCV_VERSION}/build &&\
+    cmake \
+        -DOPENCV_EXTRA_MODULES_PATH=/opt/opencv_contrib-4.2.0/modules \
+        -DWITH_CUDA=ON \
+        -DPYTHON_EXECUTABLE=/usr/bin/python3 \
+        -DCMAKE_BUILD_TYPE=RELEASE \
+        -DOPENCV_ENABLE_NONFREE=ON \
+        -DPYTHON_EXECUTABLE=/usr/bin/python3\
+        -DCMAKE_INSTALL_PREFIX=/usr/local \
+        .. &&\
+    # Make
+    make -j"$(nproc)" && \
+    # Install to /usr/local/lib
+    make install && \
+    ldconfig &&\
+    # Create symlink for the OpenCV library into Python
+    cd /usr/lib/python3/dist-packages &&\
+    ln -s /usr/local/lib/python3.8/dist-packages/cv2/python-3.8/cv2.cpython-38-x86_64-linux-gnu.so
+
+# Install ffmpeg
+RUN cd /opt/ &&\
+    git clone https://git.videolan.org/git/ffmpeg/nv-codec-headers.git &&\
+    cd nv-codec-headers && make install && cd /opt/ &&\
+    git clone https://git.ffmpeg.org/ffmpeg.git ffmpeg/ && cd ffmpeg/ &&\
+    apt update && apt install -y build-essential yasm cmake libtool libc6 libc6-dev unzip wget libnuma1 libnuma-dev &&\
+    ./configure --enable-nonfree --enable-cuda-nvcc --enable-libnpp --extra-cflags=-I/usr/local/cuda-10.1/include --extra-ldflags=-L/usr/local/cuda-10.1/lib64 &&\
+    make -j"$(nproc)" &&\
+    make install
+
+# Cleanup
+RUN cd /opt/ &&\
+    rm -rf ffmpeg nv-codec-headers opencv-4.2.0 opencv_contrib-4.2.0 && \
+    rm -rf /var/lib/apt/lists/*

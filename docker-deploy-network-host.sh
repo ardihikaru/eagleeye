@@ -2,7 +2,7 @@
 
 # Sample:
 # bash docker-deploy-network-host.sh 6 2 2 "192.168.1.60"
-# Deploying 6 detection + 2 drones + with 2 sec delays + consumer in IP=192.168.1.60
+# Deploying 6 detection + 2 drones + with 2 sec delays each + consumer in IP=192.168.1.60
 
 # Capturing expected total number of worker nodes (input arguments)
 NODES=$1

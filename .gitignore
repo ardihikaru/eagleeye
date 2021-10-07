@@ -26,7 +26,9 @@ sorter_service/etc/site.conf
 visualizer-service/etc/site.conf
 visualizer-service/etc/site-rtsp-raw.conf
 visualizer-service/etc/site-rtsp.conf
-visualizer-service/etc/site-raw.conf
+visualizer-service/etc/site-raw-1.conf
+visualizer-service/etc/site-raw-2.conf
+visualizer-service/etc/site-raw-3.conf
 web-service/etc/site.conf
 object-detection-service/etc/site.conf
 scheduler_service/etc/site.conf
