@@ -32,6 +32,7 @@ L = logging.getLogger(__name__)
 ###
 
 try:
+	L.warning("Start listening.")
 	with imagezmq.ImageHub() as image_hub:
 		while True:  # receive images until Ctrl-C is pressed
 
@@ -40,16 +41,17 @@ try:
 			# L.warning("Received from: {}; image shape: {}".format(sent_from, image.shape))
 
 			frame_id, jpg_buffer = image_hub.recv_jpg()
-			# print(">>>> jpg_buffer size", type(jpg_buffer))
-			image = cv2.imdecode(np.frombuffer(jpg_buffer, dtype='uint8'), -1)
-			# L.warning("Received from: {}; image shape: {}".format(frame_id, image.shape))
-
-			img_size, ext = get_img_fsize_in_float(image.nbytes)
-			L.warning("[frame={}] Image Size: {} {}; shape={}".format(frame_id, img_size, ext, image.shape))
+			# # print(">>>> jpg_buffer size", type(jpg_buffer))
+			# image = cv2.imdecode(np.frombuffer(jpg_buffer, dtype='uint8'), -1)
+			# # L.warning("Received from: {}; image shape: {}".format(frame_id, image.shape))
+			#
+			# img_size, ext = get_img_fsize_in_float(image.nbytes)
+			# L.warning("[frame={}] Image Size: {} {}; shape={}".format(frame_id, img_size, ext, image.shape))
+			L.warning("[frame={}] received.".format(frame_id))
 
 			# see opencv docs for info on -1 parameter
-			cv2.imshow(WINDOW_NAME, image)  # display images 1 window per sent_from
-			cv2.waitKey(1)
+			# cv2.imshow(WINDOW_NAME, image)  # display images 1 window per sent_from
+			# cv2.waitKey(1)
 			image_hub.send_reply(b'OK')  # REP reply
 except (KeyboardInterrupt, SystemExit):
 	pass  # Ctrl-C was pressed to end program; FPS stats computed below

@@ -47,7 +47,9 @@ jpeg_quality = 95  # 0 to 100, higher is better quality, 95 is cv2 default
 
 try:
 	# with imagezmq.ImageSender(connect_to='tcp://192.168.86.34:5555') as sender:
-	with imagezmq.ImageSender(connect_to='tcp://localhost:5555') as sender:
+	with imagezmq.ImageSender(connect_to='tcp://192.168.1.12:5555') as sender:
+	# with imagezmq.ImageSender(connect_to='tcp://localhost:5555') as sender:
+	# with imagezmq.ImageSender(connect_to='tcp://192.168.1.60:5555') as sender:
 		frame_id = 0
 		while cap.isOpened():
 			frame_id += 1
