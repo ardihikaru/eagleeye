@@ -16,7 +16,7 @@ COPY misc /app/misc
 # Install important requirements
 RUN apt-get update
 RUN apt-get install software-properties-common build-essential apt-utils iputils-ping curl netcat vim -y
-RUN apt-get install -y python3.8 python3.8-dev
+# RUN apt-get install -y python3.8 python3.8-dev
 
 RUN apt-get update \
     && apt-get install -y \
@@ -37,10 +37,10 @@ RUN apt-get update \
         libpq-dev \
         ffmpeg \
     && rm -rf /var/lib/apt/lists/*
-RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 1
+# RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 1
 RUN apt-get update
-RUN apt-get install -y python3-pip
-RUN apt-get install -y libpython3.8-dev
+# RUN apt-get install -y python3-pip
+# RUN apt-get install -y libpython3.8-dev
 
 # Upgrade PIP (important for aioRTC)
 RUN pip3 install --upgrade pip
