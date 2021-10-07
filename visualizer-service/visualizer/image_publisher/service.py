@@ -25,6 +25,7 @@ class ImagePublisherService(asab.Service):
         fps = asab.Config["stream:config"]["fps"]
         width = int(asab.Config["stream:config"]["width"])
         height = int(asab.Config["stream:config"]["height"])
+        ffmpeg_gpu = asab.Config["stream:config"].getboolean("gpu_enabled")  # default true
 
         # build rtsp URI
         protocol = asab.Config["stream:config"]["protocol"]
@@ -36,19 +37,33 @@ class ImagePublisherService(asab.Service):
         mode = asab.Config["stream:config"]["mode"]
 
         # command and params for ffmpeg
-        _command = ['ffmpeg',
-                    '-y',
-                    '-f', 'rawvideo',
-                    '-vcodec', 'rawvideo',
-                    '-pix_fmt', 'bgr24',
-                    '-s', "{}x{}".format(width, height),
-                    '-r', fps,
-                    '-i', '-',
-                    '-c:v', 'libx264',
-                    '-pix_fmt', 'yuv420p',
-                    '-preset', 'ultrafast',
-                    '-f', 'rtsp',
-                    rtsp_url]
+        if ffmpeg_gpu:
+            _command = ['ffmpeg',
+                        '-y',
+                        '-f', 'rawvideo',
+                        '-vcodec', 'rawvideo',
+                        '-pix_fmt', 'bgr24',
+                        '-s', "{}x{}".format(width, height),
+                        '-r', fps,
+                        '-i', '-',
+                        '-pix_fmt', 'yuv420p',
+                        '-preset', 'ultrafast',
+                        '-f', 'rtsp',
+                        rtsp_url]
+        else:
+            _command = ['ffmpeg',
+                        '-y',
+                        '-f', 'rawvideo',
+                        '-vcodec', 'rawvideo',
+                        '-pix_fmt', 'bgr24',
+                        '-s', "{}x{}".format(width, height),
+                        '-r', fps,
+                        '-i', '-',
+                        '-c:v', 'libx264',  # this is removed on the GPU-enabled ffmpeg
+                        '-pix_fmt', 'yuv420p',
+                        '-preset', 'ultrafast',
+                        '-f', 'rtsp',
+                        rtsp_url]
 
         # if `mode` != `rtsp`, no need to create a subprocess
         if mode == "rtsp":
