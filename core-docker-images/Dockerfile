@@ -2,7 +2,8 @@
 
 # To install : https://github.com/janza/docker-python3-opencv/blob/master/Dockerfile
 
-FROM nvidia/cuda:10.0-base
+# FROM nvidia/cuda:10.0-base
+FROM 5g-dive/eagleeye/cuda-cv-ffmpeg-py38:1.0
 MAINTAINER NCTU Team (mfardiansyah.eed08g@nctu.edu.tw)
 
 # http://bugs.python.org/issue19846
@@ -16,7 +17,7 @@ COPY misc /app/misc
 # Install important requirements
 RUN apt-get update
 RUN apt-get install software-properties-common build-essential apt-utils iputils-ping curl netcat vim -y
-RUN apt-get install -y python3.8 python3.8-dev
+# RUN apt-get install -y python3.8 python3.8-dev
 
 RUN apt-get update \
     && apt-get install -y \
@@ -37,10 +38,10 @@ RUN apt-get update \
         libpq-dev \
         ffmpeg \
     && rm -rf /var/lib/apt/lists/*
-RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 1
+# RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 1
 RUN apt-get update
-RUN apt-get install -y python3-pip
-RUN apt-get install -y libpython3.8-dev
+# RUN apt-get install -y python3-pip
+# RUN apt-get install -y libpython3.8-dev
 
 # Upgrade PIP (important for aioRTC)
 RUN pip3 install --upgrade pip
@@ -48,12 +49,14 @@ RUN pip3 install --upgrade pip
 RUN apt-get install -y libavdevice-dev libavfilter-dev libopus-dev libvpx-dev pkg-config
 RUN apt-get install -y libsrtp2-dev
 # not listed but needed...
-RUN apt install libopencv-dev -y
+# RUN apt install libopencv-dev -y
+
+# FYI: all opencv related library has been installed by the parent's docker image!
 
 RUN pip3 install scikit-build
 #RUN pip3 install opencv-contrib-python-headless
-RUN pip3 install opencv-contrib-python
-RUN pip3 install opencv-python
+# RUN pip3 install opencv-contrib-python
+# RUN pip3 install opencv-python
 
 # Copy and Install requirement from web-service
 COPY requirements-no-cv.txt /tmp/requirements.txt

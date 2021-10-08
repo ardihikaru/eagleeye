@@ -149,7 +149,43 @@
         `$ ffplay -rtsp_transport tcp -i rtsp://localhost/test`
     
 ## How to use in docker mode (containerized)
-1. Initially, please build followring Dockerfile(s):
+1. Initially, please build following Dockerfile(s):
+   - **IMPORTANT**: You can also use **master builder** and **master deployer** 
+        to skip the effort to build images and deploy containers one by one.
+        - **Master Builder**: 
+            - Format: `bash docker-build-images.sh <VERSION>`
+            - Example (6 detection nodes & 3 drones): 
+                `bash docker-build-images.sh`
+                - For latest version, no need to define the `VERSION`
+        - **Master Deployer**: 
+            - FYI: It deploys the services with network **HOST** mode
+            - Format: `bash docker-deploy-network-host.sh <num-of-detection-services> <delay> <num-of-dornes> "<Web-service-IP>"`
+            - Example (6 detection nodes & 3 drones): 
+                `bash docker-deploy-network-host.sh 6 2 3 "192.168.1.60"`
+                - `6` is the total number of **detection nodes**; Please change it accordingly
+                - `2` is the delay; **no need to modify this argument**
+                - `3` is the total number of connected drones; Please change it accordingly;
+                    - When you change this, please change some configs in the respected micro-services, such as:
+                        - In `web-service/etc/site-docker.conf`, section `stream:gps`, 
+                            change the value of `num_drones`
+                        - In `data_offloader_service/etc/site-docker.conf`, section `zmq`, 
+                            change the value of `visualizer_num`
+                        - For Visualizer, please prepare the config, like `site-rtsp-5.conf` and `site-raw-5.conf`:
+                            - `5` is supposed to be the **drone_id**
+                            - Also change following config:
+                                - Section `zmq`, config variable `sender_port`; Change the last digit as the `drone_id`
+                                - Section `stream:config`, config variable `drone_id`
+                                - Section `stream:config`, config variable `path`
+                        - For sorter, please the config, like `site-5.conf`:
+                            - `5` is supposed to be the **drone_id**
+                            - Also change following config:
+                                - Section `identity`, config variable `id` with the **drone_id**
+                        - For PiH Validation, please the config, like `site-5.conf`:
+                            - `5` is supposed to be the **drone_id**
+                            - Also change following config:
+                                - Section `pv:rest`, config variable `listen` with `0.0.0.0:8205`,
+                                    where the last digit of `8205` (value=**5**) is the **drone_id**
+                - `192.168.1.60` is the IP who host the **Web-Service** container
    - In folder `./core-docker-images`, run:
      ```
      $ docker build -t 5g-dive/eagleeye/nvidia-gpu-opencv:2.4 .
@@ -161,6 +197,7 @@
     - Run: `$ . setup-local-env.sh`
     - Destroy: `$ . docker-prune-containers.sh`
 3. Web Service (EWS)
+    - Folder Loc: `./web-service/`
     - Build: `$ docker build -t 5g-dive/eagleeye/web-service:2.4 .`
     - Run:
       ``` 
@@ -190,6 +227,7 @@
         - Example of `PV 2`: `$ docker run --name pv-2-svc --network host -d -v /home/s010132/devel/eagleeye/pih-persistance-validation-service/etc/site-2.conf:/app/etc/site.conf 5g-dive/eagleeye/pv:1.0`
         - Example of `PV 3`: `$ docker run --name pv-3-svc --network host -d -v /home/s010132/devel/eagleeye/pih-persistance-validation-service/etc/site-3.conf:/app/etc/site.conf 5g-dive/eagleeye/pv:1.0`
 7. Detection Service (can be multiple)
+    - Folder Loc: `./object-detection-service/`
     - Build: 
         - Parent Docker: `$ docker build -f Dockerfile-parent -t 5g-dive/eagleeye/dual-object-detection-service-head:2.4 .`
         - Child Docker: `$ docker build -t 5g-dive/eagleeye/dual-object-detection-service:2.4 .`
@@ -243,6 +281,7 @@
           ```
       - Change `detection-service-1` into `detection-service-x` to deploy more
 8. Offloader Service
+    - Folder Loc: `./data_offloader_service/`
     - Build: `$ docker build -t 5g-dive/eagleeye/offloader-service:2.4 .`
     - Run:
       ``` 

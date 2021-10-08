@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Sample:
+# bash docker-deploy-network-host.sh 6 2 2
+# Deploying 6 detection + 2 drones + with 2 sec delays each
+
 # Capturing expected total number of worker nodes (input arguments)
 NODES=$1
 DELAY=$2
