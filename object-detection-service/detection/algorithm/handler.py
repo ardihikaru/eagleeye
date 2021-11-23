@@ -29,6 +29,7 @@ class ObjectDetectionHandler(MyRedis):
 
 	def __init__(self, app):
 		super().__init__(asab.Config)
+		self.ResizerService = app.get_service("detection.ResizerService")
 		self.DetectionAlgorithmService = app.get_service("detection.DetectionAlgorithmService")
 		self.executor = ThreadPoolExecutor(int(asab.Config["thread"]["num_executor"]))
 
@@ -139,7 +140,7 @@ class ObjectDetectionHandler(MyRedis):
 			return []
 
 	async def _save_detection_related_latency(self, pre_proc_lat, yolo_lat, from_numpy_lat,
-														 image4yolo_lat, pred_lat, frame_id, image_info):
+											  image4yolo_lat, pred_lat, frame_id, image_info, img_resizer_lat):
 		# build & submit latency data: Pre-processing
 		L.log(LOG_NOTICE, "build & submit latency data: Pre-processing")
 		await self._save_latency(frame_id, pre_proc_lat, "N/A", "preproc_det", "Pre-processing")
@@ -155,6 +156,8 @@ class ObjectDetectionHandler(MyRedis):
 		await self._save_latency(frame_id, image4yolo_lat, image_info["algorithm"], "detection", "image4yolo",
 								 node_id=str(self.node_id), node_name=str(self.node_name))
 		await self._save_latency(frame_id, pred_lat, image_info["algorithm"], "detection", "pred",
+								 node_id=str(self.node_id), node_name=str(self.node_name))
+		await self._save_latency(frame_id, img_resizer_lat, "", "preproc", "img_scaling",
 								 node_id=str(self.node_id), node_name=str(self.node_name))
 
 	async def _exec_extra_pipeline(self, img, bbox_data, mbbox_data, plot_info, det, names, frame_id, drone_id):
@@ -273,6 +276,9 @@ class ObjectDetectionHandler(MyRedis):
 				L.log(LOG_NOTICE, '[{}] Proc. Latency of %s for frame-%s (%.3f ms)'.format(get_current_time()) % (
 						"DECOMPRESS-IN-DETECTION-SERVICE", str(image_info["frame_id"]), t1_decompress_in_subprocess))
 
+				# ensure that the input image has a FullHD image resolution
+				img, img_resizer_lat = await self.ResizerService.ensure_fullhd_image_input(img)
+
 				# BUG FIX: Start t0 e2e frame from here (later on, PLUS with `t1_zmq` latency)
 				t0_e2e_latency = time.time()
 
@@ -292,7 +298,7 @@ class ObjectDetectionHandler(MyRedis):
 				if len(bbox_data) > 0:  # detected objects
 					# save latecny
 					await self._save_detection_related_latency(pre_proc_lat, yolo_lat, from_numpy_lat,
-														 image4yolo_lat, pred_lat, frame_id, image_info)
+														 image4yolo_lat, pred_lat, frame_id, image_info, img_resizer_lat)
 					# execute PiH Candidate Selection & PiH Persitance Validation
 					mbbox_data, plot_info = await self._exec_extra_pipeline(img, bbox_data, mbbox_data, plot_info,
 																			det, names, frame_id, image_info["drone_id"])

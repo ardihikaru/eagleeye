@@ -6,7 +6,7 @@ from ext_lib.utils import get_current_time
 from ext_lib.redis.my_redis import MyRedis
 from ext_lib.redis.translator import pub, redis_get, redis_set
 from zenoh_image_subscriber.service import ZenohImageSubscriberService
-from zenoh_lib.functions import extract_compressed_tagged_img
+from zenoh_lib.functions import extract_compressed_tagged_img, scale_image
 import simplejson as json
 
 ###
@@ -62,6 +62,8 @@ class ImgConsumerService(ZenohImageSubscriberService):
 
 		# Scheduling policy
 		self.scheduler_policy = asab.Config["scheduler_policy"]["policy"]
+
+		self.to_fullhd = asab.Config["image:preprocessing"].getboolean("to_fullhd")
 
 	# in this case, it has collected the latest available nodes
 	async def start_zenoh_consumer(self, config):
@@ -128,6 +130,19 @@ class ImgConsumerService(ZenohImageSubscriberService):
 			# L.warning('[%s] Proc. Latency of %s for frame-%s (%.3f ms)' % (
 			# 	get_current_time(), "preproc-{}".format(cat), str(frame_id), lat))
 
+	def ensure_fullhd_image_input(self, img):
+		# perform the image size conversion ONLY when the image is decompressed (decompression=False)
+		new_img = img.copy()
+		if self.decompression:
+			print(" >>> img:", type(img))
+			print(" >>> new_img:", type(new_img))
+			img_height, img_weight, _ = new_img.shape
+
+			if img_height != self.img_h:
+				new_img = scale_image(new_img, self.img_h, self.img_w)
+
+		return new_img
+
 	# OVERRIDE Child function
 	def img_listener(self, consumed_data):
 		img_info, latency_data = extract_compressed_tagged_img(consumed_data, is_decompress=self.decompression)
@@ -149,6 +164,10 @@ class ImgConsumerService(ZenohImageSubscriberService):
 			"frame_id": frame_id,
 		}
 		"""
+
+		# try to scale up/down into fullhd (if enabled)
+		if self.to_fullhd:
+			img_info["img"] = self.ensure_fullhd_image_input(img_info["img"])
 
 		self.save_all_captured_latency_data(img_info["frame_id"], latency_data)
 

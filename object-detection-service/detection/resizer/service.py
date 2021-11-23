@@ -5,6 +5,7 @@ import numpy as np
 import time
 from ext_lib.utils import get_current_time
 from asab import LOG_NOTICE
+from zenoh_lib.functions import scale_image
 
 ###
 
@@ -25,6 +26,22 @@ class ResizerService(asab.Service):
 		# Special params: from YOLO's config items
 		self.img_size = int(asab.Config["objdet:yolo"]["img_size"])
 		self.half = bool(int(asab.Config["objdet:yolo"]["half"]))
+
+		self.to_fullhd = asab.Config["image:preprocessing"].getboolean("to_fullhd")
+		self.img_width = asab.Config["image:preprocessing"].getint("img_width")
+		self.img_height = asab.Config["image:preprocessing"].getint("img_height")
+
+	async def ensure_fullhd_image_input(self, img):
+		# perform the image size conversion ONLY when the image is decompressed (decompression=False)
+		new_img = img.copy()
+		t0_img_resizer = time.time()
+		img_height, img_weight, _ = new_img.shape
+		if self.to_fullhd and img_height != self.img_height:
+			new_img = scale_image(new_img, self.img_height, self.img_width)
+		t1_img_resizer = (time.time() - t0_img_resizer) * 1000
+		t1_img_resizer = round(t1_img_resizer, 3)
+
+		return new_img, t1_img_resizer
 
 	async def cpu_convert_to_padded_size(self, img):
 		L.log(LOG_NOTICE, "#### I am a CPU-based resizer function from ResizerService!")

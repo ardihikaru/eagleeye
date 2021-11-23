@@ -70,7 +70,7 @@ def extract_compressed_tagged_img(consumed_data, is_decompress=True):
 	t1_img_extraction = (time.time() - t0_img_extraction) * 1000
 	L.warning(('[%s] Latency Image Extraction (%.3f ms) ' % ("ZENOH CONSUMER", t1_img_extraction)))
 
-	# Image de-compression (restore back into FullHD)
+	# Image de-compression. It restores the image size back to the original, e.g. FullHD
 	t0_decompress_img = time.time()
 	if is_decompress:
 		deimg_len = list(extracted_cimg.shape)[0]
@@ -115,7 +115,8 @@ def encrypt_str(str_val, byteorder="little"):
 
 
 def decrypt_str(int_val, byteorder="little"):
-	decrypted_bytes = int_val.to_bytes((int_val.bit_length() + 7) // 8, byteorder)  # byteorder must be either 'little' or 'big'
+	# byteorder must be either 'little' or 'big'
+	decrypted_bytes = int_val.to_bytes((int_val.bit_length() + 7) // 8, byteorder)
 	decrypted_str = decrypted_bytes.decode('utf-8')
 	return decrypted_str
 
@@ -153,3 +154,8 @@ def extract_frame_id(data, img_len):
 	""" Extract drone_id captured by Zenoh's Consumer """
 	frame_idx = img_len + 3
 	return decrypt_str(int(data[frame_idx][0]))
+
+
+def scale_image(img, scaled_height, scaled_width):
+	img = cv2.resize(img, (scaled_width, scaled_height))
+	return img
