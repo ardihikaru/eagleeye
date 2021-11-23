@@ -225,7 +225,7 @@ class FrameIDConsumerService(asab.Service):
 
 			await self._maintaince_period_pih_cand()
 			t1_pv = (time.time() - t0_pv) * 1000
-			L.log(LOG_NOTICE, '\n[%s] Latency of Persistence Detection Algorithm (%.3f ms)' %
+			L.log(LOG_NOTICE, '[%s] Latency of Persistence Detection Algorithm (%.3f ms)' %
 					  (get_current_time(), t1_pv))
 
 			# build & submit latency data: PiH Persistence Validation

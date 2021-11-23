@@ -6,6 +6,7 @@ from ext_lib.redis.my_redis import MyRedis
 import cv2
 import time
 from ext_lib.utils import get_current_time
+from zenoh_lib.functions import scale_image
 
 ###
 
@@ -33,6 +34,19 @@ class RTSPVisualizerService(asab.Service):
 
         self.compressed_img = asab.Config["image:preprocessing"].getboolean("compressed_img")
 
+        self.to_fullhd = asab.Config["image:preprocessing"].getboolean("to_fullhd")
+        self.img_width = asab.Config["image:preprocessing"].getint("img_width")
+        self.img_height = asab.Config["image:preprocessing"].getint("img_height")
+
+    async def ensure_fullhd_image_input(self, img):
+        # perform the image size conversion ONLY when the image is decompressed (decompression=False)
+        new_img = img.copy()
+        img_height, img_weight, _ = new_img.shape
+        if self.to_fullhd and img_height != self.img_height:
+            new_img = scale_image(new_img, self.img_height, self.img_width)
+
+        return new_img
+
     async def run(self, zmq_receiver):
         is_latest_plot_available = False
 
@@ -53,6 +67,9 @@ class RTSPVisualizerService(asab.Service):
             t1_decompress_in_subprocess = (time.time() - t0_decompress_in_subprocess) * 1000
             L.log(LOG_NOTICE, '[{}] Proc. Latency of %s for frame-%s (%.3f ms)'.format(get_current_time()) % (
                 "DECOMPRESS-IN-DETECTION-SERVICE", str(frame_id), t1_decompress_in_subprocess))
+
+            # ensure that the input image has a FullHD image resolution
+            img = await self.ensure_fullhd_image_input(img)
 
             t1_zmq = (time.time() - t0_zmq) * 1000
             if is_success:
