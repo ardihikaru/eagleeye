@@ -43,6 +43,9 @@ object-detection-service/.idea/
 scheduler-service/.idea/
 candidate-selection-service/.idea/
 
+# ignore other tmp files
+core-docker-images/misc/export_db_to_csv/latency.csv
+
  Repo-specific GitIgnore ----------------------------------------------------------------------------------------------
 *.jpg
 *.png
