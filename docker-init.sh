@@ -22,7 +22,7 @@ fi
 ## check Deployment mode: "NETWORK" (default) or "HOST"
 if [ -z "$DEPLOY_MODE" ]
 then
-      DEPLOY_MODE="NETWORK"  # default value
+      DEPLOY_MODE="HOST"  # default value
       echo "\$DEPLOY_MODE is empty; Set value as ${DEPLOY_MODE}"
 else
       echo "\$DEPLOY_MODE (=${DEPLOY_MODE}) is NOT empty"
@@ -56,9 +56,9 @@ sh ./docker-build-images.sh ${VERSION}
 echo "Deploying containers"
 if [ "$DEPLOY_MODE" = "HOST" ]; then
     echo "Deploying with the same network as the Host (localhost)."
-    sh ./docker-deploy-host.sh ${NODES} ${DELAY} ${VERSION}
+    sh ./docker-deploy-network-host.sh ${NODES} ${DELAY} ${VERSION}
 else
-    echo "Deploying with network 'eagleeye'."
-    sh ./docker-deploy.sh ${NODES} ${DELAY} ${VERSION}
+    echo "Deploying with network 'eagleeye' is DEPRECATED."
+#    sh ./docker-deploy.sh ${NODES} ${DELAY} ${VERSION}
 fi
 
