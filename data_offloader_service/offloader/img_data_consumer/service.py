@@ -120,6 +120,9 @@ class ImgConsumerService(ZenohImageSubscriberService):
 	async def start_zenoh_consumer(self, config):
 		L.log(LOG_NOTICE, "#### I am extractor ZENOH function!")
 
+		# apply configuration defined by the user
+		await self.apply_config(config, is_zenoh=True)
+
 		# start video stream listener
 		await self.start_zenoh_subscription()
 
