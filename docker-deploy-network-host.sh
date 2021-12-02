@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Sample:
-# bash docker-deploy-network-host.sh 6 2 2 "192.168.1.60"
+# bash docker-deploy-network-host.sh 12 2 2 "192.168.1.60" "imagezmq"
 # Deploying 6 detection + 2 drones + with 2 sec delays each + consumer in IP=192.168.1.60
 
 # Capturing expected total number of worker nodes (input arguments)
@@ -9,7 +9,12 @@ NODES=$1
 DELAY=$2
 NUMDRONE=$3
 CONSUMERIP=$4
-VERSION=$5
+PUBLISHER=$5
+VERSION=$6
+
+# valid publisher mode
+IMAGEZMQ="imagezmq"
+ZENOH="zenoh"
 
 # Verify input
 ## check Total worker nodes
@@ -46,6 +51,15 @@ then
       CONSUMERIP="localhost"  # default value
 else
       echo "\$CONSUMERIP is NOT empty (=${CONSUMERIP})"
+fi
+
+## check publisher mode -> Valid: `imagezmq` or `zenoh` (default)
+if [ -z "$PUBLISHER" ]
+then
+      echo "\$PUBLISHER is empty"
+      PUBLISHER="zenoh"  # default value
+else
+      echo "\$PUBLISHER is NOT empty (=${VERSION})"
 fi
 
 ## check version
@@ -161,7 +175,20 @@ echo "Delaying for $((DELAY + 5)) seconds after deploying Visualizer..."
 sleep $((DELAY + 3))
 
 echo "Activating consumer with IP=${CONSUMERIP} ..."
-curl --location --request POST "http://localhost:8079/api/stream/live" \
+if [ "$PUBLISHER" == "$IMAGEZMQ" ]
+then
+	curl --location --request POST "http://localhost:8079/api/stream/live" \
+        --header 'Content-Type: application/json' \
+        --data-raw '{
+            "algorithm": "YOLOv3",
+            "stream": "IMAGEZMQ",
+            "uri": "tcp/'${CONSUMERIP}':4444",
+            "scalable": true,
+            "extras": {}
+        }'
+elif [ "$PUBLISHER" == "$ZENOH" ]
+then
+	curl --location --request POST "http://localhost:8079/api/stream/live" \
         --header 'Content-Type: application/json' \
         --data-raw '{
             "algorithm": "YOLOv3",
@@ -172,6 +199,19 @@ curl --location --request POST "http://localhost:8079/api/stream/live" \
                 "selector": "/eagle/svc/**"
             }
         }'
+else
+	curl --location --request POST "http://localhost:8079/api/stream/live" \
+        --header 'Content-Type: application/json' \
+        --data-raw '{
+            "algorithm": "YOLOv3",
+            "stream": "ZENOH",
+            "uri": "tcp/'${CONSUMERIP}':7446",
+            "scalable": true,
+            "extras": {
+                "selector": "/eagle/svc/**"
+            }
+        }'
+fi
 
 echo ""
 echo "Auto deployment script done. Enjoy! :)"
