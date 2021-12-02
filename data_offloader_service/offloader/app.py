@@ -52,4 +52,4 @@ class OffloaderService(Application):
 
 	async def initialize(self):
 		# Start Redis subscription
-		await self.offloader_data_bdr_svc.subscribe_and_build_zenoh_consumer()
+		await self.offloader_data_bdr_svc.subscribe_and_build_consumer()

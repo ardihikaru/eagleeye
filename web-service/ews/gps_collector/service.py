@@ -66,13 +66,13 @@ class GPSCollectorService(asab.Service):
                 self._is_online = True
                 self._setup_soap_connection()
                 if self._client is None:
-                    L.log(LOG_NOTICE, "[WARNING!] ******* GPS COLLECTOR IS WORKING IN AN OFFLINE MODE !!!!")
+                    L.warning( "[WARNING!] ******* GPS COLLECTOR IS WORKING IN AN OFFLINE MODE !!!!")
                 else:
                     L.log(LOG_NOTICE, "[IMPORTANT!] ******* GPS COLLECTOR IS WORKING IN AN ONLINE MODE !!!!")
             else:
-                L.log(LOG_NOTICE, "[WARNING!] ******* GPS COLLECTOR IS WORKING IN AN OFFLINE MODE !!!!")
+                L.warning("[WARNING!] ******* GPS COLLECTOR IS WORKING IN AN OFFLINE MODE !!!!")
         else:
-            L.log(LOG_NOTICE, "[WARNING!] ******* GPS COLLECTOR IS WORKING IN AN OFFLINE MODE !!!!")
+            L.warning("[WARNING!] ******* GPS COLLECTOR IS WORKING IN AN OFFLINE MODE !!!!")
 
     def _is_ip_reachable(self):
         try:
@@ -96,7 +96,7 @@ class GPSCollectorService(asab.Service):
         try:
             self._client = Client(self._target_url)
         except Exception as e:
-            L.log(LOG_NOTICE, "Connection establishment Failed; Reason: {}".format(e))
+            L.warning("Connection establishment Failed; Reason: {}".format(e))
 
     def _build_conn_url(self):
         schema = asab.Config["stream:gps"]["schema"]
@@ -166,6 +166,10 @@ class GPSCollectorService(asab.Service):
             return self._extract_and_build_gps_data(self._extract_gps_data())
 
     def _extract_gps_data(self):
+        if self._client is None:
+            L.warning("Unable to extract GPS data from Drone Navigation Server")
+            return None
+
         try:
             raw_gps_data = self._client.service.GetAllDroneState()
             raw_gps_data = ''.join(raw_gps_data)

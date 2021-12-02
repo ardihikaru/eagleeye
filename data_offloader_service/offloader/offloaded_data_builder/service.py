@@ -50,7 +50,7 @@ class OffloadedDataBuilderService(asab.Service):
 		# set subscription status
 		self.subscription_status = False
 
-	async def subscribe_and_build_zenoh_consumer(self):
+	async def subscribe_and_build_consumer(self):
 		L.log(LOG_NOTICE, "ReaderHandler try to consume the published data")
 
 		# TODO: how to let the user to stop current subscription?
@@ -117,8 +117,8 @@ class OffloadedDataBuilderService(asab.Service):
 							await self.img_consumer_svc.start_zenoh_consumer(config)
 						# elif config["stream"].upper() == self.VideoSourceType.TCP.value:
 						# 	await self.ExtractorService.extract_image_tcp(config)
-						# elif config["stream"].upper() == self.VideoSourceType.IMAGE_ZMQ.value:
-						# 	await self.ExtractorService.extract_image_zmq(config)
+						elif config["stream"].upper() == self.VideoSourceType.IMAGE_ZMQ.value:
+							await self.img_consumer_svc.start_imgzmq_consumer(config)
 						# elif config["stream"].upper() == self.VideoSourceType.STREAM.value:
 						# 	await self.ExtractorService.extract_video_stream(config)
 						# elif config["stream"].upper() == self.VideoSourceType.FOLDER.value:
@@ -135,4 +135,4 @@ class OffloadedDataBuilderService(asab.Service):
 
 		# start Redis subscription again
 		# perform a recursive action
-		await self.subscribe_and_build_zenoh_consumer()
+		await self.subscribe_and_build_consumer()
