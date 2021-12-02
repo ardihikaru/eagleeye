@@ -8,6 +8,7 @@ from ext_lib.redis.translator import pub, redis_get, redis_set
 from zenoh_image_subscriber.service import ZenohImageSubscriberService
 from zenoh_lib.functions import extract_compressed_tagged_img, scale_image
 import simplejson as json
+import imagezmq
 
 ###
 
@@ -36,11 +37,6 @@ class ImgConsumerService(ZenohImageSubscriberService):
 		# Special params: from YOLO's config items
 		self.img_size = asab.Config["objdet:yolo"].getint("img_size")
 		self.half = asab.Config["objdet:yolo"].getboolean("half")
-		# self._is_auto_restart = bool(int(asab.Config["stream:config"]["auto_restart"]))
-		# self._restart_delay = float(asab.Config["stream:config"]["restart_delay"])
-		# self._num_skipped_frames = int(asab.Config["stream:config"]["num_skipped_frames"])
-
-		# self.executor = ThreadPoolExecutor(int(asab.Config["thread"]["num_executor"]))
 
 		self.LatCollectorService = app.get_service("eagleeye.LatencyCollectorService")
 
@@ -65,13 +61,35 @@ class ImgConsumerService(ZenohImageSubscriberService):
 
 		self.to_fullhd = asab.Config["image:preprocessing"].getboolean("to_fullhd")
 
-	# in this case, it has collected the latest available nodes
-	async def start_zenoh_consumer(self, config):
-		L.log(LOG_NOTICE, "#### I am extractor ZENOH function!")
+		# config used by imagezmq
+		self.uri = None
+		self.image_hub = None
+
+	async def apply_config(self, config, is_zenoh=False):
+		"""
+		Config payload:
+		{
+		  'save_to_db': False,
+		  'algorithm': 'YOLOv3',
+		  'uri': 'tcp://*:5548',
+		  'scalable': True,
+		  'stream': 'IMAGEZMQ',
+		  'extras': {
+
+		  },
+		  'timestamp': 1638341757.974351,
+		  'valid': True
+		}
+		"""
+		# extract uri:
+		self.uri = config["uri"]
 
 		# set config
 		self.ZMQService.set_config(config)
-		await self.override_zenoh_config(config)
+
+		# special config setup for zenoh
+		if is_zenoh:
+			await self.override_zenoh_config(config)
 
 		# get list of available nodes
 		avail_nodes = self.ZMQService.get_available_nodes()
@@ -84,6 +102,25 @@ class ImgConsumerService(ZenohImageSubscriberService):
 		self.received_frame_id = 0
 		self.skip_count = -1
 
+	# in this case, it has collected the latest available nodes
+	async def start_imgzmq_consumer(self, config):
+		L.log(LOG_NOTICE, "#### I am extractor IMAGEZMQ function!")
+
+		# apply configuration defined by the user
+		await self.apply_config(config, is_zenoh=False)
+
+		# setup imagezmq listener
+		L.log(LOG_NOTICE, "Listening to: {}".format(self.uri))
+		self.image_hub = imagezmq.ImageHub(open_port=self.uri, REQ_REP=False)
+
+		# start video stream listener
+		await self.start_imgzmq_subscription()
+
+	# in this case, it has collected the latest available nodes
+	async def start_zenoh_consumer(self, config):
+		L.log(LOG_NOTICE, "#### I am extractor ZENOH function!")
+
+		# start video stream listener
 		await self.start_zenoh_subscription()
 
 	def _sync_save_latency(self, frame_id, latency, algorithm="[?]", section="[?]", cat="Object Detection",
@@ -134,14 +171,31 @@ class ImgConsumerService(ZenohImageSubscriberService):
 		# perform the image size conversion ONLY when the image is decompressed (decompression=False)
 		new_img = img.copy()
 		if self.decompression:
-			print(" >>> img:", type(img))
-			print(" >>> new_img:", type(new_img))
 			img_height, img_weight, _ = new_img.shape
 
 			if img_height != self.img_h:
 				new_img = scale_image(new_img, self.img_h, self.img_w)
 
 		return new_img
+
+	async def start_imgzmq_subscription(self):
+		L.log(LOG_NOTICE, "Listening to incoming images from the fog device ...")
+		try:
+			while True:  # show received images
+				data, img = self.image_hub.recv_image()
+				L.warning("Captured of decoded image resolution: {}".format(img.shape))
+
+				# decoding image
+				img_info, latency_data = extract_compressed_tagged_img(img, is_decompress=False)
+				encoded_img = img_info["img"]
+
+				# Testing: try to decode
+				# decoded_img = cv2.imdecode(encoded_img, 1)  # decompress
+
+				L.log(LOG_NOTICE, "\n")
+
+		except KeyboardInterrupt:
+			L.warning("Stopped by KeyboardInterrupt")
 
 	# OVERRIDE Child function
 	def img_listener(self, consumed_data):

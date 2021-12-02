@@ -30,7 +30,13 @@ def extract_compressed_tagged_img(consumed_data, is_decompress=True):
 
 	t0_decode = time.time()
 
-	decoded_data = np.frombuffer(consumed_data.payload, dtype=np.int64)
+	# get payload:
+	if isinstance(consumed_data, np.ndarray):
+		payload = consumed_data
+	else:
+		payload = consumed_data.payload
+
+	decoded_data = np.frombuffer(payload, dtype=np.int64)
 	decoded_data_len = list(decoded_data.shape)[0]
 	decoded_data = decoded_data.reshape(decoded_data_len, 1)
 	array_len = decoded_data[-1][0]
