@@ -182,7 +182,7 @@ then
         --data-raw '{
             "algorithm": "YOLOv3",
             "stream": "IMAGEZMQ",
-            "uri": "tcp/'${CONSUMERIP}':4444",
+            "uri": "tcp://'${CONSUMERIP}':4444",
             "scalable": true,
             "extras": {}
         }'
