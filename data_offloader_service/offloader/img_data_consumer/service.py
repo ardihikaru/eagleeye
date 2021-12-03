@@ -190,38 +190,19 @@ class ImgConsumerService(ZenohImageSubscriberService):
 
 				# decoding image
 				img_info, latency_data = extract_compressed_tagged_img(img, is_decompress=False)
-				encoded_img = img_info["img"]
+				# encoded_img = img_info["img"]
 
 				# Testing: try to decode
 				# decoded_img = cv2.imdecode(encoded_img, 1)  # decompress
+
+				self.process_captured_image(img_info, latency_data)
 
 				L.log(LOG_NOTICE, "\n")
 
 		except KeyboardInterrupt:
 			L.warning("Stopped by KeyboardInterrupt")
 
-	# OVERRIDE Child function
-	def img_listener(self, consumed_data):
-		img_info, latency_data = extract_compressed_tagged_img(consumed_data, is_decompress=self.decompression)
-		"""
-		latency_data = {
-			"decoding_payload": t1_decode,
-			"clean_decoded_payload": t1_non_img_cleaning,
-			"extract_img_data": t1_img_extraction,
-			"decompress_img": t1_decompress_img,
-			"zenoh_pubsub": zenoh_pubsub_latency,
-			"compress_img": img_compr_lat,
-		}
-	
-		# decode data
-		img_info = {
-			"id": drone_id,
-			"img": decompressed_img,
-			"timestamp": t0_zenoh_pubsub,
-			"frame_id": frame_id,
-		}
-		"""
-
+	def process_captured_image(self, img_info, latency_data):
 		# try to scale up/down into fullhd (if enabled)
 		if self.to_fullhd:
 			img_info["img"] = self.ensure_fullhd_image_input(img_info["img"])
@@ -245,8 +226,9 @@ class ImgConsumerService(ZenohImageSubscriberService):
 		# try skipping frames
 		if self._num_skipped_frames > 0 and self.received_frame_id > 1 and self.skip_count <= self._num_skipped_frames:
 			# skip this frame
-			L.log(LOG_NOTICE, ">>> Skipping frame-{}; Current `skip_count={}`".format(str(self.received_frame_id),
-																					  str(self.skip_count)))
+			L.log(LOG_NOTICE,
+				  ">>> Skipping frame-{}; Current `skip_count={}`".format(str(self.received_frame_id),
+																		  str(self.skip_count)))
 		else:
 			# self.frame_id += 1
 			self.frame_id = int(img_info["frame_id"])
@@ -280,11 +262,13 @@ class ImgConsumerService(ZenohImageSubscriberService):
 			node_channel = _senders["node"][sel_node_id]["channel"]
 			node_name = _senders["node"][sel_node_id]["name"]
 
-			L.log(LOG_NOTICE, "NodeID={}; NodeChannel={}; NodeName={}".format(str(node_id), node_channel, node_name))
+			L.log(LOG_NOTICE,
+				  "NodeID={}; NodeChannel={}; NodeName={}".format(str(node_id), node_channel, node_name))
 
 			# Save Scheduling latency
 			self._sync_save_latency(
-				self.frame_id, t1_sched_lat, self.scheduler_policy, "scheduling", "Scheduling", node_id, node_name
+				self.frame_id, t1_sched_lat, self.scheduler_policy, "scheduling", "Scheduling", node_id,
+				node_name
 			)
 			L.log(LOG_NOTICE, '[{}] Proc. Latency of %s for frame-%s (%.3f ms)'.format(get_current_time()) % (
 				"scheduling", str(self.frame_id), t1_sched_lat))
@@ -297,7 +281,8 @@ class ImgConsumerService(ZenohImageSubscriberService):
 			# Never send any frame if `test_mode` is enabled (test_mode=1)
 			if not bool(int(asab.Config["stream:config"]["test_mode"])):
 				t0_publish = time.time()
-				L.log(LOG_NOTICE, "[{}] Publishing image into Redis channel: %s".format(get_current_time()) % node_channel)
+				L.log(LOG_NOTICE,
+					  "[{}] Publishing image into Redis channel: %s".format(get_current_time()) % node_channel)
 
 				dump_request = json.dumps({
 					"active": True,
@@ -311,7 +296,8 @@ class ImgConsumerService(ZenohImageSubscriberService):
 				t1_publish = (time.time() - t0_publish) * 1000
 				# TODO: Saving latency for scheduler:producer:notification:image
 				L.log(LOG_NOTICE, '[{}] Latency for Publishing FRAME NOTIFICATION '
-								  'into Object Detection Service (%.3f ms)'.format(get_current_time()) % t1_publish)
+								  'into Object Detection Service (%.3f ms)'.format(
+					get_current_time()) % t1_publish)
 
 				if not bool(int(asab.Config["stream:config"]["convert_img"])):
 					# Sending image data through ZMQ (TCP connection)
@@ -327,7 +313,7 @@ class ImgConsumerService(ZenohImageSubscriberService):
 					else:
 						# NOT IMPLEMENTED YET!!!! USe CPU instead!
 						yolo_frame = self.ResizerService.sync_cpu_convert_to_padded_size(frame)
-						# TODO: To add GPU-based downsample function
+					# TODO: To add GPU-based downsample function
 
 					# CHECKING: how is the latency if we send converted version?
 					# Sending image data through ZENOH (TCP connection)
@@ -339,3 +325,27 @@ class ImgConsumerService(ZenohImageSubscriberService):
 		# reset skipping frames
 		if 0 < self._num_skipped_frames < self.skip_count:
 			self.skip_count = 0
+
+	# OVERRIDE Child function
+	def img_listener(self, consumed_data):
+		img_info, latency_data = extract_compressed_tagged_img(consumed_data, is_decompress=self.decompression)
+		"""
+		latency_data = {
+			"decoding_payload": t1_decode,
+			"clean_decoded_payload": t1_non_img_cleaning,
+			"extract_img_data": t1_img_extraction,
+			"decompress_img": t1_decompress_img,
+			"zenoh_pubsub": zenoh_pubsub_latency,
+			"compress_img": img_compr_lat,
+		}
+	
+		# decode data
+		img_info = {
+			"id": drone_id,
+			"img": decompressed_img,
+			"timestamp": t0_zenoh_pubsub,
+			"frame_id": frame_id,
+		}
+		"""
+
+		self.process_captured_image(img_info, latency_data)
